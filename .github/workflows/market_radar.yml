@@ -10,37 +10,61 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      # =========================
+      # 下載程式碼
+      # =========================
       - name: 下載程式碼
         uses: actions/checkout@v5
         with:
           persist-credentials: true
 
+      # =========================
+      # 設定 Python
+      # =========================
       - name: 設定 Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
+      # =========================
+      # 安裝套件
+      # =========================
       - name: 安裝套件
         run: |
           pip install requests
 
+      # =========================
+      # 執行市場監控
+      # =========================
       - name: 執行市場監控
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
           python market_radar.py
 
-   - name: 儲存訊號狀態
-  run: |
-    if [ -f signal_state.json ]; then
-      git config user.name "github-actions[bot]"
-      git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      # =========================
+      # 儲存訊號狀態
+      # =========================
+      - name: 儲存訊號狀態
+        run: |
+          if [ -f signal_state.json ]; then
 
-      git add signal_state.json
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      git diff --cached --quiet || git commit -m "Update signal state"
+            git add signal_state.json
 
-      git push
-    else
-      echo "目前沒有訊號狀態需要儲存"
-    fi
+            if git diff --cached --quiet; then
+              echo "訊號狀態沒有變化"
+            else
+              git commit -m "Update signal state"
+              git push
+            fi
+
+          else
+
+            echo "目前沒有 signal_state.json"
+            echo "跳過狀態儲存"
+
+          fi
