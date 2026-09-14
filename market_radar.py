@@ -56,19 +56,37 @@ def save_state(signal):
 # ============================================================
 def get_candles(resolution):
     url = f"{API_URL}?period={resolution}"
+
     response = requests.get(
         url,
         timeout=20
     )
+
+    print(f"API URL: {url}")
+    print(f"API Status: {response.status_code}")
+
     response.raise_for_status()
+
     data = response.json()
+
+    print(f"API Response Keys: {list(data.keys())}")
+
     if "candles" not in data:
-        raise Exception("API 沒有回傳 candles")
+        print("API 完整回應：")
+        print(str(data)[:2000])
+
+        raise Exception(
+            f"API 沒有回傳 candles，"
+            f"目前欄位：{list(data.keys())}"
+        )
+
     candles = data["candles"]
+
     if len(candles) < 60:
         raise Exception(
             f"{resolution} K 線數量不足：{len(candles)}"
         )
+
     return candles
 # ============================================================
 # EMA
