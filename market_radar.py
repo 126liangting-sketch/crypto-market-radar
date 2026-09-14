@@ -20,7 +20,7 @@ def get_candles(resolution, count=100):
     data = response.json()
 
     if "candles" not in data:
-        raise Exception(f"Kraken API 回傳格式異常：{data}")
+        raise Exception(f"Kraken API 回傳異常：{data}")
 
     candles = data["candles"]
 
@@ -33,11 +33,6 @@ def get_candles(resolution, count=100):
 
 
 def calculate_ema(prices, length):
-    if len(prices) < length:
-        raise Exception(
-            f"價格資料不足，需要至少 {length} 根，目前只有 {len(prices)} 根"
-        )
-
     multiplier = 2 / (length + 1)
 
     ema = sum(prices[:length]) / length
@@ -48,10 +43,9 @@ def calculate_ema(prices, length):
     return ema
 
 
-def analyze_timeframe(resolution, name):
+def get_analysis(resolution):
     candles = get_candles(resolution)
 
-    # 使用已取得的收盤價
     closes = [
         float(candle["close"])
         for candle in candles
@@ -62,19 +56,12 @@ def analyze_timeframe(resolution, name):
     ema34 = calculate_ema(closes, 34)
     ema50 = calculate_ema(closes, 50)
 
-    if ema34 > ema50:
-        trend = "🟢 多頭"
-    elif ema34 < ema50:
-        trend = "🔴 空頭"
-    else:
-        trend = "⚪ 震盪"
-
     return {
-        "name": name,
         "price": current_price,
         "ema34": ema34,
         "ema50": ema50,
-        "trend": trend
+        "candles": candles,
+        "closes": closes
     }
 
 
@@ -90,56 +77,136 @@ def send_discord(message):
 
 def main():
 
-    print("開始取得 BTC 多週期資料...")
+    print("開始分析 BTC...")
 
+    # =========================
     # 1H
-    h1 = analyze_timeframe("1h", "1H")
+    # =========================
 
+    h1 = get_analysis("1h")
+
+    h1_bull = h1["ema34"] > h1["ema50"]
+    h1_bear = h1["ema34"] < h1["ema50"]
+
+    # =========================
     # 15M
-    m15 = analyze_timeframe("15m", "15M")
+    # =========================
 
-    # 判斷多週期方向
-    if "多頭" in h1["trend"] and "多頭" in m15["trend"]:
-        alignment = "🟢 多週期多頭一致"
+    m15 = get_analysis("15m")
 
-    elif "空頭" in h1["trend"] and "空頭" in m15["trend"]:
-        alignment = "🔴 多週期空頭一致"
+    closes = m15["closes"]
+    ema34 = m15["ema34"]
+    ema50 = m15["ema50"]
 
-    else:
-        alignment = "🟡 多週期方向分歧"
+    current_price = closes[-1]
+
+    # =========================
+    # 判斷最近的15M價格
+    # 是否曾經進入 EMA34~EMA50區域
+    # =========================
+
+    recent_closes = closes[-6:]
+
+    ema_zone_top = max(ema34, ema50)
+    ema_zone_bottom = min(ema34, ema50)
+
+    touched_zone = any(
+        ema_zone_bottom <= price <= ema_zone_top
+        for price in recent_closes
+    )
+
+    # =========================
+    # 目前價格是否重新站回 EMA34
+    # =========================
+
+    bullish_reclaim = (
+        current_price > ema34
+    )
+
+    bearish_reclaim = (
+        current_price < ema34
+    )
+
+    # =========================
+    # 最終訊號
+    # =========================
+
+    long_signal = (
+        h1_bull
+        and touched_zone
+        and bullish_reclaim
+    )
+
+    short_signal = (
+        h1_bear
+        and touched_zone
+        and bearish_reclaim
+    )
+
+    # =========================
+    # Discord訊息
+    # =========================
 
     message = (
         "🚨 **Crypto Market Radar**\n\n"
         "━━━━━━━━━━━━━━━━━━\n"
-        "₿ BTC / USD — Kraken\n"
+        "₿ BTC / USD\n"
         "━━━━━━━━━━━━━━━━━━\n\n"
 
-        f"💰 最新價格：`${m15['price']:,.2f}`\n\n"
+        f"💰 目前價格：`${current_price:,.2f}`\n\n"
 
         "📊 **1H 趨勢**\n"
         f"EMA34：`${h1['ema34']:,.2f}`\n"
         f"EMA50：`${h1['ema50']:,.2f}`\n"
-        f"方向：**{h1['trend']}**\n\n"
+        f"方向：**{'🟢 多頭' if h1_bull else '🔴 空頭'}**\n\n"
 
-        "📊 **15M 趨勢**\n"
-        f"EMA34：`${m15['ema34']:,.2f}`\n"
-        f"EMA50：`${m15['ema50']:,.2f}`\n"
-        f"方向：**{m15['trend']}**\n\n"
-
-        "━━━━━━━━━━━━━━━━━━\n"
-        f"🎯 **多週期判斷：{alignment}**\n"
-        "━━━━━━━━━━━━━━━━━━\n\n"
-
-        "✅ 1H K線取得成功\n"
-        "✅ 15M K線取得成功\n"
-        "✅ EMA34 / EMA50 計算成功"
+        "📊 **15M**\n"
+        f"EMA34：`${ema34:,.2f}`\n"
+        f"EMA50：`${ema50:,.2f}`\n"
+        f"EMA區域：{'✅ 有回踩' if touched_zone else '❌ 尚未回踩'}\n\n"
     )
 
-    print(message)
+    # =========================
+    # 訊號
+    # =========================
+
+    if long_signal:
+
+        message += (
+            "━━━━━━━━━━━━━━━━━━\n"
+            "🟢 **BTC 多頭回踩訊號**\n"
+            "━━━━━━━━━━━━━━━━━━\n\n"
+            "1H：多頭\n"
+            "15M：回踩 EMA 區域\n"
+            "15M：重新站回 EMA34\n\n"
+            "🚨 **LONG SETUP**"
+        )
+
+    elif short_signal:
+
+        message += (
+            "━━━━━━━━━━━━━━━━━━\n"
+            "🔴 **BTC 空頭回踩訊號**\n"
+            "━━━━━━━━━━━━━━━━━━\n\n"
+            "1H：空頭\n"
+            "15M：回踩 EMA 區域\n"
+            "15M：重新跌破 EMA34\n\n"
+            "🚨 **SHORT SETUP**"
+        )
+
+    else:
+
+        message += (
+            "━━━━━━━━━━━━━━━━━━\n"
+            "⚪ **目前沒有交易訊號**\n"
+            "━━━━━━━━━━━━━━━━━━\n\n"
+            "等待：\n"
+            "1H 趨勢 + 15M EMA回踩 + 重新站回"
+        )
 
     send_discord(message)
 
-    print("Discord 通知成功")
+    print("Discord通知成功")
 
 
 if __name__ == "__main__":
