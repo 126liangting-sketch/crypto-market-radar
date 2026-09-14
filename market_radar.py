@@ -69,23 +69,46 @@ def get_candles(resolution):
 
     data = response.json()
 
-    print(f"API Response Keys: {list(data.keys())}")
+    print(f"API Response Type: {type(data).__name__}")
 
-    if "candles" not in data:
-        print("API 完整回應：")
-        print(str(data)[:2000])
+    # Kraken 目前回傳 List
+    if isinstance(data, list):
+
+        candles = data
+
+    # 如果 API 回傳 Dictionary，兼容處理
+    elif isinstance(data, dict):
+
+        if "candles" in data:
+            candles = data["candles"]
+
+        elif "data" in data:
+            candles = data["data"]
+
+        else:
+            print("API Dictionary Keys:")
+            print(list(data.keys()))
+
+            raise Exception(
+                "API 回傳 Dictionary，但找不到 candles/data"
+            )
+
+    else:
 
         raise Exception(
-            f"API 沒有回傳 candles，"
-            f"目前欄位：{list(data.keys())}"
+            f"API 回傳未知格式：{type(data).__name__}"
         )
 
-    candles = data["candles"]
-
     if len(candles) < 60:
+
         raise Exception(
             f"{resolution} K 線數量不足：{len(candles)}"
         )
+
+    print(
+        f"{resolution} K 線取得成功："
+        f"{len(candles)} 根"
+    )
 
     return candles
 # ============================================================
