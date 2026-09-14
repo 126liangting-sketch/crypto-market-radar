@@ -1,17 +1,29 @@
 import os
 import json
+import time
 import requests
+
+
 # ============================================================
-# 基本設定
+# SETTINGS
 # ============================================================
+
 DISCORD_WEBHOOK = os.environ["DISCORD_WEBHOOK"]
-API_URL = "https://futures.kraken.com/api/charts/v1/spot/PI_XBTUSD"
-LOOKBACK = 8
+
+API_BASE = "https://futures.kraken.com/api/charts/v1/spot/PI_XBTUSD"
+
 STATE_FILE = "signal_state.json"
+
+MIN_CANDLES = 80
+LOOKBACK = 8
+
+
 # ============================================================
-# Discord
+# DISCORD
 # ============================================================
+
 def send_discord(message):
+
     response = requests.post(
         DISCORD_WEBHOOK,
         json={
@@ -19,404 +31,1004 @@ def send_discord(message):
         },
         timeout=20
     )
+
     print(f"Discord response status: {response.status_code}")
+
     if response.status_code not in [200, 204]:
-        print(f"Discord response: {response.text[:500]}")
+
+        print(
+            "Discord response:",
+            response.text[:500]
+        )
+
         raise Exception(
             f"Discord 發送失敗："
-            f"{response.status_code} "
-            f"{response.text[:500]}"
+            f"{response.status_code}"
         )
+
+
 # ============================================================
-# 狀態
+# SIGNAL STATE
 # ============================================================
+
 def load_state():
+
     if not os.path.exists(STATE_FILE):
         return {
             "last_signal": "NONE"
         }
+
     try:
-        with open(STATE_FILE, "r", encoding="utf-8") as f:
+
+        with open(
+            STATE_FILE,
+            "r",
+            encoding="utf-8"
+        ) as f:
+
             return json.load(f)
+
     except Exception:
+
         return {
             "last_signal": "NONE"
         }
+
+
 def save_state(signal):
-    with open(STATE_FILE, "w", encoding="utf-8") as f:
+
+    with open(
+        STATE_FILE,
+        "w",
+        encoding="utf-8"
+    ) as f:
+
         json.dump(
             {
                 "last_signal": signal
             },
             f,
-            ensure_ascii=False
+            ensure_ascii=False,
+            indent=2
         )
+
+
 # ============================================================
-# 取得 K 線
+# GET KLINES
 # ============================================================
+
 def get_candles(resolution):
-    url = f"{API_URL}?period={resolution}"
+
+    print(f"\n取得 {resolution} K 線...")
+
+    # --------------------------------------------------------
+    # 每個 timeframe 要抓多少歷史時間
+    # --------------------------------------------------------
+
+    if resolution == "1h":
+
+        # 抓 120 小時
+        interval_seconds = 60 * 60
+        required_candles = 80
+
+    elif resolution == "15m":
+
+        # 抓 30 小時
+        interval_seconds = 15 * 60
+        required_candles = 80
+
+    else:
+
+        raise Exception(
+            f"不支援的 timeframe：{resolution}"
+        )
+
+    now = int(time.time())
+
+    from_time = now - (
+        interval_seconds * required_candles * 2
+    )
+
+    to_time = now
+
+    # --------------------------------------------------------
+    # Kraken Charts API
+    # --------------------------------------------------------
+
+    url = (
+        f"{API_BASE}/{resolution}"
+    )
+
+    params = {
+        "from": from_time,
+        "to": to_time
+    }
+
+    print(f"API URL: {url}")
+    print(f"From: {from_time}")
+    print(f"To  : {to_time}")
 
     response = requests.get(
         url,
+        params=params,
         timeout=20
     )
 
-    print(f"API URL: {url}")
-    print(f"API Status: {response.status_code}")
+    print(
+        f"API Status: "
+        f"{response.status_code}"
+    )
 
     response.raise_for_status()
 
     data = response.json()
 
-    print(f"API Response Type: {type(data).__name__}")
+    print(
+        f"API Response Type: "
+        f"{type(data).__name__}"
+    )
 
-    # Kraken 目前回傳 List
-    if isinstance(data, list):
+    # --------------------------------------------------------
+    # Kraken 有些版本會回傳 dict
+    # --------------------------------------------------------
 
-        candles = data
-
-    # 如果 API 回傳 Dictionary，兼容處理
-    elif isinstance(data, dict):
+    if isinstance(data, dict):
 
         if "candles" in data:
+
             candles = data["candles"]
 
         elif "data" in data:
+
             candles = data["data"]
 
         else:
-            print("API Dictionary Keys:")
-            print(list(data.keys()))
+
+            print(
+                "API Dictionary Keys:",
+                list(data.keys())
+            )
 
             raise Exception(
-                "API 回傳 Dictionary，但找不到 candles/data"
+                "Kraken 回傳 Dictionary，"
+                "但找不到 candles/data"
             )
+
+    # --------------------------------------------------------
+    # 有些 endpoint 會直接回傳 list
+    # --------------------------------------------------------
+
+    elif isinstance(data, list):
+
+        candles = data
 
     else:
 
         raise Exception(
-            f"API 回傳未知格式：{type(data).__name__}"
+            f"未知 API 格式："
+            f"{type(data).__name__}"
         )
 
-    if len(candles) < 60:
+    # --------------------------------------------------------
+    # 顯示第一根 K 線，方便確認格式
+    # --------------------------------------------------------
 
-        raise Exception(
-            f"{resolution} K 線數量不足：{len(candles)}"
+    if len(candles) > 0:
+
+        print(
+            "第一根 K 線：",
+            candles[0]
         )
 
     print(
-        f"{resolution} K 線取得成功："
+        f"{resolution} 原始 K 線數量："
+        f"{len(candles)}"
+    )
+
+    # --------------------------------------------------------
+    # 標準化 K 線格式
+    # --------------------------------------------------------
+
+    normalized = []
+
+    for candle in candles:
+
+        # --------------------------------------------
+        # 格式 1：
+        # {
+        #   time,
+        #   open,
+        #   high,
+        #   low,
+        #   close,
+        #   volume
+        # }
+        # --------------------------------------------
+
+        if isinstance(candle, dict):
+
+            try:
+
+                normalized.append(
+                    {
+                        "time": float(
+                            candle["time"]
+                        ),
+
+                        "open": float(
+                            candle["open"]
+                        ),
+
+                        "high": float(
+                            candle["high"]
+                        ),
+
+                        "low": float(
+                            candle["low"]
+                        ),
+
+                        "close": float(
+                            candle["close"]
+                        ),
+
+                        "volume": float(
+                            candle.get(
+                                "volume",
+                                0
+                            )
+                        )
+                    }
+                )
+
+            except KeyError:
+
+                continue
+
+        # --------------------------------------------
+        # 格式 2：
+        # [timestamp, open, high, low, close, volume]
+        # --------------------------------------------
+
+        elif isinstance(candle, list):
+
+            if len(candle) < 5:
+                continue
+
+            try:
+
+                normalized.append(
+                    {
+                        "time": float(
+                            candle[0]
+                        ),
+
+                        "open": float(
+                            candle[1]
+                        ),
+
+                        "high": float(
+                            candle[2]
+                        ),
+
+                        "low": float(
+                            candle[3]
+                        ),
+
+                        "close": float(
+                            candle[4]
+                        ),
+
+                        "volume": (
+                            float(candle[5])
+                            if len(candle) > 5
+                            else 0
+                        )
+                    }
+                )
+
+            except (
+                TypeError,
+                ValueError
+            ):
+
+                continue
+
+    # --------------------------------------------------------
+    # 時間排序
+    # --------------------------------------------------------
+
+    normalized.sort(
+        key=lambda x: x["time"]
+    )
+
+    # --------------------------------------------------------
+    # 去除重複
+    # --------------------------------------------------------
+
+    unique = {}
+
+    for candle in normalized:
+
+        unique[candle["time"]] = candle
+
+    candles = list(
+        unique.values()
+    )
+
+    candles.sort(
+        key=lambda x: x["time"]
+    )
+
+    print(
+        f"{resolution} 有效 K 線："
         f"{len(candles)} 根"
     )
 
+    # --------------------------------------------------------
+    # K 線數量檢查
+    # --------------------------------------------------------
+
+    if len(candles) < MIN_CANDLES:
+
+        raise Exception(
+            f"{resolution} K 線仍然不足："
+            f"{len(candles)} 根"
+        )
+
     return candles
+
+
 # ============================================================
 # EMA
 # ============================================================
-def calculate_ema(values, period):
-    if len(values) < period:
+
+def calculate_ema(values, length):
+
+    if len(values) < length:
+
         return None
-    multiplier = 2 / (period + 1)
-    ema = sum(values[:period]) / period
-    for price in values[period:]:
+
+    multiplier = 2 / (
+        length + 1
+    )
+
+    ema = values[0]
+
+    for price in values[1:]:
+
         ema = (
-            (price - ema) * multiplier
-            + ema
-        )
+            price - ema
+        ) * multiplier + ema
+
     return ema
+
+
 # ============================================================
-# 取得 K 線欄位
+# GET ANALYSIS
 # ============================================================
-def candle_value(candle, key):
-    return float(candle[key])
-# ============================================================
-# EMA 分析
-# ============================================================
+
 def get_analysis(candles):
+
     closes = [
-        candle_value(c, "close")
-        for c in candles
+        candle["close"]
+        for candle in candles
     ]
+
     ema34 = calculate_ema(
         closes,
         34
     )
+
     ema50 = calculate_ema(
         closes,
         50
     )
-    price = closes[-1]
+
+    latest = candles[-1]
+
     return {
-        "price": price,
+
+        "price": latest["close"],
+
+        "high": latest["high"],
+
+        "low": latest["low"],
+
         "ema34": ema34,
-        "ema50": ema50
+
+        "ema50": ema50,
+
+        "candles": candles
+
     }
+
+
 # ============================================================
-# EMA 回踩
+# EMA PULLBACK
 # ============================================================
-def check_ema_pullback(candles):
-    if len(candles) < LOOKBACK + 50:
-        return False
-    closes = [
-        candle_value(c, "close")
-        for c in candles
-    ]
-    ema34 = calculate_ema(
-        closes,
-        34
-    )
-    ema50 = calculate_ema(
-        closes,
-        50
-    )
+
+def check_ema_pullback(
+    analysis,
+    direction
+):
+
+    candles = analysis["candles"]
+
+    ema34 = analysis["ema34"]
+    ema50 = analysis["ema50"]
+
     if ema34 is None or ema50 is None:
+
         return False
+
     zone_high = max(
         ema34,
         ema50
     )
+
     zone_low = min(
         ema34,
         ema50
     )
-    recent = candles[-LOOKBACK:]
-    touched_zone = False
+
+    recent = candles[-4:]
+
     for candle in recent:
-        high = candle_value(
-            candle,
-            "high"
-        )
-        low = candle_value(
-            candle,
-            "low"
-        )
-        if (
-            low <= zone_high
+
+        candle_high = candle["high"]
+        candle_low = candle["low"]
+
+        touched_zone = (
+            candle_high >= zone_low
             and
-            high >= zone_low
-        ):
-            touched_zone = True
-            break
-    if not touched_zone:
-        return False
-    last_close = candle_value(
-        candles[-1],
-        "close"
-    )
-    previous_close = candle_value(
-        candles[-2],
-        "close"
-    )
-    bullish_reaction = (
-        last_close > zone_high
-        and
-        last_close > previous_close
-    )
-    bearish_reaction = (
-        last_close < zone_low
-        and
-        last_close < previous_close
-    )
-    return {
-        "bullish": bullish_reaction,
-        "bearish": bearish_reaction
-    }
+            candle_low <= zone_high
+        )
+
+        if not touched_zone:
+            continue
+
+        if direction == "LONG":
+
+            if candle["close"] >= zone_low:
+
+                return True
+
+        elif direction == "SHORT":
+
+            if candle["close"] <= zone_high:
+
+               return True
+
+    return False
+
 # ============================================================
-# 突破
+
+# BREAKOUT
+
 # ============================================================
-def check_breakout(candles):
+
+def check_breakout(
+
+    candles,
+
+    direction
+
+):
+
     if len(candles) < LOOKBACK + 2:
-        return {
-            "bullish": False,
-            "bearish": False
-        }
-    recent = candles[-LOOKBACK-1:-1]
+
+        return False
+
+    previous = candles[
+
+        -(LOOKBACK + 1):-1
+
+    ]
+
+    current = candles[-1]
+
     previous_high = max(
-        candle_value(c, "high")
-        for c in recent
+
+        candle["high"]
+
+        for candle in previous
+
     )
+
     previous_low = min(
-        candle_value(c, "low")
-        for c in recent
+
+        candle["low"]
+
+        for candle in previous
+
     )
-    last_close = candle_value(
-        candles[-1],
-        "close"
-    )
-    bullish = last_close > previous_high
-    bearish = last_close < previous_low
-    return {
-        "bullish": bullish,
-        "bearish": bearish
-    }
+
+    if direction == "LONG":
+
+        return (
+
+            current["close"]
+
+            > previous_high
+
+        )
+
+    if direction == "SHORT":
+
+        return (
+
+            current["close"]
+
+            < previous_low
+
+        )
+
+    return False
+
 # ============================================================
-# 結構
+
+# STRUCTURE
+
 # ============================================================
-def check_structure(candles):
-    if len(candles) < 6:
-        return {
-            "bullish": False,
-            "bearish": False
-        }
+
+def check_structure(
+
+    candles,
+
+    direction
+
+):
+
+    if len(candles) < 5:
+
+        return False
+
     c1 = candles[-5]
+
     c2 = candles[-4]
+
     c3 = candles[-3]
+
     c4 = candles[-2]
-    h1 = candle_value(c1, "high")
-    h3 = candle_value(c3, "high")
-    h4 = candle_value(c4, "high")
-    l1 = candle_value(c1, "low")
-    l3 = candle_value(c3, "low")
-    l4 = candle_value(c4, "low")
-    bullish = (
-        l3 > l1
-        and
-        h4 > h3
-    )
-    bearish = (
-        h3 < h1
-        and
-        l4 < l3
-    )
-    return {
-        "bullish": bullish,
-        "bearish": bearish
-    }
+
+    c5 = candles[-1]
+
+    if direction == "LONG":
+
+        higher_low = (
+
+            c3["low"]
+
+            > c1["low"]
+
+        )
+
+        higher_high = (
+
+            c5["high"]
+
+            > c3["high"]
+
+        )
+
+        return (
+
+            higher_low
+
+            and
+
+            higher_high
+
+        )
+
+    if direction == "SHORT":
+
+        lower_high = (
+
+            c3["high"]
+
+            < c1["high"]
+
+        )
+
+        lower_low = (
+
+            c5["low"]
+
+            < c3["low"]
+
+        )
+
+        return (
+
+            lower_high
+
+            and
+
+            lower_low
+
+        )
+
+    return False
+
 # ============================================================
-# 主程式
+
+# MAIN
+
 # ============================================================
+
 def main():
-    print("")
-    print("========================================")
-    print("        BTC MARKET RADAR")
-    print("========================================")
-    # --------------------------------------------------------
-    # 取得 1H / 15m
-    # --------------------------------------------------------
-    print("取得 1H K 線...")
-    h1_candles = get_candles("1h")
-    print("取得 15m K 線...")
-    m15_candles = get_candles("15m")
-    # --------------------------------------------------------
-    # 1H 分析
-    # --------------------------------------------------------
-    h1 = get_analysis(
-        h1_candles
-    )
-    h1_price = h1["price"]
-    h1_ema34 = h1["ema34"]
-    h1_ema50 = h1["ema50"]
-    h1_bull = h1_ema34 > h1_ema50
-    h1_bear = h1_ema34 < h1_ema50
-    if h1_bull:
-        trend = "BULL"
-    elif h1_bear:
-        trend = "BEAR"
-    else:
-        trend = "NEUTRAL"
-    # --------------------------------------------------------
-    # 15m 分析
-    # --------------------------------------------------------
-    m15 = get_analysis(
-        m15_candles
-    )
-    price = m15["price"]
-    ema34 = m15["ema34"]
-    ema50 = m15["ema50"]
-    # --------------------------------------------------------
-    # 條件
-    # --------------------------------------------------------
-    pullback_result = check_ema_pullback(
-        m15_candles
-    )
-    bullish_pullback = pullback_result["bullish"]
-    bearish_pullback = pullback_result["bearish"]
-    breakout_result = check_breakout(
-        m15_candles
-    )
-    bullish_breakout = breakout_result["bullish"]
-    bearish_breakout = breakout_result["bearish"]
-    structure_result = check_structure(
-        m15_candles
-    )
-    bullish_structure = structure_result["bullish"]
-    bearish_structure = structure_result["bearish"]
-    # --------------------------------------------------------
-    # Score
-    # --------------------------------------------------------
-    long_score = 0
-    short_score = 0
-    long_reasons = []
-    short_reasons = []
-    # 1H Trend
-    if h1_bull:
-        long_score += 2
-        long_reasons.append(
-            "1H EMA34 > EMA50"
-        )
-    if h1_bear:
-        short_score += 2
-        short_reasons.append(
-            "1H EMA34 < EMA50"
-        )
-    # EMA Pullback
-    if bullish_pullback:
-        long_score += 1
-        long_reasons.append(
-            "15m EMA Zone 回踩後反應"
-        )
-    if bearish_pullback:
-        short_score += 1
-        short_reasons.append(
-            "15m EMA Zone 回踩後反應"
-        )
-    # Breakout
-    if bullish_breakout:
-        long_score += 2
-        long_reasons.append(
-            "15m 向上突破"
-        )
-    if bearish_breakout:
-        short_score += 2
-        short_reasons.append(
-            "15m 向下突破"
-        )
-    # Structure
-    if bullish_structure:
-        long_score += 1
-        long_reasons.append(
-            "15m 多頭結構"
-        )
-    if bearish_structure:
-        short_score += 1
-        short_reasons.append(
-            "15m 空頭結構"
-        )
-    # --------------------------------------------------------
-    # Trigger
-    # --------------------------------------------------------
-    long_trigger = (
-        bullish_pullback
-        or
-        bullish_breakout
-        or
-        bullish_structure
-    )
-    short_trigger = (
-        bearish_pullback
-        or
-        bearish_breakout
-        or
-        bearish_structure
-    )
-    # --------------------------------------------------------
-    # Debug
-    # --------------------------------------------------------
-    print("")
-    print("========== TRIGGER DEBUG ==========")
+
     print(
+
+        "========================================"
+
+    )
+
+    print(
+
+        "        BTC MARKET RADAR"
+
+    )
+
+    print(
+
+        "========================================"
+
+    )
+
+    # ========================================================
+
+    # 1H
+
+    # ========================================================
+
+    h1_candles = get_candles(
+
+        "1h"
+
+    )
+
+    h1 = get_analysis(
+
+        h1_candles
+
+    )
+
+    h1_bull = (
+
+        h1["ema34"]
+
+        >
+
+        h1["ema50"]
+
+    )
+
+    h1_bear = (
+
+        h1["ema34"]
+
+        <
+
+        h1["ema50"]
+
+    )
+
+    # ========================================================
+
+    # 15M
+
+    # ========================================================
+
+    print()
+
+    m15_candles = get_candles(
+
+        "15m"
+
+    )
+
+    m15 = get_analysis(
+
+        m15_candles
+
+    )
+
+    # ========================================================
+
+    # CONDITIONS
+
+    # ========================================================
+
+    bullish_pullback = (
+
+        check_ema_pullback(
+
+            m15,
+
+            "LONG"
+
+        )
+
+    )
+
+    bearish_pullback = (
+
+        check_ema_pullback(
+
+            m15,
+
+            "SHORT"
+
+        )
+
+    )
+
+    bullish_breakout = (
+
+        check_breakout(
+
+            m15_candles,
+
+            "LONG"
+
+        )
+
+    )
+
+    bearish_breakout = (
+
+        check_breakout(
+
+            m15_candles,
+
+            "SHORT"
+
+        )
+
+    )
+
+    bullish_structure = (
+
+        check_structure(
+
+            m15_candles,
+
+            "LONG"
+
+        )
+
+    )
+
+    bearish_structure = (
+
+        check_structure(
+
+            m15_candles,
+
+            "SHORT"
+
+        )
+
+    )
+
+    # ========================================================
+
+    # SCORE
+
+    # ========================================================
+
+    long_score = 0
+
+    short_score = 0
+
+    # 1H trend
+
+    if h1_bull:
+
+        long_score += 2
+
+    if h1_bear:
+
+        short_score += 2
+
+    # EMA pullback
+
+    if bullish_pullback:
+
+        long_score += 1
+
+    if bearish_pullback:
+
+        short_score += 1
+
+    # Breakout
+
+    if bullish_breakout:
+
+        long_score += 2
+
+    if bearish_breakout:
+
+        short_score += 2
+
+    # Structure
+
+    if bullish_structure:
+
+        long_score += 1
+
+    if bearish_structure:
+
+        short_score += 1
+
+    # ========================================================
+
+    # TRIGGER
+
+    # ========================================================
+
+    long_trigger = (
+
+        bullish_pullback
+
+        or
+
+        bullish_breakout
+
+        or
+
+        bullish_structure
+
+    )
+
+    short_trigger = (
+
+        bearish_pullback
+
+        or
+
+        bearish_breakout
+
+        or
+
+        bearish_structure
+
+    )
+
+    # ========================================================
+
+    # SIGNAL
+
+    # ========================================================
+
+    current_signal = "NONE"
+
+    if (
+
+        h1_bull
+
+        and
+
+        long_trigger
+
+        and
+
+        long_score >= 3
+
+    ):
+
+        current_signal = "LONG"
+
+    elif (
+
+        h1_bear
+
+        and
+
+        short_trigger
+
+        and
+
+        short_score >= 3
+
+    ):
+
+        current_signal = "SHORT"
+
+    # ========================================================
+
+    # DEBUG
+
+    # ========================================================
+
+    print()
+
+    print(
+
+        "========== MARKET DATA =========="
+
+    )
+
+    print(
+
+        f"Price       : "
+
+        f"{m15['price']:.2f}"
+
+    )
+
+    print(
+
+        f"1H EMA34    : "
+
+        f"{h1['ema34']:.2f}"
+
+    )
+
+    print(
+
+        f"1H EMA50    : "
+
+        f"{h1['ema50']:.2f}"
+
+    )
+
+    print(
+
+        f"15M EMA34   : "
+
+        f"{m15['ema34']:.2f}"
+
+    )
+
+    print(
+
+        f"15M EMA50   : "
+
+        f"{m15['ema50']:.2f}"
+
+    )
+
+    print()
+
+    print(
+
+        f"1H Trend    : "
+
+        f"{'BULL' if h1_bull else 'BEAR'}"
+
+    )
+
+    print(
+
+        f"LONG Score  : "
+
+        f"{long_score}"
+
+    )
+
+    print(
+
+        f"SHORT Score : "
+
+        f"{short_score}"
+
+    )
+
+    print()
+
+    print(
+
+        "========== TRIGGER DEBUG =========="
+
+    )
+
+    print(
+
         f"Bullish Pullback : "
+
         f"{bullish_pullback}"
 
     )
@@ -444,6 +1056,8 @@ def main():
         f"{long_trigger}"
 
     )
+
+    print()
 
     print(
 
@@ -483,91 +1097,25 @@ def main():
 
     )
 
-    # --------------------------------------------------------
-
-    # 最終訊號
-
-    # --------------------------------------------------------
-
-    current_signal = "NONE"
-
-    if (
-
-        h1_bull
-
-        and
-
-        long_trigger
-
-        and
-
-        long_score >= 3
-
-    ):
-
-        current_signal = "LONG"
-
-    elif (
-
-        h1_bear
-
-        and
-
-        short_trigger
-
-        and
-
-        short_score >= 3
-
-    ):
-
-        current_signal = "SHORT"
-
-    # --------------------------------------------------------
-
-    # 顯示結果
-
-    # --------------------------------------------------------
-
-    print("")
-
-    print("============================")
+    print()
 
     print(
 
-        f"1H Trend  : {trend}"
+        f"目前訊號："
+
+        f"{current_signal}"
 
     )
 
-    print(
+    # ========================================================
 
-        f"LONG Score : {long_score}"
+    # STATE
 
-    )
-
-    print(
-
-        f"SHORT Score: {short_score}"
-
-    )
-
-    print(
-
-        f"Signal     : {current_signal}"
-
-    )
-
-    print("============================")
-
-    # --------------------------------------------------------
-
-    # 狀態
-
-    # --------------------------------------------------------
+    # ========================================================
 
     state = load_state()
 
-    last_signal = state.get(
+    previous_signal = state.get(
 
         "last_signal",
 
@@ -575,27 +1123,85 @@ def main():
 
     )
 
-    print("")
-
     print(
 
-        f"上一個訊號：{last_signal}"
+        f"上一個訊號："
+
+        f"{previous_signal}"
 
     )
 
-    print(
+    # ========================================================
 
-        f"目前訊號：{current_signal}"
+    # DISCORD
 
-    )
+    # ========================================================
 
-    # --------------------------------------------------------
+    if (
 
-    # 沒有變化
+        current_signal != "NONE"
 
-    # --------------------------------------------------------
+        and
 
-    if current_signal == last_signal:
+        current_signal != previous_signal
+
+    ):
+
+        message = (
+
+            "🚨 **BTC MARKET RADAR**\n\n"
+
+            f"訊號：**{current_signal}**\n"
+
+            f"價格：`{m15['price']:.2f}`\n\n"
+
+            f"1H Trend："
+
+            f"`{'BULL' if h1_bull else 'BEAR'}`\n"
+
+            f"LONG Score："
+
+            f"`{long_score}`\n"
+
+            f"SHORT Score："
+
+            f"`{short_score}`\n\n"
+
+            f"EMA Pullback："
+
+            f"`{'LONG' if bullish_pullback else 'SHORT' if bearish_pullback else 'NONE'}`\n"
+
+            f"Breakout："
+
+            f"`{'LONG' if bullish_breakout else 'SHORT' if bearish_breakout else 'NONE'}`\n"
+
+            f"Structure："
+
+            f"`{'LONG' if bullish_structure else 'SHORT' if bearish_structure else 'NONE'}`"
+
+        )
+
+        print()
+
+        print(
+
+            "發送 Discord 訊號..."
+
+        )
+
+        send_discord(
+
+            message
+
+        )
+
+        print(
+
+            "Discord 發送成功"
+
+        )
+
+    else:
 
         print(
 
@@ -603,119 +1209,35 @@ def main():
 
         )
 
-        return
+    # ========================================================
 
-    # --------------------------------------------------------
+    # SAVE STATE
 
-    # 訊號失效
+    # ========================================================
 
-    # --------------------------------------------------------
+    save_state(
 
-    if current_signal == "NONE":
+        current_signal
 
-        save_state("NONE")
+    )
 
-        print(
+    print()
 
-            "訊號失效，"
+    print(
 
-            "狀態重置為 NONE"
+        "狀態已儲存"
 
-        )
+    )
 
-        return
+    print(
 
-    # --------------------------------------------------------
+        "========================================"
 
-    # LONG
-
-    # --------------------------------------------------------
-
-    if current_signal == "LONG":
-
-        message = (
-
-            "📊 **LONG SETUP — BTC**\n"
-
-            f"價格：`{price:.2f}`\n"
-
-            f"1H 趨勢：`BULL`\n"
-
-            f"分數：`{long_score}`\n\n"
-
-            "多頭條件達標：\n"
-
-            +
-
-            "\n".join(
-
-                f"• {reason}"
-
-                for reason in long_reasons
-
-            )
-
-        )
-
-        send_discord(message)
-
-        save_state("LONG")
-
-        print(
-
-            "🚀 LONG 訊號已發送 Discord"
-
-        )
-
-        return
-
-    # --------------------------------------------------------
-
-    # SHORT
-
-    # --------------------------------------------------------
-
-    if current_signal == "SHORT":
-
-        message = (
-
-            "📊 **SHORT SETUP — BTC**\n"
-
-            f"價格：`{price:.2f}`\n"
-
-            f"1H 趨勢：`BEAR`\n"
-
-            f"分數：`{short_score}`\n\n"
-
-            "空頭條件達標：\n"
-
-            +
-
-            "\n".join(
-
-                f"• {reason}"
-
-                for reason in short_reasons
-
-            )
-
-        )
-
-        send_discord(message)
-
-        save_state("SHORT")
-
-        print(
-
-            "🔻 SHORT 訊號已發送 Discord"
-
-        )
-
-        return
+    )
 
 # ============================================================
 
-# 執行
+# RUN
 
 # ============================================================
 
