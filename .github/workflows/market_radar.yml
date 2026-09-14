@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: 下載程式碼
         uses: actions/checkout@v5
+        with:
+          persist-credentials: true
 
       - name: 設定 Python
         uses: actions/setup-python@v6
@@ -27,3 +29,14 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
           python market_radar.py
+
+      - name: 儲存訊號狀態
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add signal_state.json
+
+          git diff --cached --quiet || git commit -m "Update signal state"
+
+          git push
