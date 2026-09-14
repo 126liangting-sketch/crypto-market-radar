@@ -30,13 +30,17 @@ jobs:
         run: |
           python market_radar.py
 
-      - name: 儲存訊號狀態
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+   - name: 儲存訊號狀態
+  run: |
+    if [ -f signal_state.json ]; then
+      git config user.name "github-actions[bot]"
+      git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add signal_state.json
+      git add signal_state.json
 
-          git diff --cached --quiet || git commit -m "Update signal state"
+      git diff --cached --quiet || git commit -m "Update signal state"
 
-          git push
+      git push
+    else
+      echo "目前沒有訊號狀態需要儲存"
+    fi
