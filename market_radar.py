@@ -326,6 +326,12 @@ def main():
         or
         bearish_structure
     )
+    print("========== TRIGGER DEBUG ==========")
+print("Bullish Pullback :", bullish_pullback)
+print("Bullish Breakout :", bullish_breakout)
+print("Bullish Structure:", bullish_structure)
+print("Long Trigger     :", long_trigger)
+print("===================================")
     # --------------------------------------------------------
     # 最終訊號
     # --------------------------------------------------------
