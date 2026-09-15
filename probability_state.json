@@ -1,15 +1,1 @@
-{
-  "pending": [
-    {
-      "time": 1789464741,
-      "price": 77705.0,
-      "key": "BULL|BEAR|FLAT|FLAT"
-    },
-    {
-      "time": 1789465683,
-      "price": 77705.0,
-      "key": "BULL|BEAR|FLAT|FLAT"
-    }
-  ],
-  "stats": {}
-}
+{"states":{},"pending":[],"last_closed_candle":null,"last_signal_key":null,"signal_armed":true}
