@@ -2,368 +2,253 @@ import os
 import json
 import time
 import requests
+import xml.etree.ElementTree as ET
 
-API_BASE = "https://futures.kraken.com/api/charts/v1/spot/PI_XBTUSD"
-DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK")
-STATE_FILE = "signal_state.json"
+# =========================
+# 基本設定
+# =========================
 
-MIN_CANDLES = 80
-LOOKBACK = 8
-SNR_LOOKBACK = 40
-SNR_TOLERANCE = 0.003
+SYMBOL = "PI_XBTUSD"
+BASE = "https://futures.kraken.com/api/charts/v1"
 
+STATE_FILE = "probability_state.json"
+WEBHOOK = os.getenv("DISCORD_WEBHOOK")
+
+CANDLE_COUNT = 120
+
+# 預測未來 1 小時
+LOOKAHEAD_SEC = 3600
+
+# 至少累積 100 個已完成樣本後才顯示正式機率
+MIN_SAMPLES = 100
+
+# 未來 1 小時
+# 上漲 >= 1% = LONG
+# 下跌 >= 1% = SHORT
+# 其餘 = NEUTRAL
+TARGET_MOVE = 0.01
+
+RSS_FEEDS = [
+    "https://www.coindesk.com/arc/outboundfeeds/rss/",
+    "https://cointelegraph.com/rss",
+]
+
+
+# =========================
+# API
+# =========================
+
+def get_json(url, params=None):
+    r = requests.get(url, params=params, timeout=15)
+    r.raise_for_status()
+    return r.json()
+
+
+# =========================
+# K線
+# =========================
 
 def get_candles(resolution):
-    print(f"\n取得 {resolution} K 線...")
+    url = f"{BASE}/trade/{SYMBOL}/{resolution}"
 
-    if resolution == "1h":
-        interval_seconds = 3600
-    elif resolution == "15m":
-        interval_seconds = 900
-    else:
-        raise ValueError(f"不支援的 timeframe：{resolution}")
-
-    now = int(time.time())
-    from_time = now - interval_seconds * MIN_CANDLES * 2
-
-    url = f"{API_BASE}/{resolution}"
-    params = {"from": from_time, "to": now}
-
-    response = requests.get(url, params=params, timeout=20)
-
-    print("API Status:", response.status_code)
-
-    response.raise_for_status()
-
-    data = response.json()
-
-    if isinstance(data, dict):
-        candles = data.get("candles", data.get("data"))
-
-        if candles is None:
-            raise RuntimeError(
-                f"Kraken 回傳格式無法辨識：{list(data.keys())}"
-            )
-
-    elif isinstance(data, list):
-        candles = data
-
-    else:
-        raise RuntimeError(
-            f"未知 API 格式：{type(data).__name__}"
-        )
-
-    normalized = []
-
-    for c in candles:
-
-        try:
-
-            if isinstance(c, dict):
-
-                normalized.append({
-                    "time": float(c["time"]),
-                    "open": float(c["open"]),
-                    "high": float(c["high"]),
-                    "low": float(c["low"]),
-                    "close": float(c["close"]),
-                    "volume": float(c.get("volume", 0)),
-                })
-
-            elif isinstance(c, list) and len(c) >= 5:
-
-                normalized.append({
-                    "time": float(c[0]),
-                    "open": float(c[1]),
-                    "high": float(c[2]),
-                    "low": float(c[3]),
-                    "close": float(c[4]),
-                    "volume": float(c[5]) if len(c) > 5 else 0,
-                })
-
-        except (
-            KeyError,
-            TypeError,
-            ValueError
-        ):
-            continue
-
-    unique = {
-        c["time"]: c
-        for c in normalized
-    }
-
-    candles = sorted(
-        unique.values(),
-        key=lambda x: x["time"]
+    data = get_json(
+        url,
+        {
+            "count": CANDLE_COUNT
+        }
     )
 
-    print(
-        f"{resolution} 有效 K 線："
-        f"{len(candles)} 根"
-    )
+    rows = data.get("candles", [])
 
-    if len(candles) < MIN_CANDLES:
-        raise RuntimeError(
-            f"{resolution} K 線不足："
-            f"{len(candles)} 根"
-        )
+    candles = []
+
+    for x in rows:
+        candles.append({
+            "time": int(x["time"]) / 1000,
+            "open": float(x["open"]),
+            "high": float(x["high"]),
+            "low": float(x["low"]),
+            "close": float(x["close"])
+        })
+
+    candles.sort(key=lambda x: x["time"])
 
     return candles
 
 
-def calculate_ema(candles, period):
+# =========================
+# EMA
+# =========================
 
-    closes = [
-        c["close"]
-        for c in candles
-    ]
+def calculate_ema(values, length):
 
-    multiplier = 2 / (period + 1)
+    k = 2 / (length + 1)
 
-    ema = closes[0]
+    ema = values[0]
 
-    for price in closes[1:]:
-
-        ema = (
-            (price - ema)
-            * multiplier
-            + ema
-        )
+    for value in values[1:]:
+        ema = value * k + ema * (1 - k)
 
     return ema
 
 
-def check_ema_pullback(candles):
+# =========================
+# OI / CVD
+# =========================
 
-    if len(candles) < 10:
-        return False, False
+def get_analytics(kind):
 
-    ema34 = calculate_ema(
-        candles,
-        34
-    )
+    url = f"{BASE}/analytics/{SYMBOL}/{kind}"
 
-    ema50 = calculate_ema(
-        candles,
-        50
-    )
+    now = int(time.time())
 
-    zone_high = max(
-        ema34,
-        ema50
-    )
-
-    zone_low = min(
-        ema34,
-        ema50
-    )
-
-    bullish = False
-    bearish = False
-
-    for candle in candles[-5:]:
-
-        touched = (
-            candle["low"] <= zone_high
-            and
-            candle["high"] >= zone_low
-        )
-
-        if touched:
-
-            if candle["close"] > zone_high:
-                bullish = True
-
-            if candle["close"] < zone_low:
-                bearish = True
-
-    return bullish, bearish
-
-
-def check_breakout(candles):
-
-    if len(candles) < LOOKBACK + 2:
-        return False, False
-
-    previous = candles[
-        -(LOOKBACK + 1):-1
-    ]
-
-    current = candles[-1]
-
-    previous_high = max(
-        c["high"]
-        for c in previous
-    )
-
-    previous_low = min(
-        c["low"]
-        for c in previous
-    )
-
-    bullish = (
-        current["close"]
-        > previous_high
-    )
-
-    bearish = (
-        current["close"]
-        < previous_low
-    )
-
-    return bullish, bearish
-
-
-def check_structure(candles):
-
-    if len(candles) < 5:
-        return False, False
-
-    c1, c2, c3, c4 = candles[-4:]
-
-    bullish = (
-        c2["low"] > c1["low"]
-        and
-        c4["high"] > c3["high"]
-    )
-
-    bearish = (
-        c2["high"] < c1["high"]
-        and
-        c4["low"] < c3["low"]
-    )
-
-    return bullish, bearish
-
-
-def calculate_snr(candles):
-
-    if len(candles) < SNR_LOOKBACK + 2:
-
-        return {
-            "support": 0,
-            "resistance": 0,
-            "near_support": False,
-            "near_resistance": False,
-            "breakout_up": False,
-            "breakout_down": False,
+    data = get_json(
+        url,
+        {
+            "since": now - 7200,
+            "to": now,
+            "interval": 900
         }
+    )
 
-    history = candles[
-        -(SNR_LOOKBACK + 1):-1
+    result = data.get("result", data)
+
+    timestamps = result.get("timestamp", [])
+    values = result.get("data", {})
+
+    if kind == "open-interest":
+        values = values.get("openInterest", [])
+
+    elif kind == "cvd":
+        values = values.get("cvd", [])
+
+    result_list = []
+
+    for timestamp, value in zip(timestamps, values):
+
+        try:
+            result_list.append(
+                (
+                    int(timestamp),
+                    float(value)
+                )
+            )
+
+        except:
+            pass
+
+    return result_list
+
+
+def get_direction(kind):
+
+    data = get_analytics(kind)
+
+    if len(data) < 2:
+        return "FLAT"
+
+    previous = data[-2][1]
+    current = data[-1][1]
+
+    if current > previous:
+        return "UP"
+
+    if current < previous:
+        return "DOWN"
+
+    return "FLAT"
+
+
+# =========================
+# 市場狀態
+# =========================
+
+def get_market_state():
+
+    candles_1h = get_candles("1h")
+    candles_15m = get_candles("15m")
+
+    if len(candles_1h) < 60:
+        raise RuntimeError("1H K線不足")
+
+    if len(candles_15m) < 60:
+        raise RuntimeError("15M K線不足")
+
+    # 不使用尚未收完的 K
+    close_1h = [
+        x["close"]
+        for x in candles_1h[:-1]
     ]
 
-    current_price = candles[-1]["close"]
+    close_15m = [
+        x["close"]
+        for x in candles_15m[:-1]
+    ]
 
-    support = min(
-        c["low"]
-        for c in history
+    ema34_1h = calculate_ema(close_1h, 34)
+    ema50_1h = calculate_ema(close_1h, 50)
+
+    ema34_15m = calculate_ema(close_15m, 34)
+    ema50_15m = calculate_ema(close_15m, 50)
+
+    ema_1h = (
+        "BULL"
+        if ema34_1h > ema50_1h
+        else "BEAR"
     )
 
-    resistance = max(
-        c["high"]
-        for c in history
+    ema_15m = (
+        "BULL"
+        if ema34_15m > ema50_15m
+        else "BEAR"
     )
 
-    support_distance = (
-        abs(current_price - support)
-        / current_price
-    )
+    oi = get_direction("open-interest")
+    cvd = get_direction("cvd")
 
-    resistance_distance = (
-        abs(current_price - resistance)
-        / current_price
-    )
+    price = candles_15m[-1]["close"]
+
+    # 市場狀態組合
+    key = "|".join([
+        ema_1h,
+        ema_15m,
+        oi,
+        cvd
+    ])
 
     return {
-        "support": support,
-        "resistance": resistance,
-
-        "near_support":
-            support_distance <= SNR_TOLERANCE,
-
-        "near_resistance":
-            resistance_distance <= SNR_TOLERANCE,
-
-        "breakout_up":
-            current_price > resistance,
-
-        "breakout_down":
-            current_price < support,
+        "price": price,
+        "ema1h": ema_1h,
+        "ema15": ema_15m,
+        "oi": oi,
+        "cvd": cvd,
+        "key": key
     }
 
 
-def send_discord(message):
-
-    if not DISCORD_WEBHOOK:
-
-        print(
-            "找不到 DISCORD_WEBHOOK"
-        )
-
-        return False
-
-    response = requests.post(
-        DISCORD_WEBHOOK,
-        json={
-            "content": message
-        },
-        timeout=20
-    )
-
-    print(
-        "Discord Status:",
-        response.status_code
-    )
-
-    if response.status_code in (
-        200,
-        204
-    ):
-
-        print(
-            "Discord 發送成功"
-        )
-
-        return True
-
-    print(
-        "Discord 發送失敗：",
-        response.text
-    )
-
-    return False
-
+# =========================
+# 狀態保存
+# =========================
 
 def load_state():
 
-    if not os.path.exists(
-        STATE_FILE
-    ):
+    if not os.path.exists(STATE_FILE):
 
         return {
-            "last_signal": "NONE"
+            "pending": [],
+            "stats": {}
         }
 
-    try:
+    with open(
+        STATE_FILE,
+        "r",
+        encoding="utf-8"
+    ) as f:
 
-        with open(
-            STATE_FILE,
-            "r",
-            encoding="utf-8"
-        ) as f:
-
-            return json.load(f)
-
-    except Exception:
-
-        return {
-            "last_signal": "NONE"
-        }
+        return json.load(f)
 
 
-def save_state(signal):
+def save_state(state):
 
     with open(
         STATE_FILE,
@@ -372,646 +257,347 @@ def save_state(signal):
     ) as f:
 
         json.dump(
-            {
-                "last_signal": signal
-            },
+            state,
             f,
             ensure_ascii=False,
             indent=2
         )
 
 
-def main():
+# =========================
+# 結算過去樣本
+# =========================
 
-    print(
-        "========================================"
-    )
+def resolve_pending(
+    state,
+    current_price,
+    now
+):
 
-    print(
-        "       CRYPTO MARKET RADAR"
-    )
+    changed = False
 
-    print(
-        "========================================"
-    )
+    remaining = []
 
-    candles_1h = get_candles(
-        "1h"
-    )
+    for sample in state["pending"]:
 
-    candles_15m = get_candles(
-        "15m"
-    )
+        age = now - sample["time"]
 
-    current_price = (
-        candles_15m[-1]["close"]
-    )
+        # 還沒滿 1 小時
+        if age < LOOKAHEAD_SEC:
 
-    # 1H EMA
+            remaining.append(sample)
 
-    ema34_1h = calculate_ema(
-        candles_1h,
-        34
-    )
+            continue
 
-    ema50_1h = calculate_ema(
-        candles_1h,
-        50
-    )
+        move = (
+            current_price / sample["price"]
+        ) - 1
 
-    h1_bull = (
-        ema34_1h > ema50_1h
-    )
+        if move >= TARGET_MOVE:
 
-    h1_bear = (
-        ema34_1h < ema50_1h
-    )
+            result = "LONG"
 
-    # 15M EMA
+        elif move <= -TARGET_MOVE:
 
-    ema34_15m = calculate_ema(
-        candles_15m,
-        34
-    )
-
-    ema50_15m = calculate_ema(
-        candles_15m,
-        50
-    )
-
-    # 技術條件
-
-    bullish_pullback, bearish_pullback = (
-        check_ema_pullback(
-            candles_15m
-        )
-    )
-
-    bullish_breakout, bearish_breakout = (
-        check_breakout(
-            candles_15m
-        )
-    )
-
-    bullish_structure, bearish_structure = (
-        check_structure(
-            candles_15m
-        )
-    )
-
-    # SNR
-
-    snr = calculate_snr(
-        candles_15m
-    )
-
-    # ========================================================
-    # SCORE
-    # ========================================================
-
-    long_score = 0
-    short_score = 0
-
-    if h1_bull:
-        long_score += 2
-
-    if h1_bear:
-        short_score += 2
-
-    if bullish_pullback:
-        long_score += 1
-
-    if bearish_pullback:
-        short_score += 1
-
-    if bullish_breakout:
-        long_score += 2
-
-    if bearish_breakout:
-        short_score += 2
-
-    if bullish_structure:
-        long_score += 1
-
-    if bearish_structure:
-        short_score += 1
-
-    # SNR 加分
-
-    if snr["near_support"]:
-        long_score += 1
-
-    if snr["near_resistance"]:
-        short_score += 1
-
-    if snr["breakout_up"]:
-        long_score += 2
-
-    if snr["breakout_down"]:
-        short_score += 2
-
-    # ========================================================
-    # TRIGGER
-    # ========================================================
-
-    long_trigger = (
-        bullish_pullback
-        or
-        bullish_breakout
-        or
-        bullish_structure
-        or
-        snr["near_support"]
-        or
-        snr["breakout_up"]
-    )
-
-    short_trigger = (
-        bearish_pullback
-        or
-        bearish_breakout
-        or
-        bearish_structure
-        or
-        snr["near_resistance"]
-        or
-        snr["breakout_down"]
-    )
-
-    # ========================================================
-    # 最終訊號
-    # ========================================================
-
-    current_signal = "NONE"
-
-    if (
-        h1_bull
-        and
-        long_trigger
-        and
-        long_score >= 3
-    ):
-
-        current_signal = "LONG"
-
-    elif (
-        h1_bear
-        and
-        short_trigger
-        and
-        short_score >= 3
-    ):
-
-        current_signal = "SHORT"
-
-    # ========================================================
-    # DEBUG
-    # ========================================================
-
-    print(
-        "\n========== MARKET DATA =========="
-    )
-
-    print(
-        f"Price     : {current_price:.2f}"
-    )
-
-print(
-
-        f"1H EMA34  : {ema34_1h:.2f}"
-
-    )
-
-    print(
-
-        f"1H EMA50  : {ema50_1h:.2f}"
-
-    )
-
-    print(
-
-        f"15M EMA34 : {ema34_15m:.2f}"
-
-    )
-
-    print(
-
-        f"15M EMA50 : {ema50_15m:.2f}"
-
-    )
-
-    print(
-
-        "================================="
-
-    )
-
-    print(
-
-        "\n========== TRIGGER DEBUG =========="
-
-    )
-
-    print(
-
-        "Bullish Pullback :",
-
-        bullish_pullback
-
-    )
-
-    print(
-
-        "Bearish Pullback :",
-
-        bearish_pullback
-
-    )
-
-    print(
-
-        "Bullish Breakout :",
-
-        bullish_breakout
-
-    )
-
-    print(
-
-        "Bearish Breakout :",
-
-        bearish_breakout
-
-    )
-
-    print(
-
-        "Bullish Structure:",
-
-        bullish_structure
-
-    )
-
-    print(
-
-        "Bearish Structure:",
-
-        bearish_structure
-
-    )
-
-    print(
-
-        "Long Trigger     :",
-
-        long_trigger
-
-    )
-
-    print(
-
-        "Short Trigger    :",
-
-        short_trigger
-
-    )
-
-    print(
-
-        "==================================="
-
-    )
-
-    # ========================================================
-
-    # SNR DEBUG
-
-    # ========================================================
-
-    print(
-
-        "\n========== SNR =========="
-
-    )
-
-    print(
-
-        f"Support    : "
-
-        f"{snr['support']:.2f}"
-
-    )
-
-    print(
-
-        f"Resistance : "
-
-        f"{snr['resistance']:.2f}"
-
-    )
-
-    print(
-
-        "Near Support    :",
-
-        snr["near_support"]
-
-    )
-
-    print(
-
-        "Near Resistance :",
-
-        snr["near_resistance"]
-
-    )
-
-    print(
-
-        "Breakout Up     :",
-
-        snr["breakout_up"]
-
-    )
-
-    print(
-
-        "Breakout Down   :",
-
-        snr["breakout_down"]
-
-    )
-
-    print(
-
-        "=========================="
-
-    )
-
-    # ========================================================
-
-    # SCORE DEBUG
-
-    # ========================================================
-
-    print(
-
-        "\n========== SCORE =========="
-
-    )
-
-    if h1_bull:
-
-        trend = "BULL"
-
-    elif h1_bear:
-
-        trend = "BEAR"
-
-    else:
-
-        trend = "NEUTRAL"
-
-    print(
-
-        "1H Trend  :",
-
-        trend
-
-    )
-
-    print(
-
-        "LONG Score :",
-
-        long_score
-
-    )
-
-    print(
-
-        "SHORT Score:",
-
-        short_score
-
-    )
-
-    print(
-
-        "Signal     :",
-
-        current_signal
-
-    )
-
-    print(
-
-        "==========================="
-
-    )
-
-    # ========================================================
-
-    # Discord 狀態
-
-    # ========================================================
-
-    state = load_state()
-
-    last_signal = state.get(
-
-        "last_signal",
-
-        "NONE"
-
-    )
-
-    print(
-
-        "\n上一個訊號：",
-
-        last_signal
-
-    )
-
-    print(
-
-        "目前訊號：",
-
-        current_signal
-
-    )
-
-    # ========================================================
-
-    # 新訊號
-
-    # ========================================================
-
-    if (
-
-        current_signal != "NONE"
-
-        and
-
-        current_signal != last_signal
-
-    ):
-
-        if current_signal == "LONG":
-
-            direction = "🟢 LONG"
-
-            pullback_ok = (
-
-                bullish_pullback
-
-            )
-
-            breakout_ok = (
-
-                bullish_breakout
-
-            )
-
-            structure_ok = (
-
-                bullish_structure
-
-            )
+            result = "SHORT"
 
         else:
 
-            direction = "🔴 SHORT"
+            result = "NEUTRAL"
 
-            pullback_ok = (
+        key = sample["key"]
 
-                bearish_pullback
+        if key not in state["stats"]:
 
-            )
+            state["stats"][key] = {
+                "LONG": 0,
+                "SHORT": 0,
+                "NEUTRAL": 0
+            }
 
-            breakout_ok = (
+        state["stats"][key][result] += 1
 
-                bearish_breakout
+        changed = True
 
-            )
+    state["pending"] = remaining
 
-            structure_ok = (
+    return changed
 
-                bearish_structure
 
-            )
+# =========================
+# 計算機率
+# =========================
 
-        message = (
+def calculate_probability(
+    state,
+    key
+):
 
-            "🚨 **CRYPTO MARKET RADAR**\n\n"
+    stats = state["stats"].get(
+        key,
+        {
+            "LONG": 0,
+            "SHORT": 0,
+            "NEUTRAL": 0
+        }
+    )
 
-            f"方向：{direction}\n"
+    total = sum(stats.values())
 
-            f"價格：{current_price:.2f}\n"
+    if total == 0:
 
-            f"1H 趨勢：{trend}\n\n"
-
-            f"LONG Score：{long_score}\n"
-
-            f"SHORT Score：{short_score}\n\n"
-
-            "【15M】\n"
-
-            f"EMA Pullback："
-
-            f"{'✅' if pullback_ok else '❌'}\n"
-
-            f"Breakout："
-
-            f"{'✅' if breakout_ok else '❌'}\n"
-
-            f"Structure："
-
-            f"{'✅' if structure_ok else '❌'}\n\n"
-
-            "【SNR】\n"
-
-            f"Support："
-
-            f"{snr['support']:.2f}\n"
-
-            f"Resistance："
-
-            f"{snr['resistance']:.2f}\n"
-
-            f"Near Support："
-
-            f"{'✅' if snr['near_support'] else '❌'}\n"
-
-            f"Near Resistance："
-
-            f"{'✅' if snr['near_resistance'] else '❌'}"
-
+        return (
+            stats,
+            0,
+            {
+                "LONG": 0,
+                "SHORT": 0,
+                "NEUTRAL": 0
+            }
         )
 
-        success = send_discord(
+    probability = {
+        "LONG": round(
+            stats["LONG"] / total * 100,
+            1
+        ),
 
-            message
+        "SHORT": round(
+            stats["SHORT"] / total * 100,
+            1
+        ),
 
+        "NEUTRAL": round(
+            stats["NEUTRAL"] / total * 100,
+            1
         )
+    }
 
-        if success:
+    return stats, total, probability
 
-            save_state(
 
-                current_signal
+# =========================
+# 消息面
+# =========================
 
+def get_news():
+
+    high_keywords = [
+        "hack",
+        "exploit",
+        "sec",
+        "lawsuit",
+        "war",
+        "tariff",
+        "emergency",
+        "etf"
+    ]
+
+    medium_keywords = [
+        "fed",
+        "fomc",
+        "cpi",
+        "rate",
+        "inflation",
+        "regulation",
+        "liquidation"
+    ]
+
+    titles = []
+
+    for feed in RSS_FEEDS:
+
+        try:
+
+            r = requests.get(
+                feed,
+                timeout=10
             )
 
-    elif current_signal == "NONE":
+            r.raise_for_status()
 
-        if last_signal != "NONE":
+            root = ET.fromstring(r.text)
 
-            save_state(
+            for item in root.findall(".//item")[:10]:
 
-                "NONE"
+                title = item.findtext("title")
 
-            )
+                if title:
 
-        print(
+                    titles.append(
+                        title.strip()
+                    )
 
-            "沒有新訊號"
+        except:
 
+            continue
+
+    high = [
+        title
+        for title in titles
+        if any(
+            word in title.lower()
+            for word in high_keywords
         )
+    ]
+
+    medium = [
+        title
+        for title in titles
+        if any(
+            word in title.lower()
+            for word in medium_keywords
+        )
+    ]
+
+    if high:
+
+        return (
+            "🔴 高影響消息",
+            high[0]
+        )
+
+    if medium:
+
+        return (
+            "🟡 重要消息",
+            medium[0]
+        )
+
+    return (
+        "⚪ 無重大消息",
+        ""
+    )
+
+
+# =========================
+# Discord
+# =========================
+
+def send_discord(message):
+
+    if not WEBHOOK:
+
+        print(message)
+
+        return
+
+    requests.post(
+        WEBHOOK,
+        json={
+            "content": message
+        },
+        timeout=15
+    )
+
+
+# =========================
+# 主程式
+# =========================
+
+def main():
+
+    now = int(time.time())
+
+    state = load_state()
+
+    market = get_market_state()
+
+    # 結算一小時前的樣本
+    changed = resolve_pending(
+        state,
+        market["price"],
+        now
+    )
+
+    # 建立新的預測樣本
+    state["pending"].append({
+
+        "time": now,
+
+        "price": market["price"],
+
+        "key": market["key"]
+    })
+
+    stats, total, probability = (
+        calculate_probability(
+            state,
+            market["key"]
+        )
+    )
+
+    news, headline = get_news()
+
+    # =========================
+    # 顯示結果
+    # =========================
+
+    if total >= MIN_SAMPLES:
+
+        if (
+            probability["LONG"]
+            >= probability["SHORT"]
+            and probability["LONG"]
+            >= probability["NEUTRAL"]
+        ):
+
+            bias = "🟢 LONG"
+
+        elif (
+            probability["SHORT"]
+            >= probability["LONG"]
+            and probability["SHORT"]
+            >= probability["NEUTRAL"]
+        ):
+
+            bias = "🔴 SHORT"
+
+        else:
+
+            bias = "⚪ NEUTRAL"
 
     else:
 
-        print(
-
-            "沒有新訊號"
-
+        bias = (
+            f"⏳ 資料累積中 "
+            f"({total}/{MIN_SAMPLES})"
         )
 
-    print(
+    message = f"""
+**BTC MARKET RADAR**
 
-        "\nMarket Radar 執行完成"
+**{bias}**
 
-    )
+🟢 LONG：{probability["LONG"]}%
+🔴 SHORT：{probability["SHORT"]}%
+⚪ NEUTRAL：{probability["NEUTRAL"]}%
+
+1H EMA：{market["ema1h"]}
+15M EMA：{market["ema15"]}
+
+OI：{market["oi"]}
+CVD：{market["cvd"]}
+
+消息面：{news}
+{headline}
+
+━━━━━━━━━━━━
+統計樣本：{total}
+"""
+
+    # 不要每5分鐘瘋狂洗 Discord
+    # 只有完成新樣本時才通知
+    if changed:
+
+        send_discord(message)
+
+    else:
+
+        print(message)
+
+    save_state(state)
+
 
 if __name__ == "__main__":
-
-    try:
-
-        main()
-
-    except Exception as e:
-
-        print(
-
-            "\n❌ 程式發生錯誤："
-
-        )
-
-        print(
-
-            str(e)
-
-        )
-
-        raise
+    main()
