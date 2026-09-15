@@ -196,18 +196,18 @@ def news_status():
     return "🟡 有新消息"
 
 
-def send(msg):
+def send_discord(message):
     if not WEBHOOK:
-        print('缺少 DISCORD_WEBHOOK')
+        print("缺少 DISCORD_WEBHOOK")
         return
 
     r = requests.post(
         WEBHOOK,
-        json={'content': msg},
+        json={"content": message},
         timeout=20
     )
 
-    print('Discord HTTP:', r.status_code)
+    print("Discord HTTP:", r.status_code)
     r.raise_for_status()
 
 
@@ -224,10 +224,11 @@ def emoji_direction(value):
 
 
 def main():
-        send('🤖 Crypto Market Radar 測試成功！')
+    # Discord 測試
+    send_discord("🤖 Crypto Market Radar 測試成功！")
+
     state = load_state()
 
-    # 所有統計都以「已收盤的15M K線」為基準，避免未收盤價格造成樣本污染。
     closed = closed_15m_candle()
     closed_time = int(closed["time"])
     closed_price = float(closed["close"])
@@ -238,10 +239,8 @@ def main():
     cvd = direction("cvd")
     market_state = f"{ema_1h}|{ema_15m}|{oi}|{cvd}"
 
-    # 先完成已經走完1小時的舊樣本。
     finish_pending(state, closed_time, closed_price)
 
-    # 每一根15M已收盤K線只建立一次新樣本。
     if state["last_closed_candle"] != closed_time:
         state["pending"].append(
             {
@@ -261,17 +260,27 @@ def main():
             name: current_stats[name] / total
             for name in ("LONG", "SHORT", "NEUTRAL")
         }
+
         best = max(probabilities, key=probabilities.get)
         probability = probabilities[best]
 
-        # NEUTRAL 或低於65%時重新上膛；下一次重新突破門檻才通知。
         if best == "NEUTRAL" or probability < THRESHOLD:
             state["signal_armed"] = True
+
         elif state["signal_armed"]:
             signal_key = f"{market_state}|{best}"
+
             if signal_key != state["last_signal_key"]:
-                icon = "🚨" if probability >= STRONG else "🔥" if probability >= HIGH else "🟢"
+                icon = (
+                    "🚨"
+                    if probability >= STRONG
+                    else "🔥"
+                    if probability >= HIGH
+                    else "🟢"
+                )
+
                 action = "做多" if best == "LONG" else "做空"
+
                 message = (
                     "🚨 BTC 訊號\n\n"
                     f"{icon} {action}：{probability:.1%}\n\n"
@@ -282,11 +291,14 @@ def main():
                     f"📊 歷史樣本：{total}\n"
                     f"📰 消息：{news_status()}"
                 )
+
                 send_discord(message)
+
                 state["last_signal_key"] = signal_key
                 state["signal_armed"] = False
 
     save_state(state)
+
     print(
         "Radar OK:",
         market_state,
@@ -295,7 +307,6 @@ def main():
         "Pending:",
         len(state["pending"]),
     )
-
 
 if __name__ == "__main__":
     main()
