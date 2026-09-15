@@ -113,31 +113,89 @@ def get_analytics(kind):
 
     result = data.get("result", data)
 
-    timestamps = result.get("timestamp", [])
-    values = result.get("data", {})
+    # Kraken 可能直接回傳 list
+    if isinstance(result, list):
 
-    if kind == "open-interest":
-        values = values.get("openInterest", [])
+        values = result
 
-    elif kind == "cvd":
-        values = values.get("cvd", [])
+    # 或回傳 dict
+    elif isinstance(result, dict):
 
-    result_list = []
+        values = (
+            result.get("data")
+            or result.get("values")
+            or result.get(kind)
+            or []
+        )
 
-    for timestamp, value in zip(timestamps, values):
+        # data 本身可能又是 dict
+        if isinstance(values, dict):
+
+            if kind == "open-interest":
+                values = values.get(
+                    "openInterest",
+                    []
+                )
+
+            elif kind == "cvd":
+                values = values.get(
+                    "cvd",
+                    []
+                )
+
+    else:
+
+        values = []
+
+    output = []
+
+    for item in values:
 
         try:
-            result_list.append(
-                (
-                    int(timestamp),
-                    float(value)
+
+            # 例如：
+            # [timestamp, value]
+            if isinstance(item, list):
+
+                timestamp = int(item[0])
+                value = float(item[-1])
+
+            # 例如：
+            # {"timestamp": ..., "value": ...}
+            elif isinstance(item, dict):
+
+                timestamp = int(
+                    item.get(
+                        "timestamp",
+                        item.get("time")
+                    )
                 )
+
+                value = float(
+                    item.get(
+                        "value",
+                        item.get("openInterest",
+                            item.get("cvd"))
+                    )
+                )
+
+            else:
+
+                continue
+
+            output.append(
+                (timestamp, value)
             )
 
         except:
-            pass
 
-    return result_list
+            continue
+
+    output.sort(
+        key=lambda x: x[0]
+    )
+
+    return output
 
 
 def get_direction(kind):
@@ -145,15 +203,18 @@ def get_direction(kind):
     data = get_analytics(kind)
 
     if len(data) < 2:
+
         return "FLAT"
 
     previous = data[-2][1]
     current = data[-1][1]
 
     if current > previous:
+
         return "UP"
 
     if current < previous:
+
         return "DOWN"
 
     return "FLAT"
