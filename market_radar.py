@@ -196,11 +196,18 @@ def news_status():
     return "🟡 有新消息"
 
 
-def send_discord(message):
+def send(msg):
     if not WEBHOOK:
-        print("缺少 DISCORD_WEBHOOK")
+        print('缺少 DISCORD_WEBHOOK')
         return
-    r = requests.post(WEBHOOK, json={"content": message}, timeout=20)
+
+    r = requests.post(
+        WEBHOOK,
+        json={'content': msg},
+        timeout=20
+    )
+
+    print('Discord HTTP:', r.status_code)
     r.raise_for_status()
 
 
@@ -217,6 +224,7 @@ def emoji_direction(value):
 
 
 def main():
+        send('🤖 Crypto Market Radar 測試成功！')
     state = load_state()
 
     # 所有統計都以「已收盤的15M K線」為基準，避免未收盤價格造成樣本污染。
