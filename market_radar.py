@@ -224,9 +224,6 @@ def emoji_direction(value):
 
 
 def main():
-    # Discord 測試
-    send_discord("🤖 Crypto Market Radar 測試成功！")
-
     state = load_state()
 
     closed = closed_15m_candle()
