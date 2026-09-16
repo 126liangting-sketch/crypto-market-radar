@@ -33,18 +33,18 @@
     "BEAR|BEAR|FLAT|UP": {
       "LONG": 0,
       "SHORT": 0,
-      "NEUTRAL": 0
+      "NEUTRAL": 1
     }
   },
   "pending": [
     {
-      "candle_time": 1789520400000,
-      "target_time": 1789520403600,
-      "price": 75730.15,
-      "state": "BEAR|BEAR|FLAT|UP"
+      "candle_time": 1789521300000,
+      "target_time": 1789521303600,
+      "price": 75813.43,
+      "state": "BEAR|BEAR|FLAT|FLAT"
     }
   ],
-  "last_closed_candle": 1789520400000,
+  "last_closed_candle": 1789521300000,
   "last_signal_key": null,
   "signal_armed": true
 }
