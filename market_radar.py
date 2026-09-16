@@ -22,10 +22,29 @@ FEEDS = [
 ]
 
 
-def get(url, params=None):
-    r = requests.get(url, params=params, timeout=20)
-    r.raise_for_status()
-    return r.json()
+def get(url, params=None, retries=3):
+    """GET with retry/backoff for temporary network/API failures."""
+    last_error = None
+
+    for attempt in range(1, retries + 1):
+        try:
+            r = requests.get(
+                url,
+                params=params,
+                timeout=20,
+                headers={"User-Agent": "Crypto-Market-Radar/3.0"},
+            )
+            r.raise_for_status()
+            return r.json()
+        except (requests.exceptions.RequestException, ValueError) as e:
+            last_error = e
+            print(f"API 請求失敗 ({attempt}/{retries}): {type(e).__name__}: {e}")
+            if attempt < retries:
+                wait = 2 ** (attempt - 1)
+                print(f"{wait} 秒後重試...")
+                time.sleep(wait)
+
+    raise last_error
 
 
 def candles(resolution, count=200):
@@ -116,9 +135,17 @@ def analytics(kind):
 
 
 def direction(kind):
-    rows = analytics(kind)
+    """Return UP/DOWN/FLAT, or UNAVAILABLE if this analytics feed is temporarily down."""
+    try:
+        rows = analytics(kind)
+    except (requests.exceptions.RequestException, ValueError, RuntimeError) as e:
+        print(f"{kind} 暫時無法取得，本期不使用此欄位: {type(e).__name__}: {e}")
+        return "UNAVAILABLE"
+
     if len(rows) < 2:
-        return "FLAT"
+        print(f"{kind} 資料不足，本期標記為 UNAVAILABLE")
+        return "UNAVAILABLE"
+
     previous = rows[-2][1]
     current = rows[-1][1]
     if current > previous:
@@ -218,9 +245,12 @@ def emoji_ema(value):
 
 
 def emoji_direction(value):
-    return {"UP": "🔺 上升", "DOWN": "🔻 下降", "FLAT": "⚪ 持平"}.get(
-        value, "⚪ 持平"
-    )
+    return {
+        "UP": "🔺 上升",
+        "DOWN": "🔻 下降",
+        "FLAT": "⚪ 持平",
+        "UNAVAILABLE": "⚪ 暫時無資料",
+    }.get(value, "⚪ 暫時無資料")
 
 
 def main():
@@ -234,76 +264,95 @@ def main():
     ema_15m = ema_state("15m")
     oi = direction("open-interest")
     cvd = direction("cvd")
-    market_state = f"{ema_1h}|{ema_15m}|{oi}|{cvd}"
 
+    # 已經建立的 pending 樣本仍可正常完成，不受本期 OI/CVD 斷線影響。
     finish_pending(state, closed_time, closed_price)
 
-    if state["last_closed_candle"] != closed_time:
-        state["pending"].append(
-            {
-                "candle_time": closed_time,
-                "target_time": closed_time + PREDICT_SECONDS,
-                "price": closed_price,
-                "state": market_state,
+    analytics_ok = oi != "UNAVAILABLE" and cvd != "UNAVAILABLE"
+    total = 0
+    market_state = None
+
+    if analytics_ok:
+        market_state = f"{ema_1h}|{ema_15m}|{oi}|{cvd}"
+
+        # 只有資料完整時才建立新樣本，避免把 API 故障寫進統計。
+        if state["last_closed_candle"] != closed_time:
+            state["pending"].append(
+                {
+                    "candle_time": closed_time,
+                    "target_time": closed_time + PREDICT_SECONDS,
+                    "price": closed_price,
+                    "state": market_state,
+                }
+            )
+            state["last_closed_candle"] = closed_time
+
+        current_stats = stats_for(state, market_state)
+        total = sum(current_stats.values())
+
+        if total >= MIN_SAMPLES:
+            probabilities = {
+                name: current_stats[name] / total
+                for name in ("LONG", "SHORT", "NEUTRAL")
             }
+
+            best = max(probabilities, key=probabilities.get)
+            probability = probabilities[best]
+
+            if best == "NEUTRAL" or probability < THRESHOLD:
+                state["signal_armed"] = True
+
+            elif state["signal_armed"]:
+                signal_key = f"{market_state}|{best}"
+
+                if signal_key != state["last_signal_key"]:
+                    icon = (
+                        "🚨"
+                        if probability >= STRONG
+                        else "🔥"
+                        if probability >= HIGH
+                        else "🟢"
+                    )
+
+                    action = "做多" if best == "LONG" else "做空"
+
+                    message = (
+                        "🚨 BTC 訊號\n\n"
+                        f"{icon} {action}：{probability:.1%}\n\n"
+                        f"1H：{emoji_ema(ema_1h)}\n"
+                        f"15M：{emoji_ema(ema_15m)}\n"
+                        f"OI：{emoji_direction(oi)}\n"
+                        f"CVD：{emoji_direction(cvd)}\n\n"
+                        f"📊 歷史樣本：{total}\n"
+                        f"📰 消息：{news_status()}"
+                    )
+
+                    send_discord(message)
+                    state["last_signal_key"] = signal_key
+                    state["signal_armed"] = False
+    else:
+        print(
+            "本期 OI/CVD 資料不完整，不建立新統計樣本；"
+            f"OI={emoji_direction(oi)}, CVD={emoji_direction(cvd)}"
         )
-        state["last_closed_candle"] = closed_time
-
-    current_stats = stats_for(state, market_state)
-    total = sum(current_stats.values())
-
-    if total >= MIN_SAMPLES:
-        probabilities = {
-            name: current_stats[name] / total
-            for name in ("LONG", "SHORT", "NEUTRAL")
-        }
-
-        best = max(probabilities, key=probabilities.get)
-        probability = probabilities[best]
-
-        if best == "NEUTRAL" or probability < THRESHOLD:
-            state["signal_armed"] = True
-
-        elif state["signal_armed"]:
-            signal_key = f"{market_state}|{best}"
-
-            if signal_key != state["last_signal_key"]:
-                icon = (
-                    "🚨"
-                    if probability >= STRONG
-                    else "🔥"
-                    if probability >= HIGH
-                    else "🟢"
-                )
-
-                action = "做多" if best == "LONG" else "做空"
-
-                message = (
-                    "🚨 BTC 訊號\n\n"
-                    f"{icon} {action}：{probability:.1%}\n\n"
-                    f"1H：{emoji_ema(ema_1h)}\n"
-                    f"15M：{emoji_ema(ema_15m)}\n"
-                    f"OI：{emoji_direction(oi)}\n"
-                    f"CVD：{emoji_direction(cvd)}\n\n"
-                    f"📊 歷史樣本：{total}\n"
-                    f"📰 消息：{news_status()}"
-                )
-
-                send_discord(message)
-
-                state["last_signal_key"] = signal_key
-                state["signal_armed"] = False
 
     save_state(state)
 
-    print(
-        "Radar OK:",
-        market_state,
-        "Samples:",
-        total,
-        "Pending:",
-        len(state["pending"]),
-    )
+    if analytics_ok:
+        print(
+            "Radar OK:",
+            market_state,
+            "Samples:",
+            total,
+            "Pending:",
+            len(state["pending"]),
+        )
+    else:
+        print(
+            "Radar PARTIAL: OI/CVD 暫時無資料，本期已安全跳過新樣本。",
+            "Pending:",
+            len(state["pending"]),
+        )
 
 if __name__ == "__main__":
     main()
