@@ -64,6 +64,11 @@
       "LONG": 0,
       "SHORT": 0,
       "NEUTRAL": 1
+    },
+    "BEAR|BULL|FLAT|DOWN": {
+      "LONG": 0,
+      "SHORT": 0,
+      "NEUTRAL": 0
     }
   },
   "pending": [
