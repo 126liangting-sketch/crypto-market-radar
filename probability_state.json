@@ -1,0 +1,41 @@
+{
+  "states": {},
+  "pending": [],
+  "last_closed_candle": null,
+  "last_signal_key": null,
+  "signal_armed": true,
+  "forward_tests": [],
+  "forward_stats": {
+    "LONG|4": {
+      "15m": {
+        "total": 0,
+        "correct": 0,
+        "sum_return": 0.0
+      },
+      "30m": {
+        "total": 0,
+        "correct": 0,
+        "sum_return": 0.0
+      },
+      "1h": {
+        "total": 0,
+        "correct": 0,
+        "sum_return": 0.0
+      },
+      "2h": {
+        "total": 0,
+        "correct": 0,
+        "sum_return": 0.0
+      },
+      "completed_tests": 0,
+      "sum_mfe": 0.0,
+      "sum_mae": 0.0,
+      "target_0_5": 0,
+      "target_1_0": 0
+    }
+  },
+  "last_forward_candle": null,
+  "last_notification": {},
+  "next_test_id": 1,
+  "forward_history_v5": []
+}
