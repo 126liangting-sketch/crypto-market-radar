@@ -8,18 +8,18 @@
     "BULL|BULL|DOWN|DOWN": {
       "LONG": 0,
       "SHORT": 0,
-      "NEUTRAL": 3
+      "NEUTRAL": 4
     }
   },
   "pending": [
     {
-      "candle_time": 1789765200000,
-      "target_time": 1789765203600,
-      "price": 81262.76,
+      "candle_time": 1789766100000,
+      "target_time": 1789766103600,
+      "price": 81176.46,
       "state": "BULL|BULL|DOWN|DOWN"
     }
   ],
-  "last_closed_candle": 1789765200000,
+  "last_closed_candle": 1789766100000,
   "last_signal_key": null,
   "signal_armed": true,
   "forward_tests": [],
@@ -52,7 +52,7 @@
       "target_1_0": 0
     }
   },
-  "last_forward_candle": 1789765200000,
+  "last_forward_candle": 1789766100000,
   "last_notification": {},
   "next_test_id": 1,
   "forward_history_v5": []
