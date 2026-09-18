@@ -78,18 +78,18 @@
     "BULL|BULL|FLAT|FLAT": {
       "LONG": 0,
       "SHORT": 0,
-      "NEUTRAL": 7
+      "NEUTRAL": 8
     }
   },
   "pending": [
     {
-      "candle_time": 1789720200000,
-      "target_time": 1789720203600,
-      "price": 77899.84,
-      "state": "BULL|BULL|FLAT|FLAT"
+      "candle_time": 1789721100000,
+      "target_time": 1789721103600,
+      "price": 78209.99,
+      "state": "BULL|BULL|FLAT|DOWN"
     }
   ],
-  "last_closed_candle": 1789720200000,
+  "last_closed_candle": 1789721100000,
   "last_signal_key": null,
   "signal_armed": true
 }
