@@ -3,11 +3,16 @@ import json
 import time
 import requests
 import feedparser
+import csv
 
 BASE = "https://futures.kraken.com/api/charts/v1"
 SYMBOL = "PI_XBTUSD"
 WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 STATE = "probability_state.json"
+CSV_FILE = "forward_test_v5.csv"
+V5_JSON = "forward_test_v5.json"
+VERSION = "V5_BASELINE"
+TP_SL_ATR_MULT = 1.0
 MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
 # Legacy V3 statistics are kept for backward compatibility.
@@ -26,8 +31,8 @@ ATR_MAX_PCT = 0.025            # 2.50%
 ZONE_ATR_MULT = 0.35
 ANALYTICS_BARS = 12                 # 12 x 15m = about 3 hours
 ANALYTICS_CONFIRM_BARS = 4          # latest ~1 hour confirms no clear reversal
-OI_FLAT_PCT = 0.001               # +/-0.10% treated as flat
-CVD_FLAT_REL = 0.02               # <=2% of recent CVD range treated as flat
+OI_FLAT_PCT = 0.0025               # +/-0.10% treated as flat
+CVD_FLAT_REL = 0.10               # <=2% of recent CVD range treated as flat
 
 FEEDS = [
     "https://www.coindesk.com/arc/outboundfeeds/rss/",
@@ -40,7 +45,7 @@ def get(url, params=None, retries=3):
     for attempt in range(1, retries + 1):
         try:
             r = requests.get(url, params=params, timeout=20,
-                             headers={"User-Agent": "Crypto-Market-Radar/4.4"})
+                             headers={"User-Agent": "Crypto-Market-Radar/5.0"})
             r.raise_for_status()
             return r.json()
         except (requests.exceptions.RequestException, ValueError) as e:
@@ -137,18 +142,17 @@ def analytics(kind):
     return sorted(out)
 
 
-def direction(kind):
-    """Classify OI/CVD from ~12 x 15m points (about 3h), with the latest
-    ~4 points used as a reversal check. If the broad move and the recent move
-    clearly disagree, return FLAT instead of forcing an UP/DOWN score.
+def direction_details(kind):
+    """Return (classification, metrics) using ~3h broad + ~1h recent movement.
+    Small moves are intentionally FLAT. A clear recent reversal neutralizes the broad direction.
     """
     try:
         rows = analytics(kind)
     except (requests.exceptions.RequestException, ValueError, RuntimeError) as e:
         print(f"{kind} 暫時無法取得: {type(e).__name__}: {e}")
-        return "UNAVAILABLE"
+        return "UNAVAILABLE", {}
     if len(rows) < 5:
-        return "UNAVAILABLE"
+        return "UNAVAILABLE", {}
 
     window = rows[-ANALYTICS_BARS:] if len(rows) >= ANALYTICS_BARS else rows
     recent = window[-ANALYTICS_CONFIRM_BARS:] if len(window) >= ANALYTICS_CONFIRM_BARS else window
@@ -156,20 +160,15 @@ def direction(kind):
     recent_start, recent_end = recent[0][1], recent[-1][1]
     delta = end_v - start_v
     recent_delta = recent_end - recent_start
+    metrics = {"broad_start": start_v, "broad_end": end_v, "broad_delta": delta,
+               "recent_start": recent_start, "recent_end": recent_end, "recent_delta": recent_delta}
 
     if kind == "open-interest":
-        if start_v == 0:
-            broad = "FLAT" if delta == 0 else ("UP" if delta > 0 else "DOWN")
-        else:
-            pct = delta / abs(start_v)
-            broad = "FLAT" if abs(pct) <= OI_FLAT_PCT else ("UP" if pct > 0 else "DOWN")
-        if recent_start == 0:
-            recent_dir = "FLAT" if recent_delta == 0 else ("UP" if recent_delta > 0 else "DOWN")
-            recent_pct = 0.0
-        else:
-            recent_pct = recent_delta / abs(recent_start)
-            recent_dir = "FLAT" if abs(recent_pct) <= OI_FLAT_PCT else ("UP" if recent_pct > 0 else "DOWN")
         pct = 0.0 if start_v == 0 else delta / abs(start_v)
+        recent_pct = 0.0 if recent_start == 0 else recent_delta / abs(recent_start)
+        broad = "FLAT" if abs(pct) <= OI_FLAT_PCT else ("UP" if pct > 0 else "DOWN")
+        recent_dir = "FLAT" if abs(recent_pct) <= OI_FLAT_PCT else ("UP" if recent_pct > 0 else "DOWN")
+        metrics.update({"broad_pct": pct, "recent_pct": recent_pct, "broad_dir": broad, "recent_dir": recent_dir})
         print(f"OI ~3h/12 bars: {start_v:.6g} -> {end_v:.6g} ({pct:+.3%}); recent ~1h: {recent_pct:+.3%}")
     else:
         vals = [v for _, v in window]
@@ -180,14 +179,19 @@ def direction(kind):
         rspan = max(rvals) - min(rvals) if rvals else 0.0
         rtol = rspan * CVD_FLAT_REL
         recent_dir = "FLAT" if abs(recent_delta) <= rtol else ("UP" if recent_delta > 0 else "DOWN")
+        metrics.update({"broad_span": span, "recent_span": rspan, "broad_dir": broad, "recent_dir": recent_dir})
         print(f"CVD ~3h/12 bars: {start_v:.6g} -> {end_v:.6g} (delta {delta:+.6g}); recent ~1h delta {recent_delta:+.6g}")
 
-    # Broad trend is primary. A clear opposite move in the latest ~1h means
-    # momentum is reversing, so withhold the point by returning FLAT.
+    final = broad
     if broad in ("UP", "DOWN") and recent_dir in ("UP", "DOWN") and broad != recent_dir:
+        final = "FLAT"
         print(f"{kind}: broad={broad}, recent={recent_dir} -> FLAT (recent reversal)")
-        return "FLAT"
-    return broad
+    metrics["final"] = final
+    return final, metrics
+
+
+def direction(kind):
+    return direction_details(kind)[0]
 
 
 def load_state():
@@ -207,6 +211,7 @@ def load_state():
     state.setdefault("last_forward_candle", None)
     state.setdefault("last_notification", {})
     state.setdefault("next_test_id", 1)
+    state.setdefault("forward_history_v5", [])
     return state
 
 
@@ -246,18 +251,34 @@ def score_market(rows15, rows1h, oi, cvd):
     touches_zone = zone_low is not None and low <= zone_high + pad and high >= zone_low - pad
     atr_ok = ATR_MIN_PCT <= atr_pct <= ATR_MAX_PCT
 
+    # Research-only features: stored, not used to change V4.5 trigger weights.
+    if zone_low is None or not a:
+        zone_distance_atr = None
+    elif zone_low <= close <= zone_high:
+        zone_distance_atr = 0.0
+    else:
+        nearest = zone_low if close < zone_low else zone_high
+        zone_distance_atr = abs(close - nearest) / a
+
+    closes15 = [float(x["close"]) for x in rows15]
+    e34s = ema_series(closes15, 34); e50s = ema_series(closes15, 50)
+    def slope_atr(series, lookback=4):
+        vals = [x for x in series if x is not None]
+        if len(vals) <= lookback or not a: return None
+        return (vals[-1] - vals[-1-lookback]) / a
+    ema34_slope_atr = slope_atr(e34s)
+    ema50_slope_atr = slope_atr(e50s)
+    ema_gap_atr = abs(e34_15 - e50_15) / a if a and e34_15 is not None and e50_15 is not None else None
+
     def calc(side):
         s, reasons = 0, []
         wanted = "BULL" if side == "LONG" else "BEAR"
         pdir = "UP" if side == "LONG" else "DOWN"
         if state1h == wanted: s += 2; reasons.append("1H +2")
         if state15 == wanted: s += 1; reasons.append("15M +1")
-        # Pullback/position: candle touches EMA34/50 zone and closes on the trend side.
         zone_confirm = touches_zone and ((side == "LONG" and close >= zone_high) or (side == "SHORT" and close <= zone_low))
         if zone_confirm: s += 2; reasons.append("EMA Zone +2")
-        # CVD confirms the latest 15m price direction.
         if price_dir == pdir and cvd == pdir: s += 1; reasons.append("Price+CVD +1")
-        # Rising OI with directional price expansion = new positioning supports the move.
         if price_dir == pdir and oi == "UP": s += 1; reasons.append("Price+OI +1")
         if atr_ok: s += 1; reasons.append("ATR +1")
         return s, reasons, zone_confirm
@@ -273,7 +294,10 @@ def score_market(rows15, rows1h, oi, cvd):
     return {
         "side": side, "score": score, "reasons": reasons,
         "ema_1h": state1h, "ema_15m": state15, "price_dir": price_dir,
-        "oi": oi, "cvd": cvd, "atr_pct": atr_pct, "zone_ok": zone_ok,
+        "oi": oi, "cvd": cvd, "atr_pct": atr_pct, "atr_value": a,
+        "zone_ok": zone_ok, "zone_distance_atr": zone_distance_atr,
+        "ema34_slope_atr": ema34_slope_atr, "ema50_slope_atr": ema50_slope_atr,
+        "ema_gap_atr": ema_gap_atr,
         "long_score": long_score, "short_score": short_score,
     }
 
@@ -291,51 +315,109 @@ def forward_bucket(state, side, score):
     return bucket
 
 
+def _hit_levels(test, row):
+    """Track TP/SL from closed 15m OHLC. If TP and SL occur inside the same candle,
+    ordering is unknowable from OHLC, so mark AMBIGUOUS instead of inventing a result.
+    """
+    if test.get("first_outcome"):
+        return
+    side = test["side"]
+    high, low = float(row["high"]), float(row["low"])
+    tp1, tp2, sl = float(test["tp1"]), float(test["tp2"]), float(test["sl"])
+    if side == "LONG":
+        hit_sl, hit_tp1, hit_tp2 = low <= sl, high >= tp1, high >= tp2
+    else:
+        hit_sl, hit_tp1, hit_tp2 = high >= sl, low <= tp1, low <= tp2
+    if hit_sl and hit_tp1:
+        test["first_outcome"] = "AMBIGUOUS"
+    elif hit_sl:
+        test["first_outcome"] = "SL"
+    elif hit_tp2:
+        test["first_outcome"] = "TP2"
+    elif hit_tp1:
+        test["first_outcome"] = "TP1"
+    if test.get("first_outcome"):
+        test["outcome_time"] = int(row["time"])
+
+
+def export_v5_csv(state):
+    # Dedicated V5 research export. probability_state.json remains the runtime state.
+    payload = {
+        "version": VERSION,
+        "completed": state.get("forward_history_v5", []),
+        "pending": [x for x in state.get("forward_tests", []) if x.get("version") == VERSION],
+    }
+    with open(V5_JSON, "w", encoding="utf-8") as jf:
+        json.dump(payload, jf, ensure_ascii=False, indent=2)
+
+    fields = [
+        "version","id","side","score","entry_time","entry_price","tp1","tp2","sl","risk_pct",
+        "ema_1h","ema_15m","zone_ok","zone_distance_atr","ema34_slope_atr","ema50_slope_atr","ema_gap_atr",
+        "price_dir","oi","oi_broad_pct","oi_recent_pct","cvd","cvd_broad_delta","cvd_recent_delta","atr_pct","news",
+        "ret_15m","ret_30m","ret_1h","ret_2h","mfe","mae","first_outcome","outcome_time"
+    ]
+    with open(CSV_FILE, "w", newline="", encoding="utf-8-sig") as f:
+        w = csv.DictWriter(f, fieldnames=fields)
+        w.writeheader()
+        for x in state.get("forward_history_v5", []):
+            w.writerow({k: x.get(k, "") for k in fields})
+
+
 def update_forward_tests(state, rows15):
     by_time = {int(r["time"]): r for r in rows15}
     latest_time = int(rows15[-1]["time"])
-    keep = []
-    completed_msgs = []
+    keep, completed_msgs = [], []
     for test in state["forward_tests"]:
         entry_t, entry = int(test["entry_time"]), float(test["entry_price"])
         side, score = test["side"], int(test["score"])
         test.setdefault("results", {})
-        test.setdefault("max_high", entry)
-        test.setdefault("min_low", entry)
-        # Update excursion using all closed candles after entry.
+        test.setdefault("max_high", entry); test.setdefault("min_low", entry)
         for r in rows15:
             t = int(r["time"])
             if entry_t < t <= latest_time:
                 test["max_high"] = max(test["max_high"], float(r["high"]))
                 test["min_low"] = min(test["min_low"], float(r["low"]))
+                if test.get("version") == VERSION and all(k in test for k in ("tp1","tp2","sl")):
+                    _hit_levels(test, r)
         bucket = forward_bucket(state, side, score)
         for label, seconds in FORWARD_HORIZONS.items():
             if label in test["results"] or latest_time < entry_t + seconds: continue
-            # Closed 15m timestamps line up with all configured horizons.
-            target_t = entry_t + seconds
-            row = by_time.get(target_t)
+            row = by_time.get(entry_t + seconds)
             if row is None: continue
             px = float(row["close"])
             raw_ret = px / entry - 1
             signed = raw_ret if side == "LONG" else -raw_ret
             correct = signed > 0
             test["results"][label] = {"price": px, "return": signed, "correct": correct}
-            st = bucket[label]
-            st["total"] += 1
-            st["correct"] += int(correct)
-            st["sum_return"] += signed
+            st = bucket[label]; st["total"] += 1; st["correct"] += int(correct); st["sum_return"] += signed
         if "2h" in test["results"]:
             mfe = (test["max_high"] / entry - 1) if side == "LONG" else (entry / test["min_low"] - 1)
             mae = (entry / test["min_low"] - 1) if side == "LONG" else (test["max_high"] / entry - 1)
-            bucket["completed_tests"] += 1
-            bucket["sum_mfe"] += max(0.0, mfe)
-            bucket["sum_mae"] += max(0.0, mae)
-            bucket["target_0_5"] += int(mfe >= 0.005)
-            bucket["target_1_0"] += int(mfe >= 0.01)
+            bucket["completed_tests"] += 1; bucket["sum_mfe"] += max(0.0, mfe); bucket["sum_mae"] += max(0.0, mae)
+            bucket["target_0_5"] += int(mfe >= 0.005); bucket["target_1_0"] += int(mfe >= 0.01)
+            if test.get("version") == VERSION:
+                f = test.get("features", {})
+                oi_m, cvd_m = f.get("oi_metrics", {}), f.get("cvd_metrics", {})
+                row = {
+                    "version": VERSION, "id": test["id"], "side": side, "score": score,
+                    "entry_time": entry_t, "entry_price": entry, "tp1": test.get("tp1"), "tp2": test.get("tp2"), "sl": test.get("sl"),
+                    "risk_pct": test.get("risk_pct"), "ema_1h": f.get("ema_1h"), "ema_15m": f.get("ema_15m"),
+                    "zone_ok": f.get("zone_ok"), "zone_distance_atr": f.get("zone_distance_atr"),
+                    "ema34_slope_atr": f.get("ema34_slope_atr"), "ema50_slope_atr": f.get("ema50_slope_atr"), "ema_gap_atr": f.get("ema_gap_atr"),
+                    "price_dir": f.get("price_dir"), "oi": f.get("oi"), "oi_broad_pct": oi_m.get("broad_pct"), "oi_recent_pct": oi_m.get("recent_pct"),
+                    "cvd": f.get("cvd"), "cvd_broad_delta": cvd_m.get("broad_delta"), "cvd_recent_delta": cvd_m.get("recent_delta"),
+                    "atr_pct": f.get("atr_pct"), "news": f.get("news"),
+                    "ret_15m": test["results"].get("15m",{}).get("return"), "ret_30m": test["results"].get("30m",{}).get("return"),
+                    "ret_1h": test["results"].get("1h",{}).get("return"), "ret_2h": test["results"].get("2h",{}).get("return"),
+                    "mfe": max(0.0,mfe), "mae": max(0.0,mae), "first_outcome": test.get("first_outcome","NONE"), "outcome_time": test.get("outcome_time")
+                }
+                if not any(x.get("id") == row["id"] for x in state["forward_history_v5"]):
+                    state["forward_history_v5"].append(row)
             completed_msgs.append((test, mfe, mae))
         else:
             keep.append(test)
     state["forward_tests"] = keep
+    export_v5_csv(state)
     return completed_msgs
 
 
@@ -409,7 +491,8 @@ def main():
     closed = rows15[-1]
     closed_time, closed_price = int(closed["time"]), float(closed["close"])
 
-    oi, cvd = direction("open-interest"), direction("cvd")
+    oi, oi_metrics = direction_details("open-interest")
+    cvd, cvd_metrics = direction_details("cvd")
     finish_legacy_pending(state, closed_time, closed_price)
     completed = update_forward_tests(state, rows15)
 
@@ -458,10 +541,27 @@ def main():
         elif state["last_forward_candle"] != closed_time and side in ("LONG", "SHORT") and score >= MIN_SCORE:
             test_id = state["next_test_id"]
             state["next_test_id"] += 1
+            # V5 keeps the V4.5 trigger/score unchanged. TP/SL are research targets only.
+            risk = max(float(sig.get("atr_value") or 0.0) * TP_SL_ATR_MULT, closed_price * 0.002)
+            if side == "LONG":
+                sl, tp1, tp2 = closed_price - risk, closed_price + risk, closed_price + 2 * risk
+            else:
+                sl, tp1, tp2 = closed_price + risk, closed_price - risk, closed_price - 2 * risk
+            news = news_status()
             state["forward_tests"].append({
+                "version": VERSION,
                 "id": test_id, "entry_time": closed_time, "entry_price": closed_price,
                 "side": side, "score": score, "results": {},
                 "max_high": closed_price, "min_low": closed_price,
+                "tp1": tp1, "tp2": tp2, "sl": sl, "risk_pct": risk / closed_price,
+                "first_outcome": None, "outcome_time": None,
+                "features": {
+                    "ema_1h": sig["ema_1h"], "ema_15m": sig["ema_15m"],
+                    "zone_ok": sig["zone_ok"], "zone_distance_atr": sig["zone_distance_atr"],
+                    "ema34_slope_atr": sig["ema34_slope_atr"], "ema50_slope_atr": sig["ema50_slope_atr"], "ema_gap_atr": sig["ema_gap_atr"],
+                    "price_dir": sig["price_dir"], "oi": oi, "cvd": cvd, "atr_pct": sig["atr_pct"],
+                    "oi_metrics": oi_metrics, "cvd_metrics": cvd_metrics, "news": news,
+                }
             })
             state["last_forward_candle"] = closed_time
 
@@ -474,25 +574,21 @@ def main():
                     confidence = f"{rate:.1%}（1H樣本 {n}）"
                     level = level_from_rate(rate)
                 message = (
-                    f"{level} BTC {side} 訊號\n\n"
-                    f"⚡ Score：{score} / 8\n"
-                    f"📊 Forward實測：{confidence}\n"
-                    f"💰 BTC：${closed_price:,.0f}\n\n"
-                    f"1H：{emoji_ema(sig['ema_1h'])}\n"
-                    f"15M：{emoji_ema(sig['ema_15m'])}\n"
-                    f"EMA Zone：{'✅' if sig['zone_ok'] else '➖'}\n"
-                    f"OI：{emoji_direction(oi)}\n"
-                    f"CVD：{emoji_direction(cvd)}\n"
-                    f"ATR：{sig['atr_pct']:.2%}\n\n"
-                    f"🧪 Forward Test #{test_id}\n"
-                    f"⏳ 15M / 30M / 1H / 2H 自動驗證\n"
-                    f"📰 消息：{news_status()}"
+                    f"{'🟢' if side == 'LONG' else '🔴'} BTC {side}｜{score}/8｜Forward #{test_id}\n\n"
+                    f"💰 Entry ${closed_price:,.0f}\n"
+                    f"🎯 TP1 ${tp1:,.0f}｜TP2 ${tp2:,.0f}\n"
+                    f"🛑 SL ${sl:,.0f}\n\n"
+                    f"1H {'🟢' if sig['ema_1h']=='BULL' else '🔴' if sig['ema_1h']=='BEAR' else '⚪'}｜"
+                    f"15M {'🟢' if sig['ema_15m']=='BULL' else '🔴' if sig['ema_15m']=='BEAR' else '⚪'}｜"
+                    f"Zone {'🟢' if sig['zone_ok'] else '➖'}\n"
+                    f"CVD {emoji_direction(cvd).split()[0]}｜OI {emoji_direction(oi).split()[0]}｜ATR {sig['atr_pct']:.2%}\n"
+                    f"📰 {'🔴' if '高影響' in news else '🟡' if '新消息' in news else '⚪'}"
                 )
                 send_discord(message)
         elif state["last_forward_candle"] != closed_time:
             # Mark candle processed even when no test is created; avoids duplicate work on 5m workflow runs.
             state["last_forward_candle"] = closed_time
-        print(f"Radar V4.4: LONG={sig['long_score']}/8 SHORT={sig['short_score']}/8 chosen={side} {score}/8")
+        print(f"Radar V5: LONG={sig['long_score']}/8 SHORT={sig['short_score']}/8 chosen={side} {score}/8")
     else:
         print(f"Radar PARTIAL: OI={oi}, CVD={cvd}; 本期不建立 Score/Forward 樣本")
 
