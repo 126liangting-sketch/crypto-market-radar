@@ -9,12 +9,20 @@ SYMBOL = "PI_XBTUSD"
 WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 STATE = "probability_state.json"
 
+# Legacy V3 statistics are kept for backward compatibility.
 MIN_SAMPLES = 100
 PREDICT_SECONDS = 3600
 MOVE = 0.01
-THRESHOLD = 0.65
-HIGH = 0.75
-STRONG = 0.85
+
+# V4 score + forward test
+MIN_SCORE = 5
+FORWARD_HORIZONS = {"15m": 900, "30m": 1800, "1h": 3600, "2h": 7200}
+MIN_FORWARD_SAMPLES = 20       # before this, show "累積中" and use Score for attention alerts
+FORWARD_NOTIFY_THRESHOLD = 0.60
+NOTIFY_COOLDOWN = 3600         # same direction/score: at most one Discord alert per hour
+ATR_MIN_PCT = 0.002            # 0.20%
+ATR_MAX_PCT = 0.025            # 2.50%
+ZONE_ATR_MULT = 0.35
 
 FEEDS = [
     "https://www.coindesk.com/arc/outboundfeeds/rss/",
@@ -23,17 +31,11 @@ FEEDS = [
 
 
 def get(url, params=None, retries=3):
-    """GET with retry/backoff for temporary network/API failures."""
     last_error = None
-
     for attempt in range(1, retries + 1):
         try:
-            r = requests.get(
-                url,
-                params=params,
-                timeout=20,
-                headers={"User-Agent": "Crypto-Market-Radar/3.0"},
-            )
+            r = requests.get(url, params=params, timeout=20,
+                             headers={"User-Agent": "Crypto-Market-Radar/4.0"})
             r.raise_for_status()
             return r.json()
         except (requests.exceptions.RequestException, ValueError) as e:
@@ -43,162 +45,269 @@ def get(url, params=None, retries=3):
                 wait = 2 ** (attempt - 1)
                 print(f"{wait} 秒後重試...")
                 time.sleep(wait)
-
     raise last_error
 
 
 def candles(resolution, count=200):
     sec = {"15m": 900, "1h": 3600}[resolution]
     now = int(time.time())
-    data = get(
-        f"{BASE}/spot/{SYMBOL}/{resolution}",
-        {"from": now - count * sec, "to": now, "count": count},
-    )
+    data = get(f"{BASE}/spot/{SYMBOL}/{resolution}",
+               {"from": now - count * sec, "to": now, "count": count})
     rows = sorted(data.get("candles", []), key=lambda x: int(x["time"]))
     if not rows:
         raise RuntimeError(f"Kraken {resolution} K線沒有資料")
     return rows
 
 
-def closed_15m_candle():
-    rows = candles("15m", 120)
-    # 最後一根通常仍在形成中，因此使用倒數第二根作為已收盤K線。
-    return rows[-2]
+def closed_rows(resolution, count=200):
+    rows = candles(resolution, count)
+    return rows[:-1] if len(rows) > 1 else rows
+
+
+def ema_series(values, length):
+    if len(values) < length:
+        return []
+    k = 2 / (length + 1)
+    seed = sum(values[:length]) / length
+    out = [None] * (length - 1) + [seed]
+    value = seed
+    for x in values[length:]:
+        value = x * k + value * (1 - k)
+        out.append(value)
+    return out
 
 
 def ema(values, length):
-    if len(values) < length:
-        return None
-    k = 2 / (length + 1)
-    value = sum(values[:length]) / length
-    for x in values[length:]:
-        value = x * k + value * (1 - k)
-    return value
+    s = ema_series(values, length)
+    return s[-1] if s else None
 
 
-def ema_state(resolution):
-    rows = candles(resolution, 100)
+def ema_state_from_rows(rows):
     closes = [float(x["close"]) for x in rows]
-    fast = ema(closes, 34)
-    slow = ema(closes, 50)
+    fast, slow = ema(closes, 34), ema(closes, 50)
     if fast is None or slow is None:
-        return "NEUTRAL"
-    if fast > slow:
-        return "BULL"
-    if fast < slow:
-        return "BEAR"
-    return "NEUTRAL"
+        return "NEUTRAL", fast, slow
+    return ("BULL" if fast > slow else "BEAR" if fast < slow else "NEUTRAL"), fast, slow
+
+
+def true_range(row, prev_close):
+    high, low = float(row["high"]), float(row["low"])
+    return max(high - low, abs(high - prev_close), abs(low - prev_close))
+
+
+def atr(rows, length=14):
+    if len(rows) < length + 1:
+        return None
+    trs = [true_range(rows[i], float(rows[i - 1]["close"])) for i in range(1, len(rows))]
+    return sum(trs[-length:]) / length
 
 
 def _number(value):
     try:
-        float(value)
-        return True
+        float(value); return True
     except (TypeError, ValueError):
         return False
 
 
 def analytics(kind):
     now = int(time.time())
-    data = get(
-        f"{BASE}/analytics/{SYMBOL}/{kind}",
-        {"since": now - 7200, "to": now, "interval": 900},
-    )
+    data = get(f"{BASE}/analytics/{SYMBOL}/{kind}",
+               {"since": now - 7200, "to": now, "interval": 900})
     result = data.get("result", data)
-    if not isinstance(result, dict):
-        return []
-
-    timestamps = result.get("timestamp", [])
-    raw = result.get("data", [])
+    if not isinstance(result, dict): return []
+    timestamps, raw = result.get("timestamp", []), result.get("data", [])
     key = "openInterest" if kind == "open-interest" else "cvd"
-
-    if isinstance(raw, dict):
-        values = raw.get(key, [])
-    else:
-        values = raw
-    if not values:
-        values = result.get(key, [])
-
+    values = raw.get(key, []) if isinstance(raw, dict) else raw
+    if not values: values = result.get(key, [])
     out = []
     for ts, value in zip(timestamps, values):
         try:
-            if isinstance(value, dict):
-                value = value.get(key, value.get("value"))
+            if isinstance(value, dict): value = value.get(key, value.get("value"))
             elif isinstance(value, list):
                 nums = [float(x) for x in value if _number(x)]
                 value = nums[-1] if nums else None
-            value = float(value)
-            out.append((int(ts), value))
+            out.append((int(ts), float(value)))
         except (TypeError, ValueError):
             continue
     return sorted(out)
 
 
 def direction(kind):
-    """Return UP/DOWN/FLAT, or UNAVAILABLE if this analytics feed is temporarily down."""
     try:
         rows = analytics(kind)
     except (requests.exceptions.RequestException, ValueError, RuntimeError) as e:
-        print(f"{kind} 暫時無法取得，本期不使用此欄位: {type(e).__name__}: {e}")
+        print(f"{kind} 暫時無法取得: {type(e).__name__}: {e}")
         return "UNAVAILABLE"
-
-    if len(rows) < 2:
-        print(f"{kind} 資料不足，本期標記為 UNAVAILABLE")
-        return "UNAVAILABLE"
-
-    previous = rows[-2][1]
-    current = rows[-1][1]
-    if current > previous:
-        return "UP"
-    if current < previous:
-        return "DOWN"
-    return "FLAT"
+    if len(rows) < 2: return "UNAVAILABLE"
+    a, b = rows[-2][1], rows[-1][1]
+    return "UP" if b > a else "DOWN" if b < a else "FLAT"
 
 
 def load_state():
-    if not os.path.exists(STATE):
-        return {
-            "states": {},
-            "pending": [],
-            "last_closed_candle": None,
-            "last_signal_key": None,
-            "signal_armed": True,
-        }
-    with open(STATE, encoding="utf-8") as f:
-        return json.load(f)
+    if os.path.exists(STATE):
+        try:
+            with open(STATE, encoding="utf-8") as f: state = json.load(f)
+        except (json.JSONDecodeError, OSError): state = {}
+    else: state = {}
+    # Preserve all old V3 fields/data, only add V4 fields when missing.
+    state.setdefault("states", {})
+    state.setdefault("pending", [])
+    state.setdefault("last_closed_candle", None)
+    state.setdefault("last_signal_key", None)
+    state.setdefault("signal_armed", True)
+    state.setdefault("forward_tests", [])
+    state.setdefault("forward_stats", {})
+    state.setdefault("last_forward_candle", None)
+    state.setdefault("last_notification", {})
+    state.setdefault("next_test_id", 1)
+    return state
 
 
 def save_state(state):
-    with open(STATE, "w", encoding="utf-8") as f:
+    tmp = STATE + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
         json.dump(state, f, ensure_ascii=False, indent=2)
+    os.replace(tmp, STATE)
 
 
 def stats_for(state, key):
-    return state["states"].setdefault(
-        key, {"LONG": 0, "SHORT": 0, "NEUTRAL": 0}
-    )
+    return state["states"].setdefault(key, {"LONG": 0, "SHORT": 0, "NEUTRAL": 0})
 
 
-def finish_pending(state, latest_closed_time, latest_closed_price):
-    """Only finalize a sample after its full 1-hour observation window has closed."""
+def finish_legacy_pending(state, latest_time, latest_price):
     keep = []
     for sample in state["pending"]:
-        target_time = int(sample["target_time"])
-        if latest_closed_time < target_time:
-            keep.append(sample)
-            continue
-
-        change = latest_closed_price / sample["price"] - 1
-        if change >= MOVE:
-            result = "LONG"
-        elif change <= -MOVE:
-            result = "SHORT"
-        else:
-            result = "NEUTRAL"
-
+        if latest_time < int(sample["target_time"]):
+            keep.append(sample); continue
+        change = latest_price / sample["price"] - 1
+        result = "LONG" if change >= MOVE else "SHORT" if change <= -MOVE else "NEUTRAL"
         stats_for(state, sample["state"])[result] += 1
-
     state["pending"] = keep
+
+
+def score_market(rows15, rows1h, oi, cvd):
+    state1h, e34_1h, e50_1h = ema_state_from_rows(rows1h)
+    state15, e34_15, e50_15 = ema_state_from_rows(rows15)
+    last, prev = rows15[-1], rows15[-2]
+    close, prev_close = float(last["close"]), float(prev["close"])
+    high, low = float(last["high"]), float(last["low"])
+    price_dir = "UP" if close > prev_close else "DOWN" if close < prev_close else "FLAT"
+    a = atr(rows15, 14)
+    atr_pct = (a / close) if a else 0.0
+    zone_low, zone_high = sorted([e34_15, e50_15]) if e34_15 and e50_15 else (None, None)
+    pad = (a or 0) * ZONE_ATR_MULT
+    touches_zone = zone_low is not None and low <= zone_high + pad and high >= zone_low - pad
+    atr_ok = ATR_MIN_PCT <= atr_pct <= ATR_MAX_PCT
+
+    def calc(side):
+        s, reasons = 0, []
+        wanted = "BULL" if side == "LONG" else "BEAR"
+        pdir = "UP" if side == "LONG" else "DOWN"
+        if state1h == wanted: s += 2; reasons.append("1H +2")
+        if state15 == wanted: s += 1; reasons.append("15M +1")
+        # Pullback/position: candle touches EMA34/50 zone and closes on the trend side.
+        zone_confirm = touches_zone and ((side == "LONG" and close >= zone_high) or (side == "SHORT" and close <= zone_low))
+        if zone_confirm: s += 2; reasons.append("EMA Zone +2")
+        # CVD confirms the latest 15m price direction.
+        if price_dir == pdir and cvd == pdir: s += 1; reasons.append("Price+CVD +1")
+        # Rising OI with directional price expansion = new positioning supports the move.
+        if price_dir == pdir and oi == "UP": s += 1; reasons.append("Price+OI +1")
+        if atr_ok: s += 1; reasons.append("ATR +1")
+        return s, reasons, zone_confirm
+
+    long_score, long_reasons, long_zone = calc("LONG")
+    short_score, short_reasons, short_zone = calc("SHORT")
+    if long_score > short_score:
+        side, score, reasons, zone_ok = "LONG", long_score, long_reasons, long_zone
+    elif short_score > long_score:
+        side, score, reasons, zone_ok = "SHORT", short_score, short_reasons, short_zone
+    else:
+        side, score, reasons, zone_ok = "NONE", long_score, [], False
+    return {
+        "side": side, "score": score, "reasons": reasons,
+        "ema_1h": state1h, "ema_15m": state15, "price_dir": price_dir,
+        "oi": oi, "cvd": cvd, "atr_pct": atr_pct, "zone_ok": zone_ok,
+        "long_score": long_score, "short_score": short_score,
+    }
+
+
+def forward_bucket(state, side, score):
+    key = f"{side}|{score}"
+    bucket = state["forward_stats"].setdefault(key, {})
+    for h in FORWARD_HORIZONS:
+        bucket.setdefault(h, {"total": 0, "correct": 0, "sum_return": 0.0})
+    bucket.setdefault("completed_tests", 0)
+    bucket.setdefault("sum_mfe", 0.0)
+    bucket.setdefault("sum_mae", 0.0)
+    bucket.setdefault("target_0_5", 0)
+    bucket.setdefault("target_1_0", 0)
+    return bucket
+
+
+def update_forward_tests(state, rows15):
+    by_time = {int(r["time"]): r for r in rows15}
+    latest_time = int(rows15[-1]["time"])
+    keep = []
+    completed_msgs = []
+    for test in state["forward_tests"]:
+        entry_t, entry = int(test["entry_time"]), float(test["entry_price"])
+        side, score = test["side"], int(test["score"])
+        test.setdefault("results", {})
+        test.setdefault("max_high", entry)
+        test.setdefault("min_low", entry)
+        # Update excursion using all closed candles after entry.
+        for r in rows15:
+            t = int(r["time"])
+            if entry_t < t <= latest_time:
+                test["max_high"] = max(test["max_high"], float(r["high"]))
+                test["min_low"] = min(test["min_low"], float(r["low"]))
+        bucket = forward_bucket(state, side, score)
+        for label, seconds in FORWARD_HORIZONS.items():
+            if label in test["results"] or latest_time < entry_t + seconds: continue
+            # Closed 15m timestamps line up with all configured horizons.
+            target_t = entry_t + seconds
+            row = by_time.get(target_t)
+            if row is None: continue
+            px = float(row["close"])
+            raw_ret = px / entry - 1
+            signed = raw_ret if side == "LONG" else -raw_ret
+            correct = signed > 0
+            test["results"][label] = {"price": px, "return": signed, "correct": correct}
+            st = bucket[label]
+            st["total"] += 1
+            st["correct"] += int(correct)
+            st["sum_return"] += signed
+        if "2h" in test["results"]:
+            mfe = (test["max_high"] / entry - 1) if side == "LONG" else (entry / test["min_low"] - 1)
+            mae = (entry / test["min_low"] - 1) if side == "LONG" else (test["max_high"] / entry - 1)
+            bucket["completed_tests"] += 1
+            bucket["sum_mfe"] += max(0.0, mfe)
+            bucket["sum_mae"] += max(0.0, mae)
+            bucket["target_0_5"] += int(mfe >= 0.005)
+            bucket["target_1_0"] += int(mfe >= 0.01)
+            completed_msgs.append((test, mfe, mae))
+        else:
+            keep.append(test)
+    state["forward_tests"] = keep
+    return completed_msgs
+
+
+def empirical_1h(state, side, score):
+    b = forward_bucket(state, side, score)["1h"]
+    if b["total"] == 0: return None, 0
+    return b["correct"] / b["total"], b["total"]
+
+
+def level_from_rate(rate):
+    if rate >= 0.90: return "🚨 極強"
+    if rate >= 0.80: return "🔥 強"
+    if rate >= 0.70: return "🟢 偏強"
+    if rate >= 0.60: return "🟡 注意"
+    return "⚪ 未達通知門檻"
+
+
+def score_level(score):
+    return {5: "🟡 注意", 6: "🟢 偏強", 7: "🔥 強", 8: "🚨 極強"}.get(score, "⚪")
 
 
 def news_status():
@@ -207,152 +316,116 @@ def news_status():
         try:
             feed = feedparser.parse(url)
             titles.extend(x.get("title", "") for x in feed.entries[:10])
-        except Exception:
-            pass
-
-    if not titles:
-        return "⚪ 無重大消息"
-
-    high_impact = [
-        "sec", "fed", "fomc", "rate", "hack", "etf",
-        "lawsuit", "ban", "regulation", "approval",
-    ]
-    joined = " ".join(titles).lower()
-    if any(word in joined for word in high_impact):
-        return "🔴 高影響消息"
-    return "🟡 有新消息"
+        except Exception: pass
+    if not titles: return "⚪ 無重大消息"
+    words = ["sec", "fed", "fomc", "rate", "hack", "etf", "lawsuit", "ban", "regulation", "approval"]
+    return "🔴 高影響消息" if any(w in " ".join(titles).lower() for w in words) else "🟡 有新消息"
 
 
 def send_discord(message):
     if not WEBHOOK:
-        print("缺少 DISCORD_WEBHOOK")
-        return
-
-    r = requests.post(
-        WEBHOOK,
-        json={"content": message},
-        timeout=20
-    )
-
-    print("Discord HTTP:", r.status_code)
-    r.raise_for_status()
-
-
-def emoji_ema(value):
-    return {"BULL": "🟢 多頭", "BEAR": "🔴 空頭", "NEUTRAL": "⚪ 中性"}.get(
-        value, "⚪ 中性"
-    )
+        print("缺少 DISCORD_WEBHOOK"); return
+    last = None
+    for attempt in range(3):
+        try:
+            r = requests.post(WEBHOOK, json={"content": message}, timeout=20)
+            print("Discord HTTP:", r.status_code)
+            r.raise_for_status(); return
+        except requests.exceptions.RequestException as e:
+            last = e
+            if attempt < 2: time.sleep(2 ** attempt)
+    raise last
 
 
-def emoji_direction(value):
-    return {
-        "UP": "🔺 上升",
-        "DOWN": "🔻 下降",
-        "FLAT": "⚪ 持平",
-        "UNAVAILABLE": "⚪ 暫時無資料",
-    }.get(value, "⚪ 暫時無資料")
+def emoji_ema(v): return {"BULL":"🟢 多頭","BEAR":"🔴 空頭","NEUTRAL":"⚪ 中性"}.get(v,"⚪ 中性")
+def emoji_direction(v): return {"UP":"🔺 上升","DOWN":"🔻 下降","FLAT":"⚪ 持平","UNAVAILABLE":"⚪ 暫時無資料"}.get(v,"⚪ 暫時無資料")
+
+
+def should_notify(state, side, score, rate, n, closed_time):
+    # Once a bucket has enough forward samples, real 1h hit rate must be >=60%.
+    if n >= MIN_FORWARD_SAMPLES and (rate is None or rate < FORWARD_NOTIFY_THRESHOLD):
+        return False
+    key = f"{side}|{score}"
+    last = state["last_notification"].get(key)
+    if last and closed_time - int(last) < NOTIFY_COOLDOWN:
+        return False
+    state["last_notification"][key] = closed_time
+    return True
 
 
 def main():
     state = load_state()
+    rows15 = closed_rows("15m", 220)
+    rows1h = closed_rows("1h", 120)
+    if len(rows15) < 60 or len(rows1h) < 60:
+        raise RuntimeError("K線資料不足")
+    closed = rows15[-1]
+    closed_time, closed_price = int(closed["time"]), float(closed["close"])
 
-    closed = closed_15m_candle()
-    closed_time = int(closed["time"])
-    closed_price = float(closed["close"])
+    oi, cvd = direction("open-interest"), direction("cvd")
+    finish_legacy_pending(state, closed_time, closed_price)
+    completed = update_forward_tests(state, rows15)
 
-    ema_1h = ema_state("1h")
-    ema_15m = ema_state("15m")
-    oi = direction("open-interest")
-    cvd = direction("cvd")
-
-    # 已經建立的 pending 樣本仍可正常完成，不受本期 OI/CVD 斷線影響。
-    finish_pending(state, closed_time, closed_price)
-
+    # Keep V3 exact-state statistics alive when analytics are available.
+    ema1, _, _ = ema_state_from_rows(rows1h)
+    ema15, _, _ = ema_state_from_rows(rows15)
     analytics_ok = oi != "UNAVAILABLE" and cvd != "UNAVAILABLE"
-    total = 0
-    market_state = None
+    if analytics_ok and state["last_closed_candle"] != closed_time:
+        market_state = f"{ema1}|{ema15}|{oi}|{cvd}"
+        state["pending"].append({"candle_time": closed_time, "target_time": closed_time + PREDICT_SECONDS,
+                                 "price": closed_price, "state": market_state})
+        state["last_closed_candle"] = closed_time
 
     if analytics_ok:
-        market_state = f"{ema_1h}|{ema_15m}|{oi}|{cvd}"
+        sig = score_market(rows15, rows1h, oi, cvd)
+        side, score = sig["side"], sig["score"]
+        # Every qualifying closed 15m candle becomes a forward-test sample, even if Discord is suppressed.
+        if state["last_forward_candle"] != closed_time and side in ("LONG", "SHORT") and score >= MIN_SCORE:
+            test_id = state["next_test_id"]
+            state["next_test_id"] += 1
+            state["forward_tests"].append({
+                "id": test_id, "entry_time": closed_time, "entry_price": closed_price,
+                "side": side, "score": score, "results": {},
+                "max_high": closed_price, "min_low": closed_price,
+            })
+            state["last_forward_candle"] = closed_time
 
-        # 只有資料完整時才建立新樣本，避免把 API 故障寫進統計。
-        if state["last_closed_candle"] != closed_time:
-            state["pending"].append(
-                {
-                    "candle_time": closed_time,
-                    "target_time": closed_time + PREDICT_SECONDS,
-                    "price": closed_price,
-                    "state": market_state,
-                }
-            )
-            state["last_closed_candle"] = closed_time
-
-        current_stats = stats_for(state, market_state)
-        total = sum(current_stats.values())
-
-        if total >= MIN_SAMPLES:
-            probabilities = {
-                name: current_stats[name] / total
-                for name in ("LONG", "SHORT", "NEUTRAL")
-            }
-
-            best = max(probabilities, key=probabilities.get)
-            probability = probabilities[best]
-
-            if best == "NEUTRAL" or probability < THRESHOLD:
-                state["signal_armed"] = True
-
-            elif state["signal_armed"]:
-                signal_key = f"{market_state}|{best}"
-
-                if signal_key != state["last_signal_key"]:
-                    icon = (
-                        "🚨"
-                        if probability >= STRONG
-                        else "🔥"
-                        if probability >= HIGH
-                        else "🟢"
-                    )
-
-                    action = "做多" if best == "LONG" else "做空"
-
-                    message = (
-                        "🚨 BTC 訊號\n\n"
-                        f"{icon} {action}：{probability:.1%}\n\n"
-                        f"1H：{emoji_ema(ema_1h)}\n"
-                        f"15M：{emoji_ema(ema_15m)}\n"
-                        f"OI：{emoji_direction(oi)}\n"
-                        f"CVD：{emoji_direction(cvd)}\n\n"
-                        f"📊 歷史樣本：{total}\n"
-                        f"📰 消息：{news_status()}"
-                    )
-
-                    send_discord(message)
-                    state["last_signal_key"] = signal_key
-                    state["signal_armed"] = False
+            rate, n = empirical_1h(state, side, score)
+            if should_notify(state, side, score, rate, n, closed_time):
+                if n < MIN_FORWARD_SAMPLES:
+                    confidence = f"累積中（1H 已驗證 {n}/{MIN_FORWARD_SAMPLES}）"
+                    level = score_level(score) + "・驗證中"
+                else:
+                    confidence = f"{rate:.1%}（1H樣本 {n}）"
+                    level = level_from_rate(rate)
+                message = (
+                    f"{level} BTC {side} 訊號\n\n"
+                    f"⚡ Score：{score} / 8\n"
+                    f"📊 Forward實測：{confidence}\n"
+                    f"💰 BTC：${closed_price:,.0f}\n\n"
+                    f"1H：{emoji_ema(sig['ema_1h'])}\n"
+                    f"15M：{emoji_ema(sig['ema_15m'])}\n"
+                    f"EMA Zone：{'✅' if sig['zone_ok'] else '➖'}\n"
+                    f"OI：{emoji_direction(oi)}\n"
+                    f"CVD：{emoji_direction(cvd)}\n"
+                    f"ATR：{sig['atr_pct']:.2%}\n\n"
+                    f"🧪 Forward Test #{test_id}\n"
+                    f"⏳ 15M / 30M / 1H / 2H 自動驗證\n"
+                    f"📰 消息：{news_status()}"
+                )
+                send_discord(message)
+        elif state["last_forward_candle"] != closed_time:
+            # Mark candle processed even when no test is created; avoids duplicate work on 5m workflow runs.
+            state["last_forward_candle"] = closed_time
+        print(f"Radar V4: LONG={sig['long_score']}/8 SHORT={sig['short_score']}/8 chosen={side} {score}/8")
     else:
-        print(
-            "本期 OI/CVD 資料不完整，不建立新統計樣本；"
-            f"OI={emoji_direction(oi)}, CVD={emoji_direction(cvd)}"
-        )
+        print(f"Radar PARTIAL: OI={oi}, CVD={cvd}; 本期不建立 Score/Forward 樣本")
 
     save_state(state)
+    print("Forward pending:", len(state["forward_tests"]), "Legacy pending:", len(state["pending"]))
+    if completed:
+        print("Completed forward tests:", ", ".join(str(x[0]["id"]) for x in completed))
 
-    if analytics_ok:
-        print(
-            "Radar OK:",
-            market_state,
-            "Samples:",
-            total,
-            "Pending:",
-            len(state["pending"]),
-        )
-    else:
-        print(
-            "Radar PARTIAL: OI/CVD 暫時無資料，本期已安全跳過新樣本。",
-            "Pending:",
-            len(state["pending"]),
-        )
 
 if __name__ == "__main__":
     main()
