@@ -8,6 +8,7 @@ BASE = "https://futures.kraken.com/api/charts/v1"
 SYMBOL = "PI_XBTUSD"
 WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 STATE = "probability_state.json"
+MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
 # Legacy V3 statistics are kept for backward compatibility.
 MIN_SAMPLES = 100
@@ -35,7 +36,7 @@ def get(url, params=None, retries=3):
     for attempt in range(1, retries + 1):
         try:
             r = requests.get(url, params=params, timeout=20,
-                             headers={"User-Agent": "Crypto-Market-Radar/4.0"})
+                             headers={"User-Agent": "Crypto-Market-Radar/4.1"})
             r.raise_for_status()
             return r.json()
         except (requests.exceptions.RequestException, ValueError) as e:
@@ -370,7 +371,7 @@ def main():
     ema1, _, _ = ema_state_from_rows(rows1h)
     ema15, _, _ = ema_state_from_rows(rows15)
     analytics_ok = oi != "UNAVAILABLE" and cvd != "UNAVAILABLE"
-    if analytics_ok and state["last_closed_candle"] != closed_time:
+    if (not MANUAL_RUN) and analytics_ok and state["last_closed_candle"] != closed_time:
         market_state = f"{ema1}|{ema15}|{oi}|{cvd}"
         state["pending"].append({"candle_time": closed_time, "target_time": closed_time + PREDICT_SECONDS,
                                  "price": closed_price, "state": market_state})
@@ -379,8 +380,34 @@ def main():
     if analytics_ok:
         sig = score_market(rows15, rows1h, oi, cvd)
         side, score = sig["side"], sig["score"]
-        # Every qualifying closed 15m candle becomes a forward-test sample, even if Discord is suppressed.
-        if state["last_forward_candle"] != closed_time and side in ("LONG", "SHORT") and score >= MIN_SCORE:
+        # workflow_dispatch is a pure manual status query: it never creates a new signal/test.
+        if MANUAL_RUN:
+            rate, n = empirical_1h(state, side, score) if side in ("LONG", "SHORT") else (None, 0)
+            if score >= MIN_SCORE:
+                status = f"已達 {MIN_SCORE}/8 訊號門檻"
+            else:
+                status = f"觀察中・距離 {MIN_SCORE}/8 還差 {MIN_SCORE - score} 分"
+            empirical = "累積中" if n < MIN_FORWARD_SAMPLES or rate is None else f"{rate:.1%}（1H樣本 {n}）"
+            message = (
+                f"📊 BTC 市場現況｜手動查詢\n\n"
+                f"💰 BTC：${closed_price:,.0f}\n"
+                f"目前方向：{'🟢 LONG' if side == 'LONG' else '🔴 SHORT' if side == 'SHORT' else '⚪ 無明確方向'}\n"
+                f"LONG：{sig['long_score']} / 8\n"
+                f"SHORT：{sig['short_score']} / 8\n\n"
+                f"1H：{emoji_ema(sig['ema_1h'])}\n"
+                f"15M：{emoji_ema(sig['ema_15m'])}\n"
+                f"EMA Zone：{'✅ 符合' if sig['zone_ok'] else '➖ 未符合'}\n"
+                f"OI：{emoji_direction(oi)}\n"
+                f"CVD：{emoji_direction(cvd)}\n"
+                f"ATR：{sig['atr_pct']:.2%}\n\n"
+                f"⚪ 狀態：{status}\n"
+                f"📊 Forward實測：{empirical}\n"
+                f"🧪 Forward進行中：{len(state['forward_tests'])}\n\n"
+                f"ℹ️ 手動查詢不建立新 Forward Test"
+            )
+            send_discord(message)
+        # Every qualifying scheduled closed 15m candle becomes a forward-test sample, even if Discord is suppressed.
+        elif state["last_forward_candle"] != closed_time and side in ("LONG", "SHORT") and score >= MIN_SCORE:
             test_id = state["next_test_id"]
             state["next_test_id"] += 1
             state["forward_tests"].append({
@@ -417,7 +444,7 @@ def main():
         elif state["last_forward_candle"] != closed_time:
             # Mark candle processed even when no test is created; avoids duplicate work on 5m workflow runs.
             state["last_forward_candle"] = closed_time
-        print(f"Radar V4: LONG={sig['long_score']}/8 SHORT={sig['short_score']}/8 chosen={side} {score}/8")
+        print(f"Radar V4.1: LONG={sig['long_score']}/8 SHORT={sig['short_score']}/8 chosen={side} {score}/8")
     else:
         print(f"Radar PARTIAL: OI={oi}, CVD={cvd}; 本期不建立 Score/Forward 樣本")
 
