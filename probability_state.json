@@ -98,17 +98,10 @@
     "BULL|BULL|DOWN|DOWN": {
       "LONG": 0,
       "SHORT": 0,
-      "NEUTRAL": 2
+      "NEUTRAL": 3
     }
   },
-  "pending": [
-    {
-      "candle_time": 1789744500000,
-      "target_time": 1789744503600,
-      "price": 80922.0,
-      "state": "BULL|BULL|DOWN|DOWN"
-    }
-  ],
+  "pending": [],
   "last_closed_candle": 1789744500000,
   "last_signal_key": null,
   "signal_armed": true,
