@@ -24,7 +24,8 @@ NOTIFY_COOLDOWN = 3600         # same direction/score: at most one Discord alert
 ATR_MIN_PCT = 0.002            # 0.20%
 ATR_MAX_PCT = 0.025            # 2.50%
 ZONE_ATR_MULT = 0.35
-ANALYTICS_LOOKBACK_SECONDS = 3600  # 1 hour
+ANALYTICS_BARS = 12                 # 12 x 15m = about 3 hours
+ANALYTICS_CONFIRM_BARS = 4          # latest ~1 hour confirms no clear reversal
 OI_FLAT_PCT = 0.001               # +/-0.10% treated as flat
 CVD_FLAT_REL = 0.02               # <=2% of recent CVD range treated as flat
 
@@ -39,7 +40,7 @@ def get(url, params=None, retries=3):
     for attempt in range(1, retries + 1):
         try:
             r = requests.get(url, params=params, timeout=20,
-                             headers={"User-Agent": "Crypto-Market-Radar/4.2"})
+                             headers={"User-Agent": "Crypto-Market-Radar/4.4"})
             r.raise_for_status()
             return r.json()
         except (requests.exceptions.RequestException, ValueError) as e:
@@ -116,7 +117,7 @@ def _number(value):
 def analytics(kind):
     now = int(time.time())
     data = get(f"{BASE}/analytics/{SYMBOL}/{kind}",
-               {"since": now - 7200, "to": now, "interval": 900})
+               {"since": now - 18000, "to": now, "interval": 900})
     result = data.get("result", data)
     if not isinstance(result, dict): return []
     timestamps, raw = result.get("timestamp", []), result.get("data", [])
@@ -137,43 +138,56 @@ def analytics(kind):
 
 
 def direction(kind):
-    """Classify analytics by the overall change across the latest ~1 hour.
-
-    V4.2 intentionally avoids comparing only the final two API points, which was
-    too sensitive to tiny last-tick pullbacks.  OI uses a percentage dead-band.
-    CVD can cross/approach zero, so its dead-band is based on the recent range.
+    """Classify OI/CVD from ~12 x 15m points (about 3h), with the latest
+    ~4 points used as a reversal check. If the broad move and the recent move
+    clearly disagree, return FLAT instead of forcing an UP/DOWN score.
     """
     try:
         rows = analytics(kind)
     except (requests.exceptions.RequestException, ValueError, RuntimeError) as e:
         print(f"{kind} 暫時無法取得: {type(e).__name__}: {e}")
         return "UNAVAILABLE"
-    if len(rows) < 2:
+    if len(rows) < 5:
         return "UNAVAILABLE"
 
-    end_t, end_v = rows[-1]
-    target_t = end_t - ANALYTICS_LOOKBACK_SECONDS
-    # Pick the point nearest to (but preferably not newer than) 1h ago.
-    candidates = [r for r in rows[:-1] if r[0] <= target_t]
-    start_t, start_v = candidates[-1] if candidates else rows[0]
+    window = rows[-ANALYTICS_BARS:] if len(rows) >= ANALYTICS_BARS else rows
+    recent = window[-ANALYTICS_CONFIRM_BARS:] if len(window) >= ANALYTICS_CONFIRM_BARS else window
+    start_v, end_v = window[0][1], window[-1][1]
+    recent_start, recent_end = recent[0][1], recent[-1][1]
     delta = end_v - start_v
+    recent_delta = recent_end - recent_start
 
     if kind == "open-interest":
         if start_v == 0:
-            return "FLAT" if delta == 0 else ("UP" if delta > 0 else "DOWN")
-        pct = delta / abs(start_v)
-        print(f"OI 1h: {start_v:.6g} -> {end_v:.6g} ({pct:+.3%})")
-        if abs(pct) <= OI_FLAT_PCT:
-            return "FLAT"
-        return "UP" if pct > 0 else "DOWN"
+            broad = "FLAT" if delta == 0 else ("UP" if delta > 0 else "DOWN")
+        else:
+            pct = delta / abs(start_v)
+            broad = "FLAT" if abs(pct) <= OI_FLAT_PCT else ("UP" if pct > 0 else "DOWN")
+        if recent_start == 0:
+            recent_dir = "FLAT" if recent_delta == 0 else ("UP" if recent_delta > 0 else "DOWN")
+            recent_pct = 0.0
+        else:
+            recent_pct = recent_delta / abs(recent_start)
+            recent_dir = "FLAT" if abs(recent_pct) <= OI_FLAT_PCT else ("UP" if recent_pct > 0 else "DOWN")
+        pct = 0.0 if start_v == 0 else delta / abs(start_v)
+        print(f"OI ~3h/12 bars: {start_v:.6g} -> {end_v:.6g} ({pct:+.3%}); recent ~1h: {recent_pct:+.3%}")
+    else:
+        vals = [v for _, v in window]
+        span = max(vals) - min(vals) if vals else 0.0
+        tol = span * CVD_FLAT_REL
+        broad = "FLAT" if abs(delta) <= tol else ("UP" if delta > 0 else "DOWN")
+        rvals = [v for _, v in recent]
+        rspan = max(rvals) - min(rvals) if rvals else 0.0
+        rtol = rspan * CVD_FLAT_REL
+        recent_dir = "FLAT" if abs(recent_delta) <= rtol else ("UP" if recent_delta > 0 else "DOWN")
+        print(f"CVD ~3h/12 bars: {start_v:.6g} -> {end_v:.6g} (delta {delta:+.6g}); recent ~1h delta {recent_delta:+.6g}")
 
-    recent = [v for t, v in rows if start_t <= t <= end_t]
-    span = max(recent) - min(recent) if recent else 0.0
-    tolerance = span * CVD_FLAT_REL
-    print(f"CVD 1h: {start_v:.6g} -> {end_v:.6g} (delta {delta:+.6g}, flat tol {tolerance:.6g})")
-    if abs(delta) <= tolerance:
+    # Broad trend is primary. A clear opposite move in the latest ~1h means
+    # momentum is reversing, so withhold the point by returning FLAT.
+    if broad in ("UP", "DOWN") and recent_dir in ("UP", "DOWN") and broad != recent_dir:
+        print(f"{kind}: broad={broad}, recent={recent_dir} -> FLAT (recent reversal)")
         return "FLAT"
-    return "UP" if delta > 0 else "DOWN"
+    return broad
 
 
 def load_state():
@@ -420,6 +434,7 @@ def main():
             else:
                 status = f"觀察中・距離 {MIN_SCORE}/8 還差 {MIN_SCORE - score} 分"
             empirical = "累積中" if n < MIN_FORWARD_SAMPLES or rate is None else f"{rate:.1%}（1H樣本 {n}）"
+            news = news_status()
             message = (
                 f"📊 BTC 市場現況｜手動查詢\n\n"
                 f"💰 BTC：${closed_price:,.0f}\n"
@@ -434,7 +449,8 @@ def main():
                 f"ATR：{sig['atr_pct']:.2%}\n\n"
                 f"⚪ 狀態：{status}\n"
                 f"📊 Forward實測：{empirical}\n"
-                f"🧪 Forward進行中：{len(state['forward_tests'])}\n\n"
+                f"🧪 Forward進行中：{len(state['forward_tests'])}\n"
+                f"📰 消息：{news}\n\n"
                 f"ℹ️ 手動查詢不建立新 Forward Test"
             )
             send_discord(message)
@@ -476,7 +492,7 @@ def main():
         elif state["last_forward_candle"] != closed_time:
             # Mark candle processed even when no test is created; avoids duplicate work on 5m workflow runs.
             state["last_forward_candle"] = closed_time
-        print(f"Radar V4.2: LONG={sig['long_score']}/8 SHORT={sig['short_score']}/8 chosen={side} {score}/8")
+        print(f"Radar V4.4: LONG={sig['long_score']}/8 SHORT={sig['short_score']}/8 chosen={side} {score}/8")
     else:
         print(f"Radar PARTIAL: OI={oi}, CVD={cvd}; 本期不建立 Score/Forward 樣本")
 
