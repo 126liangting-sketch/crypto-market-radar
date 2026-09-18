@@ -111,5 +111,10 @@
   ],
   "last_closed_candle": 1789742700000,
   "last_signal_key": null,
-  "signal_armed": true
+  "signal_armed": true,
+  "forward_tests": [],
+  "forward_stats": {},
+  "last_forward_candle": 1789742700000,
+  "last_notification": {},
+  "next_test_id": 1
 }
