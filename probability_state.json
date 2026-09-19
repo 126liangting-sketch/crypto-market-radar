@@ -18,7 +18,7 @@
     "BULL|BULL|DOWN|UP": {
       "LONG": 0,
       "SHORT": 0,
-      "NEUTRAL": 9
+      "NEUTRAL": 10
     },
     "BULL|BULL|FLAT|FLAT": {
       "LONG": 0,
@@ -38,13 +38,13 @@
   },
   "pending": [
     {
-      "candle_time": 1789848900000,
-      "target_time": 1789848903600,
-      "price": 81236.34,
+      "candle_time": 1789849800000,
+      "target_time": 1789849803600,
+      "price": 81269.16,
       "state": "BULL|BULL|DOWN|UP"
     }
   ],
-  "last_closed_candle": 1789848900000,
+  "last_closed_candle": 1789849800000,
   "last_signal_key": null,
   "signal_armed": true,
   "forward_tests": [
@@ -1426,7 +1426,7 @@
       "score": 5,
       "results": {},
       "max_high": 81919.73,
-      "min_low": 81233.68,
+      "min_low": 81226.3,
       "tp1": 81648.67352000001,
       "tp2": 81973.96704,
       "sl": 80998.08648,
@@ -1487,13 +1487,13 @@
       "score": 5,
       "results": {},
       "max_high": 81919.73,
-      "min_low": 81233.68,
+      "min_low": 81226.3,
       "tp1": 81882.31435999999,
       "tp2": 82208.53872,
       "sl": 81229.86564,
       "risk_pct": 0.004,
       "first_outcome": "TP1",
-      "outcome_time": null,
+      "outcome_time": 1789849800000,
       "notify_setup": true,
       "features": {
         "ema_1h": "BULL",
@@ -1537,7 +1537,11 @@
       },
       "tp1_hit": true,
       "tp1_time": 1789831800000,
-      "TP1_notified": true
+      "TP1_notified": true,
+      "sl_hit": true,
+      "sl_time": 1789849800000,
+      "terminal_outcome": "SL",
+      "SL_notified": true
     },
     {
       "version": "V5_1_MECHANISM",
@@ -1549,7 +1553,7 @@
       "score": 5,
       "results": {},
       "max_high": 81919.73,
-      "min_low": 81233.68,
+      "min_low": 81226.3,
       "tp1": 82001.50924,
       "tp2": 82328.20848,
       "sl": 81348.11076,
@@ -1611,7 +1615,7 @@
       "score": 5,
       "results": {},
       "max_high": 81892.39,
-      "min_low": 81233.68,
+      "min_low": 81226.3,
       "tp1": 82219.95956,
       "tp2": 82547.52912,
       "sl": 81564.82044,
@@ -1673,7 +1677,7 @@
       "score": 6,
       "results": {},
       "max_high": 81884.64,
-      "min_low": 81233.68,
+      "min_low": 81226.3,
       "tp1": 82062.3918,
       "tp2": 82389.3336,
       "sl": 81408.5082,
@@ -1735,7 +1739,7 @@
       "score": 6,
       "results": {},
       "max_high": 81884.64,
-      "min_low": 81233.68,
+      "min_low": 81226.3,
       "tp1": 82118.10376,
       "tp2": 82445.26752000001,
       "sl": 81463.77624,
@@ -1797,7 +1801,7 @@
       "score": 6,
       "results": {},
       "max_high": 81837.44,
-      "min_low": 81233.68,
+      "min_low": 81226.3,
       "tp1": 82158.62520000001,
       "tp2": 82485.9504,
       "sl": 81503.9748,
@@ -1859,7 +1863,7 @@
       "score": 6,
       "results": {},
       "max_high": 81576.38,
-      "min_low": 81233.68,
+      "min_low": 81226.3,
       "tp1": 81835.26692,
       "tp2": 82161.30384,
       "sl": 81183.19308,
@@ -1918,7 +1922,7 @@
       "score": 6,
       "results": {},
       "max_high": 81525.17,
-      "min_low": 81233.68,
+      "min_low": 81226.3,
       "tp1": 81798.7414,
       "tp2": 82124.6328,
       "sl": 81146.95860000001,
@@ -1977,7 +1981,7 @@
       "score": 6,
       "results": {},
       "max_high": 81470.98,
-      "min_low": 81233.68,
+      "min_low": 81226.3,
       "tp1": 81786.82392,
       "tp2": 82112.66784,
       "sl": 81135.13608,
@@ -2137,7 +2141,7 @@
       "target_1_0": 0
     }
   },
-  "last_forward_candle": 1789848900000,
+  "last_forward_candle": 1789849800000,
   "last_notification": {
     "LONG|5": 1789804800000,
     "LONG|6": 1789791300000
