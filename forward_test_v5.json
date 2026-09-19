@@ -1,5 +1,5 @@
 {
-  "version": "V5_BASELINE",
+  "version": "V5_1_MECHANISM",
   "completed": [],
   "pending": [
     {
@@ -57,7 +57,10 @@
           "final": "UP"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "sl_hit": true,
+      "sl_time": 1789779600000,
+      "terminal_outcome": "SL"
     },
     {
       "version": "V5_BASELINE",
@@ -114,7 +117,10 @@
           "final": "UP"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "sl_hit": true,
+      "sl_time": 1789792200000,
+      "terminal_outcome": "SL"
     },
     {
       "version": "V5_BASELINE",
@@ -171,7 +177,10 @@
           "final": "UP"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "sl_hit": true,
+      "sl_time": 1789787700000,
+      "terminal_outcome": "SL"
     },
     {
       "version": "V5_BASELINE",
@@ -228,7 +237,10 @@
           "final": "FLAT"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "sl_hit": true,
+      "sl_time": 1789792200000,
+      "terminal_outcome": "SL"
     },
     {
       "version": "V5_BASELINE",
@@ -285,7 +297,10 @@
           "final": "FLAT"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "sl_hit": true,
+      "sl_time": 1789792200000,
+      "terminal_outcome": "SL"
     },
     {
       "version": "V5_BASELINE",
@@ -342,7 +357,10 @@
           "final": "FLAT"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "sl_hit": true,
+      "sl_time": 1789792200000,
+      "terminal_outcome": "SL"
     },
     {
       "version": "V5_BASELINE",
@@ -399,7 +417,10 @@
           "final": "FLAT"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "sl_hit": true,
+      "sl_time": 1789792200000,
+      "terminal_outcome": "SL"
     },
     {
       "version": "V5_BASELINE",
@@ -416,7 +437,7 @@
       "sl": 80876.23337999999,
       "risk_pct": 0.002,
       "first_outcome": "TP1",
-      "outcome_time": 1789802100000,
+      "outcome_time": 1789805700000,
       "features": {
         "ema_1h": "BULL",
         "ema_15m": "BULL",
@@ -456,7 +477,12 @@
           "final": "FLAT"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "tp1_hit": true,
+      "tp1_time": 1789802100000,
+      "tp2_hit": true,
+      "tp2_time": 1789805700000,
+      "terminal_outcome": "TP2"
     },
     {
       "version": "V5_BASELINE",
@@ -473,7 +499,7 @@
       "sl": 80973.34876,
       "risk_pct": 0.002,
       "first_outcome": "TP1",
-      "outcome_time": 1789805700000,
+      "outcome_time": 1789808400000,
       "features": {
         "ema_1h": "BULL",
         "ema_15m": "BULL",
@@ -513,7 +539,12 @@
           "final": "FLAT"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "tp1_hit": true,
+      "tp1_time": 1789805700000,
+      "tp2_hit": true,
+      "tp2_time": 1789808400000,
+      "terminal_outcome": "TP2"
     },
     {
       "version": "V5_BASELINE",
@@ -530,7 +561,7 @@
       "sl": 80916.4428,
       "risk_pct": 0.002,
       "first_outcome": "TP1",
-      "outcome_time": 1789805700000,
+      "outcome_time": 1789808400000,
       "features": {
         "ema_1h": "BULL",
         "ema_15m": "BULL",
@@ -570,7 +601,12 @@
           "final": "FLAT"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "tp1_hit": true,
+      "tp1_time": 1789805700000,
+      "tp2_hit": true,
+      "tp2_time": 1789808400000,
+      "terminal_outcome": "TP2"
     },
     {
       "version": "V5_BASELINE",
@@ -587,7 +623,7 @@
       "sl": 80907.08156,
       "risk_pct": 0.002,
       "first_outcome": "TP1",
-      "outcome_time": 1789805700000,
+      "outcome_time": 1789808400000,
       "features": {
         "ema_1h": "BULL",
         "ema_15m": "BULL",
@@ -627,7 +663,12 @@
           "final": "FLAT"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "tp1_hit": true,
+      "tp1_time": 1789805700000,
+      "tp2_hit": true,
+      "tp2_time": 1789808400000,
+      "terminal_outcome": "TP2"
     },
     {
       "version": "V5_BASELINE",
@@ -684,7 +725,9 @@
           "final": "FLAT"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "tp1_hit": true,
+      "tp1_time": 1789805700000
     }
   ]
 }
