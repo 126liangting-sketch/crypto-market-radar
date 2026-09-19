@@ -23,18 +23,18 @@
     "BULL|BULL|FLAT|FLAT": {
       "LONG": 0,
       "SHORT": 0,
-      "NEUTRAL": 21
+      "NEUTRAL": 22
     }
   },
   "pending": [
     {
-      "candle_time": 1789818300000,
-      "target_time": 1789818303600,
-      "price": 81283.7,
+      "candle_time": 1789819200000,
+      "target_time": 1789819203600,
+      "price": 81328.82,
       "state": "BULL|BULL|FLAT|FLAT"
     }
   ],
-  "last_closed_candle": 1789818300000,
+  "last_closed_candle": 1789819200000,
   "last_signal_key": null,
   "signal_armed": true,
   "forward_tests": [
@@ -951,8 +951,8 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81296.62,
-      "min_low": 81253.99,
+      "max_high": 81341.67,
+      "min_low": 81249.57,
       "tp1": 81588.44356,
       "tp2": 81913.49712,
       "sl": 80938.33644,
@@ -1112,20 +1112,13 @@
       "target_1_0": 0
     }
   },
-  "last_forward_candle": 1789818300000,
+  "last_forward_candle": 1789819200000,
   "last_notification": {
     "LONG|5": 1789804800000,
     "LONG|6": 1789791300000
   },
   "next_test_id": 17,
   "forward_history_v5": [],
-  "active_setup": {
-    "id": 1,
-    "side": "LONG",
-    "test_id": 13,
-    "start_time": 1789813800000,
-    "weak_bars": 1,
-    "max_notified_score": 5
-  },
+  "active_setup": null,
   "next_setup_id": 2
 }
