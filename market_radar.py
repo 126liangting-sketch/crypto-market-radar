@@ -11,8 +11,11 @@ WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 STATE = "probability_state.json"
 CSV_FILE = "forward_test_v5.csv"
 V5_JSON = "forward_test_v5.json"
-VERSION = "V5_BASELINE"
-TP_SL_ATR_MULT = 1.0
+VERSION = "V5_1_MECHANISM"
+TP_SL_ATR_MULT = 1.5
+MIN_RISK_PCT = 0.004          # minimum 0.40% stop distance; avoids ultra-tight stops in low ATR
+SETUP_INVALID_BARS = 2        # two consecutive closed 15m bars below 5/8 ends the setup
+SETUP_ENHANCE_SCORE = 7       # only a meaningful upgrade (7/8+) gets another Discord alert
 MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
 # Legacy V3 statistics are kept for backward compatibility.
@@ -212,6 +215,8 @@ def load_state():
     state.setdefault("last_notification", {})
     state.setdefault("next_test_id", 1)
     state.setdefault("forward_history_v5", [])
+    state.setdefault("active_setup", None)
+    state.setdefault("next_setup_id", 1)
     return state
 
 
@@ -316,11 +321,12 @@ def forward_bucket(state, side, score):
 
 
 def _hit_levels(test, row):
-    """Track TP/SL from closed 15m OHLC. If TP and SL occur inside the same candle,
-    ordering is unknowable from OHLC, so mark AMBIGUOUS instead of inventing a result.
+    """Track TP1/TP2/SL from closed 15m OHLC.
+    Returns newly confirmed events. If SL and TP1 are first touched in the same candle,
+    intrabar order is unknowable, so mark AMBIGUOUS rather than inventing an outcome.
     """
-    if test.get("first_outcome"):
-        return
+    if test.get("terminal_outcome") in ("SL", "TP2", "AMBIGUOUS"):
+        return []
     side = test["side"]
     high, low = float(row["high"]), float(row["low"])
     tp1, tp2, sl = float(test["tp1"]), float(test["tp2"]), float(test["sl"])
@@ -328,16 +334,32 @@ def _hit_levels(test, row):
         hit_sl, hit_tp1, hit_tp2 = low <= sl, high >= tp1, high >= tp2
     else:
         hit_sl, hit_tp1, hit_tp2 = high >= sl, low <= tp1, low <= tp2
-    if hit_sl and hit_tp1:
-        test["first_outcome"] = "AMBIGUOUS"
-    elif hit_sl:
-        test["first_outcome"] = "SL"
-    elif hit_tp2:
-        test["first_outcome"] = "TP2"
-    elif hit_tp1:
-        test["first_outcome"] = "TP1"
-    if test.get("first_outcome"):
+    events = []
+    already_tp1 = bool(test.get("tp1_hit"))
+    if not already_tp1 and hit_sl and hit_tp1:
+        test["first_outcome"] = test.get("first_outcome") or "AMBIGUOUS"
+        test["terminal_outcome"] = "AMBIGUOUS"
         test["outcome_time"] = int(row["time"])
+        return ["AMBIGUOUS"]
+    if hit_sl:
+        test["sl_hit"] = True
+        test["sl_time"] = int(row["time"])
+        test["first_outcome"] = test.get("first_outcome") or "SL"
+        test["terminal_outcome"] = "SL"
+        test["outcome_time"] = int(row["time"])
+        return ["SL"]
+    if hit_tp1 and not test.get("tp1_hit"):
+        test["tp1_hit"] = True
+        test["tp1_time"] = int(row["time"])
+        test["first_outcome"] = test.get("first_outcome") or ("TP2" if hit_tp2 else "TP1")
+        events.append("TP1")
+    if hit_tp2 and not test.get("tp2_hit"):
+        test["tp2_hit"] = True
+        test["tp2_time"] = int(row["time"])
+        test["terminal_outcome"] = "TP2"
+        test["outcome_time"] = int(row["time"])
+        events.append("TP2")
+    return events
 
 
 def export_v5_csv(state):
@@ -345,13 +367,13 @@ def export_v5_csv(state):
     payload = {
         "version": VERSION,
         "completed": state.get("forward_history_v5", []),
-        "pending": [x for x in state.get("forward_tests", []) if x.get("version") == VERSION],
+        "pending": [x for x in state.get("forward_tests", []) if str(x.get("version", "")).startswith("V5")],
     }
     with open(V5_JSON, "w", encoding="utf-8") as jf:
         json.dump(payload, jf, ensure_ascii=False, indent=2)
 
     fields = [
-        "version","id","side","score","entry_time","entry_price","tp1","tp2","sl","risk_pct",
+        "version","id","setup_id","side","score","entry_time","entry_price","tp1","tp2","sl","risk_pct",
         "ema_1h","ema_15m","zone_ok","zone_distance_atr","ema34_slope_atr","ema50_slope_atr","ema_gap_atr",
         "price_dir","oi","oi_broad_pct","oi_recent_pct","cvd","cvd_broad_delta","cvd_recent_delta","atr_pct","news",
         "ret_15m","ret_30m","ret_1h","ret_2h","mfe","mae","first_outcome","outcome_time"
@@ -377,8 +399,30 @@ def update_forward_tests(state, rows15):
             if entry_t < t <= latest_time:
                 test["max_high"] = max(test["max_high"], float(r["high"]))
                 test["min_low"] = min(test["min_low"], float(r["low"]))
-                if test.get("version") == VERSION and all(k in test for k in ("tp1","tp2","sl")):
-                    _hit_levels(test, r)
+                if all(k in test for k in ("tp1","tp2","sl")):
+                    new_events = _hit_levels(test, r)
+                    if new_events and test.get("notify_setup"):
+                        for event in new_events:
+                            event_key = f"{event}_notified"
+                            if not test.get(event_key):
+                                entry = float(test["entry_price"])
+                                if side == "LONG":
+                                    mfe_now = max(0.0, test["max_high"] / entry - 1)
+                                    mae_now = max(0.0, entry / test["min_low"] - 1)
+                                else:
+                                    mfe_now = max(0.0, entry / test["min_low"] - 1)
+                                    mae_now = max(0.0, test["max_high"] / entry - 1)
+                                icon = {"TP1":"✅", "TP2":"🏁", "SL":"❌", "AMBIGUOUS":"⚠️"}[event]
+                                label = {"TP1":"TP1 HIT", "TP2":"TP2 HIT", "SL":"SL HIT", "AMBIGUOUS":"TP/SL 同根K・順序不明"}[event]
+                                send_discord(
+                                    f"{icon} Setup #{test.get('setup_id','?')}｜BTC {side}｜{label}\n"
+                                    f"Entry ${entry:,.0f}｜MFE {mfe_now:.2%}｜MAE {mae_now:.2%}"
+                                )
+                                test[event_key] = True
+                        if any(e in ("TP2","SL","AMBIGUOUS") for e in new_events):
+                            active = state.get("active_setup")
+                            if active and active.get("test_id") == test.get("id"):
+                                state["active_setup"] = None
         bucket = forward_bucket(state, side, score)
         for label, seconds in FORWARD_HORIZONS.items():
             if label in test["results"] or latest_time < entry_t + seconds: continue
@@ -395,11 +439,11 @@ def update_forward_tests(state, rows15):
             mae = (entry / test["min_low"] - 1) if side == "LONG" else (test["max_high"] / entry - 1)
             bucket["completed_tests"] += 1; bucket["sum_mfe"] += max(0.0, mfe); bucket["sum_mae"] += max(0.0, mae)
             bucket["target_0_5"] += int(mfe >= 0.005); bucket["target_1_0"] += int(mfe >= 0.01)
-            if test.get("version") == VERSION:
+            if str(test.get("version", "")).startswith("V5"):
                 f = test.get("features", {})
                 oi_m, cvd_m = f.get("oi_metrics", {}), f.get("cvd_metrics", {})
                 row = {
-                    "version": VERSION, "id": test["id"], "side": side, "score": score,
+                    "version": test.get("version", VERSION), "id": test["id"], "setup_id": test.get("setup_id"), "side": side, "score": score,
                     "entry_time": entry_t, "entry_price": entry, "tp1": test.get("tp1"), "tp2": test.get("tp2"), "sl": test.get("sl"),
                     "risk_pct": test.get("risk_pct"), "ema_1h": f.get("ema_1h"), "ema_15m": f.get("ema_15m"),
                     "zone_ok": f.get("zone_ok"), "zone_distance_atr": f.get("zone_distance_atr"),
@@ -413,6 +457,10 @@ def update_forward_tests(state, rows15):
                 }
                 if not any(x.get("id") == row["id"] for x in state["forward_history_v5"]):
                     state["forward_history_v5"].append(row)
+            active = state.get("active_setup")
+            if active and active.get("test_id") == test.get("id"):
+                # Setup lifetime is capped at the full 2h forward window unless TP2/SL/invalid/reversal ended it earlier.
+                state["active_setup"] = None
             completed_msgs.append((test, mfe, mae))
         else:
             keep.append(test)
@@ -509,86 +557,111 @@ def main():
     if analytics_ok:
         sig = score_market(rows15, rows1h, oi, cvd)
         side, score = sig["side"], sig["score"]
+        news = news_status()
+
         # workflow_dispatch is a pure manual status query: it never creates a new signal/test.
         if MANUAL_RUN:
             rate, n = empirical_1h(state, side, score) if side in ("LONG", "SHORT") else (None, 0)
-            if score >= MIN_SCORE:
-                status = f"已達 {MIN_SCORE}/8 訊號門檻"
-            else:
-                status = f"觀察中・距離 {MIN_SCORE}/8 還差 {MIN_SCORE - score} 分"
+            status = f"已達 {MIN_SCORE}/8 訊號門檻" if score >= MIN_SCORE else f"觀察中・距離 {MIN_SCORE}/8 還差 {MIN_SCORE - score} 分"
             empirical = "累積中" if n < MIN_FORWARD_SAMPLES or rate is None else f"{rate:.1%}（1H樣本 {n}）"
-            news = news_status()
+            active = state.get("active_setup")
+            active_text = f"Setup #{active['id']} {active['side']}" if active else "無"
             message = (
                 f"📊 BTC 市場現況｜手動查詢\n\n"
                 f"💰 BTC：${closed_price:,.0f}\n"
                 f"目前方向：{'🟢 LONG' if side == 'LONG' else '🔴 SHORT' if side == 'SHORT' else '⚪ 無明確方向'}\n"
-                f"LONG：{sig['long_score']} / 8\n"
-                f"SHORT：{sig['short_score']} / 8\n\n"
-                f"1H：{emoji_ema(sig['ema_1h'])}\n"
-                f"15M：{emoji_ema(sig['ema_15m'])}\n"
+                f"LONG：{sig['long_score']} / 8\nSHORT：{sig['short_score']} / 8\n\n"
+                f"1H：{emoji_ema(sig['ema_1h'])}\n15M：{emoji_ema(sig['ema_15m'])}\n"
                 f"EMA Zone：{'✅ 符合' if sig['zone_ok'] else '➖ 未符合'}\n"
-                f"OI：{emoji_direction(oi)}\n"
-                f"CVD：{emoji_direction(cvd)}\n"
-                f"ATR：{sig['atr_pct']:.2%}\n\n"
-                f"⚪ 狀態：{status}\n"
-                f"📊 Forward實測：{empirical}\n"
-                f"🧪 Forward進行中：{len(state['forward_tests'])}\n"
-                f"📰 消息：{news}\n\n"
-                f"ℹ️ 手動查詢不建立新 Forward Test"
+                f"OI：{emoji_direction(oi)}\nCVD：{emoji_direction(cvd)}\nATR：{sig['atr_pct']:.2%}\n\n"
+                f"⚪ 狀態：{status}\n📊 Forward實測：{empirical}\n"
+                f"📡 目前 Setup：{active_text}\n🧪 Forward進行中：{len(state['forward_tests'])}\n"
+                f"📰 消息：{news}\n\nℹ️ 手動查詢不建立新 Forward Test"
             )
             send_discord(message)
-        # Every qualifying scheduled closed 15m candle becomes a forward-test sample, even if Discord is suppressed.
-        elif state["last_forward_candle"] != closed_time and side in ("LONG", "SHORT") and score >= MIN_SCORE:
-            test_id = state["next_test_id"]
-            state["next_test_id"] += 1
-            # V5 keeps the V4.5 trigger/score unchanged. TP/SL are research targets only.
-            risk = max(float(sig.get("atr_value") or 0.0) * TP_SL_ATR_MULT, closed_price * 0.002)
-            if side == "LONG":
-                sl, tp1, tp2 = closed_price - risk, closed_price + risk, closed_price + 2 * risk
-            else:
-                sl, tp1, tp2 = closed_price + risk, closed_price - risk, closed_price - 2 * risk
-            news = news_status()
-            state["forward_tests"].append({
-                "version": VERSION,
-                "id": test_id, "entry_time": closed_time, "entry_price": closed_price,
-                "side": side, "score": score, "results": {},
-                "max_high": closed_price, "min_low": closed_price,
-                "tp1": tp1, "tp2": tp2, "sl": sl, "risk_pct": risk / closed_price,
-                "first_outcome": None, "outcome_time": None,
-                "features": {
-                    "ema_1h": sig["ema_1h"], "ema_15m": sig["ema_15m"],
-                    "zone_ok": sig["zone_ok"], "zone_distance_atr": sig["zone_distance_atr"],
-                    "ema34_slope_atr": sig["ema34_slope_atr"], "ema50_slope_atr": sig["ema50_slope_atr"], "ema_gap_atr": sig["ema_gap_atr"],
-                    "price_dir": sig["price_dir"], "oi": oi, "cvd": cvd, "atr_pct": sig["atr_pct"],
-                    "oi_metrics": oi_metrics, "cvd_metrics": cvd_metrics, "news": news,
+
+        elif state["last_forward_candle"] != closed_time:
+            active = state.get("active_setup")
+            qualifying = side in ("LONG", "SHORT") and score >= MIN_SCORE
+            reversal_from = None
+
+            # Setup lifecycle: two consecutive non-qualifying bars invalidate the current setup.
+            if active:
+                if qualifying and side == active["side"]:
+                    active["weak_bars"] = 0
+                    if score >= SETUP_ENHANCE_SCORE and active.get("max_notified_score", 0) < SETUP_ENHANCE_SCORE:
+                        send_discord(
+                            f"🔥 Setup #{active['id']} 增強｜BTC {side} {score}/8\n"
+                            f"CVD {emoji_direction(cvd).split()[0]}｜OI {emoji_direction(oi).split()[0]}｜ATR {sig['atr_pct']:.2%}"
+                        )
+                        active["max_notified_score"] = score
+                elif qualifying and side != active["side"]:
+                    reversal_from = active["side"]
+                    state["active_setup"] = None
+                    active = None
+                else:
+                    active["weak_bars"] = int(active.get("weak_bars", 0)) + 1
+                    if active["weak_bars"] >= SETUP_INVALID_BARS:
+                        send_discord(f"⚪ Setup #{active['id']} 失效｜BTC {active['side']}｜連續 {SETUP_INVALID_BARS} 根未達 {MIN_SCORE}/8")
+                        state["active_setup"] = None
+                        active = None
+
+            # Every qualifying candle is still a research observation, but only a NEW setup alerts Discord.
+            if qualifying:
+                is_new_setup = state.get("active_setup") is None
+                setup_id = None
+                if is_new_setup:
+                    setup_id = state["next_setup_id"]
+                    state["next_setup_id"] += 1
+                else:
+                    setup_id = state["active_setup"]["id"]
+
+                test_id = state["next_test_id"]
+                state["next_test_id"] += 1
+                risk = max(float(sig.get("atr_value") or 0.0) * TP_SL_ATR_MULT, closed_price * MIN_RISK_PCT)
+                if side == "LONG":
+                    sl, tp1, tp2 = closed_price - risk, closed_price + risk, closed_price + 2 * risk
+                else:
+                    sl, tp1, tp2 = closed_price + risk, closed_price - risk, closed_price - 2 * risk
+
+                test = {
+                    "version": VERSION, "id": test_id, "setup_id": setup_id,
+                    "entry_time": closed_time, "entry_price": closed_price, "side": side, "score": score,
+                    "results": {}, "max_high": closed_price, "min_low": closed_price,
+                    "tp1": tp1, "tp2": tp2, "sl": sl, "risk_pct": risk / closed_price,
+                    "first_outcome": None, "outcome_time": None, "notify_setup": is_new_setup,
+                    "features": {
+                        "ema_1h": sig["ema_1h"], "ema_15m": sig["ema_15m"],
+                        "zone_ok": sig["zone_ok"], "zone_distance_atr": sig["zone_distance_atr"],
+                        "ema34_slope_atr": sig["ema34_slope_atr"], "ema50_slope_atr": sig["ema50_slope_atr"], "ema_gap_atr": sig["ema_gap_atr"],
+                        "price_dir": sig["price_dir"], "oi": oi, "cvd": cvd, "atr_pct": sig["atr_pct"],
+                        "oi_metrics": oi_metrics, "cvd_metrics": cvd_metrics, "news": news,
+                    }
                 }
-            })
+                state["forward_tests"].append(test)
+
+                if is_new_setup:
+                    state["active_setup"] = {
+                        "id": setup_id, "side": side, "test_id": test_id, "start_time": closed_time,
+                        "weak_bars": 0, "max_notified_score": score
+                    }
+                    rate, n = empirical_1h(state, side, score)
+                    empirical = f"累積中（1H 已驗證 {n}/{MIN_FORWARD_SAMPLES}）" if n < MIN_FORWARD_SAMPLES or rate is None else f"{rate:.1%}（1H樣本 {n}）"
+                    title_icon = "🔄" if reversal_from else ("🟢" if side == "LONG" else "🔴")
+                    title_extra = f"｜反轉自 {reversal_from}" if reversal_from else ""
+                    send_discord(
+                        f"{title_icon} NEW SETUP #{setup_id}｜BTC {side} {score}/8{title_extra}\n\n"
+                        f"💰 Entry ${closed_price:,.0f}\n"
+                        f"🎯 TP1 ${tp1:,.0f}｜TP2 ${tp2:,.0f}\n🛑 SL ${sl:,.0f}\n\n"
+                        f"1H {'🟢' if sig['ema_1h']=='BULL' else '🔴' if sig['ema_1h']=='BEAR' else '⚪'}｜"
+                        f"15M {'🟢' if sig['ema_15m']=='BULL' else '🔴' if sig['ema_15m']=='BEAR' else '⚪'}｜Zone {'🟢' if sig['zone_ok'] else '➖'}\n"
+                        f"CVD {emoji_direction(cvd).split()[0]}｜OI {emoji_direction(oi).split()[0]}｜ATR {sig['atr_pct']:.2%}\n"
+                        f"📊 {empirical}\n📰 {'🔴' if '高影響' in news else '🟡' if '新消息' in news else '⚪'}"
+                    )
+
             state["last_forward_candle"] = closed_time
 
-            rate, n = empirical_1h(state, side, score)
-            if should_notify(state, side, score, rate, n, closed_time):
-                if n < MIN_FORWARD_SAMPLES:
-                    confidence = f"累積中（1H 已驗證 {n}/{MIN_FORWARD_SAMPLES}）"
-                    level = score_level(score) + "・驗證中"
-                else:
-                    confidence = f"{rate:.1%}（1H樣本 {n}）"
-                    level = level_from_rate(rate)
-                message = (
-                    f"{'🟢' if side == 'LONG' else '🔴'} BTC {side}｜{score}/8｜Forward #{test_id}\n\n"
-                    f"💰 Entry ${closed_price:,.0f}\n"
-                    f"🎯 TP1 ${tp1:,.0f}｜TP2 ${tp2:,.0f}\n"
-                    f"🛑 SL ${sl:,.0f}\n\n"
-                    f"1H {'🟢' if sig['ema_1h']=='BULL' else '🔴' if sig['ema_1h']=='BEAR' else '⚪'}｜"
-                    f"15M {'🟢' if sig['ema_15m']=='BULL' else '🔴' if sig['ema_15m']=='BEAR' else '⚪'}｜"
-                    f"Zone {'🟢' if sig['zone_ok'] else '➖'}\n"
-                    f"CVD {emoji_direction(cvd).split()[0]}｜OI {emoji_direction(oi).split()[0]}｜ATR {sig['atr_pct']:.2%}\n"
-                    f"📰 {'🔴' if '高影響' in news else '🟡' if '新消息' in news else '⚪'}"
-                )
-                send_discord(message)
-        elif state["last_forward_candle"] != closed_time:
-            # Mark candle processed even when no test is created; avoids duplicate work on 5m workflow runs.
-            state["last_forward_candle"] = closed_time
-        print(f"Radar V5: LONG={sig['long_score']}/8 SHORT={sig['short_score']}/8 chosen={side} {score}/8")
+        print(f"Radar V5.1: LONG={sig['long_score']}/8 SHORT={sig['short_score']}/8 chosen={side} {score}/8")
     else:
         print(f"Radar PARTIAL: OI={oi}, CVD={cvd}; 本期不建立 Score/Forward 樣本")
 
