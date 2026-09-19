@@ -23,18 +23,18 @@
     "BULL|BULL|FLAT|FLAT": {
       "LONG": 0,
       "SHORT": 0,
-      "NEUTRAL": 28
+      "NEUTRAL": 29
     }
   },
   "pending": [
     {
-      "candle_time": 1789824600000,
-      "target_time": 1789824603600,
-      "price": 81240.53,
+      "candle_time": 1789825500000,
+      "target_time": 1789825503600,
+      "price": 81323.38,
       "state": "BULL|BULL|FLAT|FLAT"
     }
   ],
-  "last_closed_candle": 1789824600000,
+  "last_closed_candle": 1789825500000,
   "last_signal_key": null,
   "signal_armed": true,
   "forward_tests": [
@@ -1010,7 +1010,7 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81322.03,
+      "max_high": 81338.95,
       "min_low": 81152.07,
       "tp1": 81549.98032,
       "tp2": 81874.88064,
@@ -1069,7 +1069,7 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81322.03,
+      "max_high": 81338.95,
       "min_low": 81152.07,
       "tp1": 81579.77904,
       "tp2": 81904.79808,
@@ -1128,7 +1128,7 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81319.31,
+      "max_high": 81338.95,
       "min_low": 81152.07,
       "tp1": 81639.49696,
       "tp2": 81964.75392,
@@ -1187,7 +1187,7 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81319.31,
+      "max_high": 81338.95,
       "min_low": 81174.68,
       "tp1": 81542.93224,
       "tp2": 81867.80447999999,
@@ -1246,7 +1246,7 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81260.24,
+      "max_high": 81338.95,
       "min_low": 81174.68,
       "tp1": 81539.32788,
       "tp2": 81864.18576000001,
@@ -1305,8 +1305,8 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81240.53,
-      "min_low": 81240.53,
+      "max_high": 81338.95,
+      "min_low": 81208.79,
       "tp1": 81565.49212,
       "tp2": 81890.45423999999,
       "sl": 80915.56788,
@@ -1326,6 +1326,65 @@
         "oi": "FLAT",
         "cvd": "FLAT",
         "atr_pct": 0.0012556276669152225,
+        "oi_metrics": {
+          "broad_start": 2094893.0,
+          "broad_end": 2094893.0,
+          "broad_delta": 0.0,
+          "recent_start": 2094893.0,
+          "recent_end": 2094893.0,
+          "recent_delta": 0.0,
+          "broad_pct": 0.0,
+          "recent_pct": 0.0,
+          "broad_dir": "FLAT",
+          "recent_dir": "FLAT",
+          "final": "FLAT"
+        },
+        "cvd_metrics": {
+          "broad_start": 0.0,
+          "broad_end": 0.0,
+          "broad_delta": 0.0,
+          "recent_start": 0.0,
+          "recent_end": 0.0,
+          "recent_delta": 0.0,
+          "broad_span": 0.0,
+          "recent_span": 0.0,
+          "broad_dir": "FLAT",
+          "recent_dir": "FLAT",
+          "final": "FLAT"
+        },
+        "news": "🔴 高影響消息"
+      }
+    },
+    {
+      "version": "V5_1_MECHANISM",
+      "id": 23,
+      "setup_id": 2,
+      "entry_time": 1789825500000,
+      "entry_price": 81323.38,
+      "side": "LONG",
+      "score": 5,
+      "results": {},
+      "max_high": 81323.38,
+      "min_low": 81323.38,
+      "tp1": 81648.67352000001,
+      "tp2": 81973.96704,
+      "sl": 80998.08648,
+      "risk_pct": 0.004,
+      "first_outcome": null,
+      "outcome_time": null,
+      "notify_setup": false,
+      "features": {
+        "ema_1h": "BULL",
+        "ema_15m": "BULL",
+        "zone_ok": true,
+        "zone_distance_atr": 1.019460841989349,
+        "ema34_slope_atr": 0.09138258895411429,
+        "ema50_slope_atr": 0.1959884450643971,
+        "ema_gap_atr": 0.79277260537272,
+        "price_dir": "UP",
+        "oi": "FLAT",
+        "cvd": "FLAT",
+        "atr_pct": 0.00130633668061649,
         "oi_metrics": {
           "broad_start": 2094893.0,
           "broad_end": 2094893.0,
@@ -1466,12 +1525,12 @@
       "target_1_0": 0
     }
   },
-  "last_forward_candle": 1789824600000,
+  "last_forward_candle": 1789825500000,
   "last_notification": {
     "LONG|5": 1789804800000,
     "LONG|6": 1789791300000
   },
-  "next_test_id": 23,
+  "next_test_id": 24,
   "forward_history_v5": [],
   "active_setup": {
     "id": 2,
