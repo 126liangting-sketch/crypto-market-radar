@@ -23,18 +23,18 @@
     "BULL|BULL|FLAT|FLAT": {
       "LONG": 0,
       "SHORT": 0,
-      "NEUTRAL": 12
+      "NEUTRAL": 13
     }
   },
   "pending": [
     {
-      "candle_time": 1789801200000,
-      "target_time": 1789801203600,
-      "price": 81135.62,
+      "candle_time": 1789802100000,
+      "target_time": 1789802103600,
+      "price": 81078.6,
       "state": "BULL|BULL|FLAT|FLAT"
     }
   ],
-  "last_closed_candle": 1789801200000,
+  "last_closed_candle": 1789802100000,
   "last_signal_key": null,
   "signal_armed": true,
   "forward_tests": [
@@ -217,7 +217,7 @@
       "side": "LONG",
       "score": 6,
       "results": {},
-      "max_high": 81207.57,
+      "max_high": 81227.24,
       "min_low": 80896.35,
       "tp1": 81351.51142857142,
       "tp2": 81550.73285714285,
@@ -274,7 +274,7 @@
       "side": "LONG",
       "score": 6,
       "results": {},
-      "max_high": 81207.57,
+      "max_high": 81227.24,
       "min_low": 80896.35,
       "tp1": 81299.7357142857,
       "tp2": 81494.30142857143,
@@ -331,7 +331,7 @@
       "side": "LONG",
       "score": 6,
       "results": {},
-      "max_high": 81207.57,
+      "max_high": 81227.24,
       "min_low": 80896.35,
       "tp1": 81371.265,
       "tp2": 81556.73999999999,
@@ -388,7 +388,7 @@
       "side": "LONG",
       "score": 6,
       "results": {},
-      "max_high": 81135.62,
+      "max_high": 81227.24,
       "min_low": 80896.35,
       "tp1": 81273.91142857143,
       "tp2": 81437.86285714287,
@@ -445,14 +445,14 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81135.62,
+      "max_high": 81227.24,
       "min_low": 80994.75,
       "tp1": 81200.38662,
       "tp2": 81362.46324,
       "sl": 80876.23337999999,
       "risk_pct": 0.002,
-      "first_outcome": null,
-      "outcome_time": null,
+      "first_outcome": "TP1",
+      "outcome_time": 1789802100000,
       "features": {
         "ema_1h": "BULL",
         "ema_15m": "BULL",
@@ -502,8 +502,8 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81135.62,
-      "min_low": 81135.62,
+      "max_high": 81227.24,
+      "min_low": 81040.88,
       "tp1": 81297.89124,
       "tp2": 81460.16248,
       "sl": 80973.34876,
@@ -541,6 +541,63 @@
           "broad_delta": 0.0,
           "recent_start": 0.0,
           "recent_end": 0.0,
+          "recent_delta": 0.0,
+          "broad_span": 0.0,
+          "recent_span": 0.0,
+          "broad_dir": "FLAT",
+          "recent_dir": "FLAT",
+          "final": "FLAT"
+        },
+        "news": "🔴 高影響消息"
+      }
+    },
+    {
+      "version": "V5_BASELINE",
+      "id": 10,
+      "entry_time": 1789802100000,
+      "entry_price": 81078.6,
+      "side": "LONG",
+      "score": 5,
+      "results": {},
+      "max_high": 81078.6,
+      "min_low": 81078.6,
+      "tp1": 81240.75720000001,
+      "tp2": 81402.91440000001,
+      "sl": 80916.4428,
+      "risk_pct": 0.002,
+      "first_outcome": null,
+      "outcome_time": null,
+      "features": {
+        "ema_1h": "BULL",
+        "ema_15m": "BULL",
+        "zone_ok": true,
+        "zone_distance_atr": 0.3088997465259349,
+        "ema34_slope_atr": 0.05974694446884635,
+        "ema50_slope_atr": 0.2561824315894552,
+        "ema_gap_atr": 1.2557714803383884,
+        "price_dir": "DOWN",
+        "oi": "FLAT",
+        "cvd": "FLAT",
+        "atr_pct": 0.0014786709616171545,
+        "oi_metrics": {
+          "broad_start": 2094893.0,
+          "broad_end": 2094893.0,
+          "broad_delta": 0.0,
+          "recent_start": 2094893.0,
+          "recent_end": 2094893.0,
+          "recent_delta": 0.0,
+          "broad_pct": 0.0,
+          "recent_pct": 0.0,
+          "broad_dir": "FLAT",
+          "recent_dir": "FLAT",
+          "final": "FLAT"
+        },
+        "cvd_metrics": {
+          "broad_start": -2.0,
+          "broad_end": -2.0,
+          "broad_delta": 0.0,
+          "recent_start": -2.0,
+          "recent_end": -2.0,
           "recent_delta": 0.0,
           "broad_span": 0.0,
           "recent_span": 0.0,
@@ -635,11 +692,11 @@
       "target_1_0": 0
     }
   },
-  "last_forward_candle": 1789801200000,
+  "last_forward_candle": 1789802100000,
   "last_notification": {
-    "LONG|5": 1789801200000,
+    "LONG|5": 1789802100000,
     "LONG|6": 1789791300000
   },
-  "next_test_id": 10,
+  "next_test_id": 11,
   "forward_history_v5": []
 }
