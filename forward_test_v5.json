@@ -964,6 +964,65 @@
         },
         "news": "🔴 高影響消息"
       }
+    },
+    {
+      "version": "V5_1_MECHANISM",
+      "id": 17,
+      "setup_id": 2,
+      "entry_time": 1789820100000,
+      "entry_price": 81225.08,
+      "side": "LONG",
+      "score": 5,
+      "results": {},
+      "max_high": 81270.99,
+      "min_low": 81208.73,
+      "tp1": 81549.98032,
+      "tp2": 81874.88064,
+      "sl": 80900.17968,
+      "risk_pct": 0.004,
+      "first_outcome": null,
+      "outcome_time": null,
+      "notify_setup": true,
+      "features": {
+        "ema_1h": "BULL",
+        "ema_15m": "BULL",
+        "zone_ok": true,
+        "zone_distance_atr": 0.2565651591619415,
+        "ema34_slope_atr": 0.18177618292766162,
+        "ema50_slope_atr": 0.26896822278712346,
+        "ema_gap_atr": 0.8632602878579148,
+        "price_dir": "DOWN",
+        "oi": "FLAT",
+        "cvd": "FLAT",
+        "atr_pct": 0.0014253162763450242,
+        "oi_metrics": {
+          "broad_start": 2094893.0,
+          "broad_end": 2094893.0,
+          "broad_delta": 0.0,
+          "recent_start": 2094893.0,
+          "recent_end": 2094893.0,
+          "recent_delta": 0.0,
+          "broad_pct": 0.0,
+          "recent_pct": 0.0,
+          "broad_dir": "FLAT",
+          "recent_dir": "FLAT",
+          "final": "FLAT"
+        },
+        "cvd_metrics": {
+          "broad_start": -4000.0,
+          "broad_end": -4000.0,
+          "broad_delta": 0.0,
+          "recent_start": -4000.0,
+          "recent_end": -4000.0,
+          "recent_delta": 0.0,
+          "broad_span": 0.0,
+          "recent_span": 0.0,
+          "broad_dir": "FLAT",
+          "recent_dir": "FLAT",
+          "final": "FLAT"
+        },
+        "news": "🔴 高影響消息"
+      }
     }
   ]
 }
