@@ -24,17 +24,22 @@
       "LONG": 0,
       "SHORT": 0,
       "NEUTRAL": 31
+    },
+    "BULL|BULL|FLAT|UP": {
+      "LONG": 0,
+      "SHORT": 0,
+      "NEUTRAL": 1
     }
   },
   "pending": [
     {
-      "candle_time": 1789827300000,
-      "target_time": 1789827303600,
-      "price": 81548.27,
+      "candle_time": 1789828200000,
+      "target_time": 1789828203600,
+      "price": 81507.95,
       "state": "BULL|BULL|FLAT|UP"
     }
   ],
-  "last_closed_candle": 1789827300000,
+  "last_closed_candle": 1789828200000,
   "last_signal_key": null,
   "signal_armed": true,
   "forward_tests": [
@@ -106,7 +111,7 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 80896.35,
       "tp1": 81473.36857142857,
       "tp2": 81684.58714285713,
@@ -166,7 +171,7 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 80896.35,
       "tp1": 81558.70714285715,
       "tp2": 81768.28428571428,
@@ -226,7 +231,7 @@
       "side": "LONG",
       "score": 6,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 80896.35,
       "tp1": 81351.51142857142,
       "tp2": 81550.73285714285,
@@ -286,7 +291,7 @@
       "side": "LONG",
       "score": 6,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 80896.35,
       "tp1": 81299.7357142857,
       "tp2": 81494.30142857143,
@@ -346,7 +351,7 @@
       "side": "LONG",
       "score": 6,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 80896.35,
       "tp1": 81371.265,
       "tp2": 81556.73999999999,
@@ -406,7 +411,7 @@
       "side": "LONG",
       "score": 6,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 80896.35,
       "tp1": 81273.91142857143,
       "tp2": 81437.86285714287,
@@ -466,7 +471,7 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 80994.75,
       "tp1": 81200.38662,
       "tp2": 81362.46324,
@@ -528,7 +533,7 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 81001.82,
       "tp1": 81297.89124,
       "tp2": 81460.16248,
@@ -590,7 +595,7 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 81001.82,
       "tp1": 81240.75720000001,
       "tp2": 81402.91440000001,
@@ -652,7 +657,7 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 81044.91,
       "tp1": 81231.35844,
       "tp2": 81393.49688,
@@ -714,7 +719,7 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 81152.07,
       "tp1": 81379.46406,
       "tp2": 81541.89812,
@@ -777,13 +782,13 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 81152.07,
       "tp1": 81560.3416,
       "tp2": 81885.28319999999,
       "sl": 80910.45839999999,
       "risk_pct": 0.004,
-      "first_outcome": null,
+      "first_outcome": "TP1",
       "outcome_time": null,
       "notify_setup": true,
       "features": {
@@ -825,7 +830,10 @@
           "final": "DOWN"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "tp1_hit": true,
+      "tp1_time": 1789828200000,
+      "TP1_notified": true
     },
     {
       "version": "V5_1_MECHANISM",
@@ -836,7 +844,7 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 81152.07,
       "tp1": 81519.43864000001,
       "tp2": 81844.21728,
@@ -897,7 +905,7 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 81152.07,
       "tp1": 81616.27444,
       "tp2": 81941.43888,
@@ -956,13 +964,13 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 81152.07,
       "tp1": 81588.44356,
       "tp2": 81913.49712,
       "sl": 80938.33644,
       "risk_pct": 0.004,
-      "first_outcome": null,
+      "first_outcome": "TP1",
       "outcome_time": null,
       "notify_setup": false,
       "features": {
@@ -1004,7 +1012,9 @@
           "final": "FLAT"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "tp1_hit": true,
+      "tp1_time": 1789828200000
     },
     {
       "version": "V5_1_MECHANISM",
@@ -1015,13 +1025,13 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 81152.07,
       "tp1": 81549.98032,
       "tp2": 81874.88064,
       "sl": 80900.17968,
       "risk_pct": 0.004,
-      "first_outcome": null,
+      "first_outcome": "TP1",
       "outcome_time": null,
       "notify_setup": true,
       "features": {
@@ -1063,7 +1073,10 @@
           "final": "FLAT"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "tp1_hit": true,
+      "tp1_time": 1789828200000,
+      "TP1_notified": true
     },
     {
       "version": "V5_1_MECHANISM",
@@ -1074,13 +1087,13 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 81152.07,
       "tp1": 81579.77904,
       "tp2": 81904.79808,
       "sl": 80929.74096,
       "risk_pct": 0.004,
-      "first_outcome": null,
+      "first_outcome": "TP1",
       "outcome_time": null,
       "notify_setup": false,
       "features": {
@@ -1122,7 +1135,9 @@
           "final": "FLAT"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "tp1_hit": true,
+      "tp1_time": 1789828200000
     },
     {
       "version": "V5_1_MECHANISM",
@@ -1133,7 +1148,7 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 81152.07,
       "tp1": 81639.49696,
       "tp2": 81964.75392,
@@ -1192,7 +1207,7 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 81174.68,
       "tp1": 81542.93224,
       "tp2": 81867.80447999999,
@@ -1253,7 +1268,7 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 81174.68,
       "tp1": 81539.32788,
       "tp2": 81864.18576000001,
@@ -1314,13 +1329,13 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 81208.79,
       "tp1": 81565.49212,
       "tp2": 81890.45423999999,
       "sl": 80915.56788,
       "risk_pct": 0.004,
-      "first_outcome": null,
+      "first_outcome": "TP1",
       "outcome_time": null,
       "notify_setup": false,
       "features": {
@@ -1362,7 +1377,9 @@
           "final": "FLAT"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "tp1_hit": true,
+      "tp1_time": 1789828200000
     },
     {
       "version": "V5_1_MECHANISM",
@@ -1373,7 +1390,7 @@
       "side": "LONG",
       "score": 5,
       "results": {},
-      "max_high": 81549.03,
+      "max_high": 81607.15,
       "min_low": 81306.4,
       "tp1": 81648.67352000001,
       "tp2": 81973.96704,
@@ -1534,7 +1551,7 @@
       "target_1_0": 0
     }
   },
-  "last_forward_candle": 1789827300000,
+  "last_forward_candle": 1789828200000,
   "last_notification": {
     "LONG|5": 1789804800000,
     "LONG|6": 1789791300000
