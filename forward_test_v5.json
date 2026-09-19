@@ -1441,7 +1441,7 @@
       "score": 5,
       "results": {},
       "max_high": 81919.73,
-      "min_low": 81540.5,
+      "min_low": 81458.01,
       "tp1": 81882.31435999999,
       "tp2": 82208.53872,
       "sl": 81229.86564,
@@ -1503,7 +1503,7 @@
       "score": 5,
       "results": {},
       "max_high": 81919.73,
-      "min_low": 81540.5,
+      "min_low": 81458.01,
       "tp1": 82001.50924,
       "tp2": 82328.20848,
       "sl": 81348.11076,
@@ -1562,13 +1562,13 @@
       "score": 5,
       "results": {},
       "max_high": 81892.39,
-      "min_low": 81575.1,
+      "min_low": 81458.01,
       "tp1": 82219.95956,
       "tp2": 82547.52912,
       "sl": 81564.82044,
       "risk_pct": 0.004,
-      "first_outcome": null,
-      "outcome_time": null,
+      "first_outcome": "SL",
+      "outcome_time": 1789833600000,
       "notify_setup": false,
       "features": {
         "ema_1h": "BULL",
@@ -1609,7 +1609,10 @@
           "final": "UP"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "sl_hit": true,
+      "sl_time": 1789833600000,
+      "terminal_outcome": "SL"
     }
   ]
 }
