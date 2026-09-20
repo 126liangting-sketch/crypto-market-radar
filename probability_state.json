@@ -1450,5 +1450,17 @@
     }
   ],
   "active_setup": null,
-  "next_setup_id": 7
+  "next_setup_id": 7,
+  "v6": {
+    "last_processed_candle": null,
+    "next_setup_id": 1,
+    "next_test_id": 1,
+    "active_setup": null,
+    "breakout_watch": null,
+    "history": [],
+    "news": {
+      "last_major_id": "bc0e53dd51b638477c87ead22c9d0cf3dde81d26c80a0fb268c9e64bbc789dd6",
+      "last_major_time": 1789918428
+    }
+  }
 }
