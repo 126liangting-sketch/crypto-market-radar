@@ -426,15 +426,14 @@ def update_forward_tests(state, rows15):
         bucket = forward_bucket(state, side, score)
         for label, seconds in FORWARD_HORIZONS.items():
             if label in test["results"] or latest_time < entry_t + seconds: continue
-          target_time = entry_t + seconds
+                 target_time = entry_t + seconds
 
-row = next(
-    (r for r in rows15 if int(r["time"]) >= target_time),
-    None
-)
-
-if row is None:
-    continue
+        row = next(
+            (r for r in rows15 if int(r["time"]) >= target_time),
+            None
+        )
+        if row is None:
+        continue
             px = float(row["close"])
             raw_ret = px / entry - 1
             signed = raw_ret if side == "LONG" else -raw_ret
