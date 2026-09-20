@@ -12,7 +12,7 @@ WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 STATE = "probability_state.json"
 CSV_FILE = "forward_test_v5.csv"
 V5_JSON = "forward_test_v5.json"
-VERSION = "V6_OKX_1_FORMAL"
+VERSION = "V6_OKX_2_FORMAL"
 TP_SL_ATR_MULT = 1.5
 MIN_RISK_PCT = 0.004          # minimum 0.40% stop distance; avoids ultra-tight stops in low ATR
 SETUP_INVALID_BARS = 3        # three consecutive closed 15m bars below 5/8 ends the setup
@@ -74,7 +74,7 @@ def candles(resolution, count=200):
     OKX candle: [ts,o,h,l,c,vol,volCcy,volCcyQuote,confirm]
     volCcy is BTC volume for BTC-USDT-SWAP and is used for Volume ratio.
     """
-    bar = {"15m": "15m", "1h": "1H"}[resolution]
+    bar = {"1m": "1m", "15m": "15m", "1h": "1H"}[resolution]
     # /history-candles supports historical closed candles. 100 per request is a safe page size.
     rows, after = [], None
     while len(rows) < count:
@@ -190,11 +190,58 @@ def oi_details_from_state(state):
 
 
 def cvd_details_okx():
-    """CVD is deliberately UNAVAILABLE in V6 OKX v1.
-    We do not reconstruct a fake 1h/3h CVD from a short recent-trades snapshot.
+    """Return a transparent candle-based CVD *proxy* from OKX 1m candles.
+
+    OKX public REST trade history covered only seconds during live testing, so it
+    cannot honestly reconstruct a complete 1h/3h true taker CVD from a scheduled
+    GitHub Action. Instead we use 1-minute BTC-USDT-SWAP candles and estimate
+    directional volume with Close Location Value (CLV):
+
+        delta_proxy = volume * (2*close - high - low) / (high - low)
+
+    This is NOT true trade-by-trade CVD. Discord labels it "CVD Proxy".
+    It is useful as a consistent flow-confirmation feature without pretending
+    unavailable public trade history is complete.
     """
-    return "UNAVAILABLE", {"available": False, "recent_dir": "UNAVAILABLE",
-                           "recent_delta": 0.0, "broad_span": 0.0}
+    try:
+        rows = closed_rows("1m", 220)
+    except Exception as e:
+        print(f"OKX CVD Proxy 暫時無法取得: {type(e).__name__}: {e}")
+        return "UNAVAILABLE", {"available": False, "recent_dir": "UNAVAILABLE",
+                               "recent_delta": 0.0, "broad_delta": 0.0,
+                               "broad_span": 0.0, "source": "OKX_1M_CLV_PROXY"}
+
+    deltas = []
+    for r in rows:
+        h, l, c = float(r["high"]), float(r["low"]), float(r["close"])
+        v = float(r.get("volume", 0) or 0)
+        if h <= l or v <= 0:
+            d = 0.0
+        else:
+            clv = max(-1.0, min(1.0, (2.0*c - h - l) / (h - l)))
+            d = v * clv
+        deltas.append(d)
+
+    if len(deltas) < 180:
+        return "UNAVAILABLE", {"available": False, "recent_dir": "UNAVAILABLE",
+                               "recent_delta": 0.0, "broad_delta": 0.0,
+                               "broad_span": 0.0, "source": "OKX_1M_CLV_PROXY"}
+
+    recent = deltas[-60:]
+    broad = deltas[-180:]
+    recent_delta = sum(recent)
+    broad_delta = sum(broad)
+    broad_span = sum(abs(x) for x in broad)
+    rel = abs(recent_delta) / broad_span if broad_span else 0.0
+    recent_dir = "FLAT" if rel < CVD_FLAT_REL else ("UP" if recent_delta > 0 else "DOWN")
+    broad_rel = abs(broad_delta) / broad_span if broad_span else 0.0
+    broad_dir = "FLAT" if broad_rel < CVD_FLAT_REL else ("UP" if broad_delta > 0 else "DOWN")
+    m = {"available": True, "recent_dir": recent_dir, "broad_dir": broad_dir,
+         "recent_delta": recent_delta, "broad_delta": broad_delta,
+         "broad_span": broad_span, "recent_rel": rel,
+         "source": "OKX_1M_CLV_PROXY"}
+    print(f"OKX CVD Proxy: 1H={recent_delta:+.4f} BTC ({recent_dir}) | 3H={broad_delta:+.4f} BTC ({broad_dir})")
+    return recent_dir, m
 
 def ema_series(values, length):
     if len(values) < length:
@@ -273,7 +320,7 @@ def send_discord(message):
 
 
 
-VERSION = "V6_OKX_1_FORMAL"
+VERSION = "V6_OKX_2_FORMAL"
 V5_JSON = "forward_test_v5.json"
 V5_CSV = "forward_test_v5.csv"
 V6_JSON = "forward_test_v6.json"
@@ -567,7 +614,7 @@ def create_signal(state, side, trigger_type, level, ext, ctx, flow, vol, risk, c
     wanted="BULL" if side=="LONG" else "BEAR"
     if ctx["ema_1h"]!=wanted: warning="\n⚠️ 逆 1H 趨勢・偏激進"
     typ="BREAKOUT 突破" if trigger_type=="BREAKOUT" else "RETEST 回踩"
-    send_discord(f"⚡ 新訊號 #{sid}｜BTC {zh_side(side)}\n\n💰 進場 ${close:,.0f}\n🎯 TP1 ${risk['tp1']:,.0f}｜TP2 ${risk['tp2']:,.0f}\n🛑 SL ${risk['sl']:,.0f}\n⚖️ 風險距離 {risk['risk_atr']:.2f} ATR\n\n📍 {typ}\n1H：{em(ctx['ema_1h'])}\n15M：{em(ctx['ema_15m'])}\nVolume：{'🔥 ' if vol>=VOL_STRONG else ''}{vol:.2f}×\nCVD：{fd(flow['cvd_dir'])}\nOI：{fd(flow['oi_dir'])}\n品質 Score：{q}/8{warning}\n📰 {news}")
+    send_discord(f"⚡ 新訊號 #{sid}｜BTC {zh_side(side)}\n\n💰 進場 ${close:,.0f}\n🎯 TP1 ${risk['tp1']:,.0f}｜TP2 ${risk['tp2']:,.0f}\n🛑 SL ${risk['sl']:,.0f}\n⚖️ 風險距離 {risk['risk_atr']:.2f} ATR\n\n📍 {typ}\n1H：{em(ctx['ema_1h'])}\n15M：{em(ctx['ema_15m'])}\nVolume：{'🔥 ' if vol>=VOL_STRONG else ''}{vol:.2f}×\nCVD Proxy：{fd(flow['cvd_dir'])}\nOI：{fd(flow['oi_dir'])}\n品質 Score：{q}/8{warning}\n📰 {news}")
 
 
 def main():
@@ -589,7 +636,7 @@ def main():
     if MANUAL_RUN:
         active=v.get("active_setup"); at=f"#{active['id']} {zh_side(active['side'])}" if active else "無"
         sh=highs[-1][1] if highs else None; sl=lows[-1][1] if lows else None
-        send_discord(f"📊 BTC V6 OKX 市場現況｜手動查詢\n\n💰 BTC：${close:,.0f}\n1H：{em(ctx['ema_1h'])}\n15M：{em(ctx['ema_15m'])}\nEMA Zone 距離：{ctx['zone_distance_atr']:.2f} ATR\nVolume：{vol:.2f}×\nOI：{fd(om.get('recent_dir','UNAVAILABLE'))}{(' (' + format(float(om['recent_pct']), '+.2%') + ')') if om.get('recent_pct') is not None else ''}\nCVD：{fd(cm.get('recent_dir','FLAT'))}\nATR：{a/close:.2%}\n\n最近 Swing High：${sh:,.0f}\n最近 Swing Low：${sl:,.0f}\n📡 目前訊號：{at}\n🧪 V6 實測完成：{len(v['history'])}｜進行中：{sum(str(x.get('version','')).startswith('V6') for x in state['forward_tests'])}\n📰 {news}\n\nℹ️ 手動查詢不建立新實測樣本")
+        send_discord(f"📊 BTC V6 OKX 市場現況｜手動查詢\n\n💰 BTC：${close:,.0f}\n1H：{em(ctx['ema_1h'])}\n15M：{em(ctx['ema_15m'])}\nEMA Zone 距離：{ctx['zone_distance_atr']:.2f} ATR\nVolume：{vol:.2f}×\nOI：{fd(om.get('recent_dir','UNAVAILABLE'))}{(' (' + format(float(om['recent_pct']), '+.2%') + ')') if om.get('recent_pct') is not None else ''}\nCVD Proxy：{fd(cm.get('recent_dir','UNAVAILABLE'))}\nATR：{a/close:.2%}\n\n最近 Swing High：${sh:,.0f}\n最近 Swing Low：${sl:,.0f}\n📡 目前訊號：{at}\n🧪 V6 實測完成：{len(v['history'])}｜進行中：{sum(str(x.get('version','')).startswith('V6') for x in state['forward_tests'])}\n📰 {news}\n\nℹ️ 手動查詢不建立新實測樣本")
         export_data(state); save_state(state); return
 
     if v.get("last_processed_candle")!=ct:
@@ -604,7 +651,7 @@ def main():
                 side=active["side"]; fl=long_flow if side=="LONG" else short_flow; wanted="BULL" if side=="LONG" else "BEAR"
                 evidence=sum([ctx["ema_1h"]==wanted,ctx["ema_15m"]==wanted,fl["strong_both"],vol>=VOL_STRONG])
                 if evidence>=2:
-                    send_discord(f"🔥 訊號 #{active['id']} 增強｜BTC {zh_side(side)}\n\n📍 原結構持續守住\nVolume：{vol:.2f}×\nCVD：{fd(fl['cvd_dir'])}\nOI：{fd(fl['oi_dir'])}\n1H：{em(ctx['ema_1h'])}")
+                    send_discord(f"🔥 訊號 #{active['id']} 增強｜BTC {zh_side(side)}\n\n📍 原結構持續守住\nVolume：{vol:.2f}×\nCVD Proxy：{fd(fl['cvd_dir'])}\nOI：{fd(fl['oi_dir'])}\n1H：{em(ctx['ema_1h'])}")
                     active["enhanced"]=True
 
         # Detect fresh 2-2 swing breakout. Require previous close not already beyond the same level.
@@ -645,7 +692,7 @@ def main():
         v["last_processed_candle"]=ct
 
     export_data(state); save_state(state)
-    print(f"Radar V6 OKX: BTC={close:.0f} 1H={ctx['ema_1h']} 15M={ctx['ema_15m']} Vol={vol:.2f}x V6 completed={len(v['history'])}")
+    print(f"Radar V6 OKX v2: BTC={close:.0f} 1H={ctx['ema_1h']} 15M={ctx['ema_15m']} Vol={vol:.2f}x V6 completed={len(v['history'])}")
 
 
 if __name__ == "__main__": main()
