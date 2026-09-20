@@ -264,7 +264,7 @@ def send_discord(message):
 
 
 
-VERSION = "V6_0_FORMAL"
+VERSION = "V6_1_FLOW_FIX"
 V5_JSON = "forward_test_v5.json"
 V5_CSV = "forward_test_v5.csv"
 V6_JSON = "forward_test_v6.json"
@@ -554,6 +554,7 @@ def create_signal(state, side, trigger_type, level, ext, ctx, flow, vol, risk, c
 
 
 def main():
+    print("=== BTC Market Radar V6.1 FLOW FIX ===")
     state=load_state(); rows15=closed_rows("15m",240); rows1h=closed_rows("1h",120)
     if len(rows15)<80 or len(rows1h)<60: raise RuntimeError("K線資料不足")
     closed=rows15[-1]; prev=rows15[-2]; ct=int(closed["time"]); close=float(closed["close"]); prev_close=float(prev["close"])
