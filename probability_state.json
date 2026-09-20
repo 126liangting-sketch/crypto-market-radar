@@ -1461,6 +1461,12 @@
     "news": {
       "last_major_id": "bc0e53dd51b638477c87ead22c9d0cf3dde81d26c80a0fb268c9e64bbc789dd6",
       "last_major_time": 1789918428
-    }
+    },
+    "oi_history": [
+      {
+        "time": 1789921634,
+        "value": 30453.036300000123
+      }
+    ]
   }
 }
