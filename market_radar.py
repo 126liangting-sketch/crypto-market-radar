@@ -11,10 +11,10 @@ WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 STATE = "probability_state.json"
 CSV_FILE = "forward_test_v5.csv"
 V5_JSON = "forward_test_v5.json"
-VERSION = "V5_1_MECHANISM"
+VERSION = "V5_2_MECHANISM"
 TP_SL_ATR_MULT = 1.5
 MIN_RISK_PCT = 0.004          # minimum 0.40% stop distance; avoids ultra-tight stops in low ATR
-SETUP_INVALID_BARS = 2        # two consecutive closed 15m bars below 5/8 ends the setup
+SETUP_INVALID_BARS = 3        # three consecutive closed 15m bars below 5/8 ends the setup
 SETUP_ENHANCE_SCORE = 7       # only a meaningful upgrade (7/8+) gets another Discord alert
 MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
@@ -413,10 +413,10 @@ def update_forward_tests(state, rows15):
                                     mfe_now = max(0.0, entry / test["min_low"] - 1)
                                     mae_now = max(0.0, test["max_high"] / entry - 1)
                                 icon = {"TP1":"✅", "TP2":"🏁", "SL":"❌", "AMBIGUOUS":"⚠️"}[event]
-                                label = {"TP1":"TP1 HIT", "TP2":"TP2 HIT", "SL":"SL HIT", "AMBIGUOUS":"TP/SL 同根K・順序不明"}[event]
+                                label = {"TP1":"TP1 達成", "TP2":"TP2 達成", "SL":"SL 觸發", "AMBIGUOUS":"TP/SL 同根K・順序不明"}[event]
                                 send_discord(
-                                    f"{icon} Setup #{test.get('setup_id','?')}｜BTC {side}｜{label}\n"
-                                    f"Entry ${entry:,.0f}｜MFE {mfe_now:.2%}｜MAE {mae_now:.2%}"
+                                    f"{icon} 訊號 #{test.get('setup_id','?')}｜BTC {'做多' if side=='LONG' else '做空'}｜{label}\n"
+                                    f"進場 ${entry:,.0f}｜MFE {mfe_now:.2%}｜MAE {mae_now:.2%}"
                                 )
                                 test[event_key] = True
                         if any(e in ("TP2","SL","AMBIGUOUS") for e in new_events):
@@ -426,14 +426,11 @@ def update_forward_tests(state, rows15):
         bucket = forward_bucket(state, side, score)
         for label, seconds in FORWARD_HORIZONS.items():
             if label in test["results"] or latest_time < entry_t + seconds: continue
-                 target_time = entry_t + seconds
-
-        row = next(
-            (r for r in rows15 if int(r["time"]) >= target_time),
-            None
-        )
-        if row is None:
-        continue
+            target_time = entry_t + seconds
+            # Use the first available closed 15m candle at/after the target.
+            # This avoids exact-timestamp misses and also backfills older pending samples.
+            row = next((r for r in rows15 if int(r["time"]) >= target_time), None)
+            if row is None: continue
             px = float(row["close"])
             raw_ret = px / entry - 1
             signed = raw_ret if side == "LONG" else -raw_ret
@@ -481,6 +478,16 @@ def empirical_1h(state, side, score):
     return b["correct"] / b["total"], b["total"]
 
 
+def total_validated_1h(state):
+    """Total V5/V5.1 forward observations that already have a 1h result."""
+    completed = sum(1 for x in state.get("forward_history_v5", []) if x.get("ret_1h") is not None)
+    pending = sum(
+        1 for x in state.get("forward_tests", [])
+        if str(x.get("version", "")).startswith("V5") and "1h" in x.get("results", {})
+    )
+    return completed + pending
+
+
 def level_from_rate(rate):
     if rate >= 0.90: return "🚨 極強"
     if rate >= 0.80: return "🔥 強"
@@ -506,6 +513,10 @@ def news_status():
 
 
 def send_discord(message):
+    separator = "━━━━━━━━━━━━━━━━━━"
+    message = str(message).strip()
+    if not message.startswith(separator):
+        message = f"{separator}\n{message}\n{separator}"
     if not WEBHOOK:
         print("缺少 DISCORD_WEBHOOK"); return
     last = None
@@ -567,22 +578,23 @@ def main():
 
         # workflow_dispatch is a pure manual status query: it never creates a new signal/test.
         if MANUAL_RUN:
-            rate, n = empirical_1h(state, side, score) if side in ("LONG", "SHORT") else (None, 0)
+            rate, bucket_n = empirical_1h(state, side, score) if side in ("LONG", "SHORT") else (None, 0)
+            n = total_validated_1h(state)
             status = f"已達 {MIN_SCORE}/8 訊號門檻" if score >= MIN_SCORE else f"觀察中・距離 {MIN_SCORE}/8 還差 {MIN_SCORE - score} 分"
-            empirical = "累積中" if n < MIN_FORWARD_SAMPLES or rate is None else f"{rate:.1%}（1H樣本 {n}）"
+            empirical = f"累積中（已驗證 {n}/{MIN_FORWARD_SAMPLES}）" if n < MIN_FORWARD_SAMPLES else f"已驗證 {n} 筆"
             active = state.get("active_setup")
-            active_text = f"Setup #{active['id']} {active['side']}" if active else "無"
+            active_text = f"訊號 #{active['id']} {'做多' if active['side']=='LONG' else '做空'}" if active else "無"
             message = (
                 f"📊 BTC 市場現況｜手動查詢\n\n"
                 f"💰 BTC：${closed_price:,.0f}\n"
-                f"目前方向：{'🟢 LONG' if side == 'LONG' else '🔴 SHORT' if side == 'SHORT' else '⚪ 無明確方向'}\n"
-                f"LONG：{sig['long_score']} / 8\nSHORT：{sig['short_score']} / 8\n\n"
+                f"目前方向：{'🟢 做多' if side == 'LONG' else '🔴 做空' if side == 'SHORT' else '⚪ 無明確方向'}\n"
+                f"做多分數：{sig['long_score']} / 8\n做空分數：{sig['short_score']} / 8\n\n"
                 f"1H：{emoji_ema(sig['ema_1h'])}\n15M：{emoji_ema(sig['ema_15m'])}\n"
                 f"EMA Zone：{'✅ 符合' if sig['zone_ok'] else '➖ 未符合'}\n"
                 f"OI：{emoji_direction(oi)}\nCVD：{emoji_direction(cvd)}\nATR：{sig['atr_pct']:.2%}\n\n"
-                f"⚪ 狀態：{status}\n📊 Forward實測：{empirical}\n"
-                f"📡 目前 Setup：{active_text}\n🧪 Forward進行中：{len(state['forward_tests'])}\n"
-                f"📰 消息：{news}\n\nℹ️ 手動查詢不建立新 Forward Test"
+                f"⚪ 狀態：{status}\n📊 1H 實測：{empirical}\n"
+                f"📡 目前訊號：{active_text}\n🧪 實測進行中：{len(state['forward_tests'])}\n"
+                f"📰 消息：{news}\n\nℹ️ 手動查詢不建立新實測樣本"
             )
             send_discord(message)
 
@@ -591,13 +603,13 @@ def main():
             qualifying = side in ("LONG", "SHORT") and score >= MIN_SCORE
             reversal_from = None
 
-            # Setup lifecycle: two consecutive non-qualifying bars invalidate the current setup.
+            # Setup lifecycle: three consecutive non-qualifying bars invalidate the current setup.
             if active:
                 if qualifying and side == active["side"]:
                     active["weak_bars"] = 0
                     if score >= SETUP_ENHANCE_SCORE and active.get("max_notified_score", 0) < SETUP_ENHANCE_SCORE:
                         send_discord(
-                            f"🔥 Setup #{active['id']} 增強｜BTC {side} {score}/8\n"
+                            f"🔥 訊號 #{active['id']} 增強｜BTC {'做多' if side=='LONG' else '做空'}｜{score}/8\n"
                             f"CVD {emoji_direction(cvd).split()[0]}｜OI {emoji_direction(oi).split()[0]}｜ATR {sig['atr_pct']:.2%}"
                         )
                         active["max_notified_score"] = score
@@ -608,7 +620,11 @@ def main():
                 else:
                     active["weak_bars"] = int(active.get("weak_bars", 0)) + 1
                     if active["weak_bars"] >= SETUP_INVALID_BARS:
-                        send_discord(f"⚪ Setup #{active['id']} 失效｜BTC {active['side']}｜連續 {SETUP_INVALID_BARS} 根未達 {MIN_SCORE}/8")
+                        send_discord(
+                            f"⚪ 訊號 #{active['id']} 失效｜BTC {'做多' if active['side']=='LONG' else '做空'}\n\n"
+                            f"連續 {SETUP_INVALID_BARS} 根 15M 未達 {MIN_SCORE}/8\n"
+                            f"ℹ️ 訊號條件失效，不代表 SL 已觸發"
+                        )
                         state["active_setup"] = None
                         active = None
 
@@ -651,23 +667,25 @@ def main():
                         "id": setup_id, "side": side, "test_id": test_id, "start_time": closed_time,
                         "weak_bars": 0, "max_notified_score": score
                     }
-                    rate, n = empirical_1h(state, side, score)
-                    empirical = f"累積中（1H 已驗證 {n}/{MIN_FORWARD_SAMPLES}）" if n < MIN_FORWARD_SAMPLES or rate is None else f"{rate:.1%}（1H樣本 {n}）"
+                    rate, bucket_n = empirical_1h(state, side, score)
+                    n = total_validated_1h(state)
+                    empirical = f"累積中（1H 已驗證 {n}/{MIN_FORWARD_SAMPLES}）" if n < MIN_FORWARD_SAMPLES else f"1H 已驗證 {n} 筆"
                     title_icon = "🔄" if reversal_from else ("🟢" if side == "LONG" else "🔴")
-                    title_extra = f"｜反轉自 {reversal_from}" if reversal_from else ""
+                    side_zh = "做多" if side == "LONG" else "做空"
+                    reversal_zh = "做多" if reversal_from == "LONG" else "做空" if reversal_from == "SHORT" else ""
+                    title_extra = f"｜反轉自{reversal_zh}" if reversal_from else ""
                     send_discord(
-                        f"{title_icon} NEW SETUP #{setup_id}｜BTC {side} {score}/8{title_extra}\n\n"
-                        f"💰 Entry ${closed_price:,.0f}\n"
+                        f"{title_icon} 新訊號 #{setup_id}｜BTC {side_zh}｜{score}/8{title_extra}\n\n"
+                        f"💰 進場 ${closed_price:,.0f}\n"
                         f"🎯 TP1 ${tp1:,.0f}｜TP2 ${tp2:,.0f}\n🛑 SL ${sl:,.0f}\n\n"
-                        f"1H {'🟢' if sig['ema_1h']=='BULL' else '🔴' if sig['ema_1h']=='BEAR' else '⚪'}｜"
-                        f"15M {'🟢' if sig['ema_15m']=='BULL' else '🔴' if sig['ema_15m']=='BEAR' else '⚪'}｜Zone {'🟢' if sig['zone_ok'] else '➖'}\n"
+                        f"1H {emoji_ema(sig['ema_1h'])}｜15M {emoji_ema(sig['ema_15m'])}｜EMA Zone {'🟢' if sig['zone_ok'] else '➖'}\n"
                         f"CVD {emoji_direction(cvd).split()[0]}｜OI {emoji_direction(oi).split()[0]}｜ATR {sig['atr_pct']:.2%}\n"
                         f"📊 {empirical}\n📰 {'🔴' if '高影響' in news else '🟡' if '新消息' in news else '⚪'}"
                     )
 
             state["last_forward_candle"] = closed_time
 
-        print(f"Radar V5.1: LONG={sig['long_score']}/8 SHORT={sig['short_score']}/8 chosen={side} {score}/8")
+        print(f"Radar V5.2: LONG={sig['long_score']}/8 SHORT={sig['short_score']}/8 chosen={side} {score}/8")
     else:
         print(f"Radar PARTIAL: OI={oi}, CVD={cvd}; 本期不建立 Score/Forward 樣本")
 
