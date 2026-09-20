@@ -35,7 +35,7 @@ ATR_MAX_PCT = 0.025            # 2.50%
 ZONE_ATR_MULT = 0.35
 ANALYTICS_BARS = 12                 # 12 x 15m = about 3 hours
 ANALYTICS_CONFIRM_BARS = 4          # latest ~1 hour confirms no clear reversal
-OI_FLAT_PCT = 0.0025               # +/-0.10% treated as flat
+OI_FLAT_PCT = 0.0010               # +/-0.10% treated as flat
 CVD_FLAT_REL = 0.10               # <=2% of recent CVD range treated as flat
 
 FEEDS = [
@@ -146,12 +146,58 @@ def analytics(kind):
     return sorted(out)
 
 
+def analytics_fields(kind, keys):
+    """Read one or more named arrays from Kraken Futures market analytics."""
+    now = int(time.time())
+    data = get(f"{BASE}/analytics/{SYMBOL}/{kind}",
+               {"since": now - 18000, "to": now, "interval": 900})
+    result = data.get("result", data)
+    if not isinstance(result, dict):
+        return []
+    timestamps = result.get("timestamp", [])
+    raw = result.get("data", {})
+    if not isinstance(raw, dict):
+        return []
+    arrays = [raw.get(k, []) for k in keys]
+    if not timestamps or any(not a for a in arrays):
+        return []
+    out = []
+    for values in zip(timestamps, *arrays):
+        try:
+            out.append((int(values[0]), *[float(x) for x in values[1:]]))
+        except (TypeError, ValueError):
+            continue
+    return sorted(out)
+
+
+def trade_volume_rows():
+    # Kraken spot/index candles can legitimately report volume=0.
+    # Use the futures analytics trade-volume feed (buyVolume + sellVolume) instead.
+    return analytics_fields("trade-volume", ("buyVolume", "sellVolume"))
+
+
+def cvd_fallback_from_trade_volume():
+    """Build a cumulative delta series from buy/sell trade volume when Kraken CVD is flat/zero."""
+    rows = trade_volume_rows()
+    total = 0.0
+    out = []
+    for ts, buy, sell in rows:
+        total += buy - sell
+        out.append((ts, total))
+    return out
+
+
 def direction_details(kind):
     """Return (classification, metrics) using ~3h broad + ~1h recent movement.
     Small moves are intentionally FLAT. A clear recent reversal neutralizes the broad direction.
     """
     try:
         rows = analytics(kind)
+        if kind == "cvd" and rows and all(abs(v) < 1e-12 for _, v in rows):
+            fallback = cvd_fallback_from_trade_volume()
+            if len(fallback) >= 5:
+                rows = fallback
+                print("CVD API 回傳全 0，改用 buyVolume-sellVolume 建立 CVD fallback")
     except (requests.exceptions.RequestException, ValueError, RuntimeError) as e:
         print(f"{kind} 暫時無法取得: {type(e).__name__}: {e}")
         return "UNAVAILABLE", {}
@@ -303,12 +349,29 @@ def ema_context(rows15, rows1h, a):
     return {"ema_1h":state1,"ema_15m":state15,"e34":e34,"e50":e50,"zone_low":zl,"zone_high":zh,"s34":s34,"s50":s50,"zone_distance_atr":dist}
 
 
-def volume_ratio(rows):
-    if len(rows)<VOL_LOOKBACK+1: return 0.0
-    cur=float(rows[-1].get("volume",0) or 0)
-    prev=[float(x.get("volume",0) or 0) for x in rows[-VOL_LOOKBACK-1:-1]]
-    avg=sum(prev)/len(prev) if prev else 0
-    return cur/avg if avg else 0.0
+def volume_ratio(rows=None):
+    # Primary source: Kraken futures trade-volume analytics.
+    # This avoids the PI_XBTUSD spot/index candle volume=0 issue.
+    try:
+        tv = trade_volume_rows()
+        totals = [buy + sell for _, buy, sell in tv]
+        if len(totals) >= VOL_LOOKBACK + 1:
+            cur = totals[-1]
+            prev = totals[-VOL_LOOKBACK-1:-1]
+            avg = sum(prev) / len(prev) if prev else 0.0
+            if avg > 0:
+                return cur / avg
+    except (requests.exceptions.RequestException, ValueError, RuntimeError) as e:
+        print(f"trade-volume 暫時無法取得: {type(e).__name__}: {e}")
+
+    # Fallback only if candle volume is actually populated.
+    if rows and len(rows) >= VOL_LOOKBACK + 1:
+        cur = float(rows[-1].get("volume", 0) or 0)
+        prev = [float(x.get("volume", 0) or 0) for x in rows[-VOL_LOOKBACK-1:-1]]
+        avg = sum(prev) / len(prev) if prev else 0.0
+        if avg > 0:
+            return cur / avg
+    return 0.0
 
 
 def flow_for_side(side, price_dir, oi_metrics, cvd_metrics):
