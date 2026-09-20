@@ -43,18 +43,18 @@
     "BULL|BEAR|FLAT|FLAT": {
       "LONG": 0,
       "SHORT": 0,
-      "NEUTRAL": 9
+      "NEUTRAL": 10
     }
   },
   "pending": [
     {
-      "candle_time": 1789869600000,
-      "target_time": 1789869603600,
-      "price": 81123.19,
+      "candle_time": 1789870500000,
+      "target_time": 1789870503600,
+      "price": 80950.53,
       "state": "BULL|BEAR|FLAT|FLAT"
     }
   ],
-  "last_closed_candle": 1789869600000,
+  "last_closed_candle": 1789870500000,
   "last_signal_key": null,
   "signal_armed": true,
   "forward_tests": [
@@ -2070,13 +2070,13 @@
       "score": 5,
       "results": {},
       "max_high": 81349.08,
-      "min_low": 80999.18,
+      "min_low": 80950.17,
       "tp1": 81605.03968,
       "tp2": 81930.15936,
       "sl": 80954.80032,
       "risk_pct": 0.004,
-      "first_outcome": null,
-      "outcome_time": null,
+      "first_outcome": "SL",
+      "outcome_time": 1789870500000,
       "notify_setup": true,
       "features": {
         "ema_1h": "BULL",
@@ -2117,7 +2117,11 @@
           "final": "DOWN"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "sl_hit": true,
+      "sl_time": 1789870500000,
+      "terminal_outcome": "SL",
+      "SL_notified": true
     }
   ],
   "forward_stats": {
@@ -2230,7 +2234,7 @@
       "target_1_0": 0
     }
   },
-  "last_forward_candle": 1789869600000,
+  "last_forward_candle": 1789870500000,
   "last_notification": {
     "LONG|5": 1789804800000,
     "LONG|6": 1789791300000

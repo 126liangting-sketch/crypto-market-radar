@@ -2014,13 +2014,13 @@
       "score": 5,
       "results": {},
       "max_high": 81349.08,
-      "min_low": 80999.18,
+      "min_low": 80950.17,
       "tp1": 81605.03968,
       "tp2": 81930.15936,
       "sl": 80954.80032,
       "risk_pct": 0.004,
-      "first_outcome": null,
-      "outcome_time": null,
+      "first_outcome": "SL",
+      "outcome_time": 1789870500000,
       "notify_setup": true,
       "features": {
         "ema_1h": "BULL",
@@ -2061,7 +2061,11 @@
           "final": "DOWN"
         },
         "news": "🔴 高影響消息"
-      }
+      },
+      "sl_hit": true,
+      "sl_time": 1789870500000,
+      "terminal_outcome": "SL",
+      "SL_notified": true
     }
   ]
 }
