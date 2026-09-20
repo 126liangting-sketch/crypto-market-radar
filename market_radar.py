@@ -553,8 +553,60 @@ def create_signal(state, side, trigger_type, level, ext, ctx, flow, vol, risk, c
     send_discord(f"⚡ 新訊號 #{sid}｜BTC {zh_side(side)}\n\n💰 進場 ${close:,.0f}\n🎯 TP1 ${risk['tp1']:,.0f}｜TP2 ${risk['tp2']:,.0f}\n🛑 SL ${risk['sl']:,.0f}\n⚖️ 風險距離 {risk['risk_atr']:.2f} ATR\n\n📍 {typ}\n1H：{em(ctx['ema_1h'])}\n15M：{em(ctx['ema_15m'])}\nVolume：{'🔥 ' if vol>=VOL_STRONG else ''}{vol:.2f}×\nCVD：{fd(flow['cvd_dir'])}\nOI：{fd(flow['oi_dir'])}\n品質 Score：{q}/8{warning}\n📰 {news}")
 
 
+
+def diagnostic_analytics(kind):
+    """Print a compact, non-secret summary of Kraken analytics raw responses."""
+    now = int(time.time())
+    url = f"{BASE}/analytics/{SYMBOL}/{kind}"
+    params = {"since": now - 18000, "to": now, "interval": 900}
+    print(f"\n--- DIAG {kind} ---")
+    try:
+        r = requests.get(url, params=params, timeout=20, headers={"User-Agent": "Crypto-Market-Radar/6.1-diagnostic"})
+        print(f"HTTP={r.status_code} content-type={r.headers.get('content-type','')} bytes={len(r.content)}")
+        try:
+            data = r.json()
+        except ValueError:
+            print("JSON parse failed; body prefix:", r.text[:500])
+            return
+        print("top-level type:", type(data).__name__)
+        if isinstance(data, dict):
+            print("top-level keys:", list(data.keys()))
+            result = data.get("result", data)
+            print("result type:", type(result).__name__)
+            if isinstance(result, dict):
+                print("result keys:", list(result.keys()))
+                ts = result.get("timestamp")
+                raw = result.get("data")
+                print("timestamp:", f"len={len(ts)} tail={ts[-3:]}" if isinstance(ts,list) else repr(ts)[:300])
+                print("data type:", type(raw).__name__)
+                if isinstance(raw, dict):
+                    print("data keys:", list(raw.keys()))
+                    for k,v in raw.items():
+                        if isinstance(v, list): print(f"data[{k}] len={len(v)} tail={v[-3:]}")
+                        else: print(f"data[{k}]={repr(v)[:300]}")
+                elif isinstance(raw, list):
+                    print("data len:", len(raw), "tail:", raw[-3:])
+                for k,v in result.items():
+                    if k not in ("timestamp","data"):
+                        if isinstance(v,list): print(f"result[{k}] len={len(v)} tail={v[-3:]}")
+                        elif isinstance(v,(str,int,float,bool,type(None))): print(f"result[{k}]={v}")
+            elif isinstance(result, list):
+                print("result len:", len(result), "tail:", result[-3:])
+        else:
+            print("body summary:", repr(data)[:1000])
+    except Exception as e:
+        print(f"DIAG ERROR {kind}: {type(e).__name__}: {e}")
+
+
+def run_diagnostics():
+    print("=== V6.1 KRAKEN ANALYTICS DIAGNOSTIC ===")
+    for kind in ("trade-volume", "open-interest", "cvd"):
+        diagnostic_analytics(kind)
+    print("=== END DIAGNOSTIC ===")
+
 def main():
     print("=== BTC Market Radar V6.1 FLOW FIX ===")
+    run_diagnostics()
     state=load_state(); rows15=closed_rows("15m",240); rows1h=closed_rows("1h",120)
     if len(rows15)<80 or len(rows1h)<60: raise RuntimeError("K線資料不足")
     closed=rows15[-1]; prev=rows15[-2]; ct=int(closed["time"]); close=float(closed["close"]); prev_close=float(prev["close"])
