@@ -6,13 +6,13 @@ import feedparser
 import csv
 import hashlib
 
-BASE = "https://futures.kraken.com/api/charts/v1"
-SYMBOL = "PI_XBTUSD"
+OKX_BASE = "https://www.okx.com"
+OKX_SYMBOL = "BTC-USDT-SWAP"
 WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 STATE = "probability_state.json"
 CSV_FILE = "forward_test_v5.csv"
 V5_JSON = "forward_test_v5.json"
-VERSION = "V5_2_MECHANISM"
+VERSION = "V6_OKX_1_FORMAL"
 TP_SL_ATR_MULT = 1.5
 MIN_RISK_PCT = 0.004          # minimum 0.40% stop distance; avoids ultra-tight stops in low ATR
 SETUP_INVALID_BARS = 3        # three consecutive closed 15m bars below 5/8 ends the setup
@@ -35,7 +35,7 @@ ATR_MAX_PCT = 0.025            # 2.50%
 ZONE_ATR_MULT = 0.35
 ANALYTICS_BARS = 12                 # 12 x 15m = about 3 hours
 ANALYTICS_CONFIRM_BARS = 4          # latest ~1 hour confirms no clear reversal
-OI_FLAT_PCT = 0.0010               # +/-0.10% treated as flat
+OI_FLAT_PCT = 0.0025               # +/-0.10% treated as flat
 CVD_FLAT_REL = 0.10               # <=2% of recent CVD range treated as flat
 
 FEEDS = [
@@ -62,21 +62,139 @@ def get(url, params=None, retries=3):
     raise last_error
 
 
+def okx_public(path, params=None):
+    data = get(f"{OKX_BASE}{path}", params)
+    if not isinstance(data, dict) or str(data.get("code", "0")) != "0":
+        raise RuntimeError(f"OKX API error: {data}")
+    return data.get("data", [])
+
+
 def candles(resolution, count=200):
-    sec = {"15m": 900, "1h": 3600}[resolution]
-    now = int(time.time())
-    data = get(f"{BASE}/spot/{SYMBOL}/{resolution}",
-               {"from": now - count * sec, "to": now, "count": count})
-    rows = sorted(data.get("candles", []), key=lambda x: int(x["time"]))
-    if not rows:
-        raise RuntimeError(f"Kraken {resolution} K線沒有資料")
-    return rows
+    """Return OKX BTC-USDT-SWAP candles in the old radar row format.
+    OKX candle: [ts,o,h,l,c,vol,volCcy,volCcyQuote,confirm]
+    volCcy is BTC volume for BTC-USDT-SWAP and is used for Volume ratio.
+    """
+    bar = {"15m": "15m", "1h": "1H"}[resolution]
+    # /history-candles supports historical closed candles. 100 per request is a safe page size.
+    rows, after = [], None
+    while len(rows) < count:
+        params = {"instId": OKX_SYMBOL, "bar": bar, "limit": min(100, count - len(rows))}
+        if after:
+            params["after"] = after
+        batch = okx_public("/api/v5/market/history-candles", params)
+        if not batch:
+            break
+        rows.extend(batch)
+        after = batch[-1][0]
+        if len(batch) < int(params["limit"]):
+            break
+        time.sleep(0.05)
+
+    out = []
+    seen = set()
+    for x in rows:
+        if len(x) < 6:
+            continue
+        ts = int(x[0]) // 1000
+        if ts in seen:
+            continue
+        seen.add(ts)
+        # Prefer base-currency volume (BTC). Fall back to contract volume.
+        vol = x[6] if len(x) > 6 and _number(x[6]) else x[5]
+        out.append({
+            "time": ts,
+            "open": float(x[1]),
+            "high": float(x[2]),
+            "low": float(x[3]),
+            "close": float(x[4]),
+            "volume": float(vol),
+            "confirm": str(x[8]) if len(x) > 8 else "1",
+        })
+    out.sort(key=lambda r: r["time"])
+    if not out:
+        raise RuntimeError(f"OKX {resolution} K線沒有資料")
+    return out[-count:]
 
 
 def closed_rows(resolution, count=200):
     rows = candles(resolution, count)
-    return rows[:-1] if len(rows) > 1 else rows
+    # history-candles is normally closed data; still respect confirm when present.
+    confirmed = [r for r in rows if str(r.get("confirm", "1")) == "1"]
+    return confirmed if confirmed else rows
 
+
+def okx_oi_snapshot():
+    rows = okx_public("/api/v5/public/open-interest",
+                      {"instType": "SWAP", "instId": OKX_SYMBOL})
+    if not rows:
+        return None
+    r = rows[0]
+    # oiCcy is BTC-equivalent OI, which is easier to interpret across contract-size changes.
+    value = r.get("oiCcy") or r.get("oi")
+    return {"time": int(r.get("ts", int(time.time()*1000))) // 1000,
+            "value": float(value)}
+
+
+def update_oi_history(state):
+    """Persist OKX OI snapshots so the radar can calculate real 1h/3h changes.
+    This does not touch V5 data.
+    """
+    v = state["v6"]
+    hist = v.setdefault("oi_history", [])
+    try:
+        snap = okx_oi_snapshot()
+    except Exception as e:
+        print(f"OKX OI 暫時無法取得: {type(e).__name__}: {e}")
+        snap = None
+    if snap:
+        # One snapshot per workflow run; replace near-duplicate timestamps.
+        if not hist or abs(int(hist[-1]["time"]) - snap["time"]) > 60:
+            hist.append(snap)
+        else:
+            hist[-1] = snap
+    cutoff = int(time.time()) - 7 * 86400
+    hist[:] = [x for x in hist if int(x.get("time", 0)) >= cutoff][-1000:]
+    return hist
+
+
+def _nearest_old(hist, target_time):
+    eligible = [x for x in hist if int(x["time"]) <= target_time]
+    return eligible[-1] if eligible else None
+
+
+def oi_details_from_state(state):
+    hist = state["v6"].get("oi_history", [])
+    if not hist:
+        return "UNAVAILABLE", {"available": False}
+    cur = hist[-1]
+    now_t, now_v = int(cur["time"]), float(cur["value"])
+    one = _nearest_old(hist, now_t - 3600)
+    three = _nearest_old(hist, now_t - 10800)
+    m = {"available": True, "current": now_v}
+    if one:
+        rp = 0.0 if float(one["value"]) == 0 else (now_v / float(one["value"]) - 1)
+        m["recent_pct"] = rp
+        m["recent_dir"] = "FLAT" if abs(rp) < OI_FLAT_V6 else ("UP" if rp > 0 else "DOWN")
+    else:
+        m["recent_pct"] = None
+        m["recent_dir"] = "UNAVAILABLE"
+    if three:
+        bp = 0.0 if float(three["value"]) == 0 else (now_v / float(three["value"]) - 1)
+        m["broad_pct"] = bp
+        m["broad_dir"] = "FLAT" if abs(bp) < OI_FLAT_V6 else ("UP" if bp > 0 else "DOWN")
+    else:
+        m["broad_pct"] = None
+        m["broad_dir"] = "UNAVAILABLE"
+    print(f"OKX OI: {now_v:.6g} BTC | 1H={m.get('recent_pct')} | 3H={m.get('broad_pct')}")
+    return m.get("recent_dir", "UNAVAILABLE"), m
+
+
+def cvd_details_okx():
+    """CVD is deliberately UNAVAILABLE in V6 OKX v1.
+    We do not reconstruct a fake 1h/3h CVD from a short recent-trades snapshot.
+    """
+    return "UNAVAILABLE", {"available": False, "recent_dir": "UNAVAILABLE",
+                           "recent_delta": 0.0, "broad_span": 0.0}
 
 def ema_series(values, length):
     if len(values) < length:
@@ -123,151 +241,16 @@ def _number(value):
         return False
 
 
-def analytics(kind):
-    now = int(time.time())
-    data = get(f"{BASE}/analytics/{SYMBOL}/{kind}",
-               {"since": now - 18000, "to": now, "interval": 900})
-    result = data.get("result", data)
-    if not isinstance(result, dict): return []
-    timestamps, raw = result.get("timestamp", []), result.get("data", [])
-    key = "openInterest" if kind == "open-interest" else "cvd"
-    values = raw.get(key, []) if isinstance(raw, dict) else raw
-    if not values: values = result.get(key, [])
-    out = []
-    for ts, value in zip(timestamps, values):
-        try:
-            if isinstance(value, dict): value = value.get(key, value.get("value"))
-            elif isinstance(value, list):
-                nums = [float(x) for x in value if _number(x)]
-                value = nums[-1] if nums else None
-            out.append((int(ts), float(value)))
-        except (TypeError, ValueError):
-            continue
-    return sorted(out)
+def direction_details(kind, state=None):
+    if kind == "open-interest" and state is not None:
+        return oi_details_from_state(state)
+    if kind == "cvd":
+        return cvd_details_okx()
+    return "UNAVAILABLE", {"available": False}
 
 
-def analytics_fields(kind, keys):
-    """Read one or more named arrays from Kraken Futures market analytics."""
-    now = int(time.time())
-    data = get(f"{BASE}/analytics/{SYMBOL}/{kind}",
-               {"since": now - 18000, "to": now, "interval": 900})
-    result = data.get("result", data)
-    if not isinstance(result, dict):
-        return []
-    timestamps = result.get("timestamp", [])
-    raw = result.get("data", {})
-    if not isinstance(raw, dict):
-        return []
-    arrays = [raw.get(k, []) for k in keys]
-    if not timestamps or any(not a for a in arrays):
-        return []
-    out = []
-    for values in zip(timestamps, *arrays):
-        try:
-            out.append((int(values[0]), *[float(x) for x in values[1:]]))
-        except (TypeError, ValueError):
-            continue
-    return sorted(out)
-
-
-def bybit_kline_rows(limit=80):
-    """Closed 15m BTCUSDT linear candles from Bybit; used only for real traded volume."""
-    data = get(f"{BYBIT_BASE}/v5/market/kline",
-               {"category":"linear","symbol":BYBIT_SYMBOL,"interval":"15","limit":limit})
-    if int(data.get("retCode", -1)) != 0:
-        raise RuntimeError(f"Bybit kline: {data.get('retMsg','unknown error')}")
-    raw = data.get("result",{}).get("list",[])
-    now_ms = int(time.time()*1000)
-    out=[]
-    for r in raw:
-        try:
-            ts=int(r[0]); vol=float(r[5])
-            # Exclude the still-forming 15m candle.
-            if ts + 900000 <= now_ms:
-                out.append((ts//1000, vol))
-        except (TypeError,ValueError,IndexError):
-            continue
-    return sorted(out)
-
-
-def trade_volume_rows():
-    """Compatibility wrapper: return Bybit real 15m volume as (ts,buy,sell).
-    Kline has total volume only, so buy/sell split is intentionally unavailable.
-    """
-    return [(ts, vol, 0.0) for ts,vol in bybit_kline_rows()]
-
-
-def bybit_oi_rows(limit=80):
-    data = get(f"{BYBIT_BASE}/v5/market/open-interest",
-               {"category":"linear","symbol":BYBIT_SYMBOL,"intervalTime":"15min","limit":limit})
-    if int(data.get("retCode", -1)) != 0:
-        raise RuntimeError(f"Bybit OI: {data.get('retMsg','unknown error')}")
-    out=[]
-    for r in data.get("result",{}).get("list",[]):
-        try: out.append((int(r["timestamp"])//1000, float(r["openInterest"])))
-        except (TypeError,ValueError,KeyError): continue
-    return sorted(out)
-
-
-def cvd_fallback_from_trade_volume():
-    # Bybit Kline exposes total volume, not historical taker buy/sell split.
-    # Do not manufacture a fake CVD from total volume.
-    return []
-
-
-def direction_details(kind):
-    """Return (classification, metrics) using ~3h broad + ~1h recent movement.
-    Small moves are intentionally FLAT. A clear recent reversal neutralizes the broad direction.
-    """
-    try:
-        rows = bybit_oi_rows() if kind == "open-interest" else analytics(kind)
-        if kind == "cvd" and rows and all(abs(v) < 1e-12 for _, v in rows):
-            print("CVD: Kraken 回傳全 0，標記為 UNAVAILABLE（不偽造資料）")
-            rows = []
-    except (requests.exceptions.RequestException, ValueError, RuntimeError) as e:
-        print(f"{kind} 暫時無法取得: {type(e).__name__}: {e}")
-        return "UNAVAILABLE", {}
-    if len(rows) < 5:
-        return "UNAVAILABLE", {}
-
-    window = rows[-ANALYTICS_BARS:] if len(rows) >= ANALYTICS_BARS else rows
-    recent = window[-ANALYTICS_CONFIRM_BARS:] if len(window) >= ANALYTICS_CONFIRM_BARS else window
-    start_v, end_v = window[0][1], window[-1][1]
-    recent_start, recent_end = recent[0][1], recent[-1][1]
-    delta = end_v - start_v
-    recent_delta = recent_end - recent_start
-    metrics = {"broad_start": start_v, "broad_end": end_v, "broad_delta": delta,
-               "recent_start": recent_start, "recent_end": recent_end, "recent_delta": recent_delta}
-
-    if kind == "open-interest":
-        pct = 0.0 if start_v == 0 else delta / abs(start_v)
-        recent_pct = 0.0 if recent_start == 0 else recent_delta / abs(recent_start)
-        broad = "FLAT" if abs(pct) <= OI_FLAT_PCT else ("UP" if pct > 0 else "DOWN")
-        recent_dir = "FLAT" if abs(recent_pct) <= OI_FLAT_PCT else ("UP" if recent_pct > 0 else "DOWN")
-        metrics.update({"broad_pct": pct, "recent_pct": recent_pct, "broad_dir": broad, "recent_dir": recent_dir})
-        print(f"OI ~3h/12 bars: {start_v:.6g} -> {end_v:.6g} ({pct:+.3%}); recent ~1h: {recent_pct:+.3%}")
-    else:
-        vals = [v for _, v in window]
-        span = max(vals) - min(vals) if vals else 0.0
-        tol = span * CVD_FLAT_REL
-        broad = "FLAT" if abs(delta) <= tol else ("UP" if delta > 0 else "DOWN")
-        rvals = [v for _, v in recent]
-        rspan = max(rvals) - min(rvals) if rvals else 0.0
-        rtol = rspan * CVD_FLAT_REL
-        recent_dir = "FLAT" if abs(recent_delta) <= rtol else ("UP" if recent_delta > 0 else "DOWN")
-        metrics.update({"broad_span": span, "recent_span": rspan, "broad_dir": broad, "recent_dir": recent_dir})
-        print(f"CVD ~3h/12 bars: {start_v:.6g} -> {end_v:.6g} (delta {delta:+.6g}); recent ~1h delta {recent_delta:+.6g}")
-
-    final = broad
-    if broad in ("UP", "DOWN") and recent_dir in ("UP", "DOWN") and broad != recent_dir:
-        final = "FLAT"
-        print(f"{kind}: broad={broad}, recent={recent_dir} -> FLAT (recent reversal)")
-    metrics["final"] = final
-    return final, metrics
-
-
-def direction(kind):
-    return direction_details(kind)[0]
+def direction(kind, state=None):
+    return direction_details(kind, state)[0]
 
 
 def send_discord(message):
@@ -290,9 +273,7 @@ def send_discord(message):
 
 
 
-VERSION = "V6_2_BYBIT_FLOW"
-BYBIT_BASE = "https://api.bybit.com"
-BYBIT_SYMBOL = "BTCUSDT"
+VERSION = "V6_OKX_1_FORMAL"
 V5_JSON = "forward_test_v5.json"
 V5_CSV = "forward_test_v5.csv"
 V6_JSON = "forward_test_v6.json"
@@ -340,6 +321,7 @@ def load_state():
     v.setdefault("breakout_watch", None)
     v.setdefault("history", [])
     v.setdefault("news", {"last_major_id": None, "last_major_time": 0})
+    v.setdefault("oi_history", [])
     return state
 
 
@@ -377,51 +359,46 @@ def ema_context(rows15, rows1h, a):
     return {"ema_1h":state1,"ema_15m":state15,"e34":e34,"e50":e50,"zone_low":zl,"zone_high":zh,"s34":s34,"s50":s50,"zone_distance_atr":dist}
 
 
-def volume_ratio(rows=None):
-    # Primary source: Bybit BTCUSDT linear 15m Kline traded volume.
-    try:
-        tv = bybit_kline_rows()
-        totals = [vol for _, vol in tv]
-        if len(totals) >= VOL_LOOKBACK + 1:
-            cur = totals[-1]
-            prev = totals[-VOL_LOOKBACK-1:-1]
-            avg = sum(prev) / len(prev) if prev else 0.0
-            if avg > 0:
-                return cur / avg
-    except (requests.exceptions.RequestException, ValueError, RuntimeError) as e:
-        print(f"Bybit Volume 暫時無法取得: {type(e).__name__}: {e}")
-
-    # Fallback only if candle volume is actually populated.
-    if rows and len(rows) >= VOL_LOOKBACK + 1:
-        cur = float(rows[-1].get("volume", 0) or 0)
-        prev = [float(x.get("volume", 0) or 0) for x in rows[-VOL_LOOKBACK-1:-1]]
-        avg = sum(prev) / len(prev) if prev else 0.0
-        if avg > 0:
-            return cur / avg
-    return 0.0
+def volume_ratio(rows):
+    if len(rows)<VOL_LOOKBACK+1: return 0.0
+    cur=float(rows[-1].get("volume",0) or 0)
+    prev=[float(x.get("volume",0) or 0) for x in rows[-VOL_LOOKBACK-1:-1]]
+    avg=sum(prev)/len(prev) if prev else 0
+    return cur/avg if avg else 0.0
 
 
 def flow_for_side(side, price_dir, oi_metrics, cvd_metrics):
-    rp=float(oi_metrics.get("recent_pct",0) or 0)
-    oi_available=bool(oi_metrics)
-    oi_dir="UNAVAILABLE" if not oi_available else ("FLAT" if abs(rp)<OI_FLAT_V6 else "UP" if rp>0 else "DOWN")
+    rp = oi_metrics.get("recent_pct")
+    oi_available = rp is not None
+    if oi_available:
+        rp = float(rp)
+        oi_dir = "FLAT" if abs(rp) < OI_FLAT_V6 else ("UP" if rp > 0 else "DOWN")
+    else:
+        rp = 0.0
+        oi_dir = "UNAVAILABLE"
 
-    cvd_available=bool(cvd_metrics)
-    cd=float(cvd_metrics.get("recent_delta",0) or 0) if cvd_available else 0.0
-    span=abs(float(cvd_metrics.get("broad_span",0) or 0)) if cvd_available else 0.0
-    rel=abs(cd)/span if span else 0.0
-    cvd_dir="UNAVAILABLE" if not cvd_available else ("FLAT" if rel<0.10 else "UP" if cd>0 else "DOWN")
-    cvd_strong=cvd_available and rel>=0.50
-    wanted="UP" if side=="LONG" else "DOWN"
-    cvd_support=cvd_available and cvd_dir==wanted
-    cvd_oppose=cvd_available and cvd_dir not in ("FLAT",wanted) and cvd_strong
-    oi_support=oi_available and (oi_dir=="UP" and price_dir==wanted)
-    oi_oppose=oi_available and (oi_dir=="UP" and price_dir not in ("FLAT",wanted))
-    # V6.2: if CVD source is unavailable, real Bybit OI may confirm by itself.
-    valid=(cvd_support or oi_support) and not cvd_oppose and not oi_oppose
-    strong_both=cvd_support and oi_support
-    return {"valid":valid,"strong_both":strong_both,"cvd_dir":cvd_dir,"cvd_strong":cvd_strong,"oi_dir":oi_dir,"oi_recent_pct":rp,"cvd_recent_delta":cd,"cvd_rel":rel}
+    cvd_available = bool(cvd_metrics.get("available"))
+    cd = float(cvd_metrics.get("recent_delta", 0) or 0)
+    span = abs(float(cvd_metrics.get("broad_span", 0) or 0))
+    rel = abs(cd) / span if span else 0.0
+    cvd_dir = ("FLAT" if rel < 0.10 else "UP" if cd > 0 else "DOWN") if cvd_available else "UNAVAILABLE"
+    cvd_strong = cvd_available and rel >= 0.50
 
+    wanted = "UP" if side == "LONG" else "DOWN"
+    cvd_support = cvd_available and cvd_dir == wanted
+    cvd_oppose = cvd_available and cvd_dir not in ("FLAT", wanted) and cvd_strong
+
+    # OI rising confirms fresh positioning in the actual price direction.
+    oi_support = oi_available and oi_dir == "UP" and price_dir == wanted
+    oi_oppose = oi_available and oi_dir == "UP" and price_dir not in ("FLAT", wanted)
+
+    valid = (cvd_support or oi_support) and not cvd_oppose and not oi_oppose
+    strong_both = cvd_support and oi_support
+    return {"valid": valid, "strong_both": strong_both,
+            "cvd_available": cvd_available, "oi_available": oi_available,
+            "cvd_dir": cvd_dir, "cvd_strong": cvd_strong,
+            "oi_dir": oi_dir, "oi_recent_pct": rp if oi_available else None,
+            "cvd_recent_delta": cd, "cvd_rel": rel}
 
 def v6_quality_score(side, ctx, vol, flow, ext):
     score=0
@@ -554,21 +531,30 @@ def update_all_forward(state, rows15):
 
 
 def export_data(state):
-    # V5 export remains intact and separate.
-    with open(V5_JSON,"w",encoding="utf-8") as f: json.dump({"version":"V5_PRESERVED","completed":state.get("forward_history_v5",[]),"pending":[x for x in state.get("forward_tests",[]) if str(x.get("version","")).startswith("V5")]},f,ensure_ascii=False,indent=2)
-    with open(V6_JSON,"w",encoding="utf-8") as f: json.dump({"version":VERSION,"completed":state["v6"]["history"],"pending":[x for x in state.get("forward_tests",[]) if str(x.get("version","")).startswith("V6")]},f,ensure_ascii=False,indent=2)
-    fields=["version","id","setup_id","trigger_type","side","quality_score","entry_time","entry_price","tp1","tp2","sl","risk_atr","swing_level","breakout_distance_atr","volume_ratio","ema_1h","ema_15m","zone_distance_atr","cvd_dir","oi_dir","oi_recent_pct","cvd_recent_delta","news","ret_15m","ret_30m","ret_1h","ret_2h","mfe","mae","terminal_outcome"]
+    """Write only V6 OKX research files. Existing V5.2 JSON/CSV are never rewritten."""
+    with open(V6_JSON, "w", encoding="utf-8") as f:
+        json.dump({"version": VERSION,
+                   "completed": state["v6"]["history"],
+                   "pending": [x for x in state.get("forward_tests", [])
+                               if str(x.get("version", "")).startswith("V6")]},
+                  f, ensure_ascii=False, indent=2)
+    fields=["version","id","setup_id","trigger_type","side","quality_score","entry_time",
+            "entry_price","tp1","tp2","sl","risk_atr","swing_level","breakout_distance_atr",
+            "volume_ratio","ema_1h","ema_15m","zone_distance_atr","cvd_dir","oi_dir",
+            "oi_recent_pct","cvd_recent_delta","news","ret_15m","ret_30m","ret_1h","ret_2h",
+            "mfe","mae","terminal_outcome"]
     with open(V6_CSV,"w",newline="",encoding="utf-8-sig") as f:
         w=csv.DictWriter(f,fieldnames=fields); w.writeheader()
         for x in state["v6"]["history"]:
             feat=x.get("features",{}); row={k:x.get(k,feat.get(k,"")) for k in fields}
-            for h in FORWARD_HORIZONS: row["ret_"+h]=x.get("results",{}).get(h,{}).get("return")
+            for h in FORWARD_HORIZONS:
+                row["ret_"+h]=x.get("results",{}).get(h,{}).get("return")
             w.writerow(row)
 
 
 def zh_side(side): return "做多" if side=="LONG" else "做空"
 def em(v): return {"BULL":"🟢 多頭","BEAR":"🔴 空頭","NEUTRAL":"⚪ 中性"}.get(v,"⚪ 中性")
-def fd(v): return {"UP":"🔺 上升","DOWN":"🔻 下降","FLAT":"⚪ 持平"}.get(v,"⚪ 持平")
+def fd(v): return {"UP":"🔺 上升","DOWN":"🔻 下降","FLAT":"⚪ 持平","UNAVAILABLE":"⚠️ 累積中/無資料"}.get(v,"⚠️ 無資料")
 
 
 def create_signal(state, side, trigger_type, level, ext, ctx, flow, vol, risk, close, closed_time, news):
@@ -585,12 +571,12 @@ def create_signal(state, side, trigger_type, level, ext, ctx, flow, vol, risk, c
 
 
 def main():
-    print("=== BTC Market Radar V6.1 FLOW FIX ===")
     state=load_state(); rows15=closed_rows("15m",240); rows1h=closed_rows("1h",120)
     if len(rows15)<80 or len(rows1h)<60: raise RuntimeError("K線資料不足")
     closed=rows15[-1]; prev=rows15[-2]; ct=int(closed["time"]); close=float(closed["close"]); prev_close=float(prev["close"])
     a=atr(rows15,14)
-    oi,om=direction_details("open-interest"); cvd,cm=direction_details("cvd")
+    update_oi_history(state)
+    oi,om=direction_details("open-interest", state); cvd,cm=direction_details("cvd", state)
     update_all_forward(state,rows15)
     ctx=ema_context(rows15,rows1h,a); vol=volume_ratio(rows15); highs,lows=pivots(rows15)
     news,new_major,headline=news_status_v6(state)
@@ -603,7 +589,7 @@ def main():
     if MANUAL_RUN:
         active=v.get("active_setup"); at=f"#{active['id']} {zh_side(active['side'])}" if active else "無"
         sh=highs[-1][1] if highs else None; sl=lows[-1][1] if lows else None
-        send_discord(f"📊 BTC V6 市場現況｜手動查詢\n\n💰 BTC：${close:,.0f}\n1H：{em(ctx['ema_1h'])}\n15M：{em(ctx['ema_15m'])}\nEMA Zone 距離：{ctx['zone_distance_atr']:.2f} ATR\nVolume：{vol:.2f}×\nOI：{fd(om.get('recent_dir','FLAT'))} ({float(om.get('recent_pct',0) or 0):+.2%})\nCVD：{fd(cm.get('recent_dir','FLAT'))}\nATR：{a/close:.2%}\n\n最近 Swing High：${sh:,.0f}\n最近 Swing Low：${sl:,.0f}\n📡 目前訊號：{at}\n🧪 V6 實測完成：{len(v['history'])}｜進行中：{sum(str(x.get('version','')).startswith('V6') for x in state['forward_tests'])}\n📰 {news}\n\nℹ️ 手動查詢不建立新實測樣本")
+        send_discord(f"📊 BTC V6 OKX 市場現況｜手動查詢\n\n💰 BTC：${close:,.0f}\n1H：{em(ctx['ema_1h'])}\n15M：{em(ctx['ema_15m'])}\nEMA Zone 距離：{ctx['zone_distance_atr']:.2f} ATR\nVolume：{vol:.2f}×\nOI：{fd(om.get('recent_dir','UNAVAILABLE'))}{(' (' + format(float(om['recent_pct']), '+.2%') + ')') if om.get('recent_pct') is not None else ''}\nCVD：{fd(cm.get('recent_dir','FLAT'))}\nATR：{a/close:.2%}\n\n最近 Swing High：${sh:,.0f}\n最近 Swing Low：${sl:,.0f}\n📡 目前訊號：{at}\n🧪 V6 實測完成：{len(v['history'])}｜進行中：{sum(str(x.get('version','')).startswith('V6') for x in state['forward_tests'])}\n📰 {news}\n\nℹ️ 手動查詢不建立新實測樣本")
         export_data(state); save_state(state); return
 
     if v.get("last_processed_candle")!=ct:
@@ -659,7 +645,7 @@ def main():
         v["last_processed_candle"]=ct
 
     export_data(state); save_state(state)
-    print(f"Radar V6: BTC={close:.0f} 1H={ctx['ema_1h']} 15M={ctx['ema_15m']} Vol={vol:.2f}x V6 completed={len(v['history'])}")
+    print(f"Radar V6 OKX: BTC={close:.0f} 1H={ctx['ema_1h']} 15M={ctx['ema_15m']} Vol={vol:.2f}x V6 completed={len(v['history'])}")
 
 
 if __name__ == "__main__": main()
