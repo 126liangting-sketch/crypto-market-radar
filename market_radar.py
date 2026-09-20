@@ -170,21 +170,49 @@ def analytics_fields(kind, keys):
     return sorted(out)
 
 
+def bybit_kline_rows(limit=80):
+    """Closed 15m BTCUSDT linear candles from Bybit; used only for real traded volume."""
+    data = get(f"{BYBIT_BASE}/v5/market/kline",
+               {"category":"linear","symbol":BYBIT_SYMBOL,"interval":"15","limit":limit})
+    if int(data.get("retCode", -1)) != 0:
+        raise RuntimeError(f"Bybit kline: {data.get('retMsg','unknown error')}")
+    raw = data.get("result",{}).get("list",[])
+    now_ms = int(time.time()*1000)
+    out=[]
+    for r in raw:
+        try:
+            ts=int(r[0]); vol=float(r[5])
+            # Exclude the still-forming 15m candle.
+            if ts + 900000 <= now_ms:
+                out.append((ts//1000, vol))
+        except (TypeError,ValueError,IndexError):
+            continue
+    return sorted(out)
+
+
 def trade_volume_rows():
-    # Kraken spot/index candles can legitimately report volume=0.
-    # Use the futures analytics trade-volume feed (buyVolume + sellVolume) instead.
-    return analytics_fields("trade-volume", ("buyVolume", "sellVolume"))
+    """Compatibility wrapper: return Bybit real 15m volume as (ts,buy,sell).
+    Kline has total volume only, so buy/sell split is intentionally unavailable.
+    """
+    return [(ts, vol, 0.0) for ts,vol in bybit_kline_rows()]
+
+
+def bybit_oi_rows(limit=80):
+    data = get(f"{BYBIT_BASE}/v5/market/open-interest",
+               {"category":"linear","symbol":BYBIT_SYMBOL,"intervalTime":"15min","limit":limit})
+    if int(data.get("retCode", -1)) != 0:
+        raise RuntimeError(f"Bybit OI: {data.get('retMsg','unknown error')}")
+    out=[]
+    for r in data.get("result",{}).get("list",[]):
+        try: out.append((int(r["timestamp"])//1000, float(r["openInterest"])))
+        except (TypeError,ValueError,KeyError): continue
+    return sorted(out)
 
 
 def cvd_fallback_from_trade_volume():
-    """Build a cumulative delta series from buy/sell trade volume when Kraken CVD is flat/zero."""
-    rows = trade_volume_rows()
-    total = 0.0
-    out = []
-    for ts, buy, sell in rows:
-        total += buy - sell
-        out.append((ts, total))
-    return out
+    # Bybit Kline exposes total volume, not historical taker buy/sell split.
+    # Do not manufacture a fake CVD from total volume.
+    return []
 
 
 def direction_details(kind):
@@ -192,12 +220,10 @@ def direction_details(kind):
     Small moves are intentionally FLAT. A clear recent reversal neutralizes the broad direction.
     """
     try:
-        rows = analytics(kind)
+        rows = bybit_oi_rows() if kind == "open-interest" else analytics(kind)
         if kind == "cvd" and rows and all(abs(v) < 1e-12 for _, v in rows):
-            fallback = cvd_fallback_from_trade_volume()
-            if len(fallback) >= 5:
-                rows = fallback
-                print("CVD API 回傳全 0，改用 buyVolume-sellVolume 建立 CVD fallback")
+            print("CVD: Kraken 回傳全 0，標記為 UNAVAILABLE（不偽造資料）")
+            rows = []
     except (requests.exceptions.RequestException, ValueError, RuntimeError) as e:
         print(f"{kind} 暫時無法取得: {type(e).__name__}: {e}")
         return "UNAVAILABLE", {}
@@ -264,7 +290,9 @@ def send_discord(message):
 
 
 
-VERSION = "V6_1_FLOW_FIX"
+VERSION = "V6_2_BYBIT_FLOW"
+BYBIT_BASE = "https://api.bybit.com"
+BYBIT_SYMBOL = "BTCUSDT"
 V5_JSON = "forward_test_v5.json"
 V5_CSV = "forward_test_v5.csv"
 V6_JSON = "forward_test_v6.json"
@@ -350,11 +378,10 @@ def ema_context(rows15, rows1h, a):
 
 
 def volume_ratio(rows=None):
-    # Primary source: Kraken futures trade-volume analytics.
-    # This avoids the PI_XBTUSD spot/index candle volume=0 issue.
+    # Primary source: Bybit BTCUSDT linear 15m Kline traded volume.
     try:
-        tv = trade_volume_rows()
-        totals = [buy + sell for _, buy, sell in tv]
+        tv = bybit_kline_rows()
+        totals = [vol for _, vol in tv]
         if len(totals) >= VOL_LOOKBACK + 1:
             cur = totals[-1]
             prev = totals[-VOL_LOOKBACK-1:-1]
@@ -362,7 +389,7 @@ def volume_ratio(rows=None):
             if avg > 0:
                 return cur / avg
     except (requests.exceptions.RequestException, ValueError, RuntimeError) as e:
-        print(f"trade-volume 暫時無法取得: {type(e).__name__}: {e}")
+        print(f"Bybit Volume 暫時無法取得: {type(e).__name__}: {e}")
 
     # Fallback only if candle volume is actually populated.
     if rows and len(rows) >= VOL_LOOKBACK + 1:
@@ -376,17 +403,21 @@ def volume_ratio(rows=None):
 
 def flow_for_side(side, price_dir, oi_metrics, cvd_metrics):
     rp=float(oi_metrics.get("recent_pct",0) or 0)
-    oi_dir="FLAT" if abs(rp)<OI_FLAT_V6 else "UP" if rp>0 else "DOWN"
-    cd=float(cvd_metrics.get("recent_delta",0) or 0); span=abs(float(cvd_metrics.get("broad_span",0) or 0))
+    oi_available=bool(oi_metrics)
+    oi_dir="UNAVAILABLE" if not oi_available else ("FLAT" if abs(rp)<OI_FLAT_V6 else "UP" if rp>0 else "DOWN")
+
+    cvd_available=bool(cvd_metrics)
+    cd=float(cvd_metrics.get("recent_delta",0) or 0) if cvd_available else 0.0
+    span=abs(float(cvd_metrics.get("broad_span",0) or 0)) if cvd_available else 0.0
     rel=abs(cd)/span if span else 0.0
-    cvd_dir="FLAT" if rel<0.10 else "UP" if cd>0 else "DOWN"
-    cvd_strong=rel>=0.50
+    cvd_dir="UNAVAILABLE" if not cvd_available else ("FLAT" if rel<0.10 else "UP" if cd>0 else "DOWN")
+    cvd_strong=cvd_available and rel>=0.50
     wanted="UP" if side=="LONG" else "DOWN"
-    cvd_support=cvd_dir==wanted
-    cvd_oppose=cvd_dir not in ("FLAT",wanted) and cvd_strong
-    # OI rising supports whichever way price is actually moving; falling OI is weak/non-confirming, not directional support.
-    oi_support=(oi_dir=="UP" and price_dir==wanted)
-    oi_oppose=(oi_dir=="UP" and price_dir not in ("FLAT",wanted))
+    cvd_support=cvd_available and cvd_dir==wanted
+    cvd_oppose=cvd_available and cvd_dir not in ("FLAT",wanted) and cvd_strong
+    oi_support=oi_available and (oi_dir=="UP" and price_dir==wanted)
+    oi_oppose=oi_available and (oi_dir=="UP" and price_dir not in ("FLAT",wanted))
+    # V6.2: if CVD source is unavailable, real Bybit OI may confirm by itself.
     valid=(cvd_support or oi_support) and not cvd_oppose and not oi_oppose
     strong_both=cvd_support and oi_support
     return {"valid":valid,"strong_both":strong_both,"cvd_dir":cvd_dir,"cvd_strong":cvd_strong,"oi_dir":oi_dir,"oi_recent_pct":rp,"cvd_recent_delta":cd,"cvd_rel":rel}
@@ -553,60 +584,8 @@ def create_signal(state, side, trigger_type, level, ext, ctx, flow, vol, risk, c
     send_discord(f"⚡ 新訊號 #{sid}｜BTC {zh_side(side)}\n\n💰 進場 ${close:,.0f}\n🎯 TP1 ${risk['tp1']:,.0f}｜TP2 ${risk['tp2']:,.0f}\n🛑 SL ${risk['sl']:,.0f}\n⚖️ 風險距離 {risk['risk_atr']:.2f} ATR\n\n📍 {typ}\n1H：{em(ctx['ema_1h'])}\n15M：{em(ctx['ema_15m'])}\nVolume：{'🔥 ' if vol>=VOL_STRONG else ''}{vol:.2f}×\nCVD：{fd(flow['cvd_dir'])}\nOI：{fd(flow['oi_dir'])}\n品質 Score：{q}/8{warning}\n📰 {news}")
 
 
-
-def diagnostic_analytics(kind):
-    """Print a compact, non-secret summary of Kraken analytics raw responses."""
-    now = int(time.time())
-    url = f"{BASE}/analytics/{SYMBOL}/{kind}"
-    params = {"since": now - 18000, "to": now, "interval": 900}
-    print(f"\n--- DIAG {kind} ---")
-    try:
-        r = requests.get(url, params=params, timeout=20, headers={"User-Agent": "Crypto-Market-Radar/6.1-diagnostic"})
-        print(f"HTTP={r.status_code} content-type={r.headers.get('content-type','')} bytes={len(r.content)}")
-        try:
-            data = r.json()
-        except ValueError:
-            print("JSON parse failed; body prefix:", r.text[:500])
-            return
-        print("top-level type:", type(data).__name__)
-        if isinstance(data, dict):
-            print("top-level keys:", list(data.keys()))
-            result = data.get("result", data)
-            print("result type:", type(result).__name__)
-            if isinstance(result, dict):
-                print("result keys:", list(result.keys()))
-                ts = result.get("timestamp")
-                raw = result.get("data")
-                print("timestamp:", f"len={len(ts)} tail={ts[-3:]}" if isinstance(ts,list) else repr(ts)[:300])
-                print("data type:", type(raw).__name__)
-                if isinstance(raw, dict):
-                    print("data keys:", list(raw.keys()))
-                    for k,v in raw.items():
-                        if isinstance(v, list): print(f"data[{k}] len={len(v)} tail={v[-3:]}")
-                        else: print(f"data[{k}]={repr(v)[:300]}")
-                elif isinstance(raw, list):
-                    print("data len:", len(raw), "tail:", raw[-3:])
-                for k,v in result.items():
-                    if k not in ("timestamp","data"):
-                        if isinstance(v,list): print(f"result[{k}] len={len(v)} tail={v[-3:]}")
-                        elif isinstance(v,(str,int,float,bool,type(None))): print(f"result[{k}]={v}")
-            elif isinstance(result, list):
-                print("result len:", len(result), "tail:", result[-3:])
-        else:
-            print("body summary:", repr(data)[:1000])
-    except Exception as e:
-        print(f"DIAG ERROR {kind}: {type(e).__name__}: {e}")
-
-
-def run_diagnostics():
-    print("=== V6.1 KRAKEN ANALYTICS DIAGNOSTIC ===")
-    for kind in ("trade-volume", "open-interest", "cvd"):
-        diagnostic_analytics(kind)
-    print("=== END DIAGNOSTIC ===")
-
 def main():
     print("=== BTC Market Radar V6.1 FLOW FIX ===")
-    run_diagnostics()
     state=load_state(); rows15=closed_rows("15m",240); rows1h=closed_rows("1h",120)
     if len(rows15)<80 or len(rows1h)<60: raise RuntimeError("K線資料不足")
     closed=rows15[-1]; prev=rows15[-2]; ct=int(closed["time"]); close=float(closed["close"]); prev_close=float(prev["close"])
