@@ -22,7 +22,7 @@ jobs:
       - name: Run radar
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        run: python market_radar.py
+        run: python okx_cvd_test.py
       - name: Save state and V5 dataset
         run: |
           git config user.name "github-actions[bot]"
