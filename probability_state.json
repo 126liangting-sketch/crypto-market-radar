@@ -1452,7 +1452,7 @@
   "active_setup": null,
   "next_setup_id": 7,
   "v6": {
-    "last_processed_candle": 1789941600,
+    "last_processed_candle": 1789942500,
     "next_setup_id": 1,
     "next_test_id": 1,
     "active_setup": null,
@@ -1460,7 +1460,7 @@
       "side": "LONG",
       "level": 81195.6,
       "break_time": 1789941600,
-      "bars": 0,
+      "bars": 1,
       "used": false
     },
     "history": [],
@@ -1644,6 +1644,10 @@
       {
         "time": 1789943351,
         "value": 30051.711700000127
+      },
+      {
+        "time": 1789943898,
+        "value": 30041.20700000012
       }
     ]
   }
