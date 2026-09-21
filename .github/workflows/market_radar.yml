@@ -1,6 +1,6 @@
 # Replace the CONTENT of your existing GitHub Actions workflow with this file.
 # Do not keep two scheduled radar workflows enabled at the same time.
-name: BTC Market Radar V5.1
+name: BTC Market Radar V6.1
 
 on:
   workflow_dispatch:
@@ -23,12 +23,18 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: python market_radar.py
-      - name: Save state and V5 dataset
+           - name: Save V6 state and datasets
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add probability_state.json forward_test_v5.json forward_test_v5.csv 2>/dev/null || true
+
+          git add probability_state.json \
+                  forward_test_v6.json \
+                  forward_test_v6.csv \
+                  blocked_reasons.json \
+                  blocked_reasons.csv 2>/dev/null || true
+
           if ! git diff --cached --quiet; then
-            git commit -m "Update V5.1 radar state"
+            git commit -m "Update V6 radar state and datasets"
             git push
           fi
