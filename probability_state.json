@@ -1892,7 +1892,15 @@
       {
         "time": 1789983402,
         "value": 30227.52530000013
+      },
+      {
+        "time": 1789983482,
+        "value": 30229.661200000126
       }
-    ]
+    ],
+    "structure_ready_key": null,
+    "structure_ready_side": null,
+    "structure_ready_time": null,
+    "structure_early_key": null
   }
 }
