@@ -1452,7 +1452,7 @@
   "active_setup": null,
   "next_setup_id": 7,
   "v6": {
-    "last_processed_candle": 1789978500,
+    "last_processed_candle": 1789979400,
     "next_setup_id": 1,
     "next_test_id": 1,
     "active_setup": null,
@@ -1460,13 +1460,13 @@
       "side": "LONG",
       "level": 81862.5,
       "break_time": 1789978500,
-      "bars": 0,
+      "bars": 1,
       "used": false
     },
     "history": [],
     "news": {
-      "last_major_id": "a1ef21d978cb01a68b5f096ca9ed616d85ceca3530a7974a1cc9076de1373f4c",
-      "last_major_time": 1789976811
+      "last_major_id": "a996213e304a5e97d3c012049ac40f921edf4d2daad5e1092c48151c9da3971a",
+      "last_major_time": 1789980802
     },
     "oi_history": [
       {
@@ -1872,6 +1872,10 @@
       {
         "time": 1789980294,
         "value": 29504.411500000104
+      },
+      {
+        "time": 1789980801,
+        "value": 29779.085100000106
       }
     ]
   }
