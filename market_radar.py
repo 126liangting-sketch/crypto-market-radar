@@ -37,7 +37,7 @@ ZONE_ATR_MULT = 0.35
 ANALYTICS_BARS = 12                 # 12 x 15m = about 3 hours
 ANALYTICS_CONFIRM_BARS = 4          # latest ~1 hour confirms no clear reversal
 OI_FLAT_PCT = 0.0025               # +/-0.10% treated as flat
-CVD_FLAT_REL = 0.10               # <=2% of recent CVD range treated as flat
+CVD_FLAT_REL = 0.05               # <=2% of recent CVD range treated as flat
 
 FEEDS = [
     "https://www.coindesk.com/arc/outboundfeeds/rss/",
@@ -445,7 +445,7 @@ def flow_for_side(side, price_dir, oi_metrics, cvd_metrics):
     cd = float(cvd_metrics.get("recent_delta", 0) or 0)
     span = abs(float(cvd_metrics.get("broad_span", 0) or 0))
     rel = abs(cd) / span if span else 0.0
-    cvd_dir = ("FLAT" if rel < 0.10 else "UP" if cd > 0 else "DOWN") if cvd_available else "UNAVAILABLE"
+    cvd_dir = ("FLAT" if rel < CVD_FLAT_REL else "UP" if cd > 0 else "DOWN")if cvd_available else "UNAVAILABLE"
     cvd_strong = cvd_available and rel >= 0.50
 
     wanted = "UP" if side == "LONG" else "DOWN"
