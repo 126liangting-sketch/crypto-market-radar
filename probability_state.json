@@ -1465,8 +1465,8 @@
     },
     "history": [],
     "news": {
-      "last_major_id": "d56c206940c79a2f5d1a7aaf4011aef4883251bf8b4c496015bb4f81e5f377cc",
-      "last_major_time": 1789996779
+      "last_major_id": "2f6e4cc56aab4bc70be618c54e6b59967a48d80e6df3ec6afd006732a2f35830",
+      "last_major_time": 1789998111
     },
     "oi_history": [
       {
@@ -1996,6 +1996,10 @@
       {
         "time": 1789997460,
         "value": 29976.684400000107
+      },
+      {
+        "time": 1789998110,
+        "value": 30002.65440000012
       }
     ],
     "structure_ready_key": null,
