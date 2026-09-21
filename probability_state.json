@@ -1452,7 +1452,7 @@
   "active_setup": null,
   "next_setup_id": 7,
   "v6": {
-    "last_processed_candle": 1789995600,
+    "last_processed_candle": 1789996500,
     "next_setup_id": 1,
     "next_test_id": 1,
     "active_setup": null,
@@ -1992,6 +1992,10 @@
       {
         "time": 1789996778,
         "value": 29839.031100000117
+      },
+      {
+        "time": 1789997460,
+        "value": 29976.684400000107
       }
     ],
     "structure_ready_key": null,
