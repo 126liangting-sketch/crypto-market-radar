@@ -5,6 +5,7 @@ import requests
 import feedparser
 import csv
 import hashlib
+from datetime import datetime, timezone
 
 OKX_BASE = "https://www.okx.com"
 OKX_SYMBOL = "BTC-USDT-SWAP"
@@ -12,7 +13,7 @@ WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 STATE = "probability_state.json"
 CSV_FILE = "forward_test_v5.csv"
 V5_JSON = "forward_test_v5.json"
-VERSION = "V6_OKX_3_1_STRUCTURE_ALERT"
+VERSION = "V6_OKX_3_2_BLOCKED_STATS"
 TP_SL_ATR_MULT = 1.5
 MIN_RISK_PCT = 0.004          # minimum 0.40% stop distance; avoids ultra-tight stops in low ATR
 SETUP_INVALID_BARS = 3        # three consecutive closed 15m bars below 5/8 ends the setup
@@ -320,11 +321,13 @@ def send_discord(message):
 
 
 
-VERSION = "V6_OKX_3_1_STRUCTURE_ALERT"
+VERSION = "V6_OKX_3_2_BLOCKED_STATS"
 V5_JSON = "forward_test_v5.json"
 V5_CSV = "forward_test_v5.csv"
 V6_JSON = "forward_test_v6.json"
 V6_CSV = "forward_test_v6.csv"
+BLOCKED_JSON = "blocked_reasons.json"
+BLOCKED_CSV = "blocked_reasons.csv"
 STATE = "probability_state.json"
 MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 FORWARD_HORIZONS = {"15m": 900, "30m": 1800, "1h": 3600, "2h": 7200}
@@ -381,6 +384,8 @@ def load_state():
     v.setdefault("structure_ready_side", None)
     v.setdefault("structure_ready_time", None)
     v.setdefault("structure_early_key", None)
+    v.setdefault("blocked_events", [])
+    v.setdefault("blocked_seen_keys", [])
     return state
 
 
@@ -686,6 +691,95 @@ def update_all_forward(state, rows15):
     state["forward_tests"]=keep
 
 
+
+def blocked_reason_code(reason):
+    mapping = {
+        "離 EMA Zone > 1 ATR": ("EMA_DISTANCE", "離 EMA Zone 過遠"),
+        "突破延伸 > 1 ATR": ("BREAKOUT_EXTENSION", "突破延伸過遠"),
+        "15M EMA 明顯反向": ("EMA_OPPOSE", "15M EMA 明顯反向"),
+        "成交量 < 0.7×": ("VOLUME_LOW", "成交量過低"),
+        "成交量偏低且資金流不足": ("LOW_VOLUME_FLOW", "成交量偏低＋資金流不足"),
+        "CVD/OI 未提供有效支持": ("FLOW_NO_SUPPORT", "CVD/OI 未提供有效支持"),
+        "SL / RR 結構不適合": ("RISK_RR", "SL / RR 結構不適合"),
+        "risk/room not suitable": ("RISK_RR", "SL / RR / 空間不適合"),
+        "risk/RR or active setup": ("RISK_OR_ACTIVE", "SL / RR 不適合或已有進行中訊號"),
+        "active setup": ("ACTIVE_SETUP", "已有進行中訊號"),
+    }
+    return mapping.get(str(reason), ("OTHER", str(reason)))
+
+
+def record_blocked(state, candle_time, side, trigger_type, reason, price, vol, ctx, flow, ext=None):
+    """Record one unique blocked trade opportunity per closed candle."""
+    v = state["v6"]
+    code, label = blocked_reason_code(reason)
+    key = f"{int(candle_time)}|{side}|{trigger_type}|{code}"
+    seen = v.setdefault("blocked_seen_keys", [])
+    if key in seen:
+        return False
+
+    event = {
+        "candle_time": int(candle_time),
+        "time_utc": datetime.fromtimestamp(int(candle_time), tz=timezone.utc).isoformat(),
+        "side": side,
+        "trigger_type": trigger_type,
+        "reason_code": code,
+        "reason": label,
+        "price": float(price),
+        "volume_ratio": float(vol),
+        "zone_distance_atr": float(ctx.get("zone_distance_atr", 0) or 0),
+        "extension_atr": None if ext is None else float(ext),
+        "ema_1h": ctx.get("ema_1h"),
+        "ema_15m": ctx.get("ema_15m"),
+        "oi_dir": flow.get("oi_dir"),
+        "cvd_dir": flow.get("cvd_dir"),
+        "oi_recent_pct": flow.get("oi_recent_pct"),
+        "cvd_recent_delta": flow.get("cvd_recent_delta"),
+    }
+    v.setdefault("blocked_events", []).append(event)
+    v["blocked_events"] = v["blocked_events"][-500:]
+    seen.append(key)
+    v["blocked_seen_keys"] = seen[-1200:]
+    return True
+
+
+def export_blocked_data(state):
+    events = list(state["v6"].get("blocked_events", []))
+    summary = {}
+    for e in events:
+        code = e.get("reason_code", "OTHER")
+        item = summary.setdefault(code, {
+            "reason": e.get("reason", code),
+            "count": 0,
+            "LONG": 0,
+            "SHORT": 0,
+        })
+        item["count"] += 1
+        if e.get("side") in ("LONG", "SHORT"):
+            item[e["side"]] += 1
+
+    ordered = dict(sorted(summary.items(), key=lambda kv: (-kv[1]["count"], kv[0])))
+    with open(BLOCKED_JSON, "w", encoding="utf-8") as f:
+        json.dump({
+            "version": VERSION,
+            "total_blocked": len(events),
+            "summary": ordered,
+            "recent": events[-100:],
+        }, f, ensure_ascii=False, indent=2)
+
+    fields = [
+        "candle_time", "time_utc", "side", "trigger_type",
+        "reason_code", "reason", "price", "volume_ratio",
+        "zone_distance_atr", "extension_atr",
+        "ema_1h", "ema_15m", "oi_dir", "cvd_dir",
+        "oi_recent_pct", "cvd_recent_delta",
+    ]
+    with open(BLOCKED_CSV, "w", newline="", encoding="utf-8-sig") as f:
+        w = csv.DictWriter(f, fieldnames=fields)
+        w.writeheader()
+        for e in events:
+            w.writerow({k: e.get(k, "") for k in fields})
+
+
 def export_data(state):
     """Write only V6 OKX research files. Existing V5.2 JSON/CSV are never rewritten."""
     with open(V6_JSON, "w", encoding="utf-8") as f:
@@ -706,6 +800,8 @@ def export_data(state):
             for h in FORWARD_HORIZONS:
                 row["ret_"+h]=x.get("results",{}).get(h,{}).get("return")
             w.writerow(row)
+
+    export_blocked_data(state)
 
 
 def zh_side(side): return "做多" if side=="LONG" else "做空"
@@ -793,7 +889,13 @@ def main():
                         v["structure_early_key"] = ready_key
                         create_signal(state, side, "CONTINUATION", float(micro["level"]), float(micro["ext"]), ctx, fl, vol, risk, close, ct, news, defense_level=float(structure["pullback"][1]))
                 else:
-                    print(f"V6 structure continuation {side} blocked: {reason if not ok else 'risk/room not suitable'}")
+                    block_reason = reason if not ok else "risk/room not suitable"
+                    print(f"V6 structure continuation {side} blocked: {block_reason}")
+                    record_blocked(
+                        state, ct, side, "CONTINUATION", block_reason,
+                        close, vol, ctx, fl,
+                        float(micro.get("ext", 0) or 0)
+                    )
 
         # Detect fresh 2-2 swing breakout. Require previous close not already beyond the same level.
         last_high=highs[-1] if highs else None; last_low=lows[-1] if lows else None
@@ -852,6 +954,10 @@ def main():
             else:
                 block_reason = reason if not ok else "SL / RR 結構不適合"
                 print(f"V6 breakout armed {side}, alert-only: {block_reason}")
+                record_blocked(
+                    state, ct, side, "BREAKOUT", block_reason,
+                    close, vol, ctx, fl, ext
+                )
 
                 # Important V6.1 patch:
                 # A real Swing Breakout must no longer stay silent just because
@@ -883,8 +989,20 @@ def main():
                 fl=long_flow if side=="LONG" else short_flow; ext=abs(close-level)/a
                 ok,reason=eligibility(side,close,ctx,a,vol,fl,ext); risk=structure_risk(side,close,a,highs,lows)
                 watch["used"]=True
-                if ok and risk and v.get("active_setup") is None: create_signal(state,side,"RETEST",level,ext,ctx,fl,vol,risk,close,ct,news)
-                else: print(f"V6 retest consumed, no alert: {reason if not ok else 'risk/RR or active setup'}")
+                if ok and risk and v.get("active_setup") is None:
+                    create_signal(state,side,"RETEST",level,ext,ctx,fl,vol,risk,close,ct,news)
+                else:
+                    if not ok:
+                        block_reason = reason
+                    elif not risk:
+                        block_reason = "SL / RR 結構不適合"
+                    else:
+                        block_reason = "active setup"
+                    print(f"V6 retest consumed, no alert: {block_reason}")
+                    record_blocked(
+                        state, ct, side, "RETEST", block_reason,
+                        close, vol, ctx, fl, ext
+                    )
             if watch["bars"]>=RETEST_MAX_BARS: v["breakout_watch"]=None
         v["last_processed_candle"]=ct
 
