@@ -1452,7 +1452,7 @@
   "active_setup": null,
   "next_setup_id": 7,
   "v6": {
-    "last_processed_candle": 1789971300,
+    "last_processed_candle": 1789972200,
     "next_setup_id": 1,
     "next_test_id": 1,
     "active_setup": null,
@@ -1465,8 +1465,8 @@
     },
     "history": [],
     "news": {
-      "last_major_id": "59ca9f0960126e7c3b3eee7f791fc28acbd9c715f9f3dcdf00e2b3df67c5c7b9",
-      "last_major_time": 1789965942
+      "last_major_id": "76a5a338050944d945cb0b44c4d9d688d6eb5859a99fe25ebd1b4b66bc751dc8",
+      "last_major_time": 1789973820
     },
     "oi_history": [
       {
@@ -1832,6 +1832,10 @@
       {
         "time": 1789973026,
         "value": 30389.198700000085
+      },
+      {
+        "time": 1789973819,
+        "value": 30521.246600000075
       }
     ]
   }
