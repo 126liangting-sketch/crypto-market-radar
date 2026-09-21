@@ -12,7 +12,7 @@ WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 STATE = "probability_state.json"
 CSV_FILE = "forward_test_v5.csv"
 V5_JSON = "forward_test_v5.json"
-VERSION = "V6_OKX_3_STRUCTURE"
+VERSION = "V6_OKX_3_1_STRUCTURE_ALERT"
 TP_SL_ATR_MULT = 1.5
 MIN_RISK_PCT = 0.004          # minimum 0.40% stop distance; avoids ultra-tight stops in low ATR
 SETUP_INVALID_BARS = 3        # three consecutive closed 15m bars below 5/8 ends the setup
@@ -320,7 +320,7 @@ def send_discord(message):
 
 
 
-VERSION = "V6_OKX_3_STRUCTURE"
+VERSION = "V6_OKX_3_1_STRUCTURE_ALERT"
 V5_JSON = "forward_test_v5.json"
 V5_CSV = "forward_test_v5.csv"
 V6_JSON = "forward_test_v6.json"
@@ -811,16 +811,68 @@ def main():
             v["breakout_watch"]={"side":side,"level":level,"break_time":ct,"bars":0,"used":False}
             current=v.get("active_setup")
             reversal=current and current["side"]!=side
-            if ok and risk:
+
+            # If an earlier HH/HL or LL/LH continuation setup already exists,
+            # the formal Swing Breakout is useful confirmation even when price
+            # has become too extended for another entry. Never create a second
+            # trade / Forward sample here.
+            same_continuation=(
+                current
+                and current.get("side")==side
+                and current.get("trigger_type")=="CONTINUATION"
+                and not current.get("enhanced")
+            )
+            if same_continuation:
+                confirm_note = (
+                    "✅ 位置仍符合正式突破條件"
+                    if ok and risk
+                    else f"⚠️ 已突破，但不追加進場：{reason if not ok else 'SL / RR 結構不適合'}"
+                )
+                send_discord(
+                    f"🔥 訊號 #{current['id']} 突破確認｜BTC {zh_side(side)}\n\n"
+                    f"📍 HH/HL・LL/LH 延續後，正式 Swing Breakout 已確認\n"
+                    f"💰 BTC：${close:,.0f}\n"
+                    f"突破位：${level:,.0f}\n"
+                    f"Volume：{'🔥 ' if vol>=VOL_STRONG else ''}{vol:.2f}×\n"
+                    f"EMA Zone 距離：{ctx['zone_distance_atr']:.2f} ATR\n"
+                    f"CVD Proxy：{fd(fl['cvd_dir'])}\n"
+                    f"OI：{fd(fl['oi_dir'])}\n"
+                    f"{confirm_note}\n"
+                    f"ℹ️ 這是原訊號的確認，不是第二次進場"
+                )
+                current["enhanced"] = True
+
+            elif ok and risk:
                 if reversal:
                     send_discord(f"🔄 市場結構反轉｜BTC {zh_side(current['side'])} → {zh_side(side)}")
                     v["active_setup"]=None
                 if v.get("active_setup") is None:
                     create_signal(state,side,"BREAKOUT",level,ext,ctx,fl,vol,risk,close,ct,news)
-                elif v.get("active_setup",{}).get("side")==side and v.get("active_setup",{}).get("trigger_type")=="CONTINUATION" and not v.get("active_setup",{}).get("enhanced"):
-                    send_discord(f"🔥 訊號 #{v['active_setup']['id']} 突破確認｜BTC {zh_side(side)}\n\n📍 HH/HL・LL/LH 延續後，正式 Swing Breakout 已確認\nVolume：{vol:.2f}×\nEMA Zone 距離：{ctx['zone_distance_atr']:.2f} ATR\nℹ️ 若價格已延伸過遠，不追加追價")
-                    v["active_setup"]["enhanced"] = True
-            else: print(f"V6 breakout armed {side}, no direct alert: {reason if not ok else 'risk/RR not suitable'}")
+
+            else:
+                block_reason = reason if not ok else "SL / RR 結構不適合"
+                print(f"V6 breakout armed {side}, alert-only: {block_reason}")
+
+                # Important V6.1 patch:
+                # A real Swing Breakout must no longer stay silent just because
+                # the entry is too extended / risk is unsuitable. Alert the user,
+                # but do NOT create an entry or Forward Test. The armed retest
+                # logic above remains active.
+                if not reversal:
+                    send_discord(
+                        f"👀 BTC {zh_side(side)}爆發預警｜Swing Breakout\n\n"
+                        f"💰 BTC：${close:,.0f}\n"
+                        f"✅ 正式結構突破：${level:,.0f}\n"
+                        f"1H：{em(ctx['ema_1h'])}\n"
+                        f"15M：{em(ctx['ema_15m'])}\n"
+                        f"Volume：{'🔥 ' if vol>=VOL_STRONG else ''}{vol:.2f}×\n"
+                        f"EMA Zone 距離：{ctx['zone_distance_atr']:.2f} ATR\n"
+                        f"CVD Proxy：{fd(fl['cvd_dir'])}\n"
+                        f"OI：{fd(fl['oi_dir'])}\n\n"
+                        f"⚠️ 不直接進場：{block_reason}\n"
+                        f"↩️ 已啟用 RETEST 觀察，等待第一個有效回踩\n"
+                        f"ℹ️ 此提醒不建立 Forward Test，也不是追價訊號"
+                    )
 
         # First valid retest only, starting after the breakout candle.
         watch=v.get("breakout_watch")

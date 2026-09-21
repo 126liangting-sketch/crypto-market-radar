@@ -25,3 +25,11 @@ GitHub 使用：
 - 用壓縮檔內 market_radar.py 覆蓋原本 market_radar.py。
 - Workflow 保持：python market_radar.py
 - 不要刪 probability_state.json、forward_test_v5/v6 JSON/CSV、Secrets。
+
+V6.1 Structure Alert patch
+- 正式 Swing Breakout 若已成立，但因 EMA 距離 / 延伸 / Flow / Volume / SL-RR 等條件不適合直接進場：
+  Discord 仍會發「👀 爆發預警」。
+- 爆發預警只通知，不建立 Entry、不建立 Forward Test。
+- 同時維持 breakout_watch，等待第一個有效 RETEST。
+- 若先前已有 CONTINUATION 訊號，後續正式 Swing Breakout 會發「🔥 突破確認」；
+  即使當下已延伸過遠，也只作為原訊號確認，不會建立第二筆交易。
