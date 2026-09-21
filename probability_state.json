@@ -1902,13 +1902,15 @@
         "value": 29718.08310000012
       },
       {
-        "time": 1789984471,
-        "value": 29640.755400000122
+        "time": 1789984504,
+        "value": 29643.427600000126
       }
     ],
     "structure_ready_key": null,
     "structure_ready_side": null,
     "structure_ready_time": null,
-    "structure_early_key": null
+    "structure_early_key": null,
+    "blocked_events": [],
+    "blocked_seen_keys": []
   }
 }
