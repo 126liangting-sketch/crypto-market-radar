@@ -1452,15 +1452,15 @@
   "active_setup": null,
   "next_setup_id": 7,
   "v6": {
-    "last_processed_candle": 1790083800,
+    "last_processed_candle": 1790084700,
     "next_setup_id": 1,
     "next_test_id": 1,
     "active_setup": null,
     "breakout_watch": {
-      "side": "SHORT",
-      "level": 85755.0,
-      "break_time": 1790082900,
-      "bars": 1,
+      "side": "LONG",
+      "level": 86198.4,
+      "break_time": 1790084700,
+      "bars": 0,
       "used": false
     },
     "history": [],
@@ -2588,6 +2588,10 @@
       {
         "time": 1790085292,
         "value": 30534.860000000106
+      },
+      {
+        "time": 1790085672,
+        "value": 30467.892500000107
       }
     ],
     "structure_ready_key": null,
@@ -2936,6 +2940,24 @@
         "cvd_dir": "UP",
         "oi_recent_pct": -0.0025380419784283292,
         "cvd_recent_delta": 995.5410516668588
+      },
+      {
+        "candle_time": 1790084700,
+        "time_utc": "2026-09-22T13:45:00+00:00",
+        "side": "LONG",
+        "trigger_type": "BREAKOUT",
+        "reason_code": "EMA_DISTANCE",
+        "reason": "離 EMA Zone 過遠",
+        "price": 86320.9,
+        "volume_ratio": 1.8538265858904435,
+        "zone_distance_atr": 1.613196787432611,
+        "extension_atr": 0.4341882072963895,
+        "ema_1h": "BULL",
+        "ema_15m": "BULL",
+        "oi_dir": "DOWN",
+        "cvd_dir": "UP",
+        "oi_recent_pct": -0.00631332453182043,
+        "cvd_recent_delta": 1960.4595729135874
       }
     ],
     "blocked_seen_keys": [
@@ -2957,7 +2979,8 @@
       "1790062200|SHORT|RETEST|EMA_DISTANCE",
       "1790065800|LONG|BREAKOUT|EMA_DISTANCE",
       "1790067600|LONG|RETEST|BREAKOUT_EXTENSION",
-      "1790082900|SHORT|BREAKOUT|FLOW_NO_SUPPORT"
+      "1790082900|SHORT|BREAKOUT|FLOW_NO_SUPPORT",
+      "1790084700|LONG|BREAKOUT|EMA_DISTANCE"
     ]
   }
 }
