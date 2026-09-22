@@ -1452,7 +1452,7 @@
   "active_setup": null,
   "next_setup_id": 7,
   "v6": {
-    "last_processed_candle": 1790106300,
+    "last_processed_candle": 1790107200,
     "next_setup_id": 1,
     "next_test_id": 1,
     "active_setup": null,
@@ -1460,13 +1460,13 @@
       "side": "SHORT",
       "level": 86210.0,
       "break_time": 1790106300,
-      "bars": 0,
-      "used": false
+      "bars": 1,
+      "used": true
     },
     "history": [],
     "news": {
-      "last_major_id": "90f6cf9f322da08c13dc9fd13e3b2867fa4f499b6b66372861737d349a050918",
-      "last_major_time": 1790098741
+      "last_major_id": "47b731eeba868727c9daac3c80c3ec96b6f2aeafcaf0e696f15896cdec7ec61c",
+      "last_major_time": 1790108248
     },
     "oi_history": [
       {
@@ -2740,6 +2740,10 @@
       {
         "time": 1790107455,
         "value": 30570.694800000125
+      },
+      {
+        "time": 1790108247,
+        "value": 30538.261000000126
       }
     ],
     "structure_ready_key": "LONG:1790091900:1790093700",
@@ -3178,6 +3182,24 @@
         "cvd_dir": "FLAT",
         "oi_recent_pct": -0.004446590185434807,
         "cvd_recent_delta": -176.51015001416968
+      },
+      {
+        "candle_time": 1790107200,
+        "time_utc": "2026-09-22T20:00:00+00:00",
+        "side": "SHORT",
+        "trigger_type": "RETEST",
+        "reason_code": "VOLUME_LOW",
+        "reason": "成交量過低",
+        "price": 86167.1,
+        "volume_ratio": 0.4974694772594597,
+        "zone_distance_atr": 0.0,
+        "extension_atr": 0.1813515308895217,
+        "ema_1h": "BULL",
+        "ema_15m": "BULL",
+        "oi_dir": "DOWN",
+        "cvd_dir": "DOWN",
+        "oi_recent_pct": -0.0035357016862117563,
+        "cvd_recent_delta": -298.20096802178114
       }
     ],
     "blocked_seen_keys": [
@@ -3204,7 +3226,8 @@
       "1790085600|LONG|RETEST|EMA_DISTANCE",
       "1790091000|LONG|BREAKOUT|EMA_DISTANCE",
       "1790097300|LONG|RETEST|EMA_DISTANCE",
-      "1790106300|SHORT|BREAKOUT|LOW_VOLUME_FLOW"
+      "1790106300|SHORT|BREAKOUT|LOW_VOLUME_FLOW",
+      "1790107200|SHORT|RETEST|VOLUME_LOW"
     ]
   }
 }

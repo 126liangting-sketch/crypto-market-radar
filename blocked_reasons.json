@@ -1,6 +1,6 @@
 {
   "version": "V6_OKX_3_2_BLOCKED_STATS",
-  "total_blocked": 24,
+  "total_blocked": 25,
   "summary": {
     "EMA_DISTANCE": {
       "reason": "離 EMA Zone 過遠",
@@ -34,6 +34,12 @@
     },
     "LOW_VOLUME_FLOW": {
       "reason": "成交量偏低＋資金流不足",
+      "count": 1,
+      "LONG": 0,
+      "SHORT": 1
+    },
+    "VOLUME_LOW": {
+      "reason": "成交量過低",
       "count": 1,
       "LONG": 0,
       "SHORT": 1
@@ -471,6 +477,24 @@
       "cvd_dir": "FLAT",
       "oi_recent_pct": -0.004446590185434807,
       "cvd_recent_delta": -176.51015001416968
+    },
+    {
+      "candle_time": 1790107200,
+      "time_utc": "2026-09-22T20:00:00+00:00",
+      "side": "SHORT",
+      "trigger_type": "RETEST",
+      "reason_code": "VOLUME_LOW",
+      "reason": "成交量過低",
+      "price": 86167.1,
+      "volume_ratio": 0.4974694772594597,
+      "zone_distance_atr": 0.0,
+      "extension_atr": 0.1813515308895217,
+      "ema_1h": "BULL",
+      "ema_15m": "BULL",
+      "oi_dir": "DOWN",
+      "cvd_dir": "DOWN",
+      "oi_recent_pct": -0.0035357016862117563,
+      "cvd_recent_delta": -298.20096802178114
     }
   ]
 }
