@@ -1459,8 +1459,8 @@
     "breakout_watch": null,
     "history": [],
     "news": {
-      "last_major_id": "407c261dc24710cb2035714fc88332a147d2076543166ecffe3d23ec2945aa22",
-      "last_major_time": 1790018283
+      "last_major_id": "2effd2d24aa049ae0d9405bb1690871d1d57495850574e8ebeacffe0d66cdfde",
+      "last_major_time": 1790047791
     },
     "oi_history": [
       {
@@ -2338,6 +2338,10 @@
       {
         "time": 1790047078,
         "value": 30151.11230000011
+      },
+      {
+        "time": 1790047790,
+        "value": 30106.705800000098
       }
     ],
     "structure_ready_key": null,
