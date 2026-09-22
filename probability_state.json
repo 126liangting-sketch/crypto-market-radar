@@ -1452,7 +1452,7 @@
   "active_setup": null,
   "next_setup_id": 7,
   "v6": {
-    "last_processed_candle": 1790037900,
+    "last_processed_candle": 1790038800,
     "next_setup_id": 1,
     "next_test_id": 1,
     "active_setup": null,
@@ -1460,7 +1460,7 @@
       "side": "SHORT",
       "level": 86263.2,
       "break_time": 1790037900,
-      "bars": 0,
+      "bars": 1,
       "used": false
     },
     "history": [],
@@ -2288,6 +2288,10 @@
       {
         "time": 1790039052,
         "value": 29580.44660000011
+      },
+      {
+        "time": 1790039769,
+        "value": 29738.112200000112
       }
     ],
     "structure_ready_key": null,
@@ -2492,6 +2496,24 @@
         "cvd_dir": "DOWN",
         "oi_recent_pct": 0.003545706182483954,
         "cvd_recent_delta": -1307.1469445458843
+      },
+      {
+        "candle_time": 1790038800,
+        "time_utc": "2026-09-22T01:00:00+00:00",
+        "side": "SHORT",
+        "trigger_type": "CONTINUATION",
+        "reason_code": "EMA_OPPOSE",
+        "reason": "15M EMA 明顯反向",
+        "price": 85760.4,
+        "volume_ratio": 2.234875734127758,
+        "zone_distance_atr": 0.22760367428280395,
+        "extension_atr": 0.24726568632581486,
+        "ema_1h": "BULL",
+        "ema_15m": "BULL",
+        "oi_dir": "UP",
+        "cvd_dir": "DOWN",
+        "oi_recent_pct": 0.00211970196159994,
+        "cvd_recent_delta": -1211.5738340297564
       }
     ],
     "blocked_seen_keys": [
@@ -2505,7 +2527,8 @@
       "1790028900|SHORT|BREAKOUT|EMA_DISTANCE",
       "1790029800|SHORT|RETEST|EMA_DISTANCE",
       "1790037900|SHORT|CONTINUATION|EMA_OPPOSE",
-      "1790037900|SHORT|BREAKOUT|BREAKOUT_EXTENSION"
+      "1790037900|SHORT|BREAKOUT|BREAKOUT_EXTENSION",
+      "1790038800|SHORT|CONTINUATION|EMA_OPPOSE"
     ]
   }
 }
