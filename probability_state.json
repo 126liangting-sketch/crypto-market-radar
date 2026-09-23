@@ -1452,7 +1452,7 @@
   "active_setup": null,
   "next_setup_id": 7,
   "v6": {
-    "last_processed_candle": 1790146800,
+    "last_processed_candle": 1790147700,
     "next_setup_id": 1,
     "next_test_id": 1,
     "active_setup": null,
@@ -1460,13 +1460,13 @@
       "side": "SHORT",
       "level": 86380.0,
       "break_time": 1790146800,
-      "bars": 0,
-      "used": false
+      "bars": 1,
+      "used": true
     },
     "history": [],
     "news": {
-      "last_major_id": "1227b6b1b363c92a70ca3fcc7165b75f1eed4115738016babe8f1e7613bda879",
-      "last_major_time": 1790142636
+      "last_major_id": "04427f2536a68f20c08436bd09a636e4c93ed442f816074b36ed1ac494021ca6",
+      "last_major_time": 1790149111
     },
     "oi_history": [
       {
@@ -3020,6 +3020,10 @@
       {
         "time": 1790148443,
         "value": 30425.540700000092
+      },
+      {
+        "time": 1790149110,
+        "value": 30343.188500000088
       }
     ],
     "structure_ready_key": "LONG:1790125200:1790127900",
@@ -3746,6 +3750,24 @@
         "cvd_dir": "FLAT",
         "oi_recent_pct": 0.004489252588495418,
         "cvd_recent_delta": 80.78608330420683
+      },
+      {
+        "candle_time": 1790147700,
+        "time_utc": "2026-09-23T07:15:00+00:00",
+        "side": "SHORT",
+        "trigger_type": "RETEST",
+        "reason_code": "LOW_VOLUME_FLOW",
+        "reason": "成交量偏低＋資金流不足",
+        "price": 86378.0,
+        "volume_ratio": 0.746886953431788,
+        "zone_distance_atr": 0.3508693130112747,
+        "extension_atr": 0.00882862998581117,
+        "ema_1h": "BULL",
+        "ema_15m": "BULL",
+        "oi_dir": "UP",
+        "cvd_dir": "FLAT",
+        "oi_recent_pct": 0.0017704217008975842,
+        "cvd_recent_delta": -98.78585660105958
       }
     ],
     "blocked_seen_keys": [
@@ -3788,7 +3810,8 @@
       "1790137800|LONG|RETEST|EMA_DISTANCE",
       "1790142300|SHORT|BREAKOUT|RISK_RR",
       "1790143200|SHORT|RETEST|EMA_OPPOSE",
-      "1790146800|SHORT|BREAKOUT|RISK_RR"
+      "1790146800|SHORT|BREAKOUT|RISK_RR",
+      "1790147700|SHORT|RETEST|LOW_VOLUME_FLOW"
     ]
   }
 }

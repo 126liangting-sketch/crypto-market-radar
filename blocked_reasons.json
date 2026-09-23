@@ -1,6 +1,6 @@
 {
   "version": "V6_OKX_3_2_BLOCKED_STATS",
-  "total_blocked": 40,
+  "total_blocked": 41,
   "summary": {
     "EMA_DISTANCE": {
       "reason": "離 EMA Zone 過遠",
@@ -14,17 +14,17 @@
       "LONG": 0,
       "SHORT": 5
     },
+    "LOW_VOLUME_FLOW": {
+      "reason": "成交量偏低＋資金流不足",
+      "count": 4,
+      "LONG": 1,
+      "SHORT": 3
+    },
     "OTHER": {
       "reason": "離 EMA Zone > 0.75 ATR",
       "count": 4,
       "LONG": 4,
       "SHORT": 0
-    },
-    "LOW_VOLUME_FLOW": {
-      "reason": "成交量偏低＋資金流不足",
-      "count": 3,
-      "LONG": 1,
-      "SHORT": 2
     },
     "RISK_RR": {
       "reason": "SL / RR 結構不適合",
@@ -771,6 +771,24 @@
       "cvd_dir": "FLAT",
       "oi_recent_pct": 0.004489252588495418,
       "cvd_recent_delta": 80.78608330420683
+    },
+    {
+      "candle_time": 1790147700,
+      "time_utc": "2026-09-23T07:15:00+00:00",
+      "side": "SHORT",
+      "trigger_type": "RETEST",
+      "reason_code": "LOW_VOLUME_FLOW",
+      "reason": "成交量偏低＋資金流不足",
+      "price": 86378.0,
+      "volume_ratio": 0.746886953431788,
+      "zone_distance_atr": 0.3508693130112747,
+      "extension_atr": 0.00882862998581117,
+      "ema_1h": "BULL",
+      "ema_15m": "BULL",
+      "oi_dir": "UP",
+      "cvd_dir": "FLAT",
+      "oi_recent_pct": 0.0017704217008975842,
+      "cvd_recent_delta": -98.78585660105958
     }
   ]
 }
