@@ -1452,7 +1452,7 @@
   "active_setup": null,
   "next_setup_id": 7,
   "v6": {
-    "last_processed_candle": 1790121600,
+    "last_processed_candle": 1790122500,
     "next_setup_id": 1,
     "next_test_id": 1,
     "active_setup": null,
@@ -2856,6 +2856,10 @@
       {
         "time": 1790122994,
         "value": 30306.660800000143
+      },
+      {
+        "time": 1790123860,
+        "value": 30430.463900000144
       }
     ],
     "structure_ready_key": "LONG:1790118000:1790119800",
@@ -3384,6 +3388,24 @@
         "cvd_dir": "FLAT",
         "oi_recent_pct": -0.008442288882773874,
         "cvd_recent_delta": 3.6503291264522435
+      },
+      {
+        "candle_time": 1790122500,
+        "time_utc": "2026-09-23T00:15:00+00:00",
+        "side": "LONG",
+        "trigger_type": "CONTINUATION",
+        "reason_code": "OTHER",
+        "reason": "離 EMA Zone > 0.75 ATR",
+        "price": 86418.3,
+        "volume_ratio": 1.859024278895407,
+        "zone_distance_atr": 1.0640915809608917,
+        "extension_atr": 0.445582016470084,
+        "ema_1h": "BULL",
+        "ema_15m": "BULL",
+        "oi_dir": "FLAT",
+        "cvd_dir": "UP",
+        "oi_recent_pct": -0.000900279203567167,
+        "cvd_recent_delta": 238.8718554691097
       }
     ],
     "blocked_seen_keys": [
@@ -3415,7 +3437,8 @@
       "1790114400|SHORT|BREAKOUT|FLOW_NO_SUPPORT",
       "1790115300|SHORT|RETEST|LOW_VOLUME_FLOW",
       "1790118000|LONG|BREAKOUT|RISK_RR",
-      "1790121600|LONG|RETEST|LOW_VOLUME_FLOW"
+      "1790121600|LONG|RETEST|LOW_VOLUME_FLOW",
+      "1790122500|LONG|CONTINUATION|OTHER"
     ]
   }
 }
