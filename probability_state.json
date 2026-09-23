@@ -1452,7 +1452,7 @@
   "active_setup": null,
   "next_setup_id": 7,
   "v6": {
-    "last_processed_candle": 1790127900,
+    "last_processed_candle": 1790128800,
     "next_setup_id": 1,
     "next_test_id": 1,
     "active_setup": null,
@@ -1460,7 +1460,7 @@
       "side": "LONG",
       "level": 86478.2,
       "break_time": 1790125200,
-      "bars": 3,
+      "bars": 4,
       "used": false
     },
     "history": [],
@@ -2900,6 +2900,10 @@
       {
         "time": 1790129383,
         "value": 30197.624400000113
+      },
+      {
+        "time": 1790130142,
+        "value": 30199.405400000116
       }
     ],
     "structure_ready_key": "LONG:1790118000:1790119800",
