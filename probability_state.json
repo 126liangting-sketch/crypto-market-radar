@@ -1452,16 +1452,16 @@
   "active_setup": null,
   "next_setup_id": 7,
   "v6": {
-    "last_processed_candle": 1790145900,
+    "last_processed_candle": 1790146800,
     "next_setup_id": 1,
     "next_test_id": 1,
     "active_setup": null,
     "breakout_watch": {
       "side": "SHORT",
-      "level": 86589.9,
-      "break_time": 1790142300,
-      "bars": 1,
-      "used": true
+      "level": 86380.0,
+      "break_time": 1790146800,
+      "bars": 0,
+      "used": false
     },
     "history": [],
     "news": {
@@ -3016,6 +3016,10 @@
       {
         "time": 1790147636,
         "value": 30383.137900000085
+      },
+      {
+        "time": 1790148443,
+        "value": 30425.540700000092
       }
     ],
     "structure_ready_key": "LONG:1790125200:1790127900",
@@ -3724,6 +3728,24 @@
         "cvd_dir": "DOWN",
         "oi_recent_pct": 0.008407395804445494,
         "cvd_recent_delta": -896.4642560311364
+      },
+      {
+        "candle_time": 1790146800,
+        "time_utc": "2026-09-23T07:00:00+00:00",
+        "side": "SHORT",
+        "trigger_type": "BREAKOUT",
+        "reason_code": "RISK_RR",
+        "reason": "SL / RR 結構不適合",
+        "price": 86332.3,
+        "volume_ratio": 1.1549508074755035,
+        "zone_distance_atr": 0.5580570637093453,
+        "extension_atr": 0.20726256983238958,
+        "ema_1h": "BULL",
+        "ema_15m": "BULL",
+        "oi_dir": "UP",
+        "cvd_dir": "FLAT",
+        "oi_recent_pct": 0.004489252588495418,
+        "cvd_recent_delta": 80.78608330420683
       }
     ],
     "blocked_seen_keys": [
@@ -3765,7 +3787,8 @@
       "1790136900|LONG|BREAKOUT|EMA_DISTANCE",
       "1790137800|LONG|RETEST|EMA_DISTANCE",
       "1790142300|SHORT|BREAKOUT|RISK_RR",
-      "1790143200|SHORT|RETEST|EMA_OPPOSE"
+      "1790143200|SHORT|RETEST|EMA_OPPOSE",
+      "1790146800|SHORT|BREAKOUT|RISK_RR"
     ]
   }
 }
