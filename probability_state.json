@@ -1452,7 +1452,7 @@
   "active_setup": null,
   "next_setup_id": 7,
   "v6": {
-    "last_processed_candle": 1790136900,
+    "last_processed_candle": 1790137800,
     "next_setup_id": 1,
     "next_test_id": 1,
     "active_setup": null,
@@ -1460,13 +1460,13 @@
       "side": "LONG",
       "level": 86930.0,
       "break_time": 1790136900,
-      "bars": 0,
-      "used": false
+      "bars": 1,
+      "used": true
     },
     "history": [],
     "news": {
-      "last_major_id": "57f0a371a8c7e64490f89498c31ab61068942cd86675e6b307913b4a6c6413eb",
-      "last_major_time": 1790135076
+      "last_major_id": "ddf4887f63117a1305d8f34ddd04c9454120825f3a2ecad32c52376d0624a566",
+      "last_major_time": 1790138706
     },
     "oi_history": [
       {
@@ -2956,6 +2956,10 @@
       {
         "time": 1790138046,
         "value": 30094.27120000009
+      },
+      {
+        "time": 1790138705,
+        "value": 29976.94820000009
       }
     ],
     "structure_ready_key": "LONG:1790125200:1790127900",
@@ -3610,6 +3614,24 @@
         "cvd_dir": "UP",
         "oi_recent_pct": -0.0074725882322339565,
         "cvd_recent_delta": 701.8066903759599
+      },
+      {
+        "candle_time": 1790137800,
+        "time_utc": "2026-09-23T04:30:00+00:00",
+        "side": "LONG",
+        "trigger_type": "RETEST",
+        "reason_code": "EMA_DISTANCE",
+        "reason": "離 EMA Zone 過遠",
+        "price": 87113.0,
+        "volume_ratio": 1.8921621333415344,
+        "zone_distance_atr": 2.6092288272592006,
+        "extension_atr": 0.7623865496205955,
+        "ema_1h": "BULL",
+        "ema_15m": "BULL",
+        "oi_dir": "DOWN",
+        "cvd_dir": "FLAT",
+        "oi_recent_pct": -0.009748600379286265,
+        "cvd_recent_delta": 230.90197519904777
       }
     ],
     "blocked_seen_keys": [
@@ -3648,7 +3670,8 @@
       "1790129700|LONG|RETEST|EMA_DISTANCE",
       "1790133300|LONG|BREAKOUT|EMA_DISTANCE",
       "1790134200|LONG|RETEST|EMA_DISTANCE",
-      "1790136900|LONG|BREAKOUT|EMA_DISTANCE"
+      "1790136900|LONG|BREAKOUT|EMA_DISTANCE",
+      "1790137800|LONG|RETEST|EMA_DISTANCE"
     ]
   }
 }
