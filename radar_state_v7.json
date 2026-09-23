@@ -8,10 +8,15 @@
     "breakout_watch": null,
     "history": [],
     "news": {
-      "last_major_id": null,
-      "last_major_time": 0
+      "last_major_id": "085242e5d57bbf2ffd915adcc145b5615bfa623608d37e2b39b39a70f1404140",
+      "last_major_time": 1790167161
     },
-    "oi_history": [],
+    "oi_history": [
+      {
+        "time": 1790167160,
+        "value": 31071.42040000008
+      }
+    ],
     "structure_ready_key": null,
     "structure_ready_side": null,
     "structure_ready_time": null,
