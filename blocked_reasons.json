@@ -1,11 +1,11 @@
 {
   "version": "V6_OKX_3_2_BLOCKED_STATS",
-  "total_blocked": 30,
+  "total_blocked": 32,
   "summary": {
     "EMA_DISTANCE": {
       "reason": "離 EMA Zone 過遠",
-      "count": 14,
-      "LONG": 10,
+      "count": 15,
+      "LONG": 11,
       "SHORT": 4
     },
     "EMA_OPPOSE": {
@@ -14,17 +14,17 @@
       "LONG": 0,
       "SHORT": 4
     },
+    "OTHER": {
+      "reason": "離 EMA Zone > 0.75 ATR",
+      "count": 4,
+      "LONG": 4,
+      "SHORT": 0
+    },
     "LOW_VOLUME_FLOW": {
       "reason": "成交量偏低＋資金流不足",
       "count": 3,
       "LONG": 1,
       "SHORT": 2
-    },
-    "OTHER": {
-      "reason": "離 EMA Zone > 0.75 ATR",
-      "count": 3,
-      "LONG": 3,
-      "SHORT": 0
     },
     "BREAKOUT_EXTENSION": {
       "reason": "突破延伸過遠",
@@ -591,6 +591,42 @@
       "cvd_dir": "UP",
       "oi_recent_pct": -0.000900279203567167,
       "cvd_recent_delta": 238.8718554691097
+    },
+    {
+      "candle_time": 1790125200,
+      "time_utc": "2026-09-23T01:00:00+00:00",
+      "side": "LONG",
+      "trigger_type": "CONTINUATION",
+      "reason_code": "OTHER",
+      "reason": "離 EMA Zone > 0.75 ATR",
+      "price": 86683.4,
+      "volume_ratio": 2.6995781062183015,
+      "zone_distance_atr": 1.9365827632077575,
+      "extension_atr": 0.6383691156194403,
+      "ema_1h": "BULL",
+      "ema_15m": "BULL",
+      "oi_dir": "DOWN",
+      "cvd_dir": "FLAT",
+      "oi_recent_pct": -0.0012148111755757585,
+      "cvd_recent_delta": 153.8292034102662
+    },
+    {
+      "candle_time": 1790125200,
+      "time_utc": "2026-09-23T01:00:00+00:00",
+      "side": "LONG",
+      "trigger_type": "BREAKOUT",
+      "reason_code": "EMA_DISTANCE",
+      "reason": "離 EMA Zone 過遠",
+      "price": 86683.4,
+      "volume_ratio": 2.6995781062183015,
+      "zone_distance_atr": 1.9365827632077575,
+      "extension_atr": 0.943076620051208,
+      "ema_1h": "BULL",
+      "ema_15m": "BULL",
+      "oi_dir": "DOWN",
+      "cvd_dir": "FLAT",
+      "oi_recent_pct": -0.0012148111755757585,
+      "cvd_recent_delta": 153.8292034102662
     }
   ]
 }
