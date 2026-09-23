@@ -10,10 +10,8 @@ from datetime import datetime, timezone
 OKX_BASE = "https://www.okx.com"
 OKX_SYMBOL = "BTC-USDT-SWAP"
 WEBHOOK = os.getenv("DISCORD_WEBHOOK")
-STATE = "probability_state.json"
-CSV_FILE = "forward_test_v5.csv"
-V5_JSON = "forward_test_v5.json"
-VERSION = "V6_OKX_3_2_BLOCKED_STATS"
+STATE = "radar_state_v7.json"
+VERSION = "V7_OKX_FORMAL"
 TP_SL_ATR_MULT = 1.5
 MIN_RISK_PCT = 0.004          # minimum 0.40% stop distance; avoids ultra-tight stops in low ATR
 SETUP_INVALID_BARS = 3        # three consecutive closed 15m bars below 5/8 ends the setup
@@ -140,7 +138,7 @@ def update_oi_history(state):
     """Persist OKX OI snapshots so the radar can calculate real 1h/3h changes.
     This does not touch V5 data.
     """
-    v = state["v6"]
+    v = state["v7"]
     hist = v.setdefault("oi_history", [])
     try:
         snap = okx_oi_snapshot()
@@ -164,7 +162,7 @@ def _nearest_old(hist, target_time):
 
 
 def oi_details_from_state(state):
-    hist = state["v6"].get("oi_history", [])
+    hist = state["v7"].get("oi_history", [])
     if not hist:
         return "UNAVAILABLE", {"available": False}
     cur = hist[-1]
@@ -175,14 +173,14 @@ def oi_details_from_state(state):
     if one:
         rp = 0.0 if float(one["value"]) == 0 else (now_v / float(one["value"]) - 1)
         m["recent_pct"] = rp
-        m["recent_dir"] = "FLAT" if abs(rp) < OI_FLAT_V6 else ("UP" if rp > 0 else "DOWN")
+        m["recent_dir"] = "FLAT" if abs(rp) < OI_FLAT_V7 else ("UP" if rp > 0 else "DOWN")
     else:
         m["recent_pct"] = None
         m["recent_dir"] = "UNAVAILABLE"
     if three:
         bp = 0.0 if float(three["value"]) == 0 else (now_v / float(three["value"]) - 1)
         m["broad_pct"] = bp
-        m["broad_dir"] = "FLAT" if abs(bp) < OI_FLAT_V6 else ("UP" if bp > 0 else "DOWN")
+        m["broad_dir"] = "FLAT" if abs(bp) < OI_FLAT_V7 else ("UP" if bp > 0 else "DOWN")
     else:
         m["broad_pct"] = None
         m["broad_dir"] = "UNAVAILABLE"
@@ -321,14 +319,14 @@ def send_discord(message):
 
 
 
-VERSION = "V6_OKX_3_2_BLOCKED_STATS"
-V5_JSON = "forward_test_v5.json"
-V5_CSV = "forward_test_v5.csv"
-V6_JSON = "forward_test_v6.json"
-V6_CSV = "forward_test_v6.csv"
-BLOCKED_JSON = "blocked_reasons.json"
-BLOCKED_CSV = "blocked_reasons.csv"
-STATE = "probability_state.json"
+VERSION = "V7_OKX_FORMAL"
+V7_JSON = "paper_trades_v7.json"
+V7_CSV = "paper_trades_v7.csv"
+PREP_JSON = "prepare_trades_v7.json"
+PREP_CSV = "prepare_trades_v7.csv"
+BLOCKED_JSON = "blocked_reasons_v7.json"
+BLOCKED_CSV = "blocked_reasons_v7.csv"
+STATE = "radar_state_v7.json"
 MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 FORWARD_HORIZONS = {"15m": 900, "30m": 1800, "1h": 3600, "2h": 7200}
 SWING_LEFT = SWING_RIGHT = 2
@@ -340,19 +338,19 @@ VOL_MIN = 0.70
 VOL_NORMAL = 0.90
 VOL_STRONG = 1.50
 EXTENDED_ATR = 0.60
-NO_CHASE_ATR = 1.00
+NO_CHASE_ATR = 1.50
 EMA_BAD_SLOPE = 0.15
 MIN_STOP_ATR = 0.50
 MAX_STOP_ATR = 1.25
 STOP_BUFFER_ATR = 0.20
-OI_FLAT_V6 = 0.0010  # 0.10%
+OI_FLAT_V7 = 0.0010  # 0.10%
 NEWS_RED_SECONDS = 2 * 3600
 NEWS_YELLOW_SECONDS = 8 * 3600
 
-# V6.1 Structure Engine — HH/HL and LL/LH continuation logic.
+# V7 Structure Engine — HH/HL and LL/LH continuation logic.
 STRUCT_MIN_ATR = 0.05
 STRUCT_READY_ZONE_ATR = 0.90
-EARLY_NO_CHASE_ATR = 0.75
+EARLY_NO_CHASE_ATR = 1.00
 MICRO_BREAK_ATR = 0.05
 MICRO_LOOKBACK = 3
 EARLY_MIN_ROOM_R = 0.50
@@ -361,23 +359,24 @@ EARLY_MIN_ROOM_R = 0.50
 def load_state():
     if os.path.exists(STATE):
         try:
-            with open(STATE, encoding="utf-8") as f: state = json.load(f)
-        except (json.JSONDecodeError, OSError): state = {}
-    else: state = {}
-    # Keep every V5.2 field untouched; V6 uses its own namespace.
-    state.setdefault("states", {})
-    state.setdefault("pending", [])
-    state.setdefault("forward_tests", [])
-    state.setdefault("forward_history_v5", [])
-    state.setdefault("forward_stats", {})
-    state.setdefault("v6", {})
-    v = state["v6"]
+            with open(STATE, encoding="utf-8") as f:
+                state = json.load(f)
+        except (json.JSONDecodeError, OSError):
+            state = {}
+    else:
+        state = {}
+
+    state.setdefault("paper_trades", [])
+    state.setdefault("prepare_trades", [])
+    state.setdefault("v7", {})
+    v = state["v7"]
     v.setdefault("last_processed_candle", None)
     v.setdefault("next_setup_id", 1)
     v.setdefault("next_test_id", 1)
     v.setdefault("active_setup", None)
     v.setdefault("breakout_watch", None)
     v.setdefault("history", [])
+    v.setdefault("prepare_history", [])
     v.setdefault("news", {"last_major_id": None, "last_major_time": 0})
     v.setdefault("oi_history", [])
     v.setdefault("structure_ready_key", None)
@@ -387,7 +386,6 @@ def load_state():
     v.setdefault("blocked_events", [])
     v.setdefault("blocked_seen_keys", [])
     return state
-
 
 def save_state(state):
     tmp = STATE + ".tmp"
@@ -436,7 +434,7 @@ def flow_for_side(side, price_dir, oi_metrics, cvd_metrics):
     oi_available = rp is not None
     if oi_available:
         rp = float(rp)
-        oi_dir = "FLAT" if abs(rp) < OI_FLAT_V6 else ("UP" if rp > 0 else "DOWN")
+        oi_dir = "FLAT" if abs(rp) < OI_FLAT_V7 else ("UP" if rp > 0 else "DOWN")
     else:
         rp = 0.0
         oi_dir = "UNAVAILABLE"
@@ -445,7 +443,7 @@ def flow_for_side(side, price_dir, oi_metrics, cvd_metrics):
     cd = float(cvd_metrics.get("recent_delta", 0) or 0)
     span = abs(float(cvd_metrics.get("broad_span", 0) or 0))
     rel = abs(cd) / span if span else 0.0
-    cvd_dir = ("FLAT" if rel < CVD_FLAT_REL else "UP" if cd > 0 else "DOWN")if cvd_available else "UNAVAILABLE"
+    cvd_dir = ("FLAT" if rel < CVD_FLAT_REL else "UP" if cd > 0 else "DOWN") if cvd_available else "UNAVAILABLE"
     cvd_strong = cvd_available and rel >= 0.50
 
     wanted = "UP" if side == "LONG" else "DOWN"
@@ -561,7 +559,7 @@ def continuation_risk(side, entry, a, structure):
     return {"sl":sl,"tp1":tp1,"tp2":tp2,"risk":risk,"risk_atr":risk/a,"room_r":room,"defense_level":defense}
 
 
-def v6_quality_score(side, ctx, vol, flow, ext):
+def v7_quality_score(side, ctx, vol, flow, ext):
     score=0
     if ctx["ema_1h"] == ("BULL" if side=="LONG" else "BEAR"): score+=2
     if ctx["ema_15m"] == ("BULL" if side=="LONG" else "BEAR"): score+=1
@@ -578,8 +576,8 @@ def eligibility(side, close, ctx, a, vol, flow, ext):
         ema_ok=close>=ctx["zone_low"] and ctx["s34"]>=-EMA_BAD_SLOPE
     else:
         ema_ok=close<=ctx["zone_high"] and ctx["s34"]<=EMA_BAD_SLOPE
-    if ctx["zone_distance_atr"]>NO_CHASE_ATR: return False,"離 EMA Zone > 1 ATR"
-    if ext>NO_CHASE_ATR: return False,"突破延伸 > 1 ATR"
+    if ctx["zone_distance_atr"]>NO_CHASE_ATR: return False,f"離 EMA Zone > {NO_CHASE_ATR:.2f} ATR"
+    if ext>NO_CHASE_ATR: return False,f"突破延伸 > {NO_CHASE_ATR:.2f} ATR"
     if not ema_ok: return False,"15M EMA 明顯反向"
     if vol<VOL_MIN: return False,"成交量 < 0.7×"
     if vol<VOL_NORMAL and not flow["strong_both"]: return False,"成交量偏低且資金流不足"
@@ -613,27 +611,56 @@ def structure_risk(side, entry, a, highs, lows):
     return {"sl":sl,"tp1":tp1,"tp2":tp2,"risk":risk,"risk_atr":risk/a,"room_r":room}
 
 
-def news_status_v6(state):
-    now=int(time.time()); major=[]; any_titles=False
-    words=["sec","fed","fomc","rate","hack","exploit","etf","lawsuit","ban","regulation","approval"]
+def news_status_v7(state):
+    now = int(time.time())
+    critical = []
+    any_titles = False
+
+    # Keep standalone Discord alerts rare: macro, BTC ETF, systemic exchange/security,
+    # stablecoin depeg, or direct Bitcoin regulatory shocks.
+    macro = [
+        "fomc", "federal reserve", "fed rate", "interest rate decision",
+        "cpi", "consumer price index", "pce", "nonfarm", "non-farm", "jobs report"
+    ]
+    btc_direct = [
+        "bitcoin etf", "btc etf", "spot bitcoin etf",
+        "bitcoin ban", "bitcoin regulation", "bitcoin reserve"
+    ]
+    systemic = [
+        "exchange hack", "exchange hacked", "withdrawals suspended",
+        "suspend withdrawals", "security breach", "exploit",
+        "stablecoin depeg", "usdt depeg", "usdc depeg"
+    ]
+
     for url in FEEDS:
         try:
-            feed=feedparser.parse(url)
-            for x in feed.entries[:10]:
-                title=x.get("title",""); any_titles |= bool(title)
-                if any(w in title.lower() for w in words): major.append(title.strip())
-        except Exception: pass
-    ns=state["v6"]["news"]
-    if major:
-        major_id=hashlib.sha256("|".join(sorted(major)).encode("utf-8")).hexdigest()
-        if major_id!=ns.get("last_major_id"):
-            ns["last_major_id"]=major_id; ns["last_major_time"]=now
-            return "🔴 高風險", True, major[0]
-    age=now-int(ns.get("last_major_time",0) or 0)
-    if ns.get("last_major_time") and age<=NEWS_RED_SECONDS: return "🔴 高風險",False,None
-    if ns.get("last_major_time") and age<=NEWS_YELLOW_SECONDS: return "🟡 注意",False,None
-    return ("⚪ 正常" if any_titles else "⚪ 暫無新聞資料"),False,None
+            feed = feedparser.parse(url)
+            for x in feed.entries[:12]:
+                title = (x.get("title", "") or "").strip()
+                if not title:
+                    continue
+                any_titles = True
+                low = title.lower()
+                if any(k in low for k in macro + btc_direct + systemic):
+                    critical.append(title)
+        except Exception:
+            pass
 
+    ns = state["v7"]["news"]
+    if critical:
+        # Dedupe the event set; similar repeated RSS headlines will not spam every run.
+        event_id = hashlib.sha256("|".join(sorted(critical)).encode("utf-8")).hexdigest()
+        if event_id != ns.get("last_major_id"):
+            ns["last_major_id"] = event_id
+            ns["last_major_time"] = now
+            return "🔴 高風險", True, critical[0]
+
+    age = now - int(ns.get("last_major_time", 0) or 0)
+    if ns.get("last_major_time") and age <= NEWS_RED_SECONDS:
+        return "🔴 高風險", False, None
+    if ns.get("last_major_time") and age <= NEWS_YELLOW_SECONDS:
+        return "🟡 注意", False, None
+    return ("⚪ 正常" if any_titles else "⚪ 暫無新聞資料"), False, None
 
 def hit_levels(test,row):
     if test.get("terminal_outcome") in ("SL","TP2","AMBIGUOUS"): return []
@@ -650,52 +677,91 @@ def hit_levels(test,row):
     return ev
 
 
-def update_all_forward(state, rows15):
-    latest=int(rows15[-1]["time"]); keep=[]
-    for test in state.get("forward_tests",[]):
-        entry_t=int(test["entry_time"]); entry=float(test["entry_price"]); side=test["side"]
-        test.setdefault("results",{}); test.setdefault("max_high",entry); test.setdefault("min_low",entry)
+def update_paper_trades(state, rows15):
+    latest = int(rows15[-1]["time"])
+    still_open = []
+
+    for trade in state.get("paper_trades", []):
+        entry_t = int(trade["entry_time"])
+        entry = float(trade["entry_price"])
+        side = trade["side"]
+        trade.setdefault("results", {})
+        trade.setdefault("max_high", entry)
+        trade.setdefault("min_low", entry)
+        trade.setdefault("events", [])
+
         for r in rows15:
-            t=int(r["time"])
-            if entry_t<t<=latest:
-                test["max_high"]=max(float(test["max_high"]),float(r["high"])); test["min_low"]=min(float(test["min_low"]),float(r["low"]))
-                if str(test.get("version","" )).startswith("V6"):
-                    for ev in hit_levels(test,r):
-                        key=ev+"_notified"
-                        if not test.get(key) and test.get("notify_setup"):
-                            icon={"TP1":"🎯","TP2":"🏁","SL":"❌","AMBIGUOUS":"⚠️"}[ev]
-                            label={"TP1":"TP1 達成","TP2":"TP2 達成","SL":"SL 觸發","AMBIGUOUS":"TP/SL 同根K・順序不明"}[ev]
-                            send_discord(f"{icon} 訊號 #{test.get('setup_id','?')}｜BTC {'做多' if side=='LONG' else '做空'}｜{label}")
-                            test[key]=True
-                        if ev in ("TP2","SL","AMBIGUOUS"):
-                            a=state["v6"].get("active_setup")
-                            if a and a.get("test_id")==test.get("id"): state["v6"]["active_setup"]=None
-        for label,secs in FORWARD_HORIZONS.items():
-            if label in test["results"] or latest<entry_t+secs: continue
-            row=next((r for r in rows15 if int(r["time"])>=entry_t+secs),None)
+            t = int(r["time"])
+            if not (entry_t < t <= latest):
+                continue
+
+            trade["max_high"] = max(float(trade["max_high"]), float(r["high"]))
+            trade["min_low"] = min(float(trade["min_low"]), float(r["low"]))
+
+            for ev in hit_levels(trade, r):
+                if ev not in trade["events"]:
+                    trade["events"].append(ev)
+
+                key = ev + "_notified"
+                if not trade.get(key):
+                    icon = {"TP1":"🎯","TP2":"🏁","SL":"❌","AMBIGUOUS":"⚠️"}[ev]
+                    label = {
+                        "TP1":"TP1 達成",
+                        "TP2":"TP2 達成",
+                        "SL":"SL 觸發",
+                        "AMBIGUOUS":"TP/SL 同根K・順序不明"
+                    }[ev]
+                    send_discord(
+                        f"{icon} Paper Trade #{trade.get('setup_id','?')}｜BTC "
+                        f"{'做多' if side=='LONG' else '做空'}｜{label}\\n\\n"
+                        f"Entry ${entry:,.0f}｜TP1 ${float(trade['tp1']):,.0f}｜"
+                        f"TP2 ${float(trade['tp2']):,.0f}｜SL ${float(trade['sl']):,.0f}"
+                    )
+                    trade[key] = True
+
+                if ev in ("TP2", "SL", "AMBIGUOUS"):
+                    a = state["v7"].get("active_setup")
+                    if a and a.get("test_id") == trade.get("id"):
+                        state["v7"]["active_setup"] = None
+
+        for label, secs in FORWARD_HORIZONS.items():
+            if label in trade["results"] or latest < entry_t + secs:
+                continue
+            row = next((r for r in rows15 if int(r["time"]) >= entry_t + secs), None)
             if row:
-                raw=float(row["close"])/entry-1; signed=raw if side=="LONG" else -raw
-                test["results"][label]={"price":float(row["close"]),"return":signed,"correct":signed>0}
-        if "2h" in test["results"]:
-            mfe=(float(test["max_high"])/entry-1) if side=="LONG" else (entry/float(test["min_low"])-1)
-            mae=(entry/float(test["min_low"])-1) if side=="LONG" else (float(test["max_high"])/entry-1)
-            test["mfe"]=max(0,mfe); test["mae"]=max(0,mae)
-            if str(test.get("version","")).startswith("V6"):
-                if not any(x.get("id")==test.get("id") for x in state["v6"]["history"]): state["v6"]["history"].append(test)
-            elif str(test.get("version","")).startswith("V5"):
-                # Preserve old V5 data; do not reset or convert it to V6.
-                if not any(x.get("id")==test.get("id") for x in state.get("forward_history_v5",[])):
-                    f=test.get("features",{}); om=f.get("oi_metrics",{}); cm=f.get("cvd_metrics",{})
-                    state["forward_history_v5"].append({"version":test.get("version"),"id":test.get("id"),"setup_id":test.get("setup_id"),"side":side,"score":test.get("score"),"entry_time":entry_t,"entry_price":entry,"tp1":test.get("tp1"),"tp2":test.get("tp2"),"sl":test.get("sl"),"risk_pct":test.get("risk_pct"),"ret_15m":test["results"].get("15m",{}).get("return"),"ret_30m":test["results"].get("30m",{}).get("return"),"ret_1h":test["results"].get("1h",{}).get("return"),"ret_2h":test["results"].get("2h",{}).get("return"),"mfe":max(0,mfe),"mae":max(0,mae),"first_outcome":test.get("first_outcome"),"outcome_time":test.get("outcome_time"),"ema_1h":f.get("ema_1h"),"ema_15m":f.get("ema_15m"),"zone_ok":f.get("zone_ok"),"zone_distance_atr":f.get("zone_distance_atr"),"ema34_slope_atr":f.get("ema34_slope_atr"),"ema50_slope_atr":f.get("ema50_slope_atr"),"ema_gap_atr":f.get("ema_gap_atr"),"price_dir":f.get("price_dir"),"oi":f.get("oi"),"oi_broad_pct":om.get("broad_pct"),"oi_recent_pct":om.get("recent_pct"),"cvd":f.get("cvd"),"cvd_broad_delta":cm.get("broad_delta"),"cvd_recent_delta":cm.get("recent_delta"),"atr_pct":f.get("atr_pct"),"news":f.get("news")})
-        else: keep.append(test)
-    state["forward_tests"]=keep
+                raw = float(row["close"]) / entry - 1
+                signed = raw if side == "LONG" else -raw
+                trade["results"][label] = {
+                    "price": float(row["close"]),
+                    "return": signed,
+                    "correct": signed > 0
+                }
 
+        terminal = trade.get("terminal_outcome")
+        if terminal in ("TP2", "SL", "AMBIGUOUS"):
+            mfe = (float(trade["max_high"]) / entry - 1) if side == "LONG" else (entry / float(trade["min_low"]) - 1)
+            mae = (entry / float(trade["min_low"]) - 1) if side == "LONG" else (float(trade["max_high"]) / entry - 1)
+            trade["mfe"] = max(0, mfe)
+            trade["mae"] = max(0, mae)
+            trade["closed_time"] = trade.get("outcome_time")
+            trade["duration_min"] = max(0, (int(trade["closed_time"]) - entry_t) // 60) if trade.get("closed_time") else None
 
+            if trade.get("tp1_hit") and terminal == "SL":
+                trade["final_result"] = "TP1_THEN_SL"
+            else:
+                trade["final_result"] = terminal
+
+            if not any(x.get("id") == trade.get("id") for x in state["v7"]["history"]):
+                state["v7"]["history"].append(trade)
+        else:
+            still_open.append(trade)
+
+    state["paper_trades"] = still_open
 
 def blocked_reason_code(reason):
     mapping = {
-        "離 EMA Zone > 1 ATR": ("EMA_DISTANCE", "離 EMA Zone 過遠"),
-        "突破延伸 > 1 ATR": ("BREAKOUT_EXTENSION", "突破延伸過遠"),
+        "離 EMA Zone > 1.50 ATR": ("EMA_DISTANCE", "離 EMA Zone 過遠"),
+        "突破延伸 > 1.50 ATR": ("BREAKOUT_EXTENSION", "突破延伸過遠"),
         "15M EMA 明顯反向": ("EMA_OPPOSE", "15M EMA 明顯反向"),
         "成交量 < 0.7×": ("VOLUME_LOW", "成交量過低"),
         "成交量偏低且資金流不足": ("LOW_VOLUME_FLOW", "成交量偏低＋資金流不足"),
@@ -710,7 +776,7 @@ def blocked_reason_code(reason):
 
 def record_blocked(state, candle_time, side, trigger_type, reason, price, vol, ctx, flow, ext=None):
     """Record one unique blocked trade opportunity per closed candle."""
-    v = state["v6"]
+    v = state["v7"]
     code, label = blocked_reason_code(reason)
     key = f"{int(candle_time)}|{side}|{trigger_type}|{code}"
     seen = v.setdefault("blocked_seen_keys", [])
@@ -743,7 +809,7 @@ def record_blocked(state, candle_time, side, trigger_type, reason, price, vol, c
 
 
 def export_blocked_data(state):
-    events = list(state["v6"].get("blocked_events", []))
+    events = list(state["v7"].get("blocked_events", []))
     summary = {}
     for e in events:
         code = e.get("reason_code", "OTHER")
@@ -780,46 +846,241 @@ def export_blocked_data(state):
             w.writerow({k: e.get(k, "") for k in fields})
 
 
-def export_data(state):
-    """Write only V6 OKX research files. Existing V5.2 JSON/CSV are never rewritten."""
-    with open(V6_JSON, "w", encoding="utf-8") as f:
-        json.dump({"version": VERSION,
-                   "completed": state["v6"]["history"],
-                   "pending": [x for x in state.get("forward_tests", [])
-                               if str(x.get("version", "")).startswith("V6")]},
-                  f, ensure_ascii=False, indent=2)
-    fields=["version","id","setup_id","trigger_type","side","quality_score","entry_time",
-            "entry_price","tp1","tp2","sl","risk_atr","swing_level","breakout_distance_atr",
-            "volume_ratio","ema_1h","ema_15m","zone_distance_atr","cvd_dir","oi_dir",
-            "oi_recent_pct","cvd_recent_delta","news","ret_15m","ret_30m","ret_1h","ret_2h",
-            "mfe","mae","terminal_outcome"]
-    with open(V6_CSV,"w",newline="",encoding="utf-8-sig") as f:
-        w=csv.DictWriter(f,fieldnames=fields); w.writeheader()
-        for x in state["v6"]["history"]:
-            feat=x.get("features",{}); row={k:x.get(k,feat.get(k,"")) for k in fields}
+
+def export_prepare_data(state):
+    completed = state["v7"].get("prepare_history", [])
+    open_trades = state.get("prepare_trades", [])
+
+    with open(PREP_JSON, "w", encoding="utf-8") as f:
+        json.dump({
+            "version": VERSION,
+            "completed": completed,
+            "open": open_trades,
+        }, f, ensure_ascii=False, indent=2)
+
+    fields = [
+        "version","id","setup_id","track","side","structure_label",
+        "entry_time","entry_price","tp1","tp2","sl","risk_atr",
+        "ema_1h","ema_15m","zone_distance_atr","volume_ratio",
+        "oi_dir","cvd_dir","oi_recent_pct","cvd_recent_delta",
+        "anchor_price","defense_price",
+        "ret_15m","ret_30m","ret_1h","ret_2h",
+        "mfe","mae","tp1_hit","terminal_outcome","final_result",
+        "duration_min","entry_reason"
+    ]
+
+    with open(PREP_CSV, "w", newline="", encoding="utf-8-sig") as f:
+        w = csv.DictWriter(f, fieldnames=fields)
+        w.writeheader()
+        for x in completed + open_trades:
+            feat = x.get("features", {})
+            row = {k: x.get(k, feat.get(k, "")) for k in fields}
             for h in FORWARD_HORIZONS:
-                row["ret_"+h]=x.get("results",{}).get(h,{}).get("return")
+                row["ret_" + h] = x.get("results", {}).get(h, {}).get("return")
+            w.writerow(row)
+
+
+def export_data(state):
+    completed = state["v7"].get("history", [])
+    open_trades = state.get("paper_trades", [])
+
+    with open(V7_JSON, "w", encoding="utf-8") as f:
+        json.dump({
+            "version": VERSION,
+            "completed": completed,
+            "open": open_trades,
+        }, f, ensure_ascii=False, indent=2)
+
+    fields = [
+        "version","id","setup_id","trigger_type","side","quality_score",
+        "entry_time","entry_price","tp1","tp2","sl","risk_atr",
+        "swing_level","breakout_distance_atr","volume_ratio",
+        "ema_1h","ema_15m","zone_distance_atr","cvd_dir","oi_dir",
+        "oi_recent_pct","cvd_recent_delta","news",
+        "ret_15m","ret_30m","ret_1h","ret_2h",
+        "mfe","mae","tp1_hit","terminal_outcome","final_result",
+        "duration_min","entry_reason"
+    ]
+
+    with open(V7_CSV, "w", newline="", encoding="utf-8-sig") as f:
+        w = csv.DictWriter(f, fieldnames=fields)
+        w.writeheader()
+        for x in completed + open_trades:
+            feat = x.get("features", {})
+            row = {k: x.get(k, feat.get(k, "")) for k in fields}
+            for h in FORWARD_HORIZONS:
+                row["ret_" + h] = x.get("results", {}).get(h, {}).get("return")
             w.writerow(row)
 
     export_blocked_data(state)
-
+    export_prepare_data(state)
 
 def zh_side(side): return "做多" if side=="LONG" else "做空"
 def em(v): return {"BULL":"🟢 多頭","BEAR":"🔴 空頭","NEUTRAL":"⚪ 中性"}.get(v,"⚪ 中性")
 def fd(v): return {"UP":"🔺 上升","DOWN":"🔻 下降","FLAT":"⚪ 持平","UNAVAILABLE":"⚠️ 累積中/無資料"}.get(v,"⚠️ 無資料")
 
 
+
+def build_prepare_plan(side, ctx, swing, price):
+    """
+    Preview-only trade plan for a structure-ready alert.
+    It does NOT create a Paper Trade and is recalculated if/when a formal signal triggers.
+    """
+    atr = float(ctx["atr"])
+    if side == "LONG":
+        entry = float(price)
+        sl_raw = float(swing["last_low"]["price"]) - 0.20 * atr
+        risk = entry - sl_raw
+    else:
+        entry = float(price)
+        sl_raw = float(swing["last_high"]["price"]) + 0.20 * atr
+        risk = sl_raw - entry
+
+    min_risk = 0.50 * atr
+    max_risk = 1.25 * atr
+    risk = max(risk, min_risk)
+
+    # Preview can still be shown when structure risk is wide; mark it clearly.
+    too_wide = risk > max_risk
+
+    if side == "LONG":
+        sl = entry - risk
+        tp1 = entry + risk
+        tp2 = entry + 2.0 * risk
+    else:
+        sl = entry + risk
+        tp1 = entry - risk
+        tp2 = entry - 2.0 * risk
+
+    return {
+        "entry": entry,
+        "sl": sl,
+        "tp1": tp1,
+        "tp2": tp2,
+        "risk": risk,
+        "risk_atr": risk / atr if atr else None,
+        "too_wide": too_wide,
+    }
+
+
+
+def create_prepare_trade(state, setup_id, side, label, plan, ctx, flow, vol, price, candle_time, structure):
+    key = f"{setup_id}|{side}|{int(candle_time)}|PREP"
+    existing = state.get("prepare_trades", [])
+    if any(x.get("dedupe_key") == key for x in existing):
+        return
+
+    trade = {
+        "version": VERSION,
+        "id": len(existing) + 1,
+        "setup_id": setup_id,
+        "dedupe_key": key,
+        "track": "PREPARE",
+        "side": side,
+        "structure_label": label,
+        "entry_time": int(candle_time),
+        "entry_price": float(plan["entry"]),
+        "sl": float(plan["sl"]),
+        "tp1": float(plan["tp1"]),
+        "tp2": float(plan["tp2"]),
+        "risk_atr": plan.get("risk_atr"),
+        "terminal_outcome": None,
+        "tp1_hit": False,
+        "events": [],
+        "results": {},
+        "max_high": float(plan["entry"]),
+        "min_low": float(plan["entry"]),
+        "features": {
+            "ema_1h": ctx.get("ema_1h"),
+            "ema_15m": ctx.get("ema_15m"),
+            "zone_distance_atr": ctx.get("zone_distance_atr"),
+            "volume_ratio": float(vol),
+            "oi_dir": flow.get("oi_dir"),
+            "cvd_dir": flow.get("cvd_dir"),
+            "oi_recent_pct": flow.get("oi_recent_pct"),
+            "cvd_recent_delta": flow.get("cvd_recent_delta"),
+            "anchor_price": structure.get("anchor_price"),
+            "defense_price": structure.get("defense_price"),
+        },
+        "entry_reason": f"STRUCTURE_PREP | {label}",
+    }
+    state.setdefault("prepare_trades", []).append(trade)
+
+
+def update_prepare_trades(state, rows15):
+    latest = int(rows15[-1]["time"])
+    still_open = []
+    history = state["v7"].setdefault("prepare_history", [])
+
+    for trade in state.get("prepare_trades", []):
+        entry_t = int(trade["entry_time"])
+        entry = float(trade["entry_price"])
+        side = trade["side"]
+
+        for r in rows15:
+            t = int(r["time"])
+            if not (entry_t < t <= latest):
+                continue
+
+            trade["max_high"] = max(float(trade.get("max_high", entry)), float(r["high"]))
+            trade["min_low"] = min(float(trade.get("min_low", entry)), float(r["low"]))
+
+            for ev in hit_levels(trade, r):
+                if ev not in trade["events"]:
+                    trade["events"].append(ev)
+                if ev in ("TP2", "SL", "AMBIGUOUS"):
+                    trade["terminal_outcome"] = ev
+                    trade["outcome_time"] = int(r["time"])
+
+        for label, secs in FORWARD_HORIZONS.items():
+            if label in trade["results"] or latest < entry_t + secs:
+                continue
+            row = next((r for r in rows15 if int(r["time"]) >= entry_t + secs), None)
+            if row:
+                raw = float(row["close"]) / entry - 1
+                signed = raw if side == "LONG" else -raw
+                trade["results"][label] = {
+                    "price": float(row["close"]),
+                    "return": signed,
+                    "correct": signed > 0
+                }
+
+        if trade.get("terminal_outcome") in ("TP2", "SL", "AMBIGUOUS"):
+            mfe = (float(trade["max_high"]) / entry - 1) if side == "LONG" else (entry / float(trade["min_low"]) - 1)
+            mae = (entry / float(trade["min_low"]) - 1) if side == "LONG" else (float(trade["max_high"]) / entry - 1)
+            trade["mfe"] = max(0, mfe)
+            trade["mae"] = max(0, mae)
+            trade["closed_time"] = trade.get("outcome_time")
+            trade["duration_min"] = max(0, (int(trade["closed_time"]) - entry_t)//60) if trade.get("closed_time") else None
+            if trade.get("tp1_hit") and trade["terminal_outcome"] == "SL":
+                trade["final_result"] = "TP1_THEN_SL"
+            else:
+                trade["final_result"] = trade["terminal_outcome"]
+
+            if not any(x.get("dedupe_key") == trade.get("dedupe_key") for x in history):
+                history.append(trade)
+        else:
+            still_open.append(trade)
+
+    state["prepare_trades"] = still_open
+
+
 def create_signal(state, side, trigger_type, level, ext, ctx, flow, vol, risk, close, closed_time, news, defense_level=None):
-    v=state["v6"]; sid=v["next_setup_id"]; v["next_setup_id"]+=1; tid=v["next_test_id"]; v["next_test_id"]+=1
-    q=v6_quality_score(side,ctx,vol,flow,ext)
+    v=state["v7"]; sid=v["next_setup_id"]; v["next_setup_id"]+=1; tid=v["next_test_id"]; v["next_test_id"]+=1
+    q=v7_quality_score(side,ctx,vol,flow,ext)
     test={"version":VERSION,"id":tid,"setup_id":sid,"trigger_type":trigger_type,"side":side,"quality_score":q,"score":q,"entry_time":closed_time,"entry_price":close,"tp1":risk["tp1"],"tp2":risk["tp2"],"sl":risk["sl"],"risk_atr":risk["risk_atr"],"risk_pct":risk["risk"]/close,"swing_level":level,"defense_level":float(defense_level if defense_level is not None else level),"breakout_distance_atr":ext,"volume_ratio":vol,"results":{},"max_high":close,"min_low":close,"notify_setup":True,"features":{"ema_1h":ctx["ema_1h"],"ema_15m":ctx["ema_15m"],"zone_distance_atr":ctx["zone_distance_atr"],"ema34_slope_atr":ctx["s34"],"ema50_slope_atr":ctx["s50"],"cvd_dir":flow["cvd_dir"],"oi_dir":flow["oi_dir"],"oi_recent_pct":flow["oi_recent_pct"],"cvd_recent_delta":flow["cvd_recent_delta"],"volume_ratio":vol,"breakout_distance_atr":ext,"news":news}}
-    state["forward_tests"].append(test)
+    test["entry_reason"] = (
+        f"{trigger_type} | 1H={ctx['ema_1h']} | 15M={ctx['ema_15m']} | "
+        f"Volume={vol:.2f}x | OI={flow['oi_dir']} | CVD_PROXY={flow['cvd_dir']} | "
+        f"Zone={ctx['zone_distance_atr']:.2f}ATR"
+    )
+    state["paper_trades"].append(test)
     v["active_setup"]={"id":sid,"test_id":tid,"side":side,"trigger_type":trigger_type,"defense_level":float(defense_level if defense_level is not None else level),"enhanced":False,"start_time":closed_time}
     warning=""
     wanted="BULL" if side=="LONG" else "BEAR"
     if ctx["ema_1h"]!=wanted: warning="\n⚠️ 逆 1H 趨勢・偏激進"
     typ={"BREAKOUT":"BREAKOUT 突破","RETEST":"RETEST 回踩","CONTINUATION":"HH/HL・LL/LH 延續"}.get(trigger_type, trigger_type)
-    send_discord(f"⚡ 新訊號 #{sid}｜BTC {zh_side(side)}\n\n💰 進場 ${close:,.0f}\n🎯 TP1 ${risk['tp1']:,.0f}｜TP2 ${risk['tp2']:,.0f}\n🛑 SL ${risk['sl']:,.0f}\n⚖️ 風險距離 {risk['risk_atr']:.2f} ATR\n\n📍 {typ}\n1H：{em(ctx['ema_1h'])}\n15M：{em(ctx['ema_15m'])}\nVolume：{'🔥 ' if vol>=VOL_STRONG else ''}{vol:.2f}×\nCVD Proxy：{fd(flow['cvd_dir'])}\nOI：{fd(flow['oi_dir'])}\n品質 Score：{q}/8{warning}\n📰 {news}")
+    send_discord(f"⚡ V7 新訊號 #{sid}｜BTC {zh_side(side)}\n\n💰 進場 ${close:,.0f}\n🎯 TP1 ${risk['tp1']:,.0f}｜TP2 ${risk['tp2']:,.0f}\n🛑 SL ${risk['sl']:,.0f}\n⚖️ 風險距離 {risk['risk_atr']:.2f} ATR\n\n📍 {typ}\n1H：{em(ctx['ema_1h'])}\n15M：{em(ctx['ema_15m'])}\nVolume：{'🔥 ' if vol>=VOL_STRONG else ''}{vol:.2f}×\nCVD Proxy：{fd(flow['cvd_dir'])}\nOI：{fd(flow['oi_dir'])}\n品質 Score：{q}/8{warning}\n📰 {news}")
 
 
 def main():
@@ -829,20 +1090,21 @@ def main():
     a=atr(rows15,14)
     update_oi_history(state)
     oi,om=direction_details("open-interest", state); cvd,cm=direction_details("cvd", state)
-    update_all_forward(state,rows15)
+    update_paper_trades(state,rows15)
+    update_prepare_trades(state,rows15)
     ctx=ema_context(rows15,rows1h,a); vol=volume_ratio(rows15); highs,lows=pivots(rows15)
     structure=classify_structure(rows15, highs, lows, a)
-    news,new_major,headline=news_status_v6(state)
+    news,new_major,headline=news_status_v7(state)
     if new_major and not MANUAL_RUN: send_discord(f"🔴 BTC 市場風險提醒\n\n📰 偵測到新的高影響事件\n{headline[:140]}\n⚠️ 短線波動風險提高\nℹ️ 不直接改變交易方向")
 
     price_dir="UP" if close>prev_close else "DOWN" if close<prev_close else "FLAT"
     long_flow=flow_for_side("LONG",price_dir,om,cm); short_flow=flow_for_side("SHORT",price_dir,om,cm)
-    v=state["v6"]
+    v=state["v7"]
 
     if MANUAL_RUN:
         active=v.get("active_setup"); at=f"#{active['id']} {zh_side(active['side'])}" if active else "無"
         sh=highs[-1][1] if highs else None; sl=lows[-1][1] if lows else None
-        send_discord(f"📊 BTC V6 OKX 市場現況｜手動查詢\n\n💰 BTC：${close:,.0f}\n1H：{em(ctx['ema_1h'])}\n15M：{em(ctx['ema_15m'])}\nEMA Zone 距離：{ctx['zone_distance_atr']:.2f} ATR\nVolume：{vol:.2f}×\nOI：{fd(om.get('recent_dir','UNAVAILABLE'))}{(' (' + format(float(om['recent_pct']), '+.2%') + ')') if om.get('recent_pct') is not None else ''}\nCVD Proxy：{fd(cm.get('recent_dir','UNAVAILABLE'))}\nATR：{a/close:.2%}\n\n最近 Swing High：${sh:,.0f}\n最近 Swing Low：${sl:,.0f}\n🧱 15M 結構：{('🟢 ' + structure['label']) if structure.get('side')=='LONG' else ('🔴 ' + structure['label']) if structure.get('side')=='SHORT' else '⚪ 尚未形成 HH→HL / LL→LH'}\n📡 目前訊號：{at}\n🧪 V6 實測完成：{len(v['history'])}｜進行中：{sum(str(x.get('version','')).startswith('V6') for x in state['forward_tests'])}\n📰 {news}\n\nℹ️ 手動查詢不建立新實測樣本")
+        send_discord(f"📊 BTC V7 OKX 市場現況｜手動查詢\n\n💰 BTC：${close:,.0f}\n1H：{em(ctx['ema_1h'])}\n15M：{em(ctx['ema_15m'])}\nEMA Zone 距離：{ctx['zone_distance_atr']:.2f} ATR\nVolume：{vol:.2f}×\nOI：{fd(om.get('recent_dir','UNAVAILABLE'))}{(' (' + format(float(om['recent_pct']), '+.2%') + ')') if om.get('recent_pct') is not None else ''}\nCVD Proxy：{fd(cm.get('recent_dir','UNAVAILABLE'))}\nATR：{a/close:.2%}\n\n最近 Swing High：${sh:,.0f}\n最近 Swing Low：${sl:,.0f}\n🧱 15M 結構：{('🟢 ' + structure['label']) if structure.get('side')=='LONG' else ('🔴 ' + structure['label']) if structure.get('side')=='SHORT' else '⚪ 尚未形成 HH→HL / LL→LH'}\n📡 目前訊號：{at}\n🧾 Paper Trade 完成：{len(v['history'])}｜進行中：{sum(str(x.get('version','')).startswith('V7') for x in state['paper_trades'])}\n📰 {news}\n\nℹ️ 手動查詢不建立 Paper Trade")
         export_data(state); save_state(state); return
 
     if v.get("last_processed_candle")!=ct:
@@ -860,7 +1122,7 @@ def main():
                     send_discord(f"🔥 訊號 #{active['id']} 增強｜BTC {zh_side(side)}\n\n📍 原結構持續守住\nVolume：{vol:.2f}×\nCVD Proxy：{fd(fl['cvd_dir'])}\nOI：{fd(fl['oi_dir'])}\n1H：{em(ctx['ema_1h'])}")
                     active["enhanced"]=True
 
-        # V6.1 Structure Engine: HH→HL / LL→LH preparation and early continuation.
+        # V7 Structure Engine: HH→HL / LL→LH preparation and early continuation.
         if structure.get("side"):
             side = structure["side"]
             wanted = "BULL" if side == "LONG" else "BEAR"
@@ -873,62 +1135,35 @@ def main():
                 v["structure_ready_side"] = side
                 v["structure_ready_time"] = ct
                 pull = float(structure["pullback"][1]); impulse = float(structure["impulse"][1])
-                send_discord(f"👀 BTC {zh_side(side)}結構準備｜{structure['label']}\n\n💰 BTC：${close:,.0f}\n📍 前段結構：${impulse:,.0f}\n🛡️ 回踩防守：${pull:,.0f}\nEMA Zone 距離：{ctx['zone_distance_atr']:.2f} ATR\nVolume：{vol:.2f}×\nOI：{fd(fl['oi_dir'])}\nCVD Proxy：{fd(fl['cvd_dir'])}\n\nℹ️ 結構已進入準備區，尚不是正式進場訊號")
+                plan = build_prepare_plan(side, ctx, structure, close)
+                plan_note = (
+                    "⚠️ 預設 SL 距離偏寬，等待正式觸發重新計算"
+                    if plan["too_wide"]
+                    else "✅ 預設風險距離在允許範圍"
+                )
+                setup_id = v.get("next_setup_id", 1)
+                create_prepare_trade(
+                    state, setup_id, side, label, plan, ctx, fl, vol,
+                    close, ct, structure
+                )
 
-            micro = micro_resumption(rows15, structure, a)
-            if micro and micro.get("fired") and ready_key != v.get("structure_early_key"):
-                ok, reason = early_eligibility(side, close, ctx, vol, fl)
-                risk = continuation_risk(side, close, a, structure)
-                if ok and risk:
-                    current = v.get("active_setup")
-                    reversal = current and current["side"] != side
-                    if reversal:
-                        send_discord(f"🔄 市場結構反轉｜BTC {zh_side(current['side'])} → {zh_side(side)}")
-                        v["active_setup"] = None
-                    if v.get("active_setup") is None:
-                        v["structure_early_key"] = ready_key
-                        create_signal(state, side, "CONTINUATION", float(micro["level"]), float(micro["ext"]), ctx, fl, vol, risk, close, ct, news, defense_level=float(structure["pullback"][1]))
-                else:
-                    block_reason = reason if not ok else "risk/room not suitable"
-                    print(f"V6 structure continuation {side} blocked: {block_reason}")
-                    record_blocked(
-                        state, ct, side, "CONTINUATION", block_reason,
-                        close, vol, ctx, fl,
-                        float(micro.get("ext", 0) or 0)
-                    )
-
-        # Detect fresh 2-2 swing breakout. Require previous close not already beyond the same level.
-        last_high=highs[-1] if highs else None; last_low=lows[-1] if lows else None
-        candidates=[]
-        if last_high:
-            level=last_high[1]; ext=(close-level)/a
-            if prev_close<=level and close>=level+BREAK_ATR*a: candidates.append(("LONG",level,ext,long_flow))
-        if last_low:
-            level=last_low[1]; ext=(level-close)/a
-            if prev_close>=level and close<=level-BREAK_ATR*a: candidates.append(("SHORT",level,ext,short_flow))
-
-        for side,level,ext,fl in candidates:
-            ok,reason=eligibility(side,close,ctx,a,vol,fl,ext); risk=structure_risk(side,close,a,highs,lows)
-            # Arm first retest even when direct breakout is too extended / otherwise not tradable.
-            v["breakout_watch"]={"side":side,"level":level,"break_time":ct,"bars":0,"used":False}
-            current=v.get("active_setup")
-            reversal=current and current["side"]!=side
-
-            # If an earlier HH/HL or LL/LH continuation setup already exists,
-            # the formal Swing Breakout is useful confirmation even when price
-            # has become too extended for another entry. Never create a second
-            # trade / Forward sample here.
-            same_continuation=(
-                current
-                and current.get("side")==side
-                and current.get("trigger_type")=="CONTINUATION"
-                and not current.get("enhanced")
-            )
-            if same_continuation:
-                confirm_note = (
-                    "✅ 位置仍符合正式突破條件"
-                    if ok and risk
-                    else f"⚠️ 已突破，但不追加進場：{reason if not ok else 'SL / RR 結構不適合'}"
+                send_discord(
+                    f"👀 BTC {zh_side(side)}結構準備｜{label}\n\n"
+                    f"💰 BTC：${close:,.0f}\n"
+                    f"📍 前段結構：${structure['anchor_price']:,.0f}\n"
+                    f"🛡️ 回踩防守：${structure['defense_price']:,.0f}\n"
+                    f"EMA Zone 距離：{ctx['zone_distance_atr']:.2f} ATR\n"
+                    f"Volume：{vol:.2f}×\n"
+                    f"OI：{fd(fl['oi_dir'])}\n"
+                    f"CVD Proxy：{fd(fl['cvd_dir'])}\n\n"
+                    f"📝 預設交易計畫（尚未開單）\n"
+                    f"Entry：${plan['entry']:,.0f}\n"
+                    f"SL：${plan['sl']:,.0f}\n"
+                    f"TP1：${plan['tp1']:,.0f}\n"
+                    f"TP2：${plan['tp2']:,.0f}\n"
+                    f"Risk：約 {plan['risk_atr']:.2f} ATR\n"
+                    f"{plan_note}\n\n"
+                    f"ℹ️ 只有後續出現 ⚡ 正式訊號，才建立 Paper Trade"
                 )
                 send_discord(
                     f"🔥 訊號 #{current['id']} 突破確認｜BTC {zh_side(side)}\n\n"
@@ -953,32 +1188,19 @@ def main():
 
             else:
                 block_reason = reason if not ok else "SL / RR 結構不適合"
-                print(f"V6 breakout armed {side}, alert-only: {block_reason}")
+                print(f"V7 breakout armed {side}, alert-only: {block_reason}")
                 record_blocked(
                     state, ct, side, "BREAKOUT", block_reason,
                     close, vol, ctx, fl, ext
                 )
 
-                # Important V6.1 patch:
-                # A real Swing Breakout must no longer stay silent just because
-                # the entry is too extended / risk is unsuitable. Alert the user,
-                # but do NOT create an entry or Forward Test. The armed retest
+                # Important V7 patch:
+                # A blocked Swing Breakout stays silent on Discord because
+                # the entry is too extended / risk is unsuitable. Record it in blocked stats,
+                # and keep retest watch without creating a Paper Trade. The armed retest
                 # logic above remains active.
                 if not reversal:
-                    send_discord(
-                        f"👀 BTC {zh_side(side)}爆發預警｜Swing Breakout\n\n"
-                        f"💰 BTC：${close:,.0f}\n"
-                        f"✅ 正式結構突破：${level:,.0f}\n"
-                        f"1H：{em(ctx['ema_1h'])}\n"
-                        f"15M：{em(ctx['ema_15m'])}\n"
-                        f"Volume：{'🔥 ' if vol>=VOL_STRONG else ''}{vol:.2f}×\n"
-                        f"EMA Zone 距離：{ctx['zone_distance_atr']:.2f} ATR\n"
-                        f"CVD Proxy：{fd(fl['cvd_dir'])}\n"
-                        f"OI：{fd(fl['oi_dir'])}\n\n"
-                        f"⚠️ 不直接進場：{block_reason}\n"
-                        f"↩️ 已啟用 RETEST 觀察，等待第一個有效回踩\n"
-                        f"ℹ️ 此提醒不建立 Forward Test，也不是追價訊號"
-                    )
+                    print("V7 breakout blocked: kept in blocked stats; no Discord alert")
 
         # First valid retest only, starting after the breakout candle.
         watch=v.get("breakout_watch")
@@ -998,7 +1220,7 @@ def main():
                         block_reason = "SL / RR 結構不適合"
                     else:
                         block_reason = "active setup"
-                    print(f"V6 retest consumed, no alert: {block_reason}")
+                    print(f"V7 retest consumed, no alert: {block_reason}")
                     record_blocked(
                         state, ct, side, "RETEST", block_reason,
                         close, vol, ctx, fl, ext
@@ -1007,7 +1229,7 @@ def main():
         v["last_processed_candle"]=ct
 
     export_data(state); save_state(state)
-    print(f"Radar V6.1 Structure: BTC={close:.0f} 1H={ctx['ema_1h']} 15M={ctx['ema_15m']} Structure={structure.get('label')} Vol={vol:.2f}x V6 completed={len(v['history'])}")
+    print(f"Radar V7 Structure: BTC={close:.0f} 1H={ctx['ema_1h']} 15M={ctx['ema_15m']} Structure={structure.get('label')} Vol={vol:.2f}x Paper completed={len(v['history'])}")
 
 
 if __name__ == "__main__": main()
