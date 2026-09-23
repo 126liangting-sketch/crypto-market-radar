@@ -1,7 +1,13 @@
 {
   "version": "V7_OKX_FORMAL",
-  "total_blocked": 3,
+  "total_blocked": 4,
   "summary": {
+    "RISK_RR": {
+      "reason": "SL / RR 結構不適合",
+      "count": 2,
+      "LONG": 2,
+      "SHORT": 0
+    },
     "EMA_DISTANCE": {
       "reason": "離 EMA Zone 過遠",
       "count": 1,
@@ -10,12 +16,6 @@
     },
     "EMA_OPPOSE": {
       "reason": "15M EMA 明顯反向",
-      "count": 1,
-      "LONG": 1,
-      "SHORT": 0
-    },
-    "RISK_RR": {
-      "reason": "SL / RR 結構不適合",
       "count": 1,
       "LONG": 1,
       "SHORT": 0
@@ -75,6 +75,24 @@
       "cvd_dir": "UP",
       "oi_recent_pct": -0.002156801897664984,
       "cvd_recent_delta": 268.3785901969903
+    },
+    {
+      "candle_time": 1790203500,
+      "time_utc": "2026-09-23T22:45:00+00:00",
+      "side": "LONG",
+      "trigger_type": "RETEST",
+      "reason_code": "RISK_RR",
+      "reason": "SL / RR 結構不適合",
+      "price": 84524.6,
+      "volume_ratio": 1.1642725405222105,
+      "zone_distance_atr": 0.0,
+      "extension_atr": 0.020260492040594852,
+      "ema_1h": "BULL",
+      "ema_15m": "BEAR",
+      "oi_dir": "FLAT",
+      "cvd_dir": "UP",
+      "oi_recent_pct": -0.0009149842189143387,
+      "cvd_recent_delta": 172.48717296819544
     }
   ]
 }

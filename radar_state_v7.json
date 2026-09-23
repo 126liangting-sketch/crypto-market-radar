@@ -1,7 +1,7 @@
 {
   "paper_trades": [],
   "v7": {
-    "last_processed_candle": 1790202600,
+    "last_processed_candle": 1790203500,
     "next_setup_id": 1,
     "next_test_id": 1,
     "active_setup": null,
@@ -9,8 +9,8 @@
       "side": "LONG",
       "level": 84521.4,
       "break_time": 1790200800,
-      "bars": 2,
-      "used": false
+      "bars": 3,
+      "used": true
     },
     "history": [],
     "news": {
@@ -284,6 +284,10 @@
       {
         "time": 1790204319,
         "value": 29362.367800000127
+      },
+      {
+        "time": 1790204831,
+        "value": 29366.836200000125
       }
     ],
     "structure_ready_key": null,
@@ -344,12 +348,31 @@
         "cvd_dir": "UP",
         "oi_recent_pct": -0.002156801897664984,
         "cvd_recent_delta": 268.3785901969903
+      },
+      {
+        "candle_time": 1790203500,
+        "time_utc": "2026-09-23T22:45:00+00:00",
+        "side": "LONG",
+        "trigger_type": "RETEST",
+        "reason_code": "RISK_RR",
+        "reason": "SL / RR 結構不適合",
+        "price": 84524.6,
+        "volume_ratio": 1.1642725405222105,
+        "zone_distance_atr": 0.0,
+        "extension_atr": 0.020260492040594852,
+        "ema_1h": "BULL",
+        "ema_15m": "BEAR",
+        "oi_dir": "FLAT",
+        "cvd_dir": "UP",
+        "oi_recent_pct": -0.0009149842189143387,
+        "cvd_recent_delta": 172.48717296819544
       }
     ],
     "blocked_seen_keys": [
       "1790172000|SHORT|BREAKOUT|EMA_DISTANCE",
       "1790200800|LONG|CONTINUATION|EMA_OPPOSE",
-      "1790200800|LONG|BREAKOUT|RISK_RR"
+      "1790200800|LONG|BREAKOUT|RISK_RR",
+      "1790203500|LONG|RETEST|RISK_RR"
     ],
     "prepare_history": [],
     "next_prepare_id": 1,
