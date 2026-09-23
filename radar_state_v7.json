@@ -1,11 +1,17 @@
 {
   "paper_trades": [],
   "v7": {
-    "last_processed_candle": 1790171100,
+    "last_processed_candle": 1790172000,
     "next_setup_id": 1,
     "next_test_id": 1,
     "active_setup": null,
-    "breakout_watch": null,
+    "breakout_watch": {
+      "side": "SHORT",
+      "level": 85252.0,
+      "break_time": 1790172000,
+      "bars": 0,
+      "used": false
+    },
     "history": [],
     "news": {
       "last_major_id": "cfc78ecda0ec18e57944617a057a7776ca5966c27bda8b193401a86dac72ca33",
@@ -62,14 +68,39 @@
       {
         "time": 1790172530,
         "value": 31179.88130000011
+      },
+      {
+        "time": 1790173381,
+        "value": 30395.191400000112
       }
     ],
     "structure_ready_key": null,
     "structure_ready_side": null,
     "structure_ready_time": null,
     "structure_early_key": null,
-    "blocked_events": [],
-    "blocked_seen_keys": [],
+    "blocked_events": [
+      {
+        "candle_time": 1790172000,
+        "time_utc": "2026-09-23T14:00:00+00:00",
+        "side": "SHORT",
+        "trigger_type": "BREAKOUT",
+        "reason_code": "EMA_DISTANCE",
+        "reason": "離 EMA Zone 過遠",
+        "price": 84845.9,
+        "volume_ratio": 9.306611116152878,
+        "zone_distance_atr": 3.0961584995531735,
+        "extension_atr": 1.3144521767276438,
+        "ema_1h": "BULL",
+        "ema_15m": "BEAR",
+        "oi_dir": "DOWN",
+        "cvd_dir": "DOWN",
+        "oi_recent_pct": -0.025399268992169377,
+        "cvd_recent_delta": -1752.1555437750048
+      }
+    ],
+    "blocked_seen_keys": [
+      "1790172000|SHORT|BREAKOUT|EMA_DISTANCE"
+    ],
     "prepare_history": [],
     "next_prepare_id": 1,
     "prepare_setup_ids": {}

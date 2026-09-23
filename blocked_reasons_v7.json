@@ -1,6 +1,32 @@
 {
   "version": "V7_OKX_FORMAL",
-  "total_blocked": 0,
-  "summary": {},
-  "recent": []
+  "total_blocked": 1,
+  "summary": {
+    "EMA_DISTANCE": {
+      "reason": "離 EMA Zone 過遠",
+      "count": 1,
+      "LONG": 0,
+      "SHORT": 1
+    }
+  },
+  "recent": [
+    {
+      "candle_time": 1790172000,
+      "time_utc": "2026-09-23T14:00:00+00:00",
+      "side": "SHORT",
+      "trigger_type": "BREAKOUT",
+      "reason_code": "EMA_DISTANCE",
+      "reason": "離 EMA Zone 過遠",
+      "price": 84845.9,
+      "volume_ratio": 9.306611116152878,
+      "zone_distance_atr": 3.0961584995531735,
+      "extension_atr": 1.3144521767276438,
+      "ema_1h": "BULL",
+      "ema_15m": "BEAR",
+      "oi_dir": "DOWN",
+      "cvd_dir": "DOWN",
+      "oi_recent_pct": -0.025399268992169377,
+      "cvd_recent_delta": -1752.1555437750048
+    }
+  ]
 }
