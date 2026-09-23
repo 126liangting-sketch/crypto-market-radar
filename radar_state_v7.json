@@ -1,17 +1,11 @@
 {
   "paper_trades": [],
   "v7": {
-    "last_processed_candle": 1790178300,
+    "last_processed_candle": 1790179200,
     "next_setup_id": 1,
     "next_test_id": 1,
     "active_setup": null,
-    "breakout_watch": {
-      "side": "SHORT",
-      "level": 85252.0,
-      "break_time": 1790172000,
-      "bars": 7,
-      "used": false
-    },
+    "breakout_watch": null,
     "history": [],
     "news": {
       "last_major_id": "cfc78ecda0ec18e57944617a057a7776ca5966c27bda8b193401a86dac72ca33",
@@ -112,6 +106,10 @@
       {
         "time": 1790179729,
         "value": 30239.45620000012
+      },
+      {
+        "time": 1790180610,
+        "value": 30271.49130000011
       }
     ],
     "structure_ready_key": null,
