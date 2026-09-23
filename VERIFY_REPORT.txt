@@ -1,0 +1,30 @@
+BTC Market Radar V7 — Verification / Fix Report
+
+This build was verified against the V7 behavior discussed today.
+
+CONFIRMED / FIXED
+- OKX BTC-USDT-SWAP remains the unified market source.
+- 1H / 15M EMA, EMA Zone, Swing, Volume, OI, CVD Proxy, ATR retained.
+- CVD Proxy FLAT threshold = 5%.
+- Formal no-chase distance = 1.50 ATR.
+- Early continuation no-chase distance = 1.00 ATR.
+- HH→HL / LL→LH Structure Prepare retained.
+- Prepare alert includes preview Entry / SL / TP1 / TP2.
+- Prepare Track records simulated prepare trades.
+- Formal Signal creates Formal Paper Trade.
+- Prepare and Formal continuation share the same setup_id for comparison.
+- BREAKOUT, CONTINUATION and RETEST formal triggers restored and verified.
+- Blocked breakouts are recorded but no standalone explosion-warning Discord alert is sent.
+- First valid RETEST remains armed after a blocked breakout.
+- Formal Paper Trade TP1 / TP2 / SL Discord result notifications retained.
+- Prepare trades are tracked silently in the background.
+- Blocked reason JSON / CSV retained.
+- Manual query now shows both Prepare and Formal completed/open counts.
+- Manual query creates no new simulated trade.
+- News standalone alerts are restricted and have a 3-hour notification cooldown.
+- Existing V7 state/data files remain compatible; do NOT reset them.
+
+IMPORTANT
+The uploaded ZIP contained only market_radar.py, so the current GitHub Actions workflow itself
+could not be verified in this audit. Keep the workflow concurrency protection discussed earlier
+to avoid simultaneous git push conflicts.
