@@ -1,5 +1,9 @@
 name: BTC Market Radar V7
 
+concurrency:
+  group: btc-market-radar-v7
+  cancel-in-progress: false
+  
 on:
   workflow_dispatch:
   schedule:
@@ -35,5 +39,6 @@ jobs:
           git add radar_state_v7.json paper_trades_v7.json paper_trades_v7.csv prepare_trades_v7.json prepare_trades_v7.csv blocked_reasons_v7.json blocked_reasons_v7.csv 2>/dev/null || true
           if ! git diff --cached --quiet; then
             git commit -m "Update V7 radar state"
-            git push
+            git pull --rebase origin main
+            git push origin main
           fi
