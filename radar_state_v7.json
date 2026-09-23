@@ -1,11 +1,17 @@
 {
   "paper_trades": [],
   "v7": {
-    "last_processed_candle": 1790199900,
+    "last_processed_candle": 1790200800,
     "next_setup_id": 1,
     "next_test_id": 1,
     "active_setup": null,
-    "breakout_watch": null,
+    "breakout_watch": {
+      "side": "LONG",
+      "level": 84521.4,
+      "break_time": 1790200800,
+      "bars": 0,
+      "used": false
+    },
     "history": [],
     "news": {
       "last_major_id": "cfc78ecda0ec18e57944617a057a7776ca5966c27bda8b193401a86dac72ca33",
@@ -254,6 +260,10 @@
       {
         "time": 1790201175,
         "value": 29393.731000000138
+      },
+      {
+        "time": 1790201971,
+        "value": 29331.882200000135
       }
     ],
     "structure_ready_key": null,
@@ -278,10 +288,48 @@
         "cvd_dir": "DOWN",
         "oi_recent_pct": -0.025399268992169377,
         "cvd_recent_delta": -1752.1555437750048
+      },
+      {
+        "candle_time": 1790200800,
+        "time_utc": "2026-09-23T22:00:00+00:00",
+        "side": "LONG",
+        "trigger_type": "CONTINUATION",
+        "reason_code": "EMA_OPPOSE",
+        "reason": "15M EMA 明顯反向",
+        "price": 84546.3,
+        "volume_ratio": 1.6977203258814524,
+        "zone_distance_atr": 0.0,
+        "extension_atr": 0.41061452513968155,
+        "ema_1h": "BULL",
+        "ema_15m": "BEAR",
+        "oi_dir": "DOWN",
+        "cvd_dir": "UP",
+        "oi_recent_pct": -0.002156801897664984,
+        "cvd_recent_delta": 268.3785901969903
+      },
+      {
+        "candle_time": 1790200800,
+        "time_utc": "2026-09-23T22:00:00+00:00",
+        "side": "LONG",
+        "trigger_type": "BREAKOUT",
+        "reason_code": "RISK_RR",
+        "reason": "SL / RR 結構不適合",
+        "price": 84546.3,
+        "volume_ratio": 1.6977203258814524,
+        "zone_distance_atr": 0.0,
+        "extension_atr": 0.1475368207212298,
+        "ema_1h": "BULL",
+        "ema_15m": "BEAR",
+        "oi_dir": "DOWN",
+        "cvd_dir": "UP",
+        "oi_recent_pct": -0.002156801897664984,
+        "cvd_recent_delta": 268.3785901969903
       }
     ],
     "blocked_seen_keys": [
-      "1790172000|SHORT|BREAKOUT|EMA_DISTANCE"
+      "1790172000|SHORT|BREAKOUT|EMA_DISTANCE",
+      "1790200800|LONG|CONTINUATION|EMA_OPPOSE",
+      "1790200800|LONG|BREAKOUT|RISK_RR"
     ],
     "prepare_history": [],
     "next_prepare_id": 1,
