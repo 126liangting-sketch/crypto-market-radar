@@ -1,11 +1,11 @@
 {
   "version": "V6_OKX_3_2_BLOCKED_STATS",
-  "total_blocked": 34,
+  "total_blocked": 35,
   "summary": {
     "EMA_DISTANCE": {
       "reason": "離 EMA Zone 過遠",
-      "count": 17,
-      "LONG": 13,
+      "count": 18,
+      "LONG": 14,
       "SHORT": 4
     },
     "EMA_OPPOSE": {
@@ -663,6 +663,24 @@
       "cvd_dir": "FLAT",
       "oi_recent_pct": 0.0033692576380348616,
       "cvd_recent_delta": -1.6724898906231667
+    },
+    {
+      "candle_time": 1790134200,
+      "time_utc": "2026-09-23T03:30:00+00:00",
+      "side": "LONG",
+      "trigger_type": "RETEST",
+      "reason_code": "EMA_DISTANCE",
+      "reason": "離 EMA Zone 過遠",
+      "price": 86854.8,
+      "volume_ratio": 2.0432391121168068,
+      "zone_distance_atr": 2.234603987877081,
+      "extension_atr": 1.1353247794707315,
+      "ema_1h": "BULL",
+      "ema_15m": "BULL",
+      "oi_dir": "FLAT",
+      "cvd_dir": "FLAT",
+      "oi_recent_pct": 0.0008332560988615345,
+      "cvd_recent_delta": 120.38828737653307
     }
   ]
 }
