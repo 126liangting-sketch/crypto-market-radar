@@ -1,26 +1,27 @@
 {
   "paper_trades": [],
   "v7": {
-    "last_processed_candle": 1790287200,
+    "last_processed_candle": 1790288100,
     "next_setup_id": 5,
     "next_test_id": 1,
     "active_setup": null,
     "breakout_watch": {
-      "side": "LONG",
-      "level": 83635.4,
-      "break_time": 1790254800,
-      "bars": 7,
-      "used": true
+      "side": "SHORT",
+      "level": 84125.9,
+      "break_time": 1790288100,
+      "bars": 0,
+      "used": false
     },
     "history": [],
     "news": {
-      "last_major_id": "73feb12c0ee29699a0f450151769faacda6a9ab65436232144d61d2df747c750",
+      "last_major_id": "b4acee0345d1d36fc1e8b87f677dbdae5d7645f5c5bea59152b2bc118a119f49",
       "last_major_time": 1790286931,
       "seen_major_ids": [
+        "2a83882acc5b706628c36713dfa83044823397fc6ae49a09a3287416d7d1bab1",
+        "73feb12c0ee29699a0f450151769faacda6a9ab65436232144d61d2df747c750",
         "303884b667b428e603d6c728f76ee78c9400b33bc27469eba134339965f16507",
         "cfc78ecda0ec18e57944617a057a7776ca5966c27bda8b193401a86dac72ca33",
-        "73feb12c0ee29699a0f450151769faacda6a9ab65436232144d61d2df747c750",
-        "2a83882acc5b706628c36713dfa83044823397fc6ae49a09a3287416d7d1bab1"
+        "b4acee0345d1d36fc1e8b87f677dbdae5d7645f5c5bea59152b2bc118a119f49"
       ]
     },
     "oi_history": [
@@ -807,6 +808,10 @@
       {
         "time": 1790288852,
         "value": 28438.530800000106
+      },
+      {
+        "time": 1790289400,
+        "value": 28455.877700000106
       }
     ],
     "structure_ready_key": "MICRO:LONG:1790259300:1790280900",
@@ -1083,6 +1088,42 @@
         "cvd_dir": "FLAT",
         "oi_recent_pct": 0.0078606911243575,
         "cvd_recent_delta": 22.183073134210243
+      },
+      {
+        "candle_time": 1790288100,
+        "time_utc": "2026-09-24T22:15:00+00:00",
+        "side": "SHORT",
+        "trigger_type": "CONTINUATION",
+        "reason_code": "EMA_OPPOSE",
+        "reason": "15M EMA 明顯反向",
+        "price": 84100.0,
+        "volume_ratio": 1.9886604734646338,
+        "zone_distance_atr": 0.5034439696626577,
+        "extension_atr": 0.5008440788765027,
+        "ema_1h": "BEAR",
+        "ema_15m": "BULL",
+        "oi_dir": "DOWN",
+        "cvd_dir": "FLAT",
+        "oi_recent_pct": -0.002894278587265875,
+        "cvd_recent_delta": -14.3421515989518
+      },
+      {
+        "candle_time": 1790288100,
+        "time_utc": "2026-09-24T22:15:00+00:00",
+        "side": "SHORT",
+        "trigger_type": "BREAKOUT",
+        "reason_code": "FLOW_NO_SUPPORT",
+        "reason": "CVD/OI 未提供有效支持",
+        "price": 84100.0,
+        "volume_ratio": 1.9886604734646338,
+        "zone_distance_atr": 0.5034439696626577,
+        "extension_atr": 0.13023957472788902,
+        "ema_1h": "BEAR",
+        "ema_15m": "BULL",
+        "oi_dir": "DOWN",
+        "cvd_dir": "FLAT",
+        "oi_recent_pct": -0.002894278587265875,
+        "cvd_recent_delta": -14.3421515989518
       }
     ],
     "blocked_seen_keys": [
@@ -1100,7 +1141,9 @@
       "1790254800|LONG|BREAKOUT|EMA_OPPOSE",
       "1790261100|LONG|RETEST|EMA_OPPOSE",
       "1790263800|LONG|CONTINUATION|EMA_OPPOSE",
-      "1790280000|SHORT|CONTINUATION|EMA_OPPOSE"
+      "1790280000|SHORT|CONTINUATION|EMA_OPPOSE",
+      "1790288100|SHORT|CONTINUATION|EMA_OPPOSE",
+      "1790288100|SHORT|BREAKOUT|FLOW_NO_SUPPORT"
     ],
     "prepare_history": [
       {
@@ -1155,6 +1198,64 @@
         "closed_time": 1790272800,
         "duration_min": 30,
         "final_result": "SL"
+      },
+      {
+        "version": "V7_OKX_FORMAL",
+        "id": 4,
+        "setup_id": 4,
+        "dedupe_key": "4|LONG|1790281800|PREP",
+        "track": "PREPARE",
+        "side": "LONG",
+        "structure_label": "微結構 HH→HL",
+        "entry_time": 1790281800,
+        "entry_price": 84349.0,
+        "sl": 84074.5,
+        "tp1": 84623.5,
+        "tp2": 84898.0,
+        "risk_atr": 1.0680933852140035,
+        "terminal_outcome": "SL",
+        "tp1_hit": false,
+        "events": [
+          "SL"
+        ],
+        "results": {
+          "15m": {
+            "price": 84332.9,
+            "return": -0.00019087363217118458,
+            "correct": false
+          },
+          "30m": {
+            "price": 84281.1,
+            "return": -0.0008049887965475566,
+            "correct": false
+          },
+          "1h": {
+            "price": 84433.0,
+            "return": 0.0009958624287187412,
+            "correct": true
+          }
+        },
+        "max_high": 84444.0,
+        "min_low": 83898.0,
+        "features": {
+          "ema_1h": "BEAR",
+          "ema_15m": "BULL",
+          "zone_distance_atr": 0.5153839535081348,
+          "volume_ratio": 0.413562691681947,
+          "oi_dir": "UP",
+          "cvd_dir": "FLAT",
+          "oi_recent_pct": 0.004597884215325143,
+          "cvd_recent_delta": 79.40299982507987,
+          "anchor_price": null,
+          "defense_price": null
+        },
+        "entry_reason": "STRUCTURE_PREP | 微結構 HH→HL",
+        "outcome_time": 1790288100,
+        "mfe": 0.0011262729848604547,
+        "mae": 0.005375575103101493,
+        "closed_time": 1790288100,
+        "duration_min": 105,
+        "final_result": "SL"
       }
     ],
     "next_prepare_id": 5,
@@ -1206,7 +1307,7 @@
         }
       },
       "max_high": 84620.0,
-      "min_low": 84125.9,
+      "min_low": 83898.0,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BULL",
@@ -1261,7 +1362,7 @@
         }
       },
       "max_high": 84620.0,
-      "min_low": 84125.9,
+      "min_low": 83898.0,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BULL",
@@ -1275,56 +1376,6 @@
         "defense_price": null
       },
       "entry_reason": "STRUCTURE_PREP | HH→HL"
-    },
-    {
-      "version": "V7_OKX_FORMAL",
-      "id": 4,
-      "setup_id": 4,
-      "dedupe_key": "4|LONG|1790281800|PREP",
-      "track": "PREPARE",
-      "side": "LONG",
-      "structure_label": "微結構 HH→HL",
-      "entry_time": 1790281800,
-      "entry_price": 84349.0,
-      "sl": 84074.5,
-      "tp1": 84623.5,
-      "tp2": 84898.0,
-      "risk_atr": 1.0680933852140035,
-      "terminal_outcome": null,
-      "tp1_hit": false,
-      "events": [],
-      "results": {
-        "15m": {
-          "price": 84332.9,
-          "return": -0.00019087363217118458,
-          "correct": false
-        },
-        "30m": {
-          "price": 84281.1,
-          "return": -0.0008049887965475566,
-          "correct": false
-        },
-        "1h": {
-          "price": 84433.0,
-          "return": 0.0009958624287187412,
-          "correct": true
-        }
-      },
-      "max_high": 84444.0,
-      "min_low": 84199.6,
-      "features": {
-        "ema_1h": "BEAR",
-        "ema_15m": "BULL",
-        "zone_distance_atr": 0.5153839535081348,
-        "volume_ratio": 0.413562691681947,
-        "oi_dir": "UP",
-        "cvd_dir": "FLAT",
-        "oi_recent_pct": 0.004597884215325143,
-        "cvd_recent_delta": 79.40299982507987,
-        "anchor_price": null,
-        "defense_price": null
-      },
-      "entry_reason": "STRUCTURE_PREP | 微結構 HH→HL"
     }
   ]
 }

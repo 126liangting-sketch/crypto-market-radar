@@ -1,12 +1,12 @@
 {
   "version": "V7_OKX_FORMAL",
-  "total_blocked": 15,
+  "total_blocked": 17,
   "summary": {
     "EMA_OPPOSE": {
       "reason": "15M EMA 明顯反向",
-      "count": 6,
+      "count": 7,
       "LONG": 5,
-      "SHORT": 1
+      "SHORT": 2
     },
     "EMA_DISTANCE": {
       "reason": "離 EMA Zone 過遠",
@@ -14,17 +14,17 @@
       "LONG": 0,
       "SHORT": 4
     },
+    "FLOW_NO_SUPPORT": {
+      "reason": "CVD/OI 未提供有效支持",
+      "count": 3,
+      "LONG": 0,
+      "SHORT": 3
+    },
     "RISK_RR": {
       "reason": "SL / RR 結構不適合",
       "count": 3,
       "LONG": 3,
       "SHORT": 0
-    },
-    "FLOW_NO_SUPPORT": {
-      "reason": "CVD/OI 未提供有效支持",
-      "count": 2,
-      "LONG": 0,
-      "SHORT": 2
     }
   },
   "recent": [
@@ -297,6 +297,42 @@
       "cvd_dir": "FLAT",
       "oi_recent_pct": 0.0078606911243575,
       "cvd_recent_delta": 22.183073134210243
+    },
+    {
+      "candle_time": 1790288100,
+      "time_utc": "2026-09-24T22:15:00+00:00",
+      "side": "SHORT",
+      "trigger_type": "CONTINUATION",
+      "reason_code": "EMA_OPPOSE",
+      "reason": "15M EMA 明顯反向",
+      "price": 84100.0,
+      "volume_ratio": 1.9886604734646338,
+      "zone_distance_atr": 0.5034439696626577,
+      "extension_atr": 0.5008440788765027,
+      "ema_1h": "BEAR",
+      "ema_15m": "BULL",
+      "oi_dir": "DOWN",
+      "cvd_dir": "FLAT",
+      "oi_recent_pct": -0.002894278587265875,
+      "cvd_recent_delta": -14.3421515989518
+    },
+    {
+      "candle_time": 1790288100,
+      "time_utc": "2026-09-24T22:15:00+00:00",
+      "side": "SHORT",
+      "trigger_type": "BREAKOUT",
+      "reason_code": "FLOW_NO_SUPPORT",
+      "reason": "CVD/OI 未提供有效支持",
+      "price": 84100.0,
+      "volume_ratio": 1.9886604734646338,
+      "zone_distance_atr": 0.5034439696626577,
+      "extension_atr": 0.13023957472788902,
+      "ema_1h": "BEAR",
+      "ema_15m": "BULL",
+      "oi_dir": "DOWN",
+      "cvd_dir": "FLAT",
+      "oi_recent_pct": -0.002894278587265875,
+      "cvd_recent_delta": -14.3421515989518
     }
   ]
 }
