@@ -451,7 +451,7 @@ def ema_context(rows15, rows1h, a):
     state1="BULL" if e341>e501 else "BEAR" if e341<e501 else "NEUTRAL"
     zl,zh=sorted((e34,e50)); close=c15[-1]
     dist=0.0 if zl<=close<=zh else (zl-close)/a if close<zl else (close-zh)/a
-    return {"ema_1h":state1,"ema_15m":state15,"e34":e34,"e50":e50,"zone_low":zl,"zone_high":zh,"s34":s34,"s50":s50,"zone_distance_atr":dist}
+    return {"ema_1h":state1,"ema_15m":state15,"e34":e34,"e50":e50,"zone_low":zl,"zone_high":zh,"s34":s34,"s50":s50,"zone_distance_atr":dist,"atr":a}
 
 
 def volume_ratio(rows):
@@ -1052,12 +1052,14 @@ def fd(v): return {"UP":"🔺 上升","DOWN":"🔻 下降","FLAT":"⚪ 持平","
 
 
 
-def build_prepare_plan(side, ctx, structure, price):
+def build_prepare_plan(side, ctx, structure, price, atr_value):
     """
     Preview-only trade plan for a structure-ready alert.
     It does NOT create a formal Paper Trade.
     """
-    atr = float(ctx["atr"])
+    atr = float(atr_value)
+    if atr <= 0:
+        raise ValueError("ATR must be positive for prepare plan")
     defense = float(structure["pullback"][1])
     entry = float(price)
 
@@ -1349,7 +1351,7 @@ def main():
                     v["next_setup_id"]+=1
                 setup_id=prep_map[ready_key]
 
-                plan=build_prepare_plan(side,ctx,structure,close)
+                plan=build_prepare_plan(side,ctx,structure,close,a)
                 create_prepare_trade(
                     state, setup_id, side, label, plan, ctx, fl, vol,
                     close, ct, structure
