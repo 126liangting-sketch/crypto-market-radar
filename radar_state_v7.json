@@ -1,8 +1,8 @@
 {
   "paper_trades": [],
   "v7": {
-    "last_processed_candle": 1790272800,
-    "next_setup_id": 2,
+    "last_processed_candle": 1790273700,
+    "next_setup_id": 3,
     "next_test_id": 1,
     "active_setup": null,
     "breakout_watch": {
@@ -706,11 +706,15 @@
       {
         "time": 1790274434,
         "value": 28501.309900000106
+      },
+      {
+        "time": 1790275211,
+        "value": 28464.628800000093
       }
     ],
-    "structure_ready_key": "MAJOR:LONG:1790236800:1790265600",
+    "structure_ready_key": "MICRO:LONG:1790252100:1790272800",
     "structure_ready_side": "LONG",
-    "structure_ready_time": 1790271000,
+    "structure_ready_time": 1790273700,
     "structure_early_key": null,
     "blocked_events": [
       {
@@ -1037,10 +1041,46 @@
         "final_result": "SL"
       }
     ],
-    "next_prepare_id": 2,
+    "next_prepare_id": 3,
     "prepare_setup_ids": {
-      "MAJOR:LONG:1790236800:1790265600": 1
+      "MAJOR:LONG:1790236800:1790265600": 1,
+      "MICRO:LONG:1790252100:1790272800": 2
     }
   },
-  "prepare_trades": []
+  "prepare_trades": [
+    {
+      "version": "V7_OKX_FORMAL",
+      "id": 2,
+      "setup_id": 2,
+      "dedupe_key": "2|LONG|1790273700|PREP",
+      "track": "PREPARE",
+      "side": "LONG",
+      "structure_label": "微結構 HH→HL",
+      "entry_time": 1790273700,
+      "entry_price": 84391.8,
+      "sl": 83770.32571428572,
+      "tp1": 85013.27428571429,
+      "tp2": 85634.74857142857,
+      "risk_atr": 1.7839416058394246,
+      "terminal_outcome": null,
+      "tp1_hit": false,
+      "events": [],
+      "results": {},
+      "max_high": 84391.8,
+      "min_low": 84391.8,
+      "features": {
+        "ema_1h": "BEAR",
+        "ema_15m": "BULL",
+        "zone_distance_atr": 0.8389407522723293,
+        "volume_ratio": 0.4938752385728633,
+        "oi_dir": "DOWN",
+        "cvd_dir": "FLAT",
+        "oi_recent_pct": -0.01034284312679945,
+        "cvd_recent_delta": 214.2542270580314,
+        "anchor_price": null,
+        "defense_price": null
+      },
+      "entry_reason": "STRUCTURE_PREP | 微結構 HH→HL"
+    }
+  ]
 }
