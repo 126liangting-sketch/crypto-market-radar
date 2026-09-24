@@ -349,9 +349,12 @@ NEWS_RED_SECONDS = 2 * 3600
 NEWS_YELLOW_SECONDS = 8 * 3600
 NEWS_NOTIFY_COOLDOWN = 3 * 3600
 
-# V7 Structure Engine — HH/HL and LL/LH continuation logic.
+# V7 Structure Engine — Major 2-2 + Micro 1-1 continuation logic.
 STRUCT_MIN_ATR = 0.05
-STRUCT_READY_ZONE_ATR = 0.90
+MICRO_STRUCT_MIN_ATR = 0.02
+MICRO_SWING_LEFT = 1
+MICRO_SWING_RIGHT = 1
+STRUCT_READY_ZONE_ATR = 1.20
 EARLY_NO_CHASE_ATR = 1.00
 MICRO_BREAK_ATR = 0.05
 MICRO_LOOKBACK = 3
@@ -407,6 +410,31 @@ def pivots(rows):
             highs.append((int(rows[i]["time"]), h))
         if all(l < float(rows[j]["low"]) for j in range(i-SWING_LEFT,i)) and all(l < float(rows[j]["low"]) for j in range(i+1,i+1+SWING_RIGHT)):
             lows.append((int(rows[i]["time"]), l))
+    return highs, lows
+
+
+def pivots_custom(rows, left=1, right=1):
+    """Lighter local pivots for Micro Structure. Major 2-2 pivots remain unchanged."""
+    highs, lows = [], []
+    if len(rows) < left + right + 3:
+        return highs, lows
+
+    for i in range(left, len(rows) - right):
+        h = float(rows[i]["high"])
+        l = float(rows[i]["low"])
+
+        if (
+            all(h > float(rows[j]["high"]) for j in range(i-left, i))
+            and all(h > float(rows[j]["high"]) for j in range(i+1, i+1+right))
+        ):
+            highs.append((int(rows[i]["time"]), h))
+
+        if (
+            all(l < float(rows[j]["low"]) for j in range(i-left, i))
+            and all(l < float(rows[j]["low"]) for j in range(i+1, i+1+right))
+        ):
+            lows.append((int(rows[i]["time"]), l))
+
     return highs, lows
 
 
@@ -468,30 +496,109 @@ def flow_for_side(side, price_dir, oi_metrics, cvd_metrics):
             "oi_dir": oi_dir, "oi_recent_pct": rp if oi_available else None,
             "cvd_recent_delta": cd, "cvd_rel": rel}
 
-def classify_structure(rows, highs, lows, a):
-    """Detect sequential continuation structure from confirmed 2-2 pivots."""
-    if not a or a <= 0:
-        return {"side": None, "label": "NONE"}
+def _structure_candidates(highs, lows, a, min_atr, kind):
+    """Build continuation candidates from a supplied pivot set."""
     candidates = []
+    if not a or a <= 0:
+        return candidates
+
+    # LONG: HH followed by HL.
     if len(highs) >= 2 and len(lows) >= 2:
-        h1, h2 = highs[-2], highs[-1]
-        if h2[1] >= h1[1] + STRUCT_MIN_ATR * a:
+        # Walk recent pivot pairs instead of only the final pair.
+        for hi in range(max(1, len(highs)-5), len(highs)):
+            h1, h2 = highs[hi-1], highs[hi]
+            if h2[1] < h1[1] + min_atr * a:
+                continue
+
             before = [x for x in lows if x[0] < h2[0]]
             after = [x for x in lows if x[0] > h2[0]]
-            if before and after:
-                prior_low, hl = before[-1], after[-1]
-                if hl[1] >= prior_low[1] + STRUCT_MIN_ATR * a:
-                    candidates.append({"side":"LONG","label":"HH→HL","impulse":h2,"pullback":hl,"prior_defense":prior_low,"key":f"LONG:{h2[0]}:{hl[0]}","ready_time":hl[0]})
+            if not before or not after:
+                continue
+
+            prior_low = before[-1]
+            # First/most recent pullback after the HH that is already confirmed.
+            hl = after[-1]
+            if hl[1] >= prior_low[1] + min_atr * a:
+                label = "HH→HL" if kind == "MAJOR" else "微結構 HH→HL"
+                candidates.append({
+                    "side": "LONG",
+                    "label": label,
+                    "structure_kind": kind,
+                    "impulse": h2,
+                    "pullback": hl,
+                    "prior_defense": prior_low,
+                    "key": f"{kind}:LONG:{h2[0]}:{hl[0]}",
+                    "ready_time": hl[0],
+                })
+
+    # SHORT: LL followed by LH.
     if len(lows) >= 2 and len(highs) >= 2:
-        l1, l2 = lows[-2], lows[-1]
-        if l2[1] <= l1[1] - STRUCT_MIN_ATR * a:
+        for li in range(max(1, len(lows)-5), len(lows)):
+            l1, l2 = lows[li-1], lows[li]
+            if l2[1] > l1[1] - min_atr * a:
+                continue
+
             before = [x for x in highs if x[0] < l2[0]]
             after = [x for x in highs if x[0] > l2[0]]
-            if before and after:
-                prior_high, lh = before[-1], after[-1]
-                if lh[1] <= prior_high[1] - STRUCT_MIN_ATR * a:
-                    candidates.append({"side":"SHORT","label":"LL→LH","impulse":l2,"pullback":lh,"prior_defense":prior_high,"key":f"SHORT:{l2[0]}:{lh[0]}","ready_time":lh[0]})
-    return max(candidates, key=lambda x: x["ready_time"]) if candidates else {"side":None,"label":"NONE"}
+            if not before or not after:
+                continue
+
+            prior_high = before[-1]
+            lh = after[-1]
+            if lh[1] <= prior_high[1] - min_atr * a:
+                label = "LL→LH" if kind == "MAJOR" else "微結構 LL→LH"
+                candidates.append({
+                    "side": "SHORT",
+                    "label": label,
+                    "structure_kind": kind,
+                    "impulse": l2,
+                    "pullback": lh,
+                    "prior_defense": prior_high,
+                    "key": f"{kind}:SHORT:{l2[0]}:{lh[0]}",
+                    "ready_time": lh[0],
+                })
+
+    return candidates
+
+
+def classify_structure(rows, highs, lows, a):
+    """
+    V7 relaxed Structure Engine.
+
+    Major:
+      - Existing confirmed 2-2 pivots.
+      - Still used for the cleaner, larger HH→HL / LL→LH structure.
+
+    Micro:
+      - New 1-1 local pivots.
+      - Lets ordinary trend pullbacks qualify earlier instead of waiting for
+        a full 2-2 pivot sequence.
+
+    The newest valid structure wins; Major wins only when timestamps tie.
+    """
+    if not a or a <= 0:
+        return {"side": None, "label": "NONE", "structure_kind": None}
+
+    major = _structure_candidates(highs, lows, a, STRUCT_MIN_ATR, "MAJOR")
+
+    micro_highs, micro_lows = pivots_custom(
+        rows, MICRO_SWING_LEFT, MICRO_SWING_RIGHT
+    )
+    micro = _structure_candidates(
+        micro_highs, micro_lows, a, MICRO_STRUCT_MIN_ATR, "MICRO"
+    )
+
+    candidates = major + micro
+    if not candidates:
+        return {"side": None, "label": "NONE", "structure_kind": None}
+
+    return max(
+        candidates,
+        key=lambda x: (
+            int(x["ready_time"]),
+            1 if x.get("structure_kind") == "MAJOR" else 0
+        )
+    )
 
 
 def micro_resumption(rows, structure, a):
@@ -1255,7 +1362,7 @@ def main():
                     else "✅ 預設風險距離在允許範圍"
                 )
                 send_discord(
-                    f"👀 BTC {zh_side(side)}結構準備｜{label}\n\n"
+                    f"👀 BTC {zh_side(side)}結構準備｜{label}\n\n"                    f"🧱 類型：{'Major 2-2' if structure.get('structure_kind')=='MAJOR' else 'Micro 1-1'}\n"
                     f"💰 BTC：${close:,.0f}\n"
                     f"📍 前段結構：${impulse:,.0f}\n"
                     f"🛡️ 回踩防守：${pull:,.0f}\n"
