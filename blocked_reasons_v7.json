@@ -1,7 +1,13 @@
 {
   "version": "V7_OKX_FORMAL",
-  "total_blocked": 5,
+  "total_blocked": 6,
   "summary": {
+    "FLOW_NO_SUPPORT": {
+      "reason": "CVD/OI 未提供有效支持",
+      "count": 2,
+      "LONG": 0,
+      "SHORT": 2
+    },
     "RISK_RR": {
       "reason": "SL / RR 結構不適合",
       "count": 2,
@@ -19,12 +25,6 @@
       "count": 1,
       "LONG": 1,
       "SHORT": 0
-    },
-    "FLOW_NO_SUPPORT": {
-      "reason": "CVD/OI 未提供有效支持",
-      "count": 1,
-      "LONG": 0,
-      "SHORT": 1
     }
   },
   "recent": [
@@ -117,6 +117,24 @@
       "cvd_dir": "FLAT",
       "oi_recent_pct": -9.087136297147858e-05,
       "cvd_recent_delta": 155.13748664755022
+    },
+    {
+      "candle_time": 1790211600,
+      "time_utc": "2026-09-24T01:00:00+00:00",
+      "side": "SHORT",
+      "trigger_type": "RETEST",
+      "reason_code": "FLOW_NO_SUPPORT",
+      "reason": "CVD/OI 未提供有效支持",
+      "price": 84253.3,
+      "volume_ratio": 1.332350850071781,
+      "zone_distance_atr": 1.2886995097386744,
+      "extension_atr": 0.3523755656108276,
+      "ema_1h": "BULL",
+      "ema_15m": "BEAR",
+      "oi_dir": "DOWN",
+      "cvd_dir": "FLAT",
+      "oi_recent_pct": -0.0023511002603617825,
+      "cvd_recent_delta": 11.074868333671358
     }
   ]
 }
