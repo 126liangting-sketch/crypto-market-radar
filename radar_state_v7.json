@@ -1,7 +1,7 @@
 {
   "paper_trades": [],
   "v7": {
-    "last_processed_candle": 1790278200,
+    "last_processed_candle": 1790279100,
     "next_setup_id": 4,
     "next_test_id": 1,
     "active_setup": null,
@@ -746,6 +746,10 @@
       {
         "time": 1790279962,
         "value": 28543.895900000098
+      },
+      {
+        "time": 1790280687,
+        "value": 28593.9064000001
       }
     ],
     "structure_ready_key": "MAJOR:LONG:1790252100:1790272800",
@@ -1170,7 +1174,7 @@
         }
       },
       "max_high": 84620.0,
-      "min_low": 84258.5,
+      "min_low": 84247.8,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BULL",
