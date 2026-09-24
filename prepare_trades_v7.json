@@ -19,9 +19,15 @@
       "terminal_outcome": null,
       "tp1_hit": false,
       "events": [],
-      "results": {},
-      "max_high": 84140.8,
-      "min_low": 84140.8,
+      "results": {
+        "15m": {
+          "price": 84075.3,
+          "return": -0.0007784570624477238,
+          "correct": false
+        }
+      },
+      "max_high": 84191.2,
+      "min_low": 83952.3,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BULL",

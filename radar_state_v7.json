@@ -1,7 +1,7 @@
 {
   "paper_trades": [],
   "v7": {
-    "last_processed_candle": 1790271000,
+    "last_processed_candle": 1790271900,
     "next_setup_id": 2,
     "next_test_id": 1,
     "active_setup": null,
@@ -698,6 +698,10 @@
       {
         "time": 1790272778,
         "value": 28608.241800000116
+      },
+      {
+        "time": 1790273511,
+        "value": 28560.090400000117
       }
     ],
     "structure_ready_key": "MAJOR:LONG:1790236800:1790265600",
@@ -998,9 +1002,15 @@
       "terminal_outcome": null,
       "tp1_hit": false,
       "events": [],
-      "results": {},
-      "max_high": 84140.8,
-      "min_low": 84140.8,
+      "results": {
+        "15m": {
+          "price": 84075.3,
+          "return": -0.0007784570624477238,
+          "correct": false
+        }
+      },
+      "max_high": 84191.2,
+      "min_low": 83952.3,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BULL",
