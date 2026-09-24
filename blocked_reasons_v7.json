@@ -1,7 +1,13 @@
 {
   "version": "V7_OKX_FORMAL",
-  "total_blocked": 6,
+  "total_blocked": 7,
   "summary": {
+    "EMA_OPPOSE": {
+      "reason": "15M EMA 明顯反向",
+      "count": 2,
+      "LONG": 2,
+      "SHORT": 0
+    },
     "FLOW_NO_SUPPORT": {
       "reason": "CVD/OI 未提供有效支持",
       "count": 2,
@@ -19,12 +25,6 @@
       "count": 1,
       "LONG": 0,
       "SHORT": 1
-    },
-    "EMA_OPPOSE": {
-      "reason": "15M EMA 明顯反向",
-      "count": 1,
-      "LONG": 1,
-      "SHORT": 0
     }
   },
   "recent": [
@@ -135,6 +135,24 @@
       "cvd_dir": "FLAT",
       "oi_recent_pct": -0.0023511002603617825,
       "cvd_recent_delta": 11.074868333671358
+    },
+    {
+      "candle_time": 1790226000,
+      "time_utc": "2026-09-24T05:00:00+00:00",
+      "side": "LONG",
+      "trigger_type": "CONTINUATION",
+      "reason_code": "EMA_OPPOSE",
+      "reason": "15M EMA 明顯反向",
+      "price": 84156.8,
+      "volume_ratio": 2.123912178340132,
+      "zone_distance_atr": 0.18856261269469343,
+      "extension_atr": 0.5078361981799921,
+      "ema_1h": "BEAR",
+      "ema_15m": "BEAR",
+      "oi_dir": "FLAT",
+      "cvd_dir": "UP",
+      "oi_recent_pct": 6.363940972686777e-05,
+      "cvd_recent_delta": 577.1547549535543
     }
   ]
 }
