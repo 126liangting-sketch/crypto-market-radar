@@ -1,7 +1,7 @@
 {
   "paper_trades": [],
   "v7": {
-    "last_processed_candle": 1790291700,
+    "last_processed_candle": 1790292600,
     "next_setup_id": 6,
     "next_test_id": 1,
     "active_setup": null,
@@ -14,14 +14,15 @@
     },
     "history": [],
     "news": {
-      "last_major_id": "b4acee0345d1d36fc1e8b87f677dbdae5d7645f5c5bea59152b2bc118a119f49",
+      "last_major_id": "4fa200b84efda8ac19d07c9d954f937334bd4a6b4f05724f4fa6297c04e93655",
       "last_major_time": 1790286931,
       "seen_major_ids": [
-        "2a83882acc5b706628c36713dfa83044823397fc6ae49a09a3287416d7d1bab1",
-        "73feb12c0ee29699a0f450151769faacda6a9ab65436232144d61d2df747c750",
+        "4fa200b84efda8ac19d07c9d954f937334bd4a6b4f05724f4fa6297c04e93655",
         "303884b667b428e603d6c728f76ee78c9400b33bc27469eba134339965f16507",
         "cfc78ecda0ec18e57944617a057a7776ca5966c27bda8b193401a86dac72ca33",
-        "b4acee0345d1d36fc1e8b87f677dbdae5d7645f5c5bea59152b2bc118a119f49"
+        "2a83882acc5b706628c36713dfa83044823397fc6ae49a09a3287416d7d1bab1",
+        "b4acee0345d1d36fc1e8b87f677dbdae5d7645f5c5bea59152b2bc118a119f49",
+        "73feb12c0ee29699a0f450151769faacda6a9ab65436232144d61d2df747c750"
       ]
     },
     "oi_history": [
@@ -840,6 +841,10 @@
       {
         "time": 1790293126,
         "value": 28404.842900000116
+      },
+      {
+        "time": 1790293536,
+        "value": 28410.288100000114
       }
     ],
     "structure_ready_key": "MAJOR:LONG:1790259300:1790288100",
@@ -1492,7 +1497,7 @@
           "correct": true
         }
       },
-      "max_high": 84411.1,
+      "max_high": 84436.8,
       "min_low": 84222.3,
       "features": {
         "ema_1h": "BEAR",
