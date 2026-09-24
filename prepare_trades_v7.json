@@ -133,6 +133,11 @@
           "price": 84550.4,
           "return": 0.0019137588000317507,
           "correct": true
+        },
+        "1h": {
+          "price": 84394.1,
+          "return": 6.16194783913393e-05,
+          "correct": true
         }
       },
       "max_high": 84620.0,
