@@ -14,12 +14,13 @@
     },
     "history": [],
     "news": {
-      "last_major_id": "303884b667b428e603d6c728f76ee78c9400b33bc27469eba134339965f16507",
-      "last_major_time": 1790243117,
+      "last_major_id": "73feb12c0ee29699a0f450151769faacda6a9ab65436232144d61d2df747c750",
+      "last_major_time": 1790286931,
       "seen_major_ids": [
         "303884b667b428e603d6c728f76ee78c9400b33bc27469eba134339965f16507",
-        "2a83882acc5b706628c36713dfa83044823397fc6ae49a09a3287416d7d1bab1",
-        "cfc78ecda0ec18e57944617a057a7776ca5966c27bda8b193401a86dac72ca33"
+        "cfc78ecda0ec18e57944617a057a7776ca5966c27bda8b193401a86dac72ca33",
+        "73feb12c0ee29699a0f450151769faacda6a9ab65436232144d61d2df747c750",
+        "2a83882acc5b706628c36713dfa83044823397fc6ae49a09a3287416d7d1bab1"
       ]
     },
     "oi_history": [
@@ -790,6 +791,10 @@
       {
         "time": 1790286577,
         "value": 28569.169200000106
+      },
+      {
+        "time": 1790286930,
+        "value": 28568.871500000103
       }
     ],
     "structure_ready_key": "MICRO:LONG:1790259300:1790280900",
