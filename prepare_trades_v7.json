@@ -223,6 +223,40 @@
         "defense_price": null
       },
       "entry_reason": "STRUCTURE_PREP | HH→HL"
+    },
+    {
+      "version": "V7_OKX_FORMAL",
+      "id": 5,
+      "setup_id": 5,
+      "dedupe_key": "5|LONG|1790289900|PREP",
+      "track": "PREPARE",
+      "side": "LONG",
+      "structure_label": "HH→HL",
+      "entry_time": 1790289900,
+      "entry_price": 84239.5,
+      "sl": 83860.86714285714,
+      "tp1": 84618.13285714286,
+      "tp2": 84996.76571428572,
+      "risk_atr": 2.0393413611356936,
+      "terminal_outcome": null,
+      "tp1_hit": false,
+      "events": [],
+      "results": {},
+      "max_high": 84239.5,
+      "min_low": 84239.5,
+      "features": {
+        "ema_1h": "BEAR",
+        "ema_15m": "BULL",
+        "zone_distance_atr": 0.026611667599280048,
+        "volume_ratio": 0.42753899759031755,
+        "oi_dir": "DOWN",
+        "cvd_dir": "UP",
+        "oi_recent_pct": -0.0031834349158452735,
+        "cvd_recent_delta": 207.73910084650154,
+        "anchor_price": null,
+        "defense_price": null
+      },
+      "entry_reason": "STRUCTURE_PREP | HH→HL"
     }
   ]
 }
