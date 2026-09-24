@@ -85,7 +85,7 @@
           "correct": true
         }
       },
-      "max_high": 84526.3,
+      "max_high": 84596.8,
       "min_low": 84220.0,
       "features": {
         "ema_1h": "BEAR",
@@ -123,10 +123,15 @@
           "price": 84440.8,
           "return": 0.000615009793942134,
           "correct": true
+        },
+        "30m": {
+          "price": 84550.4,
+          "return": 0.0019137588000317507,
+          "correct": true
         }
       },
-      "max_high": 84503.8,
-      "min_low": 84328.4,
+      "max_high": 84596.8,
+      "min_low": 84258.5,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BULL",
