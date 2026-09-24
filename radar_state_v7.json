@@ -1,7 +1,7 @@
 {
   "paper_trades": [],
   "v7": {
-    "last_processed_candle": 1790211600,
+    "last_processed_candle": 1790212500,
     "next_setup_id": 1,
     "next_test_id": 1,
     "active_setup": null,
@@ -344,6 +344,10 @@
       {
         "time": 1790212966,
         "value": 29278.282600000115
+      },
+      {
+        "time": 1790213562,
+        "value": 29295.05310000012
       }
     ],
     "structure_ready_key": null,
