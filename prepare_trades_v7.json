@@ -1,7 +1,6 @@
 {
   "version": "V7_OKX_FORMAL",
-  "completed": [],
-  "open": [
+  "completed": [
     {
       "version": "V7_OKX_FORMAL",
       "id": 1,
@@ -16,18 +15,25 @@
       "tp1": 84372.56000000001,
       "tp2": 84604.32000000002,
       "risk_atr": 0.5095866314863895,
-      "terminal_outcome": null,
+      "terminal_outcome": "SL",
       "tp1_hit": false,
-      "events": [],
+      "events": [
+        "SL"
+      ],
       "results": {
         "15m": {
           "price": 84075.3,
           "return": -0.0007784570624477238,
           "correct": false
+        },
+        "30m": {
+          "price": 84223.5,
+          "return": 0.0009828763215942171,
+          "correct": true
         }
       },
-      "max_high": 84191.2,
-      "min_low": 83952.3,
+      "max_high": 84223.5,
+      "min_low": 83840.0,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BULL",
@@ -40,7 +46,14 @@
         "anchor_price": null,
         "defense_price": null
       },
-      "entry_reason": "STRUCTURE_PREP | HH→HL"
+      "entry_reason": "STRUCTURE_PREP | HH→HL",
+      "outcome_time": 1790272800,
+      "mfe": 0.0009828763215942171,
+      "mae": 0.003587786259541925,
+      "closed_time": 1790272800,
+      "duration_min": 30,
+      "final_result": "SL"
     }
-  ]
+  ],
+  "open": []
 }
