@@ -1,7 +1,7 @@
 {
   "paper_trades": [],
   "v7": {
-    "last_processed_candle": 1790290800,
+    "last_processed_candle": 1790291700,
     "next_setup_id": 6,
     "next_test_id": 1,
     "active_setup": null,
@@ -836,6 +836,10 @@
       {
         "time": 1790292588,
         "value": 28413.446000000113
+      },
+      {
+        "time": 1790293126,
+        "value": 28404.842900000116
       }
     ],
     "structure_ready_key": "MAJOR:LONG:1790259300:1790288100",
@@ -1184,6 +1188,24 @@
         "cvd_dir": "UP",
         "oi_recent_pct": -0.003013412262722337,
         "cvd_recent_delta": 445.64204639336197
+      },
+      {
+        "candle_time": 1790291700,
+        "time_utc": "2026-09-24T23:15:00+00:00",
+        "side": "LONG",
+        "trigger_type": "CONTINUATION",
+        "reason_code": "RISK_RR",
+        "reason": "SL / RR / 空間不適合",
+        "price": 84389.6,
+        "volume_ratio": 0.7179887064255642,
+        "zone_distance_atr": 0.8713823653929595,
+        "extension_atr": 0.3575591360987634,
+        "ema_1h": "BEAR",
+        "ema_15m": "BULL",
+        "oi_dir": "DOWN",
+        "cvd_dir": "UP",
+        "oi_recent_pct": -0.001793471301009597,
+        "cvd_recent_delta": 357.9382655925903
       }
     ],
     "blocked_seen_keys": [
@@ -1205,7 +1227,8 @@
       "1790288100|SHORT|CONTINUATION|EMA_OPPOSE",
       "1790288100|SHORT|BREAKOUT|FLOW_NO_SUPPORT",
       "1790289000|SHORT|RETEST|LOW_VOLUME_FLOW",
-      "1790290800|LONG|CONTINUATION|VOLUME_LOW"
+      "1790290800|LONG|CONTINUATION|VOLUME_LOW",
+      "1790291700|LONG|CONTINUATION|RISK_RR"
     ],
     "prepare_history": [
       {
@@ -1462,9 +1485,14 @@
           "price": 84251.9,
           "return": 0.00014719935422213837,
           "correct": true
+        },
+        "30m": {
+          "price": 84389.6,
+          "return": 0.001781824441028368,
+          "correct": true
         }
       },
-      "max_high": 84330.0,
+      "max_high": 84411.1,
       "min_low": 84222.3,
       "features": {
         "ema_1h": "BEAR",

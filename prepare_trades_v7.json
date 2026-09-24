@@ -246,9 +246,14 @@
           "price": 84251.9,
           "return": 0.00014719935422213837,
           "correct": true
+        },
+        "30m": {
+          "price": 84389.6,
+          "return": 0.001781824441028368,
+          "correct": true
         }
       },
-      "max_high": 84330.0,
+      "max_high": 84411.1,
       "min_low": 84222.3,
       "features": {
         "ema_1h": "BEAR",
