@@ -193,9 +193,14 @@
           "price": 84281.1,
           "return": -0.0008049887965475566,
           "correct": false
+        },
+        "1h": {
+          "price": 84433.0,
+          "return": 0.0009958624287187412,
+          "correct": true
         }
       },
-      "max_high": 84437.3,
+      "max_high": 84444.0,
       "min_low": 84225.4,
       "features": {
         "ema_1h": "BEAR",
