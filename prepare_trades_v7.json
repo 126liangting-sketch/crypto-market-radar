@@ -219,9 +219,7 @@
       "closed_time": 1790316000,
       "duration_min": 105,
       "final_result": "TP1_THEN_SL"
-    }
-  ],
-  "open": [
+    },
     {
       "version": "V7_OKX_FORMAL",
       "id": 2,
@@ -236,9 +234,11 @@
       "tp1": 85013.27428571429,
       "tp2": 85634.74857142857,
       "risk_atr": 1.7839416058394246,
-      "terminal_outcome": null,
+      "terminal_outcome": "SL",
       "tp1_hit": false,
-      "events": [],
+      "events": [
+        "SL"
+      ],
       "results": {
         "15m": {
           "price": 84388.9,
@@ -262,7 +262,7 @@
         }
       },
       "max_high": 84860.0,
-      "min_low": 83875.8,
+      "min_low": 83680.3,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BULL",
@@ -275,7 +275,13 @@
         "anchor_price": null,
         "defense_price": null
       },
-      "entry_reason": "STRUCTURE_PREP | 微結構 HH→HL"
+      "entry_reason": "STRUCTURE_PREP | 微結構 HH→HL",
+      "outcome_time": 1790319600,
+      "mfe": 0.005547932382055976,
+      "mae": 0.008502598580550025,
+      "closed_time": 1790319600,
+      "duration_min": 765,
+      "final_result": "SL"
     },
     {
       "version": "V7_OKX_FORMAL",
@@ -291,9 +297,11 @@
       "tp1": 85005.56714285714,
       "tp2": 85622.23428571428,
       "risk_atr": 1.8199591036532723,
-      "terminal_outcome": null,
+      "terminal_outcome": "SL",
       "tp1_hit": false,
-      "events": [],
+      "events": [
+        "SL"
+      ],
       "results": {
         "15m": {
           "price": 84440.8,
@@ -317,7 +325,7 @@
         }
       },
       "max_high": 84860.0,
-      "min_low": 83875.8,
+      "min_low": 83680.3,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BULL",
@@ -330,7 +338,13 @@
         "anchor_price": null,
         "defense_price": null
       },
-      "entry_reason": "STRUCTURE_PREP | HH→HL"
+      "entry_reason": "STRUCTURE_PREP | HH→HL",
+      "outcome_time": 1790319600,
+      "mfe": 0.005582487744241416,
+      "mae": 0.008467942873053635,
+      "closed_time": 1790319600,
+      "duration_min": 750,
+      "final_result": "SL"
     },
     {
       "version": "V7_OKX_FORMAL",
@@ -346,10 +360,11 @@
       "tp1": 84618.13285714286,
       "tp2": 84996.76571428572,
       "risk_atr": 2.0393413611356936,
-      "terminal_outcome": null,
+      "terminal_outcome": "SL",
       "tp1_hit": true,
       "events": [
-        "TP1"
+        "TP1",
+        "SL"
       ],
       "results": {
         "15m": {
@@ -374,7 +389,7 @@
         }
       },
       "max_high": 84860.0,
-      "min_low": 83875.8,
+      "min_low": 83680.3,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BULL",
@@ -388,8 +403,16 @@
         "defense_price": null
       },
       "entry_reason": "STRUCTURE_PREP | HH→HL",
-      "tp1_time": 1790294400
-    },
+      "tp1_time": 1790294400,
+      "outcome_time": 1790319600,
+      "mfe": 0.007365903168941035,
+      "mae": 0.006682576424797748,
+      "closed_time": 1790319600,
+      "duration_min": 495,
+      "final_result": "TP1_THEN_SL"
+    }
+  ],
+  "open": [
     {
       "version": "V7_OKX_FORMAL",
       "id": 8,
@@ -405,8 +428,10 @@
       "tp2": 83472.70571428575,
       "risk_atr": 1.6726659350484785,
       "terminal_outcome": null,
-      "tp1_hit": false,
-      "events": [],
+      "tp1_hit": true,
+      "events": [
+        "TP1"
+      ],
       "results": {
         "15m": {
           "price": 83999.3,
@@ -420,7 +445,7 @@
         }
       },
       "max_high": 84069.1,
-      "min_low": 83875.8,
+      "min_low": 83680.3,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BEAR",
@@ -433,7 +458,8 @@
         "anchor_price": null,
         "defense_price": null
       },
-      "entry_reason": "STRUCTURE_PREP | LL→LH"
+      "entry_reason": "STRUCTURE_PREP | LL→LH",
+      "tp1_time": 1790319600
     }
   ]
 }
