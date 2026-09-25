@@ -201,7 +201,7 @@
           "correct": false
         }
       },
-      "max_high": 84760.0,
+      "max_high": 84844.0,
       "min_low": 83898.0,
       "features": {
         "ema_1h": "BEAR",
@@ -256,7 +256,7 @@
           "correct": false
         }
       },
-      "max_high": 84760.0,
+      "max_high": 84844.0,
       "min_low": 83898.0,
       "features": {
         "ema_1h": "BEAR",
@@ -313,7 +313,7 @@
           "correct": true
         }
       },
-      "max_high": 84760.0,
+      "max_high": 84844.0,
       "min_low": 84222.3,
       "features": {
         "ema_1h": "BEAR",

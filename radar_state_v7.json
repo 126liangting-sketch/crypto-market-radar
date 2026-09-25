@@ -1,16 +1,16 @@
 {
   "paper_trades": [],
   "v7": {
-    "last_processed_candle": 1790300700,
+    "last_processed_candle": 1790301600,
     "next_setup_id": 7,
     "next_test_id": 1,
     "active_setup": null,
     "breakout_watch": {
-      "side": "SHORT",
-      "level": 84125.9,
-      "break_time": 1790288100,
-      "bars": 1,
-      "used": true
+      "side": "LONG",
+      "level": 84760.0,
+      "break_time": 1790301600,
+      "bars": 0,
+      "used": false
     },
     "history": [],
     "news": {
@@ -901,6 +901,10 @@
       {
         "time": 1790301780,
         "value": 28507.097100000105
+      },
+      {
+        "time": 1790302563,
+        "value": 28652.012800000102
       }
     ],
     "structure_ready_key": "MICRO:LONG:1790285400:1790296200",
@@ -1267,6 +1271,24 @@
         "cvd_dir": "UP",
         "oi_recent_pct": -0.001793471301009597,
         "cvd_recent_delta": 357.9382655925903
+      },
+      {
+        "candle_time": 1790301600,
+        "time_utc": "2026-09-25T02:00:00+00:00",
+        "side": "LONG",
+        "trigger_type": "BREAKOUT",
+        "reason_code": "EMA_DISTANCE",
+        "reason": "離 EMA Zone 過遠",
+        "price": 84801.9,
+        "volume_ratio": 2.41849499478944,
+        "zone_distance_atr": 2.3875569360502906,
+        "extension_atr": 0.247228895351252,
+        "ema_1h": "BEAR",
+        "ema_15m": "BULL",
+        "oi_dir": "UP",
+        "cvd_dir": "FLAT",
+        "oi_recent_pct": 0.0065251480013210905,
+        "cvd_recent_delta": 165.53644230483673
       }
     ],
     "blocked_seen_keys": [
@@ -1289,7 +1311,8 @@
       "1790288100|SHORT|BREAKOUT|FLOW_NO_SUPPORT",
       "1790289000|SHORT|RETEST|LOW_VOLUME_FLOW",
       "1790290800|LONG|CONTINUATION|VOLUME_LOW",
-      "1790291700|LONG|CONTINUATION|RISK_RR"
+      "1790291700|LONG|CONTINUATION|RISK_RR",
+      "1790301600|LONG|BREAKOUT|EMA_DISTANCE"
     ],
     "prepare_history": [
       {
@@ -1502,7 +1525,7 @@
           "correct": false
         }
       },
-      "max_high": 84760.0,
+      "max_high": 84844.0,
       "min_low": 83898.0,
       "features": {
         "ema_1h": "BEAR",
@@ -1557,7 +1580,7 @@
           "correct": false
         }
       },
-      "max_high": 84760.0,
+      "max_high": 84844.0,
       "min_low": 83898.0,
       "features": {
         "ema_1h": "BEAR",
@@ -1614,7 +1637,7 @@
           "correct": true
         }
       },
-      "max_high": 84760.0,
+      "max_high": 84844.0,
       "min_low": 84222.3,
       "features": {
         "ema_1h": "BEAR",
