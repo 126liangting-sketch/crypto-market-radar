@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 83433.2,
       "worst_price": 84635.0,
-      "duration_min": 413
+      "duration_min": 420
     }
   ],
   "history": [],
@@ -379,6 +379,10 @@
     {
       "time": 1790362555,
       "value": 28550.859400000114
+    },
+    {
+      "time": 1790362990,
+      "value": 28537.427400000113
     }
   ],
   "news": {
