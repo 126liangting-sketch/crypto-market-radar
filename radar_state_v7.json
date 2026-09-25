@@ -1,7 +1,7 @@
 {
   "paper_trades": [],
   "v7": {
-    "last_processed_candle": 1790305200,
+    "last_processed_candle": 1790306100,
     "next_setup_id": 7,
     "next_test_id": 1,
     "active_setup": null,
@@ -933,6 +933,10 @@
       {
         "time": 1790306566,
         "value": 28553.855100000095
+      },
+      {
+        "time": 1790307226,
+        "value": 28682.754200000105
       }
     ],
     "structure_ready_key": "MICRO:LONG:1790285400:1790296200",
@@ -1353,6 +1357,24 @@
         "cvd_dir": "DOWN",
         "oi_recent_pct": -0.0034258570483399753,
         "cvd_recent_delta": -552.2986736571888
+      },
+      {
+        "candle_time": 1790306100,
+        "time_utc": "2026-09-25T03:15:00+00:00",
+        "side": "SHORT",
+        "trigger_type": "CONTINUATION",
+        "reason_code": "EMA_OPPOSE",
+        "reason": "15M EMA 明顯反向",
+        "price": 84122.4,
+        "volume_ratio": 0.7389464599136311,
+        "zone_distance_atr": 0.9657489498636498,
+        "extension_atr": 0.1090465031849507,
+        "ema_1h": "BEAR",
+        "ema_15m": "BULL",
+        "oi_dir": "UP",
+        "cvd_dir": "DOWN",
+        "oi_recent_pct": 0.0013513209266529103,
+        "cvd_recent_delta": -586.4470481213722
       }
     ],
     "blocked_seen_keys": [
@@ -1378,7 +1400,8 @@
       "1790291700|LONG|CONTINUATION|RISK_RR",
       "1790301600|LONG|BREAKOUT|EMA_DISTANCE",
       "1790304300|SHORT|BREAKOUT|RISK_RR",
-      "1790305200|SHORT|RETEST|RISK_RR"
+      "1790305200|SHORT|RETEST|RISK_RR",
+      "1790306100|SHORT|CONTINUATION|EMA_OPPOSE"
     ],
     "prepare_history": [
       {
@@ -1704,7 +1727,7 @@
         }
       },
       "max_high": 84860.0,
-      "min_low": 84146.0,
+      "min_low": 84115.1,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BULL",
