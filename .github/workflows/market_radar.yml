@@ -1,9 +1,9 @@
-name: BTC Market Radar V7
+name: BTC Market Radar Clean V1
 
 concurrency:
-  group: btc-market-radar-v7
+  group: btc-market-radar-clean-v1
   cancel-in-progress: false
-  
+
 on:
   workflow_dispatch:
   schedule:
@@ -25,20 +25,21 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install requests feedparser
+        run: pip install requests
 
-      - name: Run V7 radar
+      - name: Run Clean V1 radar
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
         run: python market_radar.py
 
-      - name: Save V7 state and datasets
+      - name: Save Clean V1 state and datasets
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add radar_state_v7.json paper_trades_v7.json paper_trades_v7.csv prepare_trades_v7.json prepare_trades_v7.csv blocked_reasons_v7.json blocked_reasons_v7.csv 2>/dev/null || true
+          git add radar_state_clean_v1.json paper_trades_clean_v1.json paper_trades_clean_v1.csv blocked_setups_clean_v1.json blocked_setups_clean_v1.csv 2>/dev/null || true
           if ! git diff --cached --quiet; then
-            git commit -m "Update V7 radar state"
+            git commit -m "Update Clean V1 radar state"
             git pull --rebase origin main
             git push origin main
           fi
