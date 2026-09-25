@@ -24,13 +24,13 @@
       "oi_dir": "UP",
       "cvd_dir": "FLAT",
       "flow_quality": "普通",
-      "mfe_r": 2.5412736696095664,
+      "mfe_r": 2.660605373757592,
       "mae_r": 0.0,
       "tp1_hit": true,
       "tp2_hit": false,
-      "best_price": 84066.4,
+      "best_price": 84039.7,
       "worst_price": 84635.0,
-      "duration_min": 87
+      "duration_min": 99
     }
   ],
   "history": []
