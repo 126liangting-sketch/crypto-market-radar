@@ -153,7 +153,7 @@
           "correct": false
         }
       },
-      "max_high": 84620.0,
+      "max_high": 84675.0,
       "min_low": 83898.0,
       "features": {
         "ema_1h": "BEAR",
@@ -208,7 +208,7 @@
           "correct": false
         }
       },
-      "max_high": 84620.0,
+      "max_high": 84675.0,
       "min_low": 83898.0,
       "features": {
         "ema_1h": "BEAR",
@@ -239,8 +239,10 @@
       "tp2": 84996.76571428572,
       "risk_atr": 2.0393413611356936,
       "terminal_outcome": null,
-      "tp1_hit": false,
-      "events": [],
+      "tp1_hit": true,
+      "events": [
+        "TP1"
+      ],
       "results": {
         "15m": {
           "price": 84251.9,
@@ -258,7 +260,7 @@
           "correct": true
         }
       },
-      "max_high": 84436.8,
+      "max_high": 84675.0,
       "min_low": 84222.3,
       "features": {
         "ema_1h": "BEAR",
@@ -272,7 +274,8 @@
         "anchor_price": null,
         "defense_price": null
       },
-      "entry_reason": "STRUCTURE_PREP | HH→HL"
+      "entry_reason": "STRUCTURE_PREP | HH→HL",
+      "tp1_time": 1790294400
     }
   ]
 }
