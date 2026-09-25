@@ -1,11 +1,11 @@
 {
   "version": "V7_OKX_FORMAL",
-  "total_blocked": 24,
+  "total_blocked": 25,
   "summary": {
     "EMA_OPPOSE": {
       "reason": "15M EMA 明顯反向",
-      "count": 8,
-      "LONG": 5,
+      "count": 9,
+      "LONG": 6,
       "SHORT": 3
     },
     "RISK_RR": {
@@ -471,6 +471,24 @@
       "cvd_dir": "DOWN",
       "oi_recent_pct": 0.0013513209266529103,
       "cvd_recent_delta": -586.4470481213722
+    },
+    {
+      "candle_time": 1790310600,
+      "time_utc": "2026-09-25T04:30:00+00:00",
+      "side": "LONG",
+      "trigger_type": "CONTINUATION",
+      "reason_code": "EMA_OPPOSE",
+      "reason": "15M EMA 明顯反向",
+      "price": 84242.2,
+      "volume_ratio": 0.6767897472760641,
+      "zone_distance_atr": 0.26432745920634654,
+      "extension_atr": 0.16765632774917158,
+      "ema_1h": "BEAR",
+      "ema_15m": "BULL",
+      "oi_dir": "UP",
+      "cvd_dir": "FLAT",
+      "oi_recent_pct": 0.002740198589822329,
+      "cvd_recent_delta": 11.214645218304623
     }
   ]
 }
