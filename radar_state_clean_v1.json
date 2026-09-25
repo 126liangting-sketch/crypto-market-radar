@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 84121.0,
       "worst_price": 84635.0,
-      "duration_min": 59
+      "duration_min": 73
     }
   ],
   "history": [],
@@ -104,7 +104,8 @@
     }
   ],
   "prepare_seen": [
-    "BO:L:1790324100"
+    "BO:L:1790324100",
+    "BO:L:1790340300"
   ],
   "formal_seen": [
     "BO:S:1790334000"
@@ -221,6 +222,10 @@
     {
       "time": 1790341296,
       "value": 28668.11550000006
+    },
+    {
+      "time": 1790342176,
+      "value": 28651.629800000075
     }
   ],
   "news": {
