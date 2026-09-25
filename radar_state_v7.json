@@ -1,15 +1,15 @@
 {
   "paper_trades": [],
   "v7": {
-    "last_processed_candle": 1790303400,
+    "last_processed_candle": 1790304300,
     "next_setup_id": 7,
     "next_test_id": 1,
     "active_setup": null,
     "breakout_watch": {
-      "side": "LONG",
-      "level": 84760.0,
-      "break_time": 1790301600,
-      "bars": 2,
+      "side": "SHORT",
+      "level": 84314.0,
+      "break_time": 1790304300,
+      "bars": 0,
       "used": false
     },
     "history": [],
@@ -921,6 +921,10 @@
       {
         "time": 1790304992,
         "value": 28563.256900000102
+      },
+      {
+        "time": 1790305213,
+        "value": 28581.7229000001
       }
     ],
     "structure_ready_key": "MICRO:LONG:1790285400:1790296200",
@@ -1305,6 +1309,24 @@
         "cvd_dir": "FLAT",
         "oi_recent_pct": 0.0065251480013210905,
         "cvd_recent_delta": 165.53644230483673
+      },
+      {
+        "candle_time": 1790304300,
+        "time_utc": "2026-09-25T02:45:00+00:00",
+        "side": "SHORT",
+        "trigger_type": "BREAKOUT",
+        "reason_code": "RISK_RR",
+        "reason": "SL / RR 結構不適合",
+        "price": 84199.9,
+        "volume_ratio": 2.4805618466311015,
+        "zone_distance_atr": 0.7130643654604039,
+        "extension_atr": 0.5629405131096977,
+        "ema_1h": "BEAR",
+        "ema_15m": "BULL",
+        "oi_dir": "UP",
+        "cvd_dir": "DOWN",
+        "oi_recent_pct": 0.004350974093020987,
+        "cvd_recent_delta": -418.2200169510091
       }
     ],
     "blocked_seen_keys": [
@@ -1328,7 +1350,8 @@
       "1790289000|SHORT|RETEST|LOW_VOLUME_FLOW",
       "1790290800|LONG|CONTINUATION|VOLUME_LOW",
       "1790291700|LONG|CONTINUATION|RISK_RR",
-      "1790301600|LONG|BREAKOUT|EMA_DISTANCE"
+      "1790301600|LONG|BREAKOUT|EMA_DISTANCE",
+      "1790304300|SHORT|BREAKOUT|RISK_RR"
     ],
     "prepare_history": [
       {
@@ -1654,7 +1677,7 @@
         }
       },
       "max_high": 84860.0,
-      "min_low": 84222.3,
+      "min_low": 84146.0,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BULL",
