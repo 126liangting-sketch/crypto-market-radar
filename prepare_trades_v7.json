@@ -281,6 +281,40 @@
       },
       "entry_reason": "STRUCTURE_PREP | HH→HL",
       "tp1_time": 1790294400
+    },
+    {
+      "version": "V7_OKX_FORMAL",
+      "id": 6,
+      "setup_id": 6,
+      "dedupe_key": "6|LONG|1790298900|PREP",
+      "track": "PREPARE",
+      "side": "LONG",
+      "structure_label": "微結構 HH→HL",
+      "entry_time": 1790298900,
+      "entry_price": 84499.9,
+      "sl": 84415.43214285714,
+      "tp1": 84584.36785714285,
+      "tp2": 84668.83571428571,
+      "risk_atr": 0.5,
+      "terminal_outcome": null,
+      "tp1_hit": false,
+      "events": [],
+      "results": {},
+      "max_high": 84499.9,
+      "min_low": 84499.9,
+      "features": {
+        "ema_1h": "BEAR",
+        "ema_15m": "BULL",
+        "zone_distance_atr": 0.853869729488956,
+        "volume_ratio": 1.4876397426716446,
+        "oi_dir": "FLAT",
+        "cvd_dir": "FLAT",
+        "oi_recent_pct": 0.0007285930566216514,
+        "cvd_recent_delta": 53.40937996209164,
+        "anchor_price": null,
+        "defense_price": null
+      },
+      "entry_reason": "STRUCTURE_PREP | 微結構 HH→HL"
     }
   ]
 }
