@@ -1,7 +1,7 @@
 {
   "paper_trades": [],
   "v7": {
-    "last_processed_candle": 1790317800,
+    "last_processed_candle": 1790318700,
     "next_setup_id": 9,
     "next_test_id": 1,
     "active_setup": null,
@@ -9,8 +9,8 @@
       "side": "SHORT",
       "level": 84055.0,
       "break_time": 1790317800,
-      "bars": 0,
-      "used": false
+      "bars": 1,
+      "used": true
     },
     "history": [],
     "news": {
@@ -1009,6 +1009,10 @@
       {
         "time": 1790319251,
         "value": 28689.768600000116
+      },
+      {
+        "time": 1790319701,
+        "value": 28702.515200000114
       }
     ],
     "structure_ready_key": "MAJOR:SHORT:1790288100:1790314200",
@@ -1483,6 +1487,24 @@
         "cvd_dir": "FLAT",
         "oi_recent_pct": 0.0013275008345574602,
         "cvd_recent_delta": -8.275959291359959
+      },
+      {
+        "candle_time": 1790318700,
+        "time_utc": "2026-09-25T06:45:00+00:00",
+        "side": "SHORT",
+        "trigger_type": "RETEST",
+        "reason_code": "VOLUME_LOW",
+        "reason": "成交量過低",
+        "price": 84005.1,
+        "volume_ratio": 0.6520238973187387,
+        "zone_distance_atr": 1.3187789269550263,
+        "extension_atr": 0.2924603340728912,
+        "ema_1h": "BEAR",
+        "ema_15m": "BEAR",
+        "oi_dir": "UP",
+        "cvd_dir": "FLAT",
+        "oi_recent_pct": 0.0021597163291582344,
+        "cvd_recent_delta": 73.7063898487874
       }
     ],
     "blocked_seen_keys": [
@@ -1511,7 +1533,8 @@
       "1790305200|SHORT|RETEST|RISK_RR",
       "1790306100|SHORT|CONTINUATION|EMA_OPPOSE",
       "1790310600|LONG|CONTINUATION|EMA_OPPOSE",
-      "1790317800|SHORT|BREAKOUT|RISK_RR"
+      "1790317800|SHORT|BREAKOUT|RISK_RR",
+      "1790318700|SHORT|RETEST|VOLUME_LOW"
     ],
     "prepare_history": [
       {
@@ -1936,6 +1959,11 @@
         "15m": {
           "price": 83999.3,
           "return": 0.0007292358132109378,
+          "correct": true
+        },
+        "30m": {
+          "price": 84005.1,
+          "return": 0.0006602379711779793,
           "correct": true
         }
       },
