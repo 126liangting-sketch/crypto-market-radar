@@ -1,7 +1,7 @@
 {
   "paper_trades": [],
   "v7": {
-    "last_processed_candle": 1790320500,
+    "last_processed_candle": 1790321400,
     "next_setup_id": 10,
     "next_test_id": 1,
     "active_setup": null,
@@ -14,15 +14,16 @@
     },
     "history": [],
     "news": {
-      "last_major_id": "4fa200b84efda8ac19d07c9d954f937334bd4a6b4f05724f4fa6297c04e93655",
-      "last_major_time": 1790286931,
+      "last_major_id": "bbaf3c099780e54b9dd9b5ac31c59ce2e49ddb9220dc50be0f0b33e905e1f7aa",
+      "last_major_time": 1790322613,
       "seen_major_ids": [
-        "4fa200b84efda8ac19d07c9d954f937334bd4a6b4f05724f4fa6297c04e93655",
-        "303884b667b428e603d6c728f76ee78c9400b33bc27469eba134339965f16507",
-        "cfc78ecda0ec18e57944617a057a7776ca5966c27bda8b193401a86dac72ca33",
-        "2a83882acc5b706628c36713dfa83044823397fc6ae49a09a3287416d7d1bab1",
         "b4acee0345d1d36fc1e8b87f677dbdae5d7645f5c5bea59152b2bc118a119f49",
-        "73feb12c0ee29699a0f450151769faacda6a9ab65436232144d61d2df747c750"
+        "cfc78ecda0ec18e57944617a057a7776ca5966c27bda8b193401a86dac72ca33",
+        "73feb12c0ee29699a0f450151769faacda6a9ab65436232144d61d2df747c750",
+        "303884b667b428e603d6c728f76ee78c9400b33bc27469eba134339965f16507",
+        "bbaf3c099780e54b9dd9b5ac31c59ce2e49ddb9220dc50be0f0b33e905e1f7aa",
+        "2a83882acc5b706628c36713dfa83044823397fc6ae49a09a3287416d7d1bab1",
+        "4fa200b84efda8ac19d07c9d954f937334bd4a6b4f05724f4fa6297c04e93655"
       ]
     },
     "oi_history": [
@@ -1025,6 +1026,10 @@
       {
         "time": 1790322038,
         "value": 28706.2890000001
+      },
+      {
+        "time": 1790322612,
+        "value": 28682.141600000108
       }
     ],
     "structure_ready_key": "MICRO:SHORT:1790309700:1790316900",
@@ -2063,9 +2068,15 @@
       "terminal_outcome": null,
       "tp1_hit": false,
       "events": [],
-      "results": {},
-      "max_high": 84010.9,
-      "min_low": 84010.9,
+      "results": {
+        "15m": {
+          "price": 83879.6,
+          "return": 0.0015628924341959394,
+          "correct": true
+        }
+      },
+      "max_high": 84063.0,
+      "min_low": 83780.0,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BEAR",
