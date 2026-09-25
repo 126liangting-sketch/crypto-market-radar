@@ -389,6 +389,40 @@
       },
       "entry_reason": "STRUCTURE_PREP | HH→HL",
       "tp1_time": 1790294400
+    },
+    {
+      "version": "V7_OKX_FORMAL",
+      "id": 8,
+      "setup_id": 8,
+      "dedupe_key": "8|SHORT|1790316900|PREP",
+      "track": "PREPARE",
+      "side": "SHORT",
+      "structure_label": "LL→LH",
+      "entry_time": 1790316900,
+      "entry_price": 84060.6,
+      "sl": 84354.54714285713,
+      "tp1": 83766.65285714288,
+      "tp2": 83472.70571428575,
+      "risk_atr": 1.6726659350484785,
+      "terminal_outcome": null,
+      "tp1_hit": false,
+      "events": [],
+      "results": {},
+      "max_high": 84060.6,
+      "min_low": 84060.6,
+      "features": {
+        "ema_1h": "BEAR",
+        "ema_15m": "BEAR",
+        "zone_distance_atr": 1.126488853774786,
+        "volume_ratio": 1.1011568643933305,
+        "oi_dir": "FLAT",
+        "cvd_dir": "FLAT",
+        "oi_recent_pct": 0.00037009685173372553,
+        "cvd_recent_delta": -155.6367430000209,
+        "anchor_price": null,
+        "defense_price": null
+      },
+      "entry_reason": "STRUCTURE_PREP | LL→LH"
     }
   ]
 }

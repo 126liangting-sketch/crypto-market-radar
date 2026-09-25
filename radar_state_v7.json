@@ -1,8 +1,8 @@
 {
   "paper_trades": [],
   "v7": {
-    "last_processed_candle": 1790316000,
-    "next_setup_id": 8,
+    "last_processed_candle": 1790316900,
+    "next_setup_id": 9,
     "next_test_id": 1,
     "active_setup": null,
     "breakout_watch": {
@@ -1001,11 +1001,15 @@
       {
         "time": 1790317535,
         "value": 28759.3192000001
+      },
+      {
+        "time": 1790318490,
+        "value": 28651.481200000107
       }
     ],
-    "structure_ready_key": "MAJOR:LONG:1790294400:1790307000",
-    "structure_ready_side": "LONG",
-    "structure_ready_time": 1790309700,
+    "structure_ready_key": "MAJOR:SHORT:1790288100:1790314200",
+    "structure_ready_side": "SHORT",
+    "structure_ready_time": 1790316900,
     "structure_early_key": null,
     "blocked_events": [
       {
@@ -1707,7 +1711,7 @@
         "final_result": "TP1_THEN_SL"
       }
     ],
-    "next_prepare_id": 8,
+    "next_prepare_id": 9,
     "prepare_setup_ids": {
       "MAJOR:LONG:1790236800:1790265600": 1,
       "MICRO:LONG:1790252100:1790272800": 2,
@@ -1715,7 +1719,8 @@
       "MICRO:LONG:1790259300:1790280900": 4,
       "MAJOR:LONG:1790259300:1790288100": 5,
       "MICRO:LONG:1790285400:1790296200": 6,
-      "MAJOR:LONG:1790294400:1790307000": 7
+      "MAJOR:LONG:1790294400:1790307000": 7,
+      "MAJOR:SHORT:1790288100:1790314200": 8
     }
   },
   "prepare_trades": [
@@ -1886,6 +1891,40 @@
       },
       "entry_reason": "STRUCTURE_PREP | HH→HL",
       "tp1_time": 1790294400
+    },
+    {
+      "version": "V7_OKX_FORMAL",
+      "id": 8,
+      "setup_id": 8,
+      "dedupe_key": "8|SHORT|1790316900|PREP",
+      "track": "PREPARE",
+      "side": "SHORT",
+      "structure_label": "LL→LH",
+      "entry_time": 1790316900,
+      "entry_price": 84060.6,
+      "sl": 84354.54714285713,
+      "tp1": 83766.65285714288,
+      "tp2": 83472.70571428575,
+      "risk_atr": 1.6726659350484785,
+      "terminal_outcome": null,
+      "tp1_hit": false,
+      "events": [],
+      "results": {},
+      "max_high": 84060.6,
+      "min_low": 84060.6,
+      "features": {
+        "ema_1h": "BEAR",
+        "ema_15m": "BEAR",
+        "zone_distance_atr": 1.126488853774786,
+        "volume_ratio": 1.1011568643933305,
+        "oi_dir": "FLAT",
+        "cvd_dir": "FLAT",
+        "oi_recent_pct": 0.00037009685173372553,
+        "cvd_recent_delta": -155.6367430000209,
+        "anchor_price": null,
+        "defense_price": null
+      },
+      "entry_reason": "STRUCTURE_PREP | LL→LH"
     }
   ]
 }
