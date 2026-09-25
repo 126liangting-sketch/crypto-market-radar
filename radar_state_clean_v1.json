@@ -1,0 +1,21 @@
+{
+  "version": "BTC_RADAR_CLEAN_V1",
+  "next_trade_id": 1,
+  "trades": [],
+  "history": [],
+  "blocked": [],
+  "prepare_seen": [],
+  "formal_seen": [],
+  "oi_history": [
+    {
+      "time": 1790324193,
+      "value": 28780.701800000097
+    }
+  ],
+  "news": {
+    "seen": [
+      "503329e6bd73225f"
+    ],
+    "last_notify": 1790324194
+  }
+}
