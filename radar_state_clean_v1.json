@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 83433.2,
       "worst_price": 84635.0,
-      "duration_min": 543
+      "duration_min": 557
     }
   ],
   "history": [],
@@ -477,30 +477,35 @@
     {
       "time": 1790370324,
       "value": 28400.8734000001
+    },
+    {
+      "time": 1790371162,
+      "value": 28429.5025000001
     }
   ],
   "news": {
     "seen": [
-      "360276899cb12ace",
+      "f9d847b30a35efca",
       "4e9bbdc275116e1f",
-      "6340d211369b888d",
-      "673427af56eb3553",
-      "65e67eba4e10d07e",
-      "43d5dd2581355593",
-      "5354bd9a9bd4fd81",
-      "caa32c74016f6df9",
-      "45d791ae8b948fb9",
-      "9e753999bb334d84",
-      "acd22f7de9e1a5b7",
-      "be08dfc96ecf8c72",
-      "54f58f6d7a4fa207",
       "e05cc633facc8d4e",
       "73e90c66645f5d59",
+      "503329e6bd73225f",
+      "360276899cb12ace",
+      "65e67eba4e10d07e",
+      "43d5dd2581355593",
+      "9e753999bb334d84",
+      "673427af56eb3553",
+      "5354bd9a9bd4fd81",
       "344d160658199a5e",
       "0c53c954fdb0aa9f",
+      "8bf6f66be40d8550",
+      "54f58f6d7a4fa207",
+      "caa32c74016f6df9",
+      "45d791ae8b948fb9",
+      "6340d211369b888d",
+      "acd22f7de9e1a5b7",
       "a0792699ec630637",
-      "503329e6bd73225f",
-      "8bf6f66be40d8550"
+      "be08dfc96ecf8c72"
     ],
     "last_notify": 1790368830
   }
