@@ -685,7 +685,7 @@ def major_news_class(title):
 
 
 def chinese_news_summary(title, category):
-    # Deterministic Chinese summary so the radar does not depend on an external translation API.
+    # Fallback only: used if the online title translation request fails.
     if category == "聯準會／利率政策":
         return "聯準會或利率政策出現新消息，可能放大 BTC 短線波動。"
     if category == "美國重要經濟數據":
@@ -697,6 +697,41 @@ def chinese_news_summary(title, category):
     if category == "重大監管消息":
         return "加密貨幣監管出現重要消息，可能提高 BTC 短線不確定性。"
     return "加密市場出現重要消息，請注意短線波動。"
+
+
+def translate_news_title_zh(title, category):
+    """Best-effort English -> Traditional Chinese title translation.
+
+    Uses Google's public translate endpoint without an API key. If the
+    service is unavailable, malformed, rate-limited, or returns an empty
+    result, fall back to the deterministic Chinese category summary so a
+    translation failure can never break the radar.
+    """
+    try:
+        r = requests.get(
+            "https://translate.googleapis.com/translate_a/single",
+            params={
+                "client": "gtx",
+                "sl": "auto",
+                "tl": "zh-TW",
+                "dt": "t",
+                "q": title,
+            },
+            timeout=10,
+            headers={"User-Agent": "BTC-Radar-Clean-V1/1.0"},
+        )
+        r.raise_for_status()
+        data = r.json()
+        parts = data[0] if isinstance(data, list) and data else []
+        translated = "".join(
+            str(part[0]) for part in parts
+            if isinstance(part, list) and part and part[0]
+        ).strip()
+        if translated and translated.lower() != title.lower():
+            return translated, False
+    except Exception as e:
+        print("News translation error:", type(e).__name__, e)
+    return chinese_news_summary(title, category), True
 
 
 def _rss_entries(url):
@@ -740,8 +775,16 @@ def check_news(state):
         news_state["seen"] = list(seen)[-300:]
         if now_utc() - int(news_state.get("last_notify", 0)) >= NEWS_NOTIFY_COOLDOWN:
             news_state["last_notify"] = now_utc()
-            zh = chinese_news_summary(title, cat)
-            send_discord(f"📰 BTC 重大新聞提醒\n類型：🔴 {cat}\n原文：{title}\n中文摘要：{zh}\n可能影響：短線波動可能放大\n備註：僅做風險提醒，不改變多空訊號")
+            zh, used_fallback = translate_news_title_zh(title, cat)
+            zh_label = "中文摘要" if used_fallback else "中文"
+            send_discord(
+                f"📰 BTC 重大新聞提醒\n"
+                f"類型：🔴 {cat}\n"
+                f"原文：{title}\n"
+                f"{zh_label}：{zh}\n"
+                f"可能影響：短線波動可能放大\n"
+                f"備註：僅做風險提醒，不改變多空訊號"
+            )
 
 
 def maybe_prepare(state, side, setup, price, trend, ema_pos, vol, reg, oi, cvd):
