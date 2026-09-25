@@ -262,7 +262,7 @@
         }
       },
       "max_high": 84860.0,
-      "min_low": 83898.0,
+      "min_low": 83875.8,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BULL",
@@ -317,7 +317,7 @@
         }
       },
       "max_high": 84860.0,
-      "min_low": 83898.0,
+      "min_low": 83875.8,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BULL",
@@ -374,7 +374,7 @@
         }
       },
       "max_high": 84860.0,
-      "min_low": 83928.0,
+      "min_low": 83875.8,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BULL",
@@ -407,9 +407,15 @@
       "terminal_outcome": null,
       "tp1_hit": false,
       "events": [],
-      "results": {},
-      "max_high": 84060.6,
-      "min_low": 84060.6,
+      "results": {
+        "15m": {
+          "price": 83999.3,
+          "return": 0.0007292358132109378,
+          "correct": true
+        }
+      },
+      "max_high": 84069.1,
+      "min_low": 83875.8,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BEAR",

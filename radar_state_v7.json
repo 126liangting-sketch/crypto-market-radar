@@ -1,16 +1,16 @@
 {
   "paper_trades": [],
   "v7": {
-    "last_processed_candle": 1790316900,
+    "last_processed_candle": 1790317800,
     "next_setup_id": 9,
     "next_test_id": 1,
     "active_setup": null,
     "breakout_watch": {
       "side": "SHORT",
-      "level": 84314.0,
-      "break_time": 1790304300,
-      "bars": 1,
-      "used": true
+      "level": 84055.0,
+      "break_time": 1790317800,
+      "bars": 0,
+      "used": false
     },
     "history": [],
     "news": {
@@ -1005,6 +1005,10 @@
       {
         "time": 1790318490,
         "value": 28651.481200000107
+      },
+      {
+        "time": 1790319251,
+        "value": 28689.768600000116
       }
     ],
     "structure_ready_key": "MAJOR:SHORT:1790288100:1790314200",
@@ -1461,6 +1465,24 @@
         "cvd_dir": "FLAT",
         "oi_recent_pct": 0.002740198589822329,
         "cvd_recent_delta": 11.214645218304623
+      },
+      {
+        "candle_time": 1790317800,
+        "time_utc": "2026-09-25T06:30:00+00:00",
+        "side": "SHORT",
+        "trigger_type": "BREAKOUT",
+        "reason_code": "RISK_RR",
+        "reason": "SL / RR 結構不適合",
+        "price": 83999.3,
+        "volume_ratio": 1.5402096535272922,
+        "zone_distance_atr": 1.3667830323629793,
+        "extension_atr": 0.31143416270616103,
+        "ema_1h": "BEAR",
+        "ema_15m": "BEAR",
+        "oi_dir": "UP",
+        "cvd_dir": "FLAT",
+        "oi_recent_pct": 0.0013275008345574602,
+        "cvd_recent_delta": -8.275959291359959
       }
     ],
     "blocked_seen_keys": [
@@ -1488,7 +1510,8 @@
       "1790304300|SHORT|BREAKOUT|RISK_RR",
       "1790305200|SHORT|RETEST|RISK_RR",
       "1790306100|SHORT|CONTINUATION|EMA_OPPOSE",
-      "1790310600|LONG|CONTINUATION|EMA_OPPOSE"
+      "1790310600|LONG|CONTINUATION|EMA_OPPOSE",
+      "1790317800|SHORT|BREAKOUT|RISK_RR"
     ],
     "prepare_history": [
       {
@@ -1764,7 +1787,7 @@
         }
       },
       "max_high": 84860.0,
-      "min_low": 83898.0,
+      "min_low": 83875.8,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BULL",
@@ -1819,7 +1842,7 @@
         }
       },
       "max_high": 84860.0,
-      "min_low": 83898.0,
+      "min_low": 83875.8,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BULL",
@@ -1876,7 +1899,7 @@
         }
       },
       "max_high": 84860.0,
-      "min_low": 83928.0,
+      "min_low": 83875.8,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BULL",
@@ -1909,9 +1932,15 @@
       "terminal_outcome": null,
       "tp1_hit": false,
       "events": [],
-      "results": {},
-      "max_high": 84060.6,
-      "min_low": 84060.6,
+      "results": {
+        "15m": {
+          "price": 83999.3,
+          "return": 0.0007292358132109378,
+          "correct": true
+        }
+      },
+      "max_high": 84069.1,
+      "min_low": 83875.8,
       "features": {
         "ema_1h": "BEAR",
         "ema_15m": "BEAR",
