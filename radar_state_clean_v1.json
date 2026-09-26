@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 83433.2,
       "worst_price": 84635.0,
-      "duration_min": 1440
+      "duration_min": 1458
     }
   ],
   "history": [],
@@ -1059,36 +1059,41 @@
     {
       "time": 1790424172,
       "value": 28379.620000000083
+    },
+    {
+      "time": 1790425240,
+      "value": 28356.62990000008
     }
   ],
   "news": {
     "seen": [
-      "38c3a3e1a9f64c9f",
-      "65e67eba4e10d07e",
-      "344d160658199a5e",
       "45d791ae8b948fb9",
-      "6340d211369b888d",
-      "0c53c954fdb0aa9f",
-      "54f58f6d7a4fa207",
-      "a0792699ec630637",
-      "caa32c74016f6df9",
-      "43d5dd2581355593",
-      "9e753999bb334d84",
-      "70c1407e4dfc4d25",
-      "deefcc8ae178a300",
-      "f9d847b30a35efca",
-      "73e90c66645f5d59",
-      "be08dfc96ecf8c72",
       "8bf6f66be40d8550",
-      "360276899cb12ace",
-      "673427af56eb3553",
-      "5354bd9a9bd4fd81",
-      "e05cc633facc8d4e",
-      "acd22f7de9e1a5b7",
-      "503329e6bd73225f",
+      "cb6f7578a6781b37",
       "4e9bbdc275116e1f",
-      "cb6f7578a6781b37"
+      "503329e6bd73225f",
+      "0c53c954fdb0aa9f",
+      "38c3a3e1a9f64c9f",
+      "73e90c66645f5d59",
+      "acd22f7de9e1a5b7",
+      "a0792699ec630637",
+      "70c1407e4dfc4d25",
+      "360276899cb12ace",
+      "e05cc633facc8d4e",
+      "43d5dd2581355593",
+      "be08dfc96ecf8c72",
+      "344d160658199a5e",
+      "65e67eba4e10d07e",
+      "6340d211369b888d",
+      "f9d847b30a35efca",
+      "caa32c74016f6df9",
+      "54f58f6d7a4fa207",
+      "deefcc8ae178a300",
+      "9e753999bb334d84",
+      "d02c5f561f046c60",
+      "5354bd9a9bd4fd81",
+      "673427af56eb3553"
     ],
-    "last_notify": 1790413873
+    "last_notify": 1790425241
   }
 }
