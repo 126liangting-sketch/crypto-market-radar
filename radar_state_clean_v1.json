@@ -1,7 +1,40 @@
 {
   "version": "BTC_RADAR_CLEAN_V1",
-  "next_trade_id": 2,
-  "trades": [],
+  "next_trade_id": 3,
+  "trades": [
+    {
+      "id": 2,
+      "setup_key": "BO:S:1790508600",
+      "side": "SHORT",
+      "trigger_type": "有效突破",
+      "opened_at": 1790514530,
+      "opened_iso": "2026-09-27T13:08:50+00:00",
+      "status": "OPEN",
+      "entry": 84759.4,
+      "sl": 84928.42892857143,
+      "tp1": 84590.37107142856,
+      "tp2": null,
+      "risk": 169.02892857143888,
+      "risk_atr": 1.4547273621443226,
+      "trigger": 84794.0,
+      "extension_atr": 0.2977807831807258,
+      "trend_1h": "BULL",
+      "ema_position": "一般",
+      "volume_ratio": 3.4122846106591638,
+      "regime": "TREND",
+      "space_r": 1.2607309399699949,
+      "oi_dir": "FLAT",
+      "cvd_dir": "DOWN",
+      "flow_quality": "偏支持",
+      "mfe_r": 0.0,
+      "mae_r": 0.0,
+      "tp1_hit": false,
+      "tp2_hit": false,
+      "best_price": 84759.4,
+      "worst_price": 84759.4,
+      "duration_min": 0
+    }
+  ],
   "history": [
     {
       "id": 1,
@@ -851,7 +884,8 @@
     "BO:L:1790481600"
   ],
   "formal_seen": [
-    "BO:S:1790334000"
+    "BO:S:1790334000",
+    "BO:S:1790508600"
   ],
   "oi_history": [
     {
@@ -2141,38 +2175,43 @@
     {
       "time": 1790513941,
       "value": 28113.078200000087
+    },
+    {
+      "time": 1790514529,
+      "value": 28136.656300000097
     }
   ],
   "news": {
     "seen": [
-      "38c3a3e1a9f64c9f",
-      "0c53c954fdb0aa9f",
-      "acd22f7de9e1a5b7",
-      "be08dfc96ecf8c72",
-      "deefcc8ae178a300",
-      "43d5dd2581355593",
-      "e05cc633facc8d4e",
-      "6340d211369b888d",
-      "70c1407e4dfc4d25",
-      "8bf6f66be40d8550",
-      "73e90c66645f5d59",
-      "54f58f6d7a4fa207",
       "caa32c74016f6df9",
-      "cb6f7578a6781b37",
-      "a0792699ec630637",
-      "65e67eba4e10d07e",
       "5354bd9a9bd4fd81",
-      "1e830ea6d1837949",
-      "4e9bbdc275116e1f",
-      "344d160658199a5e",
-      "f9d847b30a35efca",
-      "45c0ceb8dc6ff2bb",
-      "d02c5f561f046c60",
+      "be08dfc96ecf8c72",
+      "43d5dd2581355593",
+      "73e90c66645f5d59",
       "45d791ae8b948fb9",
-      "360276899cb12ace",
       "503329e6bd73225f",
+      "cb6f7578a6781b37",
+      "d02c5f561f046c60",
       "9e753999bb334d84",
-      "673427af56eb3553"
+      "65e67eba4e10d07e",
+      "4e9bbdc275116e1f",
+      "e05cc633facc8d4e",
+      "acd22f7de9e1a5b7",
+      "a0792699ec630637",
+      "344d160658199a5e",
+      "673427af56eb3553",
+      "deefcc8ae178a300",
+      "8bf6f66be40d8550",
+      "360276899cb12ace",
+      "0c53c954fdb0aa9f",
+      "38c3a3e1a9f64c9f",
+      "54f58f6d7a4fa207",
+      "70c1407e4dfc4d25",
+      "45c0ceb8dc6ff2bb",
+      "4586e62c5fddb046",
+      "1e830ea6d1837949",
+      "f9d847b30a35efca",
+      "6340d211369b888d"
     ],
     "last_notify": 1790513942
   }
