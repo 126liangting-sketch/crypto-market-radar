@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 83433.2,
       "worst_price": 84635.0,
-      "duration_min": 2274
+      "duration_min": 2283
     }
   ],
   "history": [],
@@ -634,6 +634,19 @@
       "volume_ratio": 3.24656295659689,
       "space_r": 0.050618386964744085,
       "extension_atr": 0.867694920050858
+    },
+    {
+      "key": "BO:L:1790471700:前方空間不足",
+      "time": 1790474724,
+      "time_iso": "2026-09-27T02:05:24+00:00",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "reason": "前方空間不足",
+      "trigger": 84375.3,
+      "price": 84413.0,
+      "volume_ratio": 2.9640520830206,
+      "space_r": 0.1280126432240394,
+      "extension_atr": 0.3573459715639535
     }
   ],
   "prepare_seen": [
@@ -1693,6 +1706,10 @@
     {
       "time": 1790474223,
       "value": 28232.390000000098
+    },
+    {
+      "time": 1790474723,
+      "value": 28240.981400000095
     }
   ],
   "news": {
