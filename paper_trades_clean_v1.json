@@ -1,5 +1,6 @@
 {
-  "open": [
+  "open": [],
+  "history": [
     {
       "id": 1,
       "setup_key": "BO:S:1790334000",
@@ -7,7 +8,7 @@
       "trigger_type": "有效突破",
       "opened_at": 1790337741,
       "opened_iso": "2026-09-25T12:02:21+00:00",
-      "status": "OPEN",
+      "status": "TP1_THEN_SL",
       "entry": 84635.0,
       "sl": 84858.74607142857,
       "tp1": 84411.25392857143,
@@ -25,13 +26,14 @@
       "cvd_dir": "FLAT",
       "flow_quality": "普通",
       "mfe_r": 5.371267492326333,
-      "mae_r": 0.8531993378973732,
+      "mae_r": 1.1709702804039739,
       "tp1_hit": true,
       "tp2_hit": false,
       "best_price": 83433.2,
-      "worst_price": 84825.9,
-      "duration_min": 2740
+      "worst_price": 84897.0,
+      "duration_min": 2748,
+      "closed_at": 1790502664,
+      "closed_iso": "2026-09-27T09:51:04+00:00"
     }
-  ],
-  "history": []
+  ]
 }

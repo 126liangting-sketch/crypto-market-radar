@@ -1,7 +1,8 @@
 {
   "version": "BTC_RADAR_CLEAN_V1",
   "next_trade_id": 2,
-  "trades": [
+  "trades": [],
+  "history": [
     {
       "id": 1,
       "setup_key": "BO:S:1790334000",
@@ -9,7 +10,7 @@
       "trigger_type": "有效突破",
       "opened_at": 1790337741,
       "opened_iso": "2026-09-25T12:02:21+00:00",
-      "status": "OPEN",
+      "status": "TP1_THEN_SL",
       "entry": 84635.0,
       "sl": 84858.74607142857,
       "tp1": 84411.25392857143,
@@ -27,15 +28,16 @@
       "cvd_dir": "FLAT",
       "flow_quality": "普通",
       "mfe_r": 5.371267492326333,
-      "mae_r": 0.8531993378973732,
+      "mae_r": 1.1709702804039739,
       "tp1_hit": true,
       "tp2_hit": false,
       "best_price": 83433.2,
-      "worst_price": 84825.9,
-      "duration_min": 2740
+      "worst_price": 84897.0,
+      "duration_min": 2748,
+      "closed_at": 1790502664,
+      "closed_iso": "2026-09-27T09:51:04+00:00"
     }
   ],
-  "history": [],
   "blocked": [
     {
       "key": "BO:L:1790321400:前方空間不足 / 價格過度延伸",
@@ -751,6 +753,19 @@
       "volume_ratio": 1.724718333287048,
       "space_r": 0.03134929555215209,
       "extension_atr": 0.2044756472137135
+    },
+    {
+      "key": "BO:L:1790497800:前方空間不足",
+      "time": 1790502665,
+      "time_iso": "2026-09-27T09:51:05+00:00",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "reason": "前方空間不足",
+      "trigger": 84848.0,
+      "price": 84897.0,
+      "volume_ratio": 3.3938224888519413,
+      "space_r": 0.7067811681018246,
+      "extension_atr": 0.41265640038497975
     }
   ],
   "prepare_seen": [
@@ -1994,6 +2009,10 @@
     {
       "time": 1790502171,
       "value": 28262.67370000009
+    },
+    {
+      "time": 1790502663,
+      "value": 28243.140200000085
     }
   ],
   "news": {
