@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84059.7,
-      "duration_min": 910
+      "duration_min": 926
     },
     {
       "id": 4,
@@ -64,7 +64,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84059.7,
-      "duration_min": 788
+      "duration_min": 804
     }
   ],
   "history": [
@@ -1375,7 +1375,8 @@
     "BO:S:1790560800",
     "BO:L:1790596800",
     "BO:L:1790607600",
-    "PB:L:1790606700:1790607600:1790608500:1790612100"
+    "PB:L:1790606700:1790607600:1790608500:1790612100",
+    "BO:S:1790617500"
   ],
   "formal_seen": [
     "BO:S:1790334000",
@@ -3303,53 +3304,91 @@
     {
       "time": 1790620461,
       "value": 28171.631400000093
+    },
+    {
+      "time": 1790621429,
+      "value": 28083.14960000009
     }
   ],
   "news": {
     "seen": [
-      "b8644dcbde37106a",
-      "344d160658199a5e",
-      "65e67eba4e10d07e",
-      "4586e62c5fddb046",
-      "d02c5f561f046c60",
+      "2c54f27485a4fcae",
+      "38c3a3e1a9f64c9f",
+      "8bf6f66be40d8550",
+      "deefcc8ae178a300",
+      "01bf4d3dfc90952d",
+      "673427af56eb3553",
+      "43d5dd2581355593",
+      "6340d211369b888d",
+      "9e753999bb334d84",
+      "f9d847b30a35efca",
+      "70c1407e4dfc4d25",
       "73e90c66645f5d59",
+      "1e830ea6d1837949",
       "503329e6bd73225f",
-      "fe4ac5a66962a769",
+      "360276899cb12ace",
+      "42cb1af7dadfd536",
+      "caa32c74016f6df9",
+      "e715914ebf311c0f",
       "0c53c954fdb0aa9f",
       "45d791ae8b948fb9",
-      "01bf4d3dfc90952d",
-      "4e9bbdc275116e1f",
-      "e05cc633facc8d4e",
-      "45c0ceb8dc6ff2bb",
       "eabacffa4722d70b",
-      "673427af56eb3553",
-      "caa32c74016f6df9",
-      "9e753999bb334d84",
-      "38c3a3e1a9f64c9f",
       "54f58f6d7a4fa207",
-      "43d5dd2581355593",
-      "e715914ebf311c0f",
-      "5354bd9a9bd4fd81",
-      "be08dfc96ecf8c72",
-      "1e830ea6d1837949",
-      "deefcc8ae178a300",
-      "360276899cb12ace",
-      "cb6f7578a6781b37",
-      "6340d211369b888d",
-      "f9d847b30a35efca",
-      "2c54f27485a4fcae",
-      "70c1407e4dfc4d25",
-      "8bf6f66be40d8550",
       "a0792699ec630637",
-      "42cb1af7dadfd536",
+      "4e9bbdc275116e1f",
+      "eb9d3d0684bcedfb",
+      "5354bd9a9bd4fd81",
+      "65e67eba4e10d07e",
+      "04fa8d398d457673",
+      "d02c5f561f046c60",
+      "e05cc633facc8d4e",
       "acd22f7de9e1a5b7",
+      "b8644dcbde37106a",
+      "fe4ac5a66962a769",
+      "be08dfc96ecf8c72",
+      "344d160658199a5e",
       "94d0a2ec11ce4bbc",
-      "04fa8d398d457673"
+      "45c0ceb8dc6ff2bb",
+      "cb6f7578a6781b37",
+      "4586e62c5fddb046"
     ],
-    "last_notify": 1790598633
+    "last_notify": 1790621430
   },
-  "next_prepare_id": 4,
-  "prepare_active": [],
+  "next_prepare_id": 5,
+  "prepare_active": [
+    {
+      "id": 4,
+      "setup_key": "BO:S:1790617500",
+      "side": "SHORT",
+      "trigger_type": "有效突破",
+      "opened_at": 1790621431,
+      "opened_iso": "2026-09-28T18:50:31+00:00",
+      "prepare_price": 83875.0,
+      "trigger": 83800.0,
+      "atr_open": 331.5142857142845,
+      "trend_1h": "BEAR",
+      "ema_position": "偏離",
+      "ema_distance_atr": 1.086719921478703,
+      "volume_ratio": 0.7182202409445527,
+      "regime": "RANGE",
+      "oi_dir": "FLAT",
+      "cvd_dir": "FLAT",
+      "formal_promoted": false,
+      "formal_trade_id": null,
+      "formal_at": null,
+      "formal_delay_min": null,
+      "status": "WATCHING",
+      "best_price": 83875.0,
+      "worst_price": 83875.0,
+      "mfe_atr": 0.0,
+      "mae_atr": 0.0,
+      "mfe_atr_30": null,
+      "mae_atr_30": null,
+      "mfe_atr_60": null,
+      "mae_atr_60": null,
+      "duration_min": 0
+    }
+  ],
   "prepare_history": [
     {
       "id": 1,
