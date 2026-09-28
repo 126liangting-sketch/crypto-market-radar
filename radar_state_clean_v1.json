@@ -1,7 +1,40 @@
 {
   "version": "BTC_RADAR_CLEAN_V1",
-  "next_trade_id": 3,
-  "trades": [],
+  "next_trade_id": 4,
+  "trades": [
+    {
+      "id": 3,
+      "setup_key": "BO:S:1790560800",
+      "side": "SHORT",
+      "trigger_type": "有效突破",
+      "opened_at": 1790565847,
+      "opened_iso": "2026-09-28T03:24:07+00:00",
+      "status": "OPEN",
+      "entry": 83341.3,
+      "sl": 85021.20571428572,
+      "tp1": 81661.39428571428,
+      "tp2": 79981.48857142856,
+      "risk": 1679.90571428572,
+      "risk_atr": 5.293185091825768,
+      "trigger": 83429.3,
+      "extension_atr": 0.2772776377385688,
+      "trend_1h": "NEUTRAL",
+      "ema_position": "偏離",
+      "volume_ratio": 1.0095325987727988,
+      "regime": "TREND",
+      "space_r": null,
+      "oi_dir": "UP",
+      "cvd_dir": "FLAT",
+      "flow_quality": "普通",
+      "mfe_r": 0.0,
+      "mae_r": 0.0,
+      "tp1_hit": false,
+      "tp2_hit": false,
+      "best_price": 83341.3,
+      "worst_price": 83341.3,
+      "duration_min": 0
+    }
+  ],
   "history": [
     {
       "id": 1,
@@ -1090,7 +1123,8 @@
   ],
   "formal_seen": [
     "BO:S:1790334000",
-    "BO:S:1790508600"
+    "BO:S:1790508600",
+    "BO:S:1790560800"
   ],
   "oi_history": [
     {
@@ -2732,6 +2766,10 @@
     {
       "time": 1790564924,
       "value": 28656.576800000104
+    },
+    {
+      "time": 1790565846,
+      "value": 28702.259200000106
     }
   ],
   "news": {
