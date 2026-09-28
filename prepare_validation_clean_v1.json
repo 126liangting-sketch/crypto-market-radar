@@ -1,5 +1,6 @@
 {
-  "active": [
+  "active": [],
+  "history": [
     {
       "id": 1,
       "setup_key": "BO:L:1790596800",
@@ -21,17 +22,18 @@
       "formal_trade_id": null,
       "formal_at": null,
       "formal_delay_min": null,
-      "status": "WATCHING",
+      "status": "NO_FORMAL",
       "best_price": 83617.2,
       "worst_price": 83354.7,
       "mfe_atr": 0.9127272727272576,
       "mae_atr": 0.450909090909106,
       "mfe_atr_30": 0.9127,
       "mae_atr_30": 0.4509,
-      "mfe_atr_60": null,
-      "mae_atr_60": null,
-      "duration_min": 57
+      "mfe_atr_60": 0.9127,
+      "mae_atr_60": 0.4509,
+      "duration_min": 69,
+      "closed_at": 1790604600,
+      "closed_iso": "2026-09-28T14:10:00+00:00"
     }
-  ],
-  "history": []
+  ]
 }

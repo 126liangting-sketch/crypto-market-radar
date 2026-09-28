@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 83617.2,
-      "duration_min": 633
+      "duration_min": 645
     },
     {
       "id": 4,
@@ -64,7 +64,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 83617.2,
-      "duration_min": 512
+      "duration_min": 524
     }
   ],
   "history": [
@@ -3113,6 +3113,10 @@
     {
       "time": 1790603873,
       "value": 28943.832600000092
+    },
+    {
+      "time": 1790604600,
+      "value": 28906.631500000098
     }
   ],
   "news": {
@@ -3157,7 +3161,8 @@
     "last_notify": 1790598633
   },
   "next_prepare_id": 2,
-  "prepare_active": [
+  "prepare_active": [],
+  "prepare_history": [
     {
       "id": 1,
       "setup_key": "BO:L:1790596800",
@@ -3179,17 +3184,18 @@
       "formal_trade_id": null,
       "formal_at": null,
       "formal_delay_min": null,
-      "status": "WATCHING",
+      "status": "NO_FORMAL",
       "best_price": 83617.2,
       "worst_price": 83354.7,
       "mfe_atr": 0.9127272727272576,
       "mae_atr": 0.450909090909106,
       "mfe_atr_30": 0.9127,
       "mae_atr_30": 0.4509,
-      "mfe_atr_60": null,
-      "mae_atr_60": null,
-      "duration_min": 57
+      "mfe_atr_60": 0.9127,
+      "mae_atr_60": 0.4509,
+      "duration_min": 69,
+      "closed_at": 1790604600,
+      "closed_iso": "2026-09-28T14:10:00+00:00"
     }
-  ],
-  "prepare_history": []
+  ]
 }
