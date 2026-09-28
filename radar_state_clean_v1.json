@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 82873.4,
       "worst_price": 83464.1,
-      "duration_min": 144
+      "duration_min": 153
     },
     {
       "id": 4,
@@ -59,12 +59,12 @@
       "cvd_dir": "DOWN",
       "flow_quality": "偏支持",
       "mfe_r": 0.07446088507914687,
-      "mae_r": 0.04103666923115534,
+      "mae_r": 0.058731842327149134,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 82873.4,
-      "worst_price": 83102.5,
-      "duration_min": 23
+      "worst_price": 83137.6,
+      "duration_min": 31
     }
   ],
   "history": [
@@ -2851,6 +2851,10 @@
     {
       "time": 1790574523,
       "value": 28845.317900000093
+    },
+    {
+      "time": 1790575052,
+      "value": 28941.131200000098
     }
   ],
   "news": {
