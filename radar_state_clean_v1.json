@@ -27,12 +27,12 @@
       "cvd_dir": "FLAT",
       "flow_quality": "普通",
       "mfe_r": 0.019048688106645374,
-      "mae_r": 0.07012298309259002,
+      "mae_r": 0.07309934060925337,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 83309.3,
-      "worst_price": 83459.1,
-      "duration_min": 87
+      "worst_price": 83464.1,
+      "duration_min": 95
     }
   ],
   "history": [
@@ -2798,42 +2798,47 @@
     {
       "time": 1790571081,
       "value": 28988.2009000001
+    },
+    {
+      "time": 1790571588,
+      "value": 29022.560900000102
     }
   ],
   "news": {
     "seen": [
-      "70c1407e4dfc4d25",
-      "54f58f6d7a4fa207",
-      "0c53c954fdb0aa9f",
-      "360276899cb12ace",
-      "acd22f7de9e1a5b7",
-      "e05cc633facc8d4e",
-      "344d160658199a5e",
-      "38c3a3e1a9f64c9f",
-      "6340d211369b888d",
-      "94d0a2ec11ce4bbc",
-      "45c0ceb8dc6ff2bb",
-      "673427af56eb3553",
-      "4586e62c5fddb046",
-      "f9d847b30a35efca",
-      "9e753999bb334d84",
-      "45d791ae8b948fb9",
       "deefcc8ae178a300",
-      "1e830ea6d1837949",
-      "73e90c66645f5d59",
-      "a0792699ec630637",
-      "42cb1af7dadfd536",
+      "673427af56eb3553",
       "503329e6bd73225f",
-      "4e9bbdc275116e1f",
-      "be08dfc96ecf8c72",
-      "d02c5f561f046c60",
+      "cb6f7578a6781b37",
+      "acd22f7de9e1a5b7",
+      "43d5dd2581355593",
+      "a0792699ec630637",
+      "caa32c74016f6df9",
+      "344d160658199a5e",
+      "42cb1af7dadfd536",
+      "45d791ae8b948fb9",
+      "65e67eba4e10d07e",
+      "6340d211369b888d",
+      "360276899cb12ace",
       "5354bd9a9bd4fd81",
       "8bf6f66be40d8550",
-      "cb6f7578a6781b37",
-      "65e67eba4e10d07e",
-      "caa32c74016f6df9",
-      "43d5dd2581355593"
+      "9e753999bb334d84",
+      "0c53c954fdb0aa9f",
+      "f9d847b30a35efca",
+      "54f58f6d7a4fa207",
+      "d02c5f561f046c60",
+      "be08dfc96ecf8c72",
+      "70c1407e4dfc4d25",
+      "73e90c66645f5d59",
+      "eabacffa4722d70b",
+      "4e9bbdc275116e1f",
+      "e05cc633facc8d4e",
+      "45c0ceb8dc6ff2bb",
+      "4586e62c5fddb046",
+      "38c3a3e1a9f64c9f",
+      "1e830ea6d1837949",
+      "94d0a2ec11ce4bbc"
     ],
-    "last_notify": 1790558687
+    "last_notify": 1790571589
   }
 }
