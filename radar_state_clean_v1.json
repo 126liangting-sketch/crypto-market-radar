@@ -27,12 +27,12 @@
       "cvd_dir": "FLAT",
       "flow_quality": "普通",
       "mfe_r": 0.4243690547258642,
-      "mae_r": 0.4191901926468631,
+      "mae_r": 0.42764304799418523,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 82628.4,
-      "worst_price": 84045.5,
-      "duration_min": 819
+      "worst_price": 84059.7,
+      "duration_min": 834
     },
     {
       "id": 4,
@@ -59,12 +59,12 @@
       "cvd_dir": "DOWN",
       "flow_quality": "偏支持",
       "mfe_r": 0.19797420156113432,
-      "mae_r": 0.5164369036903969,
+      "mae_r": 0.5235956346864942,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 82628.4,
-      "worst_price": 84045.5,
-      "duration_min": 698
+      "worst_price": 84059.7,
+      "duration_min": 713
     }
   ],
   "history": [
@@ -1361,7 +1361,8 @@
     "PB:L:1790528400:1790534700:1790541900:1790543700",
     "BO:S:1790560800",
     "BO:L:1790596800",
-    "BO:L:1790607600"
+    "BO:L:1790607600",
+    "PB:L:1790606700:1790607600:1790608500:1790612100"
   ],
   "formal_seen": [
     "BO:S:1790334000",
@@ -3261,6 +3262,10 @@
     {
       "time": 1790615016,
       "value": 28225.58600000009
+    },
+    {
+      "time": 1790615929,
+      "value": 28103.78830000009
     }
   ],
   "news": {
@@ -3306,8 +3311,41 @@
     ],
     "last_notify": 1790598633
   },
-  "next_prepare_id": 3,
-  "prepare_active": [],
+  "next_prepare_id": 4,
+  "prepare_active": [
+    {
+      "id": 3,
+      "setup_key": "PB:L:1790606700:1790607600:1790608500:1790612100",
+      "side": "LONG",
+      "trigger_type": "回踩再啟動",
+      "opened_at": 1790615930,
+      "opened_iso": "2026-09-28T17:18:50+00:00",
+      "prepare_price": 84059.7,
+      "trigger": 84163.0,
+      "atr_open": 433.864285714283,
+      "trend_1h": "BEAR",
+      "ema_position": "偏離",
+      "ema_distance_atr": 1.5714021773541453,
+      "volume_ratio": 2.18277621794663,
+      "regime": "RANGE",
+      "oi_dir": "DOWN",
+      "cvd_dir": "UP",
+      "formal_promoted": false,
+      "formal_trade_id": null,
+      "formal_at": null,
+      "formal_delay_min": null,
+      "status": "WATCHING",
+      "best_price": 84059.7,
+      "worst_price": 84059.7,
+      "mfe_atr": 0.0,
+      "mae_atr": 0.0,
+      "mfe_atr_30": null,
+      "mae_atr_30": null,
+      "mfe_atr_60": null,
+      "mae_atr_60": null,
+      "duration_min": 0
+    }
+  ],
   "prepare_history": [
     {
       "id": 1,
