@@ -447,16 +447,60 @@ def risk_plan(setup, side, entry, a):
             "tp1": tp1, "tp2": tp2}
 
 
-def space_context(rows15, side, entry, risk, trigger_time):
+def _pivot_is_effective(rows15, pivot, side, a, same_side_pivots):
+    """Return True only for a structure level with a real reaction or repeated tests.
+
+    This deliberately does NOT change the Space >= 1R hard rule. It only prevents
+    tiny local wiggles from being treated as the next meaningful obstacle.
+    """
+    t, price, idx = pivot
+    if a <= 0:
+        return True
+
+    # A close level can still be important when price clearly reacted from it.
+    left = rows15[max(0, idx-4):idx]
+    right = rows15[idx+1:min(len(rows15), idx+5)]
+    reaction = 0.0
+    if left and right:
+        if side == "LONG":  # testing a prior swing high as resistance
+            before = price - min(float(x[3]) for x in left)
+            after = price - min(float(x[3]) for x in right)
+        else:               # testing a prior swing low as support
+            before = max(float(x[2]) for x in left) - price
+            after = max(float(x[2]) for x in right) - price
+        reaction = min(before, after) / a
+
+    # Repeated pivots in roughly the same price zone also make the level meaningful.
+    zone = 0.15 * a
+    touches = sum(1 for tt, pp, ii in same_side_pivots
+                  if tt != t and abs(float(pp) - float(price)) <= zone)
+
+    return reaction >= 0.30 or touches >= 1
+
+
+def space_context(rows15, side, entry, risk, trigger_time, a):
     highs, lows = local_pivots(rows15, 2, 2)
+    pivots = highs if side == "LONG" else lows
+
+    effective = []
+    for pivot in pivots:
+        t, p, _ = pivot
+        if t == trigger_time:
+            continue
+        if side == "LONG" and p <= entry:
+            continue
+        if side == "SHORT" and p >= entry:
+            continue
+        if _pivot_is_effective(rows15, pivot, side, a, pivots):
+            effective.append(float(p))
+
     if side == "LONG":
-        levels = sorted({p for t, p, _ in highs if p > entry and t != trigger_time})
-        target = levels[0] if levels else None
-        space_r = ((target-entry)/risk) if target else None
+        target = min(effective) if effective else None
+        space_r = ((target-entry)/risk) if target is not None else None
     else:
-        levels = sorted({p for t, p, _ in lows if p < entry and t != trigger_time}, reverse=True)
-        target = levels[0] if levels else None
-        space_r = ((entry-target)/risk) if target else None
+        target = max(effective) if effective else None
+        space_r = ((entry-target)/risk) if target is not None else None
+
     if space_r is None:
         label = "開放"
     elif space_r < 1.0:
@@ -951,7 +995,7 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
     plan = risk_plan(setup, side, price, a)
     if not plan:
         return
-    space = space_context(rows15, side, price, plan["risk"], setup["trigger_time"])
+    space = space_context(rows15, side, price, plan["risk"], setup["trigger_time"], a)
     reasons = []
     if vol["ratio"] < VOL_HARD_MIN:
         reasons.append("成交量過低")
