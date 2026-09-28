@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 83617.2,
-      "duration_min": 677
+      "duration_min": 691
     },
     {
       "id": 4,
@@ -64,7 +64,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 83617.2,
-      "duration_min": 555
+      "duration_min": 570
     }
   ],
   "history": [
@@ -1242,6 +1242,19 @@
       "volume_ratio": 1.7829101050995757,
       "space_r": 0.13735578196470763,
       "extension_atr": 0.1788727458961497
+    },
+    {
+      "key": "BO:S:1790600400:停損距離過大（2.70 ATR） / 前方空間不足 / 價格過度延伸",
+      "time": 1790607352,
+      "time_iso": "2026-09-28T14:55:52+00:00",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "reason": "停損距離過大（2.70 ATR） / 前方空間不足 / 價格過度延伸",
+      "trigger": 83278.6,
+      "price": 82838.0,
+      "volume_ratio": 3.6741389377651674,
+      "space_r": 0.2334323281950289,
+      "extension_atr": 1.4549485800547493
     }
   ],
   "prepare_seen": [
@@ -3138,46 +3151,51 @@
     {
       "time": 1790606492,
       "value": 28834.216600000094
+    },
+    {
+      "time": 1790607351,
+      "value": 28744.159100000095
     }
   ],
   "news": {
     "seen": [
-      "43d5dd2581355593",
-      "d02c5f561f046c60",
-      "caa32c74016f6df9",
-      "4e9bbdc275116e1f",
-      "8bf6f66be40d8550",
-      "360276899cb12ace",
-      "4586e62c5fddb046",
-      "73e90c66645f5d59",
-      "0c53c954fdb0aa9f",
-      "94d0a2ec11ce4bbc",
-      "1e830ea6d1837949",
-      "5354bd9a9bd4fd81",
-      "673427af56eb3553",
-      "2c54f27485a4fcae",
       "acd22f7de9e1a5b7",
-      "f9d847b30a35efca",
-      "9e753999bb334d84",
-      "344d160658199a5e",
-      "38c3a3e1a9f64c9f",
-      "45c0ceb8dc6ff2bb",
-      "503329e6bd73225f",
-      "fe4ac5a66962a769",
-      "eabacffa4722d70b",
-      "42cb1af7dadfd536",
       "be08dfc96ecf8c72",
-      "e715914ebf311c0f",
-      "70c1407e4dfc4d25",
-      "deefcc8ae178a300",
-      "45d791ae8b948fb9",
-      "65e67eba4e10d07e",
-      "e05cc633facc8d4e",
-      "54f58f6d7a4fa207",
+      "1e830ea6d1837949",
       "a0792699ec630637",
+      "b8644dcbde37106a",
+      "344d160658199a5e",
+      "2c54f27485a4fcae",
+      "45c0ceb8dc6ff2bb",
+      "caa32c74016f6df9",
+      "f9d847b30a35efca",
+      "5354bd9a9bd4fd81",
+      "65e67eba4e10d07e",
+      "4e9bbdc275116e1f",
+      "4586e62c5fddb046",
+      "deefcc8ae178a300",
+      "94d0a2ec11ce4bbc",
+      "360276899cb12ace",
+      "38c3a3e1a9f64c9f",
+      "503329e6bd73225f",
+      "70c1407e4dfc4d25",
+      "fe4ac5a66962a769",
+      "e715914ebf311c0f",
+      "e05cc633facc8d4e",
+      "eabacffa4722d70b",
+      "45d791ae8b948fb9",
+      "54f58f6d7a4fa207",
+      "9e753999bb334d84",
+      "43d5dd2581355593",
       "cb6f7578a6781b37",
+      "6340d211369b888d",
+      "673427af56eb3553",
+      "8bf6f66be40d8550",
       "01bf4d3dfc90952d",
-      "6340d211369b888d"
+      "42cb1af7dadfd536",
+      "d02c5f561f046c60",
+      "73e90c66645f5d59",
+      "0c53c954fdb0aa9f"
     ],
     "last_notify": 1790598633
   },
