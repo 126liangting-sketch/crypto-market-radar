@@ -463,11 +463,11 @@ def _pivot_is_effective(rows15, pivot, side, a, same_side_pivots):
     reaction = 0.0
     if left and right:
         if side == "LONG":  # testing a prior swing high as resistance
-            before = price - min(float(x[3]) for x in left)
-            after = price - min(float(x[3]) for x in right)
+            before = price - min(float(x["low"]) for x in left)
+            after = price - min(float(x["low"]) for x in right)
         else:               # testing a prior swing low as support
-            before = max(float(x[2]) for x in left) - price
-            after = max(float(x[2]) for x in right) - price
+            before = max(float(x["high"]) for x in left) - price
+            after = max(float(x["high"]) for x in right) - price
         reaction = min(before, after) / a
 
     # Repeated pivots in roughly the same price zone also make the level meaningful.
