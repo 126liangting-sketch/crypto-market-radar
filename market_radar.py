@@ -20,6 +20,8 @@ TRADES_JSON = "paper_trades_clean_v1.json"
 TRADES_CSV = "paper_trades_clean_v1.csv"
 BLOCKED_JSON = "blocked_setups_clean_v1.json"
 BLOCKED_CSV = "blocked_setups_clean_v1.csv"
+PREPARE_JSON = "prepare_validation_clean_v1.json"
+PREPARE_CSV = "prepare_validation_clean_v1.csv"
 
 # ---- Clean V1 rules agreed in chat ----
 EMA_FAST = 34
@@ -37,6 +39,10 @@ SPACE_MIN_R = 1.00
 SPACE_GOOD_R = 1.50
 STOP_BUFFER_ATR = 0.15
 MIN_STOP_ATR = 0.50
+RISK_WARN_ATR = 1.50
+RISK_HIGH_ATR = 2.00
+MAX_STOP_ATR = 2.50
+PREPARE_VALIDATE_MIN = 60
 OI_FLAT_PCT = 0.0010
 CVD_FLAT_REL = 0.05
 NEWS_NOTIFY_COOLDOWN = 3 * 3600
@@ -354,22 +360,29 @@ def detect_pullback_setup(rows15, a, side):
 
 
 def detect_breakout_setup(rows15, a, side):
+    # Trigger uses the cleaned/significant pivot, but the stop-defense point should use
+    # the nearest local pivot before that trigger. Using the previous significant pivot
+    # can be several ATR away and creates unrealistic stops.
     highs, lows = significant_pivots(rows15, a, 0.35)
+    local_highs, local_lows = local_pivots(rows15, 1, 1)
     if side == "LONG" and highs:
         h = highs[-1]
-        # Require the swing to have meaningful range to the last low before it.
-        prior_lows = [l for l in lows if l[0] < h[0]]
-        if prior_lows and h[1] - prior_lows[-1][1] >= IMPULSE_MIN_ATR * a:
+        prior_sig_lows = [l for l in lows if l[0] < h[0]]
+        if prior_sig_lows and h[1] - prior_sig_lows[-1][1] >= IMPULSE_MIN_ATR * a:
+            prior_local_lows = [l for l in local_lows if l[0] < h[0]]
+            defense = prior_local_lows[-1] if prior_local_lows else prior_sig_lows[-1]
             return {"side": side, "kind": "BREAKOUT", "label": "有效突破",
-                    "trigger": h[1], "trigger_time": h[0], "defense": prior_lows[-1][1],
-                    "defense_time": prior_lows[-1][0], "setup_key": f"BO:L:{h[0]}"}
+                    "trigger": h[1], "trigger_time": h[0], "defense": defense[1],
+                    "defense_time": defense[0], "setup_key": f"BO:L:{h[0]}"}
     if side == "SHORT" and lows:
         l = lows[-1]
-        prior_highs = [h for h in highs if h[0] < l[0]]
-        if prior_highs and prior_highs[-1][1] - l[1] >= IMPULSE_MIN_ATR * a:
+        prior_sig_highs = [h for h in highs if h[0] < l[0]]
+        if prior_sig_highs and prior_sig_highs[-1][1] - l[1] >= IMPULSE_MIN_ATR * a:
+            prior_local_highs = [h for h in local_highs if h[0] < l[0]]
+            defense = prior_local_highs[-1] if prior_local_highs else prior_sig_highs[-1]
             return {"side": side, "kind": "BREAKOUT", "label": "有效突破",
-                    "trigger": l[1], "trigger_time": l[0], "defense": prior_highs[-1][1],
-                    "defense_time": prior_highs[-1][0], "setup_key": f"BO:S:{l[0]}"}
+                    "trigger": l[1], "trigger_time": l[0], "defense": defense[1],
+                    "defense_time": defense[0], "setup_key": f"BO:S:{l[0]}"}
     return None
 
 
@@ -403,6 +416,16 @@ def extension_quality(ext):
     if ext <= EXT_WAIT_ATR:
         return "偏追價"
     return "過度延伸"
+
+
+def risk_quality(risk_atr):
+    if risk_atr <= RISK_WARN_ATR:
+        return "正常"
+    if risk_atr <= RISK_HIGH_ATR:
+        return "偏大"
+    if risk_atr <= MAX_STOP_ATR:
+        return "高風險"
+    return "過大"
 
 
 def risk_plan(setup, side, entry, a):
@@ -542,6 +565,9 @@ def load_state():
     s.setdefault("blocked", [])
     s.setdefault("prepare_seen", [])
     s.setdefault("formal_seen", [])
+    s.setdefault("next_prepare_id", 1)
+    s.setdefault("prepare_active", [])
+    s.setdefault("prepare_history", [])
     s.setdefault("oi_history", [])
     s.setdefault("news", {"seen": [], "last_notify": 0})
     return s
@@ -590,6 +616,93 @@ def record_blocked(state, side, setup, reason, price, extra=None):
         row.update(extra)
     state["blocked"].append(row)
     state["blocked"] = state["blocked"][-1000:]
+
+
+def create_prepare_validation(state, side, setup, price, a, trend, ema_pos, vol, reg, oi, cvd):
+    pid = int(state["next_prepare_id"])
+    state["next_prepare_id"] += 1
+    row = {
+        "id": pid,
+        "setup_key": setup["setup_key"],
+        "side": side,
+        "trigger_type": setup["label"],
+        "opened_at": now_utc(),
+        "opened_iso": iso(now_utc()),
+        "prepare_price": float(price),
+        "trigger": float(setup["trigger"]),
+        "atr_open": float(a),
+        "trend_1h": trend["state"],
+        "ema_position": ema_pos["label"],
+        "ema_distance_atr": ema_pos["distance_atr"],
+        "volume_ratio": vol["ratio"],
+        "regime": reg["state"],
+        "oi_dir": oi["dir"],
+        "cvd_dir": cvd["dir"],
+        "formal_promoted": False,
+        "formal_trade_id": None,
+        "formal_at": None,
+        "formal_delay_min": None,
+        "status": "WATCHING",
+        "best_price": float(price),
+        "worst_price": float(price),
+        "mfe_atr": 0.0,
+        "mae_atr": 0.0,
+        "mfe_atr_30": None,
+        "mae_atr_30": None,
+        "mfe_atr_60": None,
+        "mae_atr_60": None,
+        "duration_min": 0,
+    }
+    state["prepare_active"].append(row)
+    return row
+
+
+def mark_prepare_promoted(state, setup_key, trade_id):
+    now = now_utc()
+    for p in state.get("prepare_active", []):
+        if p.get("setup_key") == setup_key and not p.get("formal_promoted"):
+            p["formal_promoted"] = True
+            p["formal_trade_id"] = trade_id
+            p["formal_at"] = now
+            p["formal_delay_min"] = round((now - int(p["opened_at"])) / 60, 1)
+            return
+
+
+def update_prepare_validations(state, live_price):
+    remain = []
+    now = now_utc()
+    for p in state.get("prepare_active", []):
+        entry = float(p["prepare_price"])
+        a = float(p.get("atr_open") or 0.0)
+        if a <= 0:
+            remain.append(p)
+            continue
+        if p["side"] == "LONG":
+            p["best_price"] = max(float(p.get("best_price", entry)), live_price)
+            p["worst_price"] = min(float(p.get("worst_price", entry)), live_price)
+            p["mfe_atr"] = max(float(p.get("mfe_atr", 0.0)), (p["best_price"] - entry) / a)
+            p["mae_atr"] = max(float(p.get("mae_atr", 0.0)), (entry - p["worst_price"]) / a)
+        else:
+            p["best_price"] = min(float(p.get("best_price", entry)), live_price)
+            p["worst_price"] = max(float(p.get("worst_price", entry)), live_price)
+            p["mfe_atr"] = max(float(p.get("mfe_atr", 0.0)), (entry - p["best_price"]) / a)
+            p["mae_atr"] = max(float(p.get("mae_atr", 0.0)), (p["worst_price"] - entry) / a)
+        elapsed = (now - int(p["opened_at"])) / 60
+        p["duration_min"] = int(elapsed)
+        if elapsed >= 30 and p.get("mfe_atr_30") is None:
+            p["mfe_atr_30"] = round(float(p["mfe_atr"]), 4)
+            p["mae_atr_30"] = round(float(p["mae_atr"]), 4)
+        if elapsed >= PREPARE_VALIDATE_MIN:
+            p["mfe_atr_60"] = round(float(p["mfe_atr"]), 4)
+            p["mae_atr_60"] = round(float(p["mae_atr"]), 4)
+            p["status"] = "PROMOTED" if p.get("formal_promoted") else "NO_FORMAL"
+            p["closed_at"] = now
+            p["closed_iso"] = iso(now)
+            state["prepare_history"].append(p)
+        else:
+            remain.append(p)
+    state["prepare_active"] = remain
+    state["prepare_history"] = state.get("prepare_history", [])[-2000:]
 
 
 def create_trade(state, side, setup, plan, ctx):
@@ -667,6 +780,19 @@ def export_data(state):
     with open(BLOCKED_CSV, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.DictWriter(f, fieldnames=bfields, extrasaction="ignore")
         w.writeheader(); w.writerows(state["blocked"])
+
+    prepare_rows = state.get("prepare_history", []) + state.get("prepare_active", [])
+    save_json(PREPARE_JSON, {"active": state.get("prepare_active", []), "history": state.get("prepare_history", [])})
+    pfields = [
+        "id","setup_key","side","trigger_type","opened_iso","closed_iso","status",
+        "prepare_price","trigger","atr_open","trend_1h","ema_position","ema_distance_atr",
+        "volume_ratio","regime","oi_dir","cvd_dir","formal_promoted","formal_trade_id",
+        "formal_delay_min","mfe_atr","mae_atr","mfe_atr_30","mae_atr_30",
+        "mfe_atr_60","mae_atr_60","duration_min"
+    ]
+    with open(PREPARE_CSV, "w", newline="", encoding="utf-8-sig") as f:
+        w = csv.DictWriter(f, fieldnames=pfields, extrasaction="ignore")
+        w.writeheader(); w.writerows(prepare_rows)
 
 
 def major_news_class(title):
@@ -798,6 +924,7 @@ def maybe_prepare(state, side, setup, price, trend, ema_pos, vol, reg, oi, cvd):
     if 0 <= dist <= PREPARE_DISTANCE_ATR:
         state["prepare_seen"].append(sig)
         state["prepare_seen"] = state["prepare_seen"][-500:]
+        create_prepare_validation(state, side, setup, price, atr15_global, trend, ema_pos, vol, reg, oi, cvd)
         flow, icon = flow_quality(side, oi, cvd)
         send_discord(
             f"👀 BTC {zh_side(side)}準備\n"
@@ -828,6 +955,8 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
     reasons = []
     if vol["ratio"] < VOL_HARD_MIN:
         reasons.append("成交量過低")
+    if plan["risk_atr"] > MAX_STOP_ATR:
+        reasons.append(f"停損距離過大（{plan['risk_atr']:.2f} ATR）")
     if space["space_r"] is not None and space["space_r"] < SPACE_MIN_R:
         reasons.append("前方空間不足")
     if ext > EXT_WAIT_ATR:
@@ -853,6 +982,7 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
            "volume_ratio": vol["ratio"], "regime": reg["state"], "space_r": space["space_r"],
            "oi_dir": oi["dir"], "cvd_dir": cvd["dir"], "flow_quality": flow}
     t = create_trade(state, side, setup, plan, ctx)
+    mark_prepare_promoted(state, setup["setup_key"], t["id"])
     state["formal_seen"].append(sig)
     state["formal_seen"] = state["formal_seen"][-500:]
 
@@ -863,7 +993,7 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
     send_discord(
         f"⚡ BTC 正式{zh_side(side)}訊號\n\n"
         f"進場：${plan['entry']:,.0f}\n停損：${plan['sl']:,.0f}\n止盈1：${plan['tp1']:,.0f}\n止盈2：{tp2_text}\n"
-        f"風險距離：{plan['risk_atr']:.2f} ATR\n\n"
+        f"風險距離：{plan['risk_atr']:.2f} ATR（{risk_quality(plan['risk_atr'])}）\n\n"
         f"1H背景：{zh_dir(trend['state'])}{bg_note}\n"
         f"15M觸發：{setup['label']}\n"
         f"EMA位置：{ema_pos['label']}（{ema_pos['distance_atr']:.2f} ATR）\n"
@@ -882,18 +1012,22 @@ atr15_global = 1.0
 def manual_summary(state, price, trend, reg, oi, cvd):
     completed = len(state.get("history", []))
     open_n = len(state.get("trades", []))
+    p_done = len(state.get("prepare_history", []))
+    p_open = len(state.get("prepare_active", []))
     last = state.get("history", [])[-20:]
     wins = sum(1 for x in last if x.get("status") in ("TP2", "TP1_THEN_SL") and x.get("tp1_hit"))
-    send_discord(
+    base = (
         f"📊 BTC Radar Clean V1｜手動查詢\nBTC：${price:,.0f}\n"
         f"1H背景：{zh_dir(trend['state'])}\n市場狀態：{'趨勢' if reg['state']=='TREND' else '震盪'}\n"
         f"OI：{zh_dir(oi['dir'])}｜CVD Proxy：{zh_dir(cvd['dir'])}\n"
+        f"👀 準備驗證 完成：{p_done}｜追蹤中：{p_open}\n"
         f"⚡ 正式單 完成：{completed}｜進行中：{open_n}\n"
-        f"最近20筆曾到TP1：{wins}/{len(last)}" if last else
-        f"📊 BTC Radar Clean V1｜手動查詢\nBTC：${price:,.0f}\n1H背景：{zh_dir(trend['state'])}\n"
-        f"市場狀態：{'趨勢' if reg['state']=='TREND' else '震盪'}\nOI：{zh_dir(oi['dir'])}｜CVD Proxy：{zh_dir(cvd['dir'])}\n"
-        f"⚡ 正式單 完成：{completed}｜進行中：{open_n}\n目前尚無完成樣本"
     )
+    if last:
+        base += f"最近20筆曾到TP1：{wins}/{len(last)}"
+    else:
+        base += "目前尚無完成樣本"
+    send_discord(base)
 
 
 def main():
@@ -922,6 +1056,7 @@ def main():
     cvd = cvd_proxy()
 
     update_trades(state, live)
+    update_prepare_validations(state, live)
     check_news(state)
 
     if MANUAL_RUN:
