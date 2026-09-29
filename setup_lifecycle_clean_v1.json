@@ -46,5 +46,37 @@
     "status": "BLOCKED",
     "last_note": "停損距離過大（3.23 ATR） / 前方空間不足 / 價格過度延伸",
     "block_count": 5
+  },
+  {
+    "setup_key": "BO:L:1790696700",
+    "side": "LONG",
+    "type": "BREAKOUT",
+    "label": "有效突破",
+    "trigger": 83298.9,
+    "defense": 82877.3,
+    "first_seen": 1790699415,
+    "first_seen_iso": "2026-09-29T16:30:15+00:00",
+    "last_seen": 1790699415,
+    "last_seen_iso": "2026-09-29T16:30:15+00:00",
+    "last_price": 83212.3,
+    "status": "DETECTED",
+    "last_note": null,
+    "block_count": 0
+  },
+  {
+    "setup_key": "CONT:S:1790696700",
+    "side": "SHORT",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 82900.0,
+    "defense": 83298.9,
+    "first_seen": 1790699415,
+    "first_seen_iso": "2026-09-29T16:30:15+00:00",
+    "last_seen": 1790699415,
+    "last_seen_iso": "2026-09-29T16:30:15+00:00",
+    "last_price": 83212.3,
+    "status": "DETECTED",
+    "last_note": null,
+    "block_count": 0
   }
 ]
