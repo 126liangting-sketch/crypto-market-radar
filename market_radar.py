@@ -1279,7 +1279,9 @@ def main():
 
     export_data(state)
     save_json(STATE_FILE, state)
-    print(f"{VERSION}: BTC={live:.0f} 1H={trend['state']} Regime={reg['state']} Vol={vol['ratio']:.2f}x Open={len(state['trades'])} Done={len(state['history'])}")
+    valid_open = [x for x in state.get("trades", []) if not x.get("excluded_from_stats")]
+    valid_history = [x for x in state.get("history", []) if not x.get("excluded_from_stats")]
+    print(f"{VERSION}: BTC={live:.0f} 1H={trend['state']} Regime={reg['state']} Vol={vol['ratio']:.2f}x Open={len(valid_open)} Done={len(valid_history)}")
 
 
 if __name__ == "__main__":
