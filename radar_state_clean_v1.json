@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84059.7,
-      "duration_min": 1474
+      "duration_min": 1483
     },
     {
       "id": 4,
@@ -64,7 +64,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84059.7,
-      "duration_min": 1352
+      "duration_min": 1362
     }
   ],
   "history": [
@@ -3679,6 +3679,10 @@
     {
       "time": 1790654298,
       "value": 28612.793800000087
+    },
+    {
+      "time": 1790654881,
+      "value": 28636.5190000001
     }
   ],
   "news": {
@@ -3758,7 +3762,7 @@
       "mae_atr_30": null,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 9
+      "duration_min": 19
     }
   ],
   "prepare_history": [
