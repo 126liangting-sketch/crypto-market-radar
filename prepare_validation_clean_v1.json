@@ -22,15 +22,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 83717.9,
+      "best_price": 83592.1,
       "worst_price": 84000.0,
-      "mfe_atr": 1.273424904881689,
+      "mfe_atr": 1.841297478558039,
       "mae_atr": 0.0,
       "mfe_atr_30": 0.4455,
       "mae_atr_30": 0.0,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 47
+      "duration_min": 58
     }
   ],
   "history": [
