@@ -25,12 +25,12 @@
       "cvd_dir": "FLAT",
       "flow_quality": "普通",
       "mfe_r": 0.4243690547258642,
-      "mae_r": 0.5366372602544002,
+      "mae_r": 0.5777705211346824,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 82628.4,
-      "worst_price": 84242.8,
-      "duration_min": 1936
+      "worst_price": 84311.9,
+      "duration_min": 1948
     },
     {
       "id": 4,
@@ -57,12 +57,12 @@
       "cvd_dir": "DOWN",
       "flow_quality": "偏支持",
       "mfe_r": 0.19797420156113432,
-      "mae_r": 0.6159029336573213,
+      "mae_r": 0.6507387302650937,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 82628.4,
-      "worst_price": 84242.8,
-      "duration_min": 1814
+      "worst_price": 84311.9,
+      "duration_min": 1826
     }
   ],
   "history": [

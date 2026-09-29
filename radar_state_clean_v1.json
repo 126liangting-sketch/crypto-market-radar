@@ -27,12 +27,12 @@
       "cvd_dir": "FLAT",
       "flow_quality": "普通",
       "mfe_r": 0.4243690547258642,
-      "mae_r": 0.5366372602544002,
+      "mae_r": 0.5777705211346824,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 82628.4,
-      "worst_price": 84242.8,
-      "duration_min": 1936
+      "worst_price": 84311.9,
+      "duration_min": 1948
     },
     {
       "id": 4,
@@ -59,12 +59,12 @@
       "cvd_dir": "DOWN",
       "flow_quality": "偏支持",
       "mfe_r": 0.19797420156113432,
-      "mae_r": 0.6159029336573213,
+      "mae_r": 0.6507387302650937,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 82628.4,
-      "worst_price": 84242.8,
-      "duration_min": 1814
+      "worst_price": 84311.9,
+      "duration_min": 1826
     }
   ],
   "history": [
@@ -1632,6 +1632,19 @@
       "volume_ratio": 1.306103833155797,
       "space_r": 0.06579947216335812,
       "extension_atr": 0.4442665308054049
+    },
+    {
+      "key": "BO:L:1790675100:停損距離過大（3.26 ATR） / 前方空間不足",
+      "time": 1790682727,
+      "time_iso": "2026-09-29T11:52:07+00:00",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "reason": "停損距離過大（3.26 ATR） / 前方空間不足",
+      "trigger": 84290.0,
+      "price": 84311.9,
+      "volume_ratio": 4.0,
+      "space_r": 0.04304212680945215,
+      "extension_atr": 0.11678220461640797
     }
   ],
   "prepare_seen": [
@@ -3956,6 +3969,10 @@
     {
       "time": 1790682019,
       "value": 28265.598800000094
+    },
+    {
+      "time": 1790682726,
+      "value": 28261.53880000009
     }
   ],
   "news": {
