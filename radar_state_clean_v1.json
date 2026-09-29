@@ -66,7 +66,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84498.8,
-      "duration_min": 2003,
+      "duration_min": 2004,
       "excluded_from_stats": true,
       "legacy_rule_mismatch": true
     }
@@ -4072,8 +4072,8 @@
       "value": 27922.389900000082
     },
     {
-      "time": 1790693371,
-      "value": 27975.095100000082
+      "time": 1790693390,
+      "value": 27970.551200000078
     }
   ],
   "news": {
@@ -4158,7 +4158,7 @@
       "mae_atr_30": 0.0,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 46
+      "duration_min": 47
     }
   ],
   "prepare_history": [
