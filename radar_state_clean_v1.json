@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84059.7,
-      "duration_min": 1706
+      "duration_min": 1715
     },
     {
       "id": 4,
@@ -64,7 +64,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84059.7,
-      "duration_min": 1584
+      "duration_min": 1594
     }
   ],
   "history": [
@@ -1619,6 +1619,19 @@
       "volume_ratio": 1.306103833155797,
       "space_r": 0.03295654304749769,
       "extension_atr": 0.6129043997234446
+    },
+    {
+      "key": "PB:L:1790651700:1790655300:1790659800:1790661600:停損距離過大（5.30 ATR） / 前方空間不足",
+      "time": 1790668785,
+      "time_iso": "2026-09-29T07:59:45+00:00",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "reason": "停損距離過大（5.30 ATR） / 前方空間不足",
+      "trigger": 83857.4,
+      "price": 83944.6,
+      "volume_ratio": 1.306103833155797,
+      "space_r": 0.06579947216335812,
+      "extension_atr": 0.4442665308054049
     }
   ],
   "prepare_seen": [
@@ -3871,6 +3884,10 @@
     {
       "time": 1790668220,
       "value": 28079.720400000097
+    },
+    {
+      "time": 1790668784,
+      "value": 28044.457500000095
     }
   ],
   "news": {
