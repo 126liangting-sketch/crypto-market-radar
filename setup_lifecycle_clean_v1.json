@@ -248,11 +248,11 @@
     "defense": 83383.3,
     "first_seen": 1790720677,
     "first_seen_iso": "2026-09-29T22:24:37+00:00",
-    "last_seen": 1790721310,
-    "last_seen_iso": "2026-09-29T22:35:10+00:00",
-    "last_price": 83540.0,
+    "last_seen": 1790721951,
+    "last_seen_iso": "2026-09-29T22:45:51+00:00",
+    "last_price": 83589.9,
     "status": "BLOCKED",
-    "last_note": "前方空間不足",
-    "block_count": 2
+    "last_note": "成交量過低 / 前方空間不足 / 價格過度延伸",
+    "block_count": 3
   }
 ]

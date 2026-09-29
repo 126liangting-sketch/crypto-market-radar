@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84498.8,
-      "duration_min": 2591,
+      "duration_min": 2601,
       "excluded_from_stats": true,
       "legacy_rule_mismatch": true
     },
@@ -66,7 +66,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84498.8,
-      "duration_min": 2469,
+      "duration_min": 2480,
       "excluded_from_stats": true,
       "legacy_rule_mismatch": true
     }
@@ -1817,17 +1817,17 @@
       "setup_key": "CONT:L:1790718300",
       "first_time": 1790720677,
       "first_time_iso": "2026-09-29T22:24:37+00:00",
-      "time": 1790721310,
-      "time_iso": "2026-09-29T22:35:10+00:00",
+      "time": 1790721951,
+      "time_iso": "2026-09-29T22:45:51+00:00",
       "side": "LONG",
       "type": "PULLBACK",
-      "reason": "前方空間不足",
+      "reason": "成交量過低 / 前方空間不足 / 價格過度延伸",
       "trigger": 83477.8,
-      "price": 83540.0,
-      "block_count": 2,
-      "volume_ratio": 0.9603239860590987,
-      "space_r": 0.3029067584859779,
-      "extension_atr": 0.4606919902655559
+      "price": 83589.9,
+      "block_count": 3,
+      "volume_ratio": 0.45996877270442316,
+      "space_r": 0.01631318801584218,
+      "extension_atr": 0.8319991517785417
     }
   ],
   "prepare_seen": [
@@ -4363,6 +4363,10 @@
     {
       "time": 1790721309,
       "value": 28117.503400000074
+    },
+    {
+      "time": 1790721950,
+      "value": 28094.436500000076
     }
   ],
   "news": {
@@ -4964,7 +4968,7 @@
       "closed_iso": "2026-09-29T22:11:15+00:00"
     }
   ],
-  "last_event_scan": 1790721300,
+  "last_event_scan": 1790721900,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -5215,12 +5219,12 @@
       "defense": 83383.3,
       "first_seen": 1790720677,
       "first_seen_iso": "2026-09-29T22:24:37+00:00",
-      "last_seen": 1790721310,
-      "last_seen_iso": "2026-09-29T22:35:10+00:00",
-      "last_price": 83540.0,
+      "last_seen": 1790721951,
+      "last_seen_iso": "2026-09-29T22:45:51+00:00",
+      "last_price": 83589.9,
       "status": "BLOCKED",
-      "last_note": "前方空間不足",
-      "block_count": 2
+      "last_note": "成交量過低 / 前方空間不足 / 價格過度延伸",
+      "block_count": 3
     }
   ]
 }
