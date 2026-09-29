@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84059.7,
-      "duration_min": 1342
+      "duration_min": 1351
     },
     {
       "id": 4,
@@ -64,7 +64,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84059.7,
-      "duration_min": 1221
+      "duration_min": 1230
     }
   ],
   "history": [
@@ -1476,6 +1476,19 @@
       "volume_ratio": 2.886765148460693,
       "space_r": 0.0025321444312259183,
       "extension_atr": 2.5734692172751186
+    },
+    {
+      "key": "BO:S:1790640900:停損距離過大（3.49 ATR） / 前方空間不足 / 價格過度延伸",
+      "time": 1790646959,
+      "time_iso": "2026-09-29T01:55:59+00:00",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "reason": "停損距離過大（3.49 ATR） / 前方空間不足 / 價格過度延伸",
+      "trigger": 83307.0,
+      "price": 82997.7,
+      "volume_ratio": 2.7562206287992503,
+      "space_r": 0.009023961841518614,
+      "extension_atr": 1.7395950506186912
     }
   ],
   "prepare_seen": [
@@ -3603,6 +3616,10 @@
     {
       "time": 1790646414,
       "value": 28185.568800000096
+    },
+    {
+      "time": 1790646958,
+      "value": 28219.481200000097
     }
   ],
   "news": {
