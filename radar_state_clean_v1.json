@@ -32,7 +32,9 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84498.8,
-      "duration_min": 2110
+      "duration_min": 2117,
+      "excluded_from_stats": true,
+      "legacy_rule_mismatch": true
     },
     {
       "id": 4,
@@ -64,7 +66,9 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84498.8,
-      "duration_min": 1989
+      "duration_min": 1995,
+      "excluded_from_stats": true,
+      "legacy_rule_mismatch": true
     }
   ],
   "history": [
@@ -4045,6 +4049,10 @@
     {
       "time": 1790692490,
       "value": 28062.41740000008
+    },
+    {
+      "time": 1790692882,
+      "value": 27922.389900000082
     }
   ],
   "news": {
@@ -4121,15 +4129,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 83901.3,
+      "best_price": 83717.9,
       "worst_price": 84000.0,
-      "mfe_atr": 0.44554072354419144,
+      "mfe_atr": 1.273424904881689,
       "mae_atr": 0.0,
       "mfe_atr_30": 0.4455,
       "mae_atr_30": 0.0,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 32
+      "duration_min": 38
     }
   ],
   "prepare_history": [
@@ -4473,5 +4481,7 @@
       "closed_at": 1790687163,
       "closed_iso": "2026-09-29T13:06:03+00:00"
     }
-  ]
+  ],
+  "last_event_scan": 1790692860,
+  "setup_lifecycle": []
 }

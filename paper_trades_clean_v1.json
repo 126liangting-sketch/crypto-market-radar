@@ -30,7 +30,9 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84498.8,
-      "duration_min": 2110
+      "duration_min": 2117,
+      "excluded_from_stats": true,
+      "legacy_rule_mismatch": true
     },
     {
       "id": 4,
@@ -62,7 +64,9 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84498.8,
-      "duration_min": 1989
+      "duration_min": 1995,
+      "excluded_from_stats": true,
+      "legacy_rule_mismatch": true
     }
   ],
   "history": [
