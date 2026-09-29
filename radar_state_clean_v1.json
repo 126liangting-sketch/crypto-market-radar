@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84059.7,
-      "duration_min": 1639
+      "duration_min": 1653
     },
     {
       "id": 4,
@@ -64,7 +64,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84059.7,
-      "duration_min": 1517
+      "duration_min": 1532
     }
   ],
   "history": [
@@ -1554,6 +1554,19 @@
       "volume_ratio": 3.420340972905045,
       "space_r": 0.26778017581819585,
       "extension_atr": 2.4224020625939917
+    },
+    {
+      "key": "PB:L:1790651700:1790655300:1790659800:1790661600:停損距離過大（5.44 ATR） / 前方空間不足 / 偏追價，等待較好位置",
+      "time": 1790665073,
+      "time_iso": "2026-09-29T06:57:53+00:00",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "reason": "停損距離過大（5.44 ATR） / 前方空間不足 / 偏追價，等待較好位置",
+      "trigger": 83857.4,
+      "price": 83958.5,
+      "volume_ratio": 1.3162062403910426,
+      "space_r": 0.05177549862027376,
+      "extension_atr": 0.5219796430152257
     }
   ],
   "prepare_seen": [
@@ -3786,6 +3799,10 @@
     {
       "time": 1790664199,
       "value": 28174.652700000097
+    },
+    {
+      "time": 1790665072,
+      "value": 28109.095300000103
     }
   ],
   "news": {
@@ -3860,15 +3877,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 83847.9,
+      "best_price": 83958.5,
       "worst_price": 83847.9,
-      "mfe_atr": 0.0,
+      "mfe_atr": 0.5659149884872975,
       "mae_atr": 0.0,
       "mfe_atr_30": null,
       "mae_atr_30": null,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 0
+      "duration_min": 14
     }
   ],
   "prepare_history": [
