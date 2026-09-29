@@ -136,11 +136,11 @@
     "defense": 83166.6,
     "first_seen": 1790703249,
     "first_seen_iso": "2026-09-29T17:34:09+00:00",
-    "last_seen": 1790704028,
-    "last_seen_iso": "2026-09-29T17:47:08+00:00",
-    "last_price": 83053.0,
-    "status": "PREPARED",
-    "last_note": "進入準備距離",
-    "block_count": 0
+    "last_seen": 1790704681,
+    "last_seen_iso": "2026-09-29T17:58:01+00:00",
+    "last_price": 82971.5,
+    "status": "BLOCKED",
+    "last_note": "成交量過低 / 前方空間不足",
+    "block_count": 1
   }
 ]

@@ -1600,5 +1600,22 @@
     "volume_ratio": 0.4285571403633333,
     "space_r": 0.08748677401651814,
     "extension_atr": -0.02876048061536006
+  },
+  {
+    "key": "CONT:S:1790701200",
+    "setup_key": "CONT:S:1790701200",
+    "first_time": 1790704681,
+    "first_time_iso": "2026-09-29T17:58:01+00:00",
+    "time": 1790704681,
+    "time_iso": "2026-09-29T17:58:01+00:00",
+    "side": "SHORT",
+    "type": "PULLBACK",
+    "reason": "成交量過低 / 前方空間不足",
+    "trigger": 82990.0,
+    "price": 82971.5,
+    "block_count": 1,
+    "volume_ratio": 0.37539518293599433,
+    "space_r": 0.1626146259637277,
+    "extension_atr": 0.06661693973610441
   }
 ]
