@@ -14,7 +14,7 @@ OKX_SYMBOL = "BTC-USDT-SWAP"
 WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
-VERSION = "BTC_RADAR_CLEAN_V1"
+VERSION = "BTC_RADAR_CLEAN_V1_ENGINE"
 STATE_FILE = "radar_state_clean_v1.json"
 TRADES_JSON = "paper_trades_clean_v1.json"
 TRADES_CSV = "paper_trades_clean_v1.csv"
@@ -22,6 +22,8 @@ BLOCKED_JSON = "blocked_setups_clean_v1.json"
 BLOCKED_CSV = "blocked_setups_clean_v1.csv"
 PREPARE_JSON = "prepare_validation_clean_v1.json"
 PREPARE_CSV = "prepare_validation_clean_v1.csv"
+SETUPS_JSON = "setup_lifecycle_clean_v1.json"
+SETUPS_CSV = "setup_lifecycle_clean_v1.csv"
 
 # ---- Clean V1 rules agreed in chat ----
 EMA_FAST = 34
@@ -43,6 +45,8 @@ RISK_WARN_ATR = 1.50
 RISK_HIGH_ATR = 2.00
 MAX_STOP_ATR = 2.50
 PREPARE_VALIDATE_MIN = 60
+TRIGGER_RETEST_ATR = 0.10
+EVENT_LOOKBACK_MIN = 12
 OI_FLAT_PCT = 0.0010
 CVD_FLAT_REL = 0.05
 NEWS_NOTIFY_COOLDOWN = 3 * 3600
@@ -142,6 +146,52 @@ def current_15m_candle():
         "confirm": str(x[8]) if len(x) > 8 else "0",
     }
 
+
+
+def recent_market_candles(bar="1m", count=20):
+    """Recent candles including the currently forming bar. Used only for event detection.
+
+    We do not persist the full 1m stream. This lets a 5-minute GitHub schedule detect
+    a trigger/TP/SL that happened between runs without turning the repo into a tick store.
+    """
+    data = okx_public("/api/v5/market/candles", {"instId": OKX_SYMBOL, "bar": bar, "limit": count})
+    out = []
+    for x in data:
+        if len(x) < 6:
+            continue
+        vol = num(x[6], num(x[5], 0.0)) if len(x) > 6 else num(x[5], 0.0)
+        out.append({
+            "time": int(x[0]) // 1000,
+            "open": float(x[1]), "high": float(x[2]), "low": float(x[3]),
+            "close": float(x[4]), "volume": float(vol or 0.0),
+            "confirm": str(x[8]) if len(x) > 8 else "0",
+        })
+    out.sort(key=lambda r: r["time"])
+    return out[-count:]
+
+
+def event_window(state):
+    """Return only the 1m bars that cover the gap since the previous scheduled run."""
+    try:
+        rows = recent_market_candles("1m", EVENT_LOOKBACK_MIN)
+    except Exception as e:
+        print("1m event window unavailable:", e)
+        return []
+    if not rows:
+        return []
+    last_scan = int(state.get("last_event_scan", 0) or 0)
+    if last_scan:
+        use = [r for r in rows if int(r["time"]) >= last_scan - 60]
+    else:
+        use = rows[-6:]
+    state["last_event_scan"] = max(int(r["time"]) for r in rows)
+    return use or rows[-2:]
+
+
+def window_high_low(rows, fallback):
+    if not rows:
+        return float(fallback), float(fallback)
+    return max(float(r["high"]) for r in rows), min(float(r["low"]) for r in rows)
 
 def ticker_price():
     d = okx_public("/api/v5/market/ticker", {"instId": OKX_SYMBOL})
@@ -280,18 +330,28 @@ def volume_context(rows15, current_bar=None):
 def regime(rows15, a):
     closes = [float(r["close"]) for r in rows15]
     e34s, e50s = ema_series(closes, 34), ema_series(closes, 50)
+    if not e34s or not e50s:
+        return {"state": "RANGE", "ema_separation_atr": 0.0, "crossings": 0, "s34": 0.0, "s50": 0.0}
     e34, e50 = e34s[-1], e50s[-1]
     sep = abs(e34-e50)/a if a else 0.0
-    recent = rows15[-12:]
+
+    # Compare every recent close with the EMA values that existed on that same bar.
+    # The old version compared old candles with today's EMA values, which could
+    # misclassify trend/range after a strong move.
+    start_i = max(0, len(rows15)-12)
     crossings = 0
     last_side = None
-    for r in recent:
-        c = float(r["close"])
-        side = 1 if c > max(e34, e50) else -1 if c < min(e34, e50) else 0
+    for i in range(start_i, len(rows15)):
+        if i >= len(e34s) or i >= len(e50s) or e34s[i] is None or e50s[i] is None:
+            continue
+        c = float(rows15[i]["close"])
+        lo, hi = sorted((float(e34s[i]), float(e50s[i])))
+        side = 1 if c > hi else -1 if c < lo else 0
         if last_side not in (None, 0) and side not in (0, last_side):
             crossings += 1
         if side != 0:
             last_side = side
+
     vals34 = [x for x in e34s if x is not None]
     vals50 = [x for x in e50s if x is not None]
     s34 = (vals34[-1] - vals34[-5]) / a if a and len(vals34) >= 5 else 0.0
@@ -302,61 +362,82 @@ def regime(rows15, a):
 
 
 def detect_pullback_setup(rows15, a, side):
-    highs, lows = significant_pivots(rows15, a, 0.20)
-    if side == "LONG":
-        # Find a prior low -> impulse high -> pullback low -> local trigger high after pullback.
-        for pl in reversed(lows[-8:]):
-            after_highs = [h for h in highs if h[0] > pl[0]]
-            if not after_highs:
+    """Generalized continuation detector: impulse -> correction -> hold -> re-launch.
+
+    It intentionally does not require an EMA touch, a long wick, or a rigid multi-pivot
+    template. A single local turn anchors the correction while impulse size, retracement
+    and structure survival decide whether it is meaningful.
+    """
+    if len(rows15) < 16 or not a or a <= 0:
+        return None
+    n = len(rows15)
+    candidates = []
+
+    # Look only at fresh correction turns. One confirming bar is enough; we do not wait
+    # for a 2-2 pivot, which was a major source of late/missed continuation signals.
+    for i in range(max(5, n-12), n-1):
+        prev_r, r, next_r = rows15[i-1], rows15[i], rows15[i+1]
+        prior = rows15[max(0, i-8):i]
+        if len(prior) < 4:
+            continue
+
+        if side == "LONG":
+            is_turn = float(r["low"]) < float(prev_r["low"]) and float(r["low"]) <= float(next_r["low"])
+            if not is_turn:
                 continue
-            ih = after_highs[0]
-            if ih[1] - pl[1] < IMPULSE_MIN_ATR * a:
+            start_row = min(prior, key=lambda x: float(x["low"]))
+            start_idx = rows15.index(start_row)
+            pre_impulse = rows15[start_idx:i]
+            if not pre_impulse:
                 continue
-            after_lows = [l for l in lows if l[0] > ih[0]]
-            if not after_lows:
+            peak_row = max(pre_impulse, key=lambda x: float(x["high"]))
+            peak = float(peak_row["high"]); start_price = float(start_row["low"]); pb = float(r["low"])
+            impulse = peak - start_price
+            correction = peak - pb
+            if impulse < IMPULSE_MIN_ATR*a or correction < PULLBACK_MIN_ATR*a:
                 continue
-            pb = after_lows[-1]
-            if ih[1] - pb[1] < PULLBACK_MIN_ATR * a:
+            # Keep at least 15% of the impulse; a near-full retrace is no longer a healthy continuation.
+            if pb <= start_price + 0.15*impulse:
                 continue
-            if pb[1] <= pl[1]:
+            trigger = float(r["high"])
+            if trigger <= pb:
                 continue
-            trig_highs = [h for h in highs if h[0] > pb[0]]
-            if not trig_highs:
+            candidates.append({
+                "side": side, "kind": "PULLBACK", "label": "回踩再啟動",
+                "trigger": trigger, "trigger_time": int(r["time"]),
+                "defense": pb, "defense_time": int(r["time"]),
+                "impulse_start": start_price, "impulse_end": peak,
+                "setup_key": f"CONT:L:{int(r['time'])}"
+            })
+        else:
+            is_turn = float(r["high"]) > float(prev_r["high"]) and float(r["high"]) >= float(next_r["high"])
+            if not is_turn:
                 continue
-            tr = trig_highs[-1]
-            if tr[1] <= pb[1]:
+            start_row = max(prior, key=lambda x: float(x["high"]))
+            start_idx = rows15.index(start_row)
+            pre_impulse = rows15[start_idx:i]
+            if not pre_impulse:
                 continue
-            return {"side": side, "kind": "PULLBACK", "label": "回踩再啟動",
-                    "trigger": tr[1], "trigger_time": tr[0], "defense": pb[1], "defense_time": pb[0],
-                    "impulse_start": pl[1], "impulse_end": ih[1],
-                    "setup_key": f"PB:L:{pl[0]}:{ih[0]}:{pb[0]}:{tr[0]}"}
-    else:
-        for ph in reversed(highs[-8:]):
-            after_lows = [l for l in lows if l[0] > ph[0]]
-            if not after_lows:
+            trough_row = min(pre_impulse, key=lambda x: float(x["low"]))
+            trough = float(trough_row["low"]); start_price = float(start_row["high"]); pb = float(r["high"])
+            impulse = start_price - trough
+            correction = pb - trough
+            if impulse < IMPULSE_MIN_ATR*a or correction < PULLBACK_MIN_ATR*a:
                 continue
-            il = after_lows[0]
-            if ph[1] - il[1] < IMPULSE_MIN_ATR * a:
+            if pb >= start_price - 0.15*impulse:
                 continue
-            after_highs = [h for h in highs if h[0] > il[0]]
-            if not after_highs:
+            trigger = float(r["low"])
+            if trigger >= pb:
                 continue
-            pb = after_highs[-1]
-            if pb[1] - il[1] < PULLBACK_MIN_ATR * a:
-                continue
-            if pb[1] >= ph[1]:
-                continue
-            trig_lows = [l for l in lows if l[0] > pb[0]]
-            if not trig_lows:
-                continue
-            tr = trig_lows[-1]
-            if tr[1] >= pb[1]:
-                continue
-            return {"side": side, "kind": "PULLBACK", "label": "回踩再啟動",
-                    "trigger": tr[1], "trigger_time": tr[0], "defense": pb[1], "defense_time": pb[0],
-                    "impulse_start": ph[1], "impulse_end": il[1],
-                    "setup_key": f"PB:S:{ph[0]}:{il[0]}:{pb[0]}:{tr[0]}"}
-    return None
+            candidates.append({
+                "side": side, "kind": "PULLBACK", "label": "回踩再啟動",
+                "trigger": trigger, "trigger_time": int(r["time"]),
+                "defense": pb, "defense_time": int(r["time"]),
+                "impulse_start": start_price, "impulse_end": trough,
+                "setup_key": f"CONT:S:{int(r['time'])}"
+            })
+
+    return candidates[-1] if candidates else None
 
 
 def detect_breakout_setup(rows15, a, side):
@@ -614,6 +695,14 @@ def load_state():
     s.setdefault("prepare_history", [])
     s.setdefault("oi_history", [])
     s.setdefault("news", {"seen": [], "last_notify": 0})
+    s.setdefault("last_event_scan", 0)
+    s.setdefault("setup_lifecycle", [])
+    # Historical trades created before the risk guard remain visible, but they must not
+    # contaminate performance statistics for the current ruleset.
+    for t in s.get("trades", []) + s.get("history", []):
+        if float(t.get("risk_atr") or 0.0) > MAX_STOP_ATR:
+            t["excluded_from_stats"] = True
+            t["legacy_rule_mismatch"] = True
     return s
 
 
@@ -650,16 +739,49 @@ def setup_signature(setup):
     return setup["setup_key"]
 
 
+def touch_setup_lifecycle(state, side, setup, price, status=None, note=None):
+    now = now_utc()
+    rows = state.setdefault("setup_lifecycle", [])
+    row = next((x for x in rows if x.get("setup_key") == setup["setup_key"]), None)
+    if row is None:
+        row = {
+            "setup_key": setup["setup_key"], "side": side, "type": setup["kind"],
+            "label": setup["label"], "trigger": float(setup["trigger"]),
+            "defense": float(setup["defense"]), "first_seen": now, "first_seen_iso": iso(now),
+            "last_seen": now, "last_seen_iso": iso(now), "last_price": float(price),
+            "status": status or "DETECTED", "last_note": note, "block_count": 0,
+        }
+        rows.append(row)
+    else:
+        row["last_seen"] = now; row["last_seen_iso"] = iso(now); row["last_price"] = float(price)
+        if status:
+            row["status"] = status
+        if note:
+            row["last_note"] = note
+    state["setup_lifecycle"] = rows[-2000:]
+    return row
+
+
 def record_blocked(state, side, setup, reason, price, extra=None):
-    key = f"{setup['setup_key']}:{reason}"
-    if any(x.get("key") == key for x in state["blocked"][-200:]):
-        return
-    row = {"key": key, "time": now_utc(), "time_iso": iso(now_utc()), "side": side,
-           "type": setup["kind"], "reason": reason, "trigger": setup["trigger"], "price": price}
+    """One evolving blocked record per setup instead of appending the same setup every run."""
+    now = now_utc()
+    row = next((x for x in reversed(state["blocked"]) if x.get("setup_key") == setup["setup_key"]), None)
+    if row is None:
+        row = {
+            "key": setup["setup_key"], "setup_key": setup["setup_key"],
+            "first_time": now, "first_time_iso": iso(now), "time": now, "time_iso": iso(now),
+            "side": side, "type": setup["kind"], "reason": reason,
+            "trigger": setup["trigger"], "price": price, "block_count": 1,
+        }
+        state["blocked"].append(row)
+    else:
+        row["time"] = now; row["time_iso"] = iso(now); row["reason"] = reason; row["price"] = price
+        row["block_count"] = int(row.get("block_count", 1)) + 1
     if extra:
         row.update(extra)
-    state["blocked"].append(row)
     state["blocked"] = state["blocked"][-1000:]
+    life = touch_setup_lifecycle(state, side, setup, price, "BLOCKED", reason)
+    life["block_count"] = int(life.get("block_count", 0)) + 1
 
 
 def create_prepare_validation(state, side, setup, price, a, trend, ema_pos, vol, reg, oi, cvd):
@@ -709,10 +831,13 @@ def mark_prepare_promoted(state, setup_key, trade_id):
             p["formal_trade_id"] = trade_id
             p["formal_at"] = now
             p["formal_delay_min"] = round((now - int(p["opened_at"])) / 60, 1)
+            for life in state.get("setup_lifecycle", []):
+                if life.get("setup_key") == setup_key:
+                    life["status"] = "FORMAL"; life["last_note"] = f"建立模擬單 #{trade_id}"
             return
 
 
-def update_prepare_validations(state, live_price):
+def update_prepare_validations(state, live_price, event_rows=None):
     remain = []
     now = now_utc()
     for p in state.get("prepare_active", []):
@@ -721,14 +846,16 @@ def update_prepare_validations(state, live_price):
         if a <= 0:
             remain.append(p)
             continue
+        p_events = [r for r in (event_rows or []) if int(r.get("time", 0)) >= int(p.get("opened_at", 0)) - 60]
+        wh, wl = window_high_low(p_events, live_price)
         if p["side"] == "LONG":
-            p["best_price"] = max(float(p.get("best_price", entry)), live_price)
-            p["worst_price"] = min(float(p.get("worst_price", entry)), live_price)
+            p["best_price"] = max(float(p.get("best_price", entry)), wh)
+            p["worst_price"] = min(float(p.get("worst_price", entry)), wl)
             p["mfe_atr"] = max(float(p.get("mfe_atr", 0.0)), (p["best_price"] - entry) / a)
             p["mae_atr"] = max(float(p.get("mae_atr", 0.0)), (entry - p["worst_price"]) / a)
         else:
-            p["best_price"] = min(float(p.get("best_price", entry)), live_price)
-            p["worst_price"] = max(float(p.get("worst_price", entry)), live_price)
+            p["best_price"] = min(float(p.get("best_price", entry)), wl)
+            p["worst_price"] = max(float(p.get("worst_price", entry)), wh)
             p["mfe_atr"] = max(float(p.get("mfe_atr", 0.0)), (entry - p["best_price"]) / a)
             p["mae_atr"] = max(float(p.get("mae_atr", 0.0)), (p["worst_price"] - entry) / a)
         elapsed = (now - int(p["opened_at"])) / 60
@@ -768,40 +895,50 @@ def create_trade(state, side, setup, plan, ctx):
     return t
 
 
-def update_trades(state, live_price):
+def update_trades(state, live_price, event_rows=None):
     remain = []
+    bars = event_rows or [{"time": now_utc(), "high": live_price, "low": live_price, "close": live_price}]
     for t in state["trades"]:
         entry, risk = float(t["entry"]), float(t["risk"])
-        if t["side"] == "LONG":
-            t["best_price"] = max(float(t.get("best_price", entry)), live_price)
-            t["worst_price"] = min(float(t.get("worst_price", entry)), live_price)
-            t["mfe_r"] = max(float(t.get("mfe_r", 0)), (t["best_price"]-entry)/risk)
-            t["mae_r"] = max(float(t.get("mae_r", 0)), (entry-t["worst_price"])/risk)
-            hit_tp1 = live_price >= float(t["tp1"])
-            hit_tp2 = t.get("tp2") is not None and live_price >= float(t["tp2"])
-            hit_sl = live_price <= float(t["sl"])
-        else:
-            t["best_price"] = min(float(t.get("best_price", entry)), live_price)
-            t["worst_price"] = max(float(t.get("worst_price", entry)), live_price)
-            t["mfe_r"] = max(float(t.get("mfe_r", 0)), (entry-t["best_price"])/risk)
-            t["mae_r"] = max(float(t.get("mae_r", 0)), (t["worst_price"]-entry)/risk)
-            hit_tp1 = live_price <= float(t["tp1"])
-            hit_tp2 = t.get("tp2") is not None and live_price <= float(t["tp2"])
-            hit_sl = live_price >= float(t["sl"])
+        closed = False
+        trade_bars = [r for r in bars if int(r.get("time", 0)) >= int(t.get("opened_at", 0)) - 60] or [{"time": now_utc(), "high": live_price, "low": live_price, "close": live_price}]
+        for bar in trade_bars:
+            hi, lo = float(bar["high"]), float(bar["low"])
+            if t["side"] == "LONG":
+                t["best_price"] = max(float(t.get("best_price", entry)), hi)
+                t["worst_price"] = min(float(t.get("worst_price", entry)), lo)
+                t["mfe_r"] = max(float(t.get("mfe_r", 0)), (t["best_price"]-entry)/risk)
+                t["mae_r"] = max(float(t.get("mae_r", 0)), (entry-t["worst_price"])/risk)
+                hit_tp1 = hi >= float(t["tp1"]); hit_tp2 = t.get("tp2") is not None and hi >= float(t["tp2"]); hit_sl = lo <= float(t["sl"])
+            else:
+                t["best_price"] = min(float(t.get("best_price", entry)), lo)
+                t["worst_price"] = max(float(t.get("worst_price", entry)), hi)
+                t["mfe_r"] = max(float(t.get("mfe_r", 0)), (entry-t["best_price"])/risk)
+                t["mae_r"] = max(float(t.get("mae_r", 0)), (t["worst_price"]-entry)/risk)
+                hit_tp1 = lo <= float(t["tp1"]); hit_tp2 = t.get("tp2") is not None and lo <= float(t["tp2"]); hit_sl = hi >= float(t["sl"])
+
+            # OHLC cannot tell sequence when TP and SL are both inside the same 1m bar.
+            # Mark it and use the conservative outcome instead of pretending precision.
+            if hit_sl and (hit_tp1 or hit_tp2):
+                t["intrabar_ambiguous"] = True
+                hit_tp1 = hit_tp2 = False
+
+            if hit_tp1 and not t.get("tp1_hit"):
+                t["tp1_hit"] = True
+                send_discord(f"🎯 模擬單 #{t['id']}｜TP1 達成\n{zh_side(t['side'])}｜Entry ${entry:,.0f}\nMFE：+{t['mfe_r']:.2f}R｜MAE：-{t['mae_r']:.2f}R")
+                # If Space never supported a TP2, the published trade plan ends at TP1.
+                if t.get("tp2") is None:
+                    t["status"] = "TP1"; closed = True
+            if not closed and hit_tp2 and not t.get("tp2_hit"):
+                t["tp2_hit"] = True; t["status"] = "TP2"; closed = True
+                send_discord(f"🏁 模擬單 #{t['id']}｜TP2 達成\n{zh_side(t['side'])}｜MFE：+{t['mfe_r']:.2f}R｜MAE：-{t['mae_r']:.2f}R")
+            elif not closed and hit_sl:
+                t["status"] = "TP1_THEN_SL" if t.get("tp1_hit") else "SL"; closed = True
+                send_discord(f"❌ 模擬單 #{t['id']}｜停損\n{zh_side(t['side'])}｜結果：{t['status']}\nMFE：+{t['mfe_r']:.2f}R｜MAE：-{t['mae_r']:.2f}R")
+            if closed:
+                t["closed_at"] = int(bar.get("time", now_utc())); t["closed_iso"] = iso(t["closed_at"]); break
 
         t["duration_min"] = int((now_utc()-int(t["opened_at"]))/60)
-        if hit_tp1 and not t.get("tp1_hit"):
-            t["tp1_hit"] = True
-            send_discord(f"🎯 模擬單 #{t['id']}｜TP1 達成\n{zh_side(t['side'])}｜Entry ${entry:,.0f}\nMFE：+{t['mfe_r']:.2f}R｜MAE：-{t['mae_r']:.2f}R")
-        if hit_tp2 and not t.get("tp2_hit"):
-            t["tp2_hit"] = True
-            t["status"] = "TP2"
-            t["closed_at"] = now_utc(); t["closed_iso"] = iso(now_utc())
-            send_discord(f"🏁 模擬單 #{t['id']}｜TP2 達成\n{zh_side(t['side'])}｜MFE：+{t['mfe_r']:.2f}R｜MAE：-{t['mae_r']:.2f}R")
-        elif hit_sl:
-            t["status"] = "TP1_THEN_SL" if t.get("tp1_hit") else "SL"
-            t["closed_at"] = now_utc(); t["closed_iso"] = iso(now_utc())
-            send_discord(f"❌ 模擬單 #{t['id']}｜停損\n{zh_side(t['side'])}｜結果：{t['status']}\nMFE：+{t['mfe_r']:.2f}R｜MAE：-{t['mae_r']:.2f}R")
         if t["status"] == "OPEN":
             remain.append(t)
         else:
@@ -815,12 +952,12 @@ def export_data(state):
     rows = state["history"] + state["trades"]
     fields = ["id","setup_key","side","trigger_type","opened_iso","closed_iso","status","entry","sl","tp1","tp2",
               "risk_atr","trigger","extension_atr","trend_1h","ema_position","volume_ratio","regime","space_r",
-              "oi_dir","cvd_dir","flow_quality","mfe_r","mae_r","duration_min"]
+              "oi_dir","cvd_dir","flow_quality","mfe_r","mae_r","duration_min","excluded_from_stats","legacy_rule_mismatch","intrabar_ambiguous"]
     with open(TRADES_CSV, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
         w.writeheader(); w.writerows(rows)
     save_json(BLOCKED_JSON, state["blocked"])
-    bfields = ["time_iso","side","type","reason","trigger","price","volume_ratio","space_r","extension_atr"]
+    bfields = ["first_time_iso","time_iso","setup_key","side","type","reason","trigger","price","block_count","volume_ratio","space_r","extension_atr"]
     with open(BLOCKED_CSV, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.DictWriter(f, fieldnames=bfields, extrasaction="ignore")
         w.writeheader(); w.writerows(state["blocked"])
@@ -837,6 +974,13 @@ def export_data(state):
     with open(PREPARE_CSV, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.DictWriter(f, fieldnames=pfields, extrasaction="ignore")
         w.writeheader(); w.writerows(prepare_rows)
+
+    setup_rows = state.get("setup_lifecycle", [])
+    save_json(SETUPS_JSON, setup_rows)
+    sfields = ["setup_key","side","type","label","trigger","defense","first_seen_iso","last_seen_iso","last_price","status","last_note","block_count"]
+    with open(SETUPS_CSV, "w", newline="", encoding="utf-8-sig") as f:
+        w = csv.DictWriter(f, fieldnames=sfields, extrasaction="ignore")
+        w.writeheader(); w.writerows(setup_rows)
 
 
 def major_news_class(title):
@@ -965,10 +1109,12 @@ def maybe_prepare(state, side, setup, price, trend, ema_pos, vol, reg, oi, cvd):
         dist = (setup["trigger"] - price) / atr15_global
     else:
         dist = (price - setup["trigger"]) / atr15_global
+    touch_setup_lifecycle(state, side, setup, price)
     if 0 <= dist <= PREPARE_DISTANCE_ATR:
         state["prepare_seen"].append(sig)
         state["prepare_seen"] = state["prepare_seen"][-500:]
         create_prepare_validation(state, side, setup, price, atr15_global, trend, ema_pos, vol, reg, oi, cvd)
+        touch_setup_lifecycle(state, side, setup, price, "PREPARED", "進入準備距離")
         flow, icon = flow_quality(side, oi, cvd)
         send_discord(
             f"👀 BTC {zh_side(side)}準備\n"
@@ -983,13 +1129,23 @@ def maybe_prepare(state, side, setup, price, trend, ema_pos, vol, reg, oi, cvd):
         )
 
 
-def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd):
+def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd, event_rows=None):
     sig = setup_signature(setup)
     if sig in state["formal_seen"]:
         return
-    ext = setup["extension_atr"]
-    buffer_ok = price >= setup["trigger"] + BREAK_BUFFER_ATR*a if side == "LONG" else price <= setup["trigger"] - BREAK_BUFFER_ATR*a
-    if not buffer_ok:
+    ext = (price - setup["trigger"])/a if side == "LONG" else (setup["trigger"] - price)/a
+    wh, wl = window_high_low(event_rows or [], price)
+    trigger_level = setup["trigger"] + BREAK_BUFFER_ATR*a if side == "LONG" else setup["trigger"] - BREAK_BUFFER_ATR*a
+    crossed = wh >= trigger_level if side == "LONG" else wl <= trigger_level
+    if not crossed:
+        return
+    touch_setup_lifecycle(state, side, setup, price, "TRIGGERED", "1分鐘區間已穿越觸發價")
+
+    # If the move crossed between GitHub runs and then made a small retest, keep the
+    # opportunity alive. A deep failure back through the trigger is not treated as a fill.
+    if side == "LONG" and price < setup["trigger"] - TRIGGER_RETEST_ATR*a:
+        return
+    if side == "SHORT" and price > setup["trigger"] + TRIGGER_RETEST_ATR*a:
         return
 
     plan = risk_plan(setup, side, price, a)
@@ -1026,6 +1182,7 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
            "volume_ratio": vol["ratio"], "regime": reg["state"], "space_r": space["space_r"],
            "oi_dir": oi["dir"], "cvd_dir": cvd["dir"], "flow_quality": flow}
     t = create_trade(state, side, setup, plan, ctx)
+    touch_setup_lifecycle(state, side, setup, price, "FORMAL", f"建立模擬單 #{t["id"]}")
     mark_prepare_promoted(state, setup["setup_key"], t["id"])
     state["formal_seen"].append(sig)
     state["formal_seen"] = state["formal_seen"][-500:]
@@ -1054,12 +1211,15 @@ atr15_global = 1.0
 
 
 def manual_summary(state, price, trend, reg, oi, cvd):
-    completed = len(state.get("history", []))
-    open_n = len(state.get("trades", []))
+    valid_history = [x for x in state.get("history", []) if not x.get("excluded_from_stats")]
+    valid_open = [x for x in state.get("trades", []) if not x.get("excluded_from_stats")]
+    completed = len(valid_history)
+    open_n = len(valid_open)
     p_done = len(state.get("prepare_history", []))
     p_open = len(state.get("prepare_active", []))
-    last = state.get("history", [])[-20:]
-    wins = sum(1 for x in last if x.get("status") in ("TP2", "TP1_THEN_SL") and x.get("tp1_hit"))
+    last = valid_history[-20:]
+    wins = sum(1 for x in last if x.get("status") in ("TP1", "TP2", "TP1_THEN_SL") and x.get("tp1_hit"))
+    excluded = len(state.get("history", [])) + len(state.get("trades", [])) - completed - open_n
     base = (
         f"📊 BTC Radar Clean V1｜手動查詢\nBTC：${price:,.0f}\n"
         f"1H背景：{zh_dir(trend['state'])}\n市場狀態：{'趨勢' if reg['state']=='TREND' else '震盪'}\n"
@@ -1067,6 +1227,8 @@ def manual_summary(state, price, trend, reg, oi, cvd):
         f"👀 準備驗證 完成：{p_done}｜追蹤中：{p_open}\n"
         f"⚡ 正式單 完成：{completed}｜進行中：{open_n}\n"
     )
+    if excluded:
+        base += f"舊規則排除樣本：{excluded}\n"
     if last:
         base += f"最近20筆曾到TP1：{wins}/{len(last)}"
     else:
@@ -1095,12 +1257,14 @@ def main():
     vol = volume_context(rows15, current_bar)
     reg = regime(rows15, a)
 
+    events = event_window(state)
+
     update_oi(state)
     oi = oi_context(state)
     cvd = cvd_proxy()
 
-    update_trades(state, live)
-    update_prepare_validations(state, live)
+    update_trades(state, live, events)
+    update_prepare_validations(state, live, events)
     check_news(state)
 
     if MANUAL_RUN:
@@ -1111,7 +1275,7 @@ def main():
             if not setup:
                 continue
             maybe_prepare(state, side, setup, live, trend, ema_pos, vol, reg, oi, cvd)
-            formal_check(state, side, setup, live, rows15, a, trend, ema_pos, vol, reg, oi, cvd)
+            formal_check(state, side, setup, live, rows15, a, trend, ema_pos, vol, reg, oi, cvd, events)
 
     export_data(state)
     save_json(STATE_FILE, state)
