@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84059.7,
-      "duration_min": 1321
+      "duration_min": 1331
     },
     {
       "id": 4,
@@ -64,7 +64,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84059.7,
-      "duration_min": 1199
+      "duration_min": 1209
     }
   ],
   "history": [
@@ -1463,6 +1463,19 @@
       "volume_ratio": 3.603938091954327,
       "space_r": 0.1649773363628963,
       "extension_atr": 1.977934054827993
+    },
+    {
+      "key": "BO:S:1790640900:停損距離過大（4.39 ATR） / 前方空間不足 / 價格過度延伸",
+      "time": 1790645711,
+      "time_iso": "2026-09-29T01:35:11+00:00",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "reason": "停損距離過大（4.39 ATR） / 前方空間不足 / 價格過度延伸",
+      "trigger": 83307.0,
+      "price": 82866.9,
+      "volume_ratio": 2.886765148460693,
+      "space_r": 0.0025321444312259183,
+      "extension_atr": 2.5734692172751186
     }
   ],
   "prepare_seen": [
@@ -3582,51 +3595,56 @@
     {
       "time": 1790645122,
       "value": 28135.916700000103
+    },
+    {
+      "time": 1790645709,
+      "value": 28192.39340000009
     }
   ],
   "news": {
     "seen": [
-      "2c54f27485a4fcae",
-      "38c3a3e1a9f64c9f",
-      "8bf6f66be40d8550",
       "deefcc8ae178a300",
-      "01bf4d3dfc90952d",
-      "673427af56eb3553",
-      "43d5dd2581355593",
+      "a0792699ec630637",
+      "94d0a2ec11ce4bbc",
+      "4586e62c5fddb046",
+      "e05cc633facc8d4e",
+      "5354bd9a9bd4fd81",
+      "fe4ac5a66962a769",
+      "b8644dcbde37106a",
+      "be08dfc96ecf8c72",
+      "73e90c66645f5d59",
+      "38c3a3e1a9f64c9f",
+      "54f58f6d7a4fa207",
       "6340d211369b888d",
-      "9e753999bb334d84",
+      "d02c5f561f046c60",
+      "a16ec0baa53c3925",
+      "e715914ebf311c0f",
+      "673427af56eb3553",
+      "42cb1af7dadfd536",
+      "360276899cb12ace",
+      "01bf4d3dfc90952d",
       "f9d847b30a35efca",
       "70c1407e4dfc4d25",
-      "73e90c66645f5d59",
-      "1e830ea6d1837949",
-      "503329e6bd73225f",
-      "360276899cb12ace",
-      "42cb1af7dadfd536",
-      "caa32c74016f6df9",
-      "e715914ebf311c0f",
-      "0c53c954fdb0aa9f",
       "45d791ae8b948fb9",
-      "eabacffa4722d70b",
-      "54f58f6d7a4fa207",
-      "a0792699ec630637",
-      "4e9bbdc275116e1f",
-      "eb9d3d0684bcedfb",
-      "5354bd9a9bd4fd81",
-      "65e67eba4e10d07e",
-      "04fa8d398d457673",
-      "d02c5f561f046c60",
-      "e05cc633facc8d4e",
-      "acd22f7de9e1a5b7",
-      "b8644dcbde37106a",
-      "fe4ac5a66962a769",
-      "be08dfc96ecf8c72",
+      "1e830ea6d1837949",
       "344d160658199a5e",
-      "94d0a2ec11ce4bbc",
-      "45c0ceb8dc6ff2bb",
+      "9e753999bb334d84",
       "cb6f7578a6781b37",
-      "4586e62c5fddb046"
+      "eb9d3d0684bcedfb",
+      "43d5dd2581355593",
+      "04fa8d398d457673",
+      "eabacffa4722d70b",
+      "caa32c74016f6df9",
+      "acd22f7de9e1a5b7",
+      "45c0ceb8dc6ff2bb",
+      "4e9bbdc275116e1f",
+      "503329e6bd73225f",
+      "2c54f27485a4fcae",
+      "0c53c954fdb0aa9f",
+      "65e67eba4e10d07e",
+      "8bf6f66be40d8550"
     ],
-    "last_notify": 1790621430
+    "last_notify": 1790645710
   },
   "next_prepare_id": 5,
   "prepare_active": [],
