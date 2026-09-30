@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84498.8,
-      "duration_min": 3096,
+      "duration_min": 3111,
       "excluded_from_stats": true,
       "legacy_rule_mismatch": true
     },
@@ -66,7 +66,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84498.8,
-      "duration_min": 2974,
+      "duration_min": 2989,
       "excluded_from_stats": true,
       "legacy_rule_mismatch": true
     }
@@ -1947,6 +1947,23 @@
       "volume_ratio": 1.738219475844238,
       "space_r": 0.3087825931182218,
       "extension_atr": -0.0014631342425454551
+    },
+    {
+      "key": "BO:S:1790745300",
+      "setup_key": "BO:S:1790745300",
+      "first_time": 1790752514,
+      "first_time_iso": "2026-09-30T07:15:14+00:00",
+      "time": 1790752514,
+      "time_iso": "2026-09-30T07:15:14+00:00",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "reason": "停損距離過大（2.70 ATR） / 前方空間不足 / 價格過度延伸",
+      "trigger": 83149.9,
+      "price": 83000.0,
+      "block_count": 1,
+      "volume_ratio": 1.0987955251426038,
+      "space_r": 0.0004801340259768388,
+      "extension_atr": 0.9712593141111248
     }
   ],
   "prepare_seen": [
@@ -4654,6 +4671,10 @@
     {
       "time": 1790751633,
       "value": 28701.04900000008
+    },
+    {
+      "time": 1790752512,
+      "value": 28771.370400000083
     }
   ],
   "news": {
@@ -5527,7 +5548,7 @@
       "closed_iso": "2026-09-30T07:00:33+00:00"
     }
   ],
-  "last_event_scan": 1790751600,
+  "last_event_scan": 1790752500,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -6034,12 +6055,28 @@
       "defense": 83149.9,
       "first_seen": 1790748569,
       "first_seen_iso": "2026-09-30T06:09:29+00:00",
-      "last_seen": 1790751634,
-      "last_seen_iso": "2026-09-30T07:00:34+00:00",
-      "last_price": 82960.3,
+      "last_seen": 1790752514,
+      "last_seen_iso": "2026-09-30T07:15:14+00:00",
+      "last_price": 83000.0,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
+    },
+    {
+      "setup_key": "BO:S:1790745300",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 83149.9,
+      "defense": 83393.4,
+      "first_seen": 1790752514,
+      "first_seen_iso": "2026-09-30T07:15:14+00:00",
+      "last_seen": 1790752514,
+      "last_seen_iso": "2026-09-30T07:15:14+00:00",
+      "last_price": 83000.0,
+      "status": "BLOCKED",
+      "last_note": "停損距離過大（2.70 ATR） / 前方空間不足 / 價格過度延伸",
+      "block_count": 1
     }
   ]
 }
