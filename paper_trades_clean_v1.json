@@ -30,7 +30,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84498.8,
-      "duration_min": 2780,
+      "duration_min": 2790,
       "excluded_from_stats": true,
       "legacy_rule_mismatch": true
     },
@@ -64,7 +64,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84498.8,
-      "duration_min": 2659,
+      "duration_min": 2669,
       "excluded_from_stats": true,
       "legacy_rule_mismatch": true
     }
