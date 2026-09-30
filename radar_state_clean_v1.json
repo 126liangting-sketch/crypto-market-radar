@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84498.8,
-      "duration_min": 3365,
+      "duration_min": 3379,
       "excluded_from_stats": true,
       "legacy_rule_mismatch": true
     },
@@ -66,7 +66,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84498.8,
-      "duration_min": 3244,
+      "duration_min": 3257,
       "excluded_from_stats": true,
       "legacy_rule_mismatch": true
     }
@@ -1998,6 +1998,23 @@
       "volume_ratio": 0.9171387010441405,
       "space_r": 0.09792804979809087,
       "extension_atr": 0.6473789543906308
+    },
+    {
+      "key": "CONT:L:1790766000",
+      "setup_key": "CONT:L:1790766000",
+      "first_time": 1790768590,
+      "first_time_iso": "2026-09-30T11:43:10+00:00",
+      "time": 1790768590,
+      "time_iso": "2026-09-30T11:43:10+00:00",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "reason": "前方強結構區空間不足",
+      "trigger": 83873.3,
+      "price": 83894.4,
+      "block_count": 1,
+      "volume_ratio": 0.8147759717227459,
+      "space_r": 0.09857160496747477,
+      "extension_atr": 0.11310207519713508
     }
   ],
   "prepare_seen": [
@@ -4790,6 +4807,10 @@
     {
       "time": 1790767803,
       "value": 28265.32880000009
+    },
+    {
+      "time": 1790768589,
+      "value": 28272.234000000102
     }
   ],
   "news": {
@@ -5704,7 +5725,7 @@
       "closed_iso": "2026-09-30T11:30:04+00:00"
     }
   ],
-  "last_event_scan": 1790767800,
+  "last_event_scan": 1790768580,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -6323,12 +6344,12 @@
       "defense": 83650.5,
       "first_seen": 1790767805,
       "first_seen_iso": "2026-09-30T11:30:05+00:00",
-      "last_seen": 1790767805,
-      "last_seen_iso": "2026-09-30T11:30:05+00:00",
-      "last_price": 83809.1,
-      "status": "DETECTED",
-      "last_note": null,
-      "block_count": 0
+      "last_seen": 1790768590,
+      "last_seen_iso": "2026-09-30T11:43:10+00:00",
+      "last_price": 83894.4,
+      "status": "BLOCKED",
+      "last_note": "前方強結構區空間不足",
+      "block_count": 1
     },
     {
       "setup_key": "BO:S:1790766000",
@@ -6339,9 +6360,9 @@
       "defense": 83921.2,
       "first_seen": 1790767805,
       "first_seen_iso": "2026-09-30T11:30:05+00:00",
-      "last_seen": 1790767805,
-      "last_seen_iso": "2026-09-30T11:30:05+00:00",
-      "last_price": 83809.1,
+      "last_seen": 1790768590,
+      "last_seen_iso": "2026-09-30T11:43:10+00:00",
+      "last_price": 83894.4,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
