@@ -26,11 +26,11 @@
       "worst_price": 83908.5,
       "mfe_atr": 1.851782363977483,
       "mae_atr": 0.3040094503509156,
-      "mfe_atr_30": null,
-      "mae_atr_30": null,
+      "mfe_atr_30": 1.8518,
+      "mae_atr_30": 0.304,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 28
+      "duration_min": 44
     },
     {
       "id": 30,
@@ -58,11 +58,11 @@
       "worst_price": 83802.2,
       "mfe_atr": 1.5377381836179114,
       "mae_atr": 0.12967087354613832,
-      "mfe_atr_30": null,
-      "mae_atr_30": null,
+      "mfe_atr_30": 1.5377,
+      "mae_atr_30": 0.1297,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 17
+      "duration_min": 33
     }
   ],
   "history": [
