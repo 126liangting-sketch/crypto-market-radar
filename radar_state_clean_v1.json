@@ -2092,17 +2092,17 @@
       "setup_key": "BO:S:1790785800",
       "first_time": 1790789159,
       "first_time_iso": "2026-09-30T17:25:59+00:00",
-      "time": 1790789862,
-      "time_iso": "2026-09-30T17:37:42+00:00",
+      "time": 1790790563,
+      "time_iso": "2026-09-30T17:49:23+00:00",
       "side": "SHORT",
       "type": "BREAKOUT",
-      "reason": "成交量過低 / 前方強結構區空間不足 / 偏追價，等待較好位置",
+      "reason": "成交量過低 / 前方強結構區空間不足",
       "trigger": 84164.1,
-      "price": 83942.9,
-      "block_count": 2,
-      "volume_ratio": 0.5282224712709641,
-      "space_r": 0.09569067709778234,
-      "extension_atr": 0.6685087643554458
+      "price": 84032.1,
+      "block_count": 3,
+      "volume_ratio": 0.5894761091846271,
+      "space_r": 0.12179113751990533,
+      "extension_atr": 0.4133303511518676
     }
   ],
   "prepare_seen": [
@@ -4997,6 +4997,10 @@
     {
       "time": 1790789861,
       "value": 27595.193000000076
+    },
+    {
+      "time": 1790790561,
+      "value": 27780.848900000074
     }
   ],
   "news": {
@@ -5090,11 +5094,11 @@
       "worst_price": 83870.4,
       "mfe_atr": 0.0,
       "mae_atr": 0.9764182680473303,
-      "mfe_atr_30": null,
-      "mae_atr_30": null,
+      "mfe_atr_30": 0.0,
+      "mae_atr_30": 0.9764,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 26
+      "duration_min": 38
     }
   ],
   "prepare_history": [
@@ -5983,7 +5987,7 @@
       "closed_iso": "2026-09-30T13:03:12+00:00"
     }
   ],
-  "last_event_scan": 1790789820,
+  "last_event_scan": 1790790540,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -6746,12 +6750,12 @@
       "defense": 84444.0,
       "first_seen": 1790789159,
       "first_seen_iso": "2026-09-30T17:25:59+00:00",
-      "last_seen": 1790789862,
-      "last_seen_iso": "2026-09-30T17:37:42+00:00",
-      "last_price": 83942.9,
+      "last_seen": 1790790563,
+      "last_seen_iso": "2026-09-30T17:49:23+00:00",
+      "last_price": 84032.1,
       "status": "BLOCKED",
-      "last_note": "成交量過低 / 前方強結構區空間不足 / 偏追價，等待較好位置",
-      "block_count": 2
+      "last_note": "成交量過低 / 前方強結構區空間不足",
+      "block_count": 3
     }
   ]
 }
