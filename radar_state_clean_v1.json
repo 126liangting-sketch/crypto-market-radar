@@ -2041,17 +2041,17 @@
       "setup_key": "CONT:S:1790775000",
       "first_time": 1790778933,
       "first_time_iso": "2026-09-30T14:35:33+00:00",
-      "time": 1790779967,
-      "time_iso": "2026-09-30T14:52:47+00:00",
+      "time": 1790780695,
+      "time_iso": "2026-09-30T15:04:55+00:00",
       "side": "SHORT",
       "type": "PULLBACK",
-      "reason": "停損距離過大（3.37 ATR） / 前方強結構區空間不足",
+      "reason": "成交量過低 / 停損距離過大（3.15 ATR） / 前方強結構區空間不足",
       "trigger": 83976.1,
-      "price": 83794.0,
-      "block_count": 2,
-      "volume_ratio": 1.6231036019257068,
-      "space_r": 0.0358769075130779,
-      "extension_atr": 0.3382647577852465
+      "price": 83850.0,
+      "block_count": 3,
+      "volume_ratio": 0.6763993423203253,
+      "space_r": 0.028431164292732215,
+      "extension_atr": 0.2261651592405738
     }
   ],
   "prepare_seen": [
@@ -4897,6 +4897,10 @@
     {
       "time": 1790779966,
       "value": 27633.873500000085
+    },
+    {
+      "time": 1790780694,
+      "value": 27693.800400000084
     }
   ],
   "news": {
@@ -5849,7 +5853,7 @@
       "closed_iso": "2026-09-30T13:03:12+00:00"
     }
   ],
-  "last_event_scan": 1790779920,
+  "last_event_scan": 1790780640,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -6532,12 +6536,12 @@
       "defense": 85525.0,
       "first_seen": 1790776843,
       "first_seen_iso": "2026-09-30T14:00:43+00:00",
-      "last_seen": 1790779967,
-      "last_seen_iso": "2026-09-30T14:52:47+00:00",
-      "last_price": 83794.0,
+      "last_seen": 1790780695,
+      "last_seen_iso": "2026-09-30T15:04:55+00:00",
+      "last_price": 83850.0,
       "status": "BLOCKED",
-      "last_note": "停損距離過大（3.37 ATR） / 前方強結構區空間不足",
-      "block_count": 2
+      "last_note": "成交量過低 / 停損距離過大（3.15 ATR） / 前方強結構區空間不足",
+      "block_count": 3
     },
     {
       "setup_key": "BO:L:1790773200",
@@ -6548,9 +6552,9 @@
       "defense": 83713.4,
       "first_seen": 1790778933,
       "first_seen_iso": "2026-09-30T14:35:33+00:00",
-      "last_seen": 1790779967,
-      "last_seen_iso": "2026-09-30T14:52:47+00:00",
-      "last_price": 83794.0,
+      "last_seen": 1790780695,
+      "last_seen_iso": "2026-09-30T15:04:55+00:00",
+      "last_price": 83850.0,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
