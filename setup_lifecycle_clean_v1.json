@@ -648,12 +648,12 @@
     "defense": 83713.4,
     "first_seen": 1790772479,
     "first_seen_iso": "2026-09-30T12:47:59+00:00",
-    "last_seen": 1790775372,
-    "last_seen_iso": "2026-09-30T13:36:12+00:00",
-    "last_price": 84676.4,
+    "last_seen": 1790776183,
+    "last_seen_iso": "2026-09-30T13:49:43+00:00",
+    "last_price": 84637.9,
     "status": "BLOCKED",
-    "last_note": "停損距離過大（2.99 ATR） / 價格過度延伸",
-    "block_count": 4
+    "last_note": "價格過度延伸",
+    "block_count": 5
   },
   {
     "setup_key": "BO:S:1790770500",
