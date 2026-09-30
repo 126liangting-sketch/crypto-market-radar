@@ -14,7 +14,7 @@ OKX_SYMBOL = "BTC-USDT-SWAP"
 WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
-VERSION = "BTC_RADAR_CLEAN_V1_ENGINE"
+VERSION = "BTC_RADAR_CLEAN_V1_ENGINE_SPACE_GRADED"
 STATE_FILE = "radar_state_clean_v1.json"
 TRADES_JSON = "paper_trades_clean_v1.json"
 TRADES_CSV = "paper_trades_clean_v1.csv"
@@ -528,42 +528,85 @@ def risk_plan(setup, side, entry, a):
             "tp1": tp1, "tp2": tp2}
 
 
-def _pivot_is_effective(rows15, pivot, side, a, same_side_pivots):
-    """Return True only for a structure level with a real reaction or repeated tests.
+def _pivot_reaction_atr(rows15, pivot, side, a):
+    """How strongly price reacted after this pivot, measured in ATR.
 
-    This deliberately does NOT change the Space >= 1R hard rule. It only prevents
-    tiny local wiggles from being treated as the next meaningful obstacle.
+    Space is treated as a zone problem, not a single-line problem. A pivot that
+    produced almost no reaction should not become a hard wall by itself.
     """
-    t, price, idx = pivot
+    _, price, idx = pivot
     if a <= 0:
-        return True
+        return 0.0
+    right = rows15[idx + 1:min(len(rows15), idx + 6)]
+    if not right:
+        return 0.0
+    if side == "LONG":  # prior swing high acting as possible resistance
+        excursion = price - min(float(x["low"]) for x in right)
+    else:                # prior swing low acting as possible support
+        excursion = max(float(x["high"]) for x in right) - price
+    return max(0.0, excursion / a)
 
-    # A close level can still be important when price clearly reacted from it.
-    left = rows15[max(0, idx-4):idx]
-    right = rows15[idx+1:min(len(rows15), idx+5)]
-    reaction = 0.0
-    if left and right:
-        if side == "LONG":  # testing a prior swing high as resistance
-            before = price - min(float(x["low"]) for x in left)
-            after = price - min(float(x["low"]) for x in right)
-        else:               # testing a prior swing low as support
-            before = max(float(x["high"]) for x in left) - price
-            after = max(float(x["high"]) for x in right) - price
-        reaction = min(before, after) / a
 
-    # Repeated pivots in roughly the same price zone also make the level meaningful.
-    zone = 0.15 * a
-    touches = sum(1 for tt, pp, ii in same_side_pivots
-                  if tt != t and abs(float(pp) - float(price)) <= zone)
+def _structure_zones(rows15, pivots, side, a):
+    """Merge nearby pivots into structural zones and grade their importance.
 
-    return reaction >= 0.30 or touches >= 1
+    This avoids treating every tiny 15m swing as an equally important barrier.
+    Zone grades:
+      STRONG  -> can hard-block a Formal when it is inside 1R
+      NORMAL  -> quality information only; never blocks by itself
+      WEAK    -> informational only
+    """
+    if not pivots:
+        return []
+    zone_width = max(1e-9, 0.20 * a)
+    pts = sorted(pivots, key=lambda x: float(x[1]))
+    groups = []
+    for pt in pts:
+        price = float(pt[1])
+        if not groups or abs(price - groups[-1]["center"]) > zone_width:
+            groups.append({"pivots": [pt], "center": price})
+        else:
+            groups[-1]["pivots"].append(pt)
+            groups[-1]["center"] = sum(float(x[1]) for x in groups[-1]["pivots"]) / len(groups[-1]["pivots"])
+
+    zones = []
+    for g in groups:
+        reactions = [_pivot_reaction_atr(rows15, pt, side, a) for pt in g["pivots"]]
+        max_reaction = max(reactions) if reactions else 0.0
+        touches = len(g["pivots"])
+
+        # Strong needs either a genuinely large rejection, or repeated tests plus
+        # a meaningful reaction. Normal zones remain visible but do not hard-block.
+        if max_reaction >= 0.75 or (touches >= 3 and max_reaction >= 0.30):
+            strength = "STRONG"
+        elif max_reaction >= 0.30 or touches >= 2:
+            strength = "NORMAL"
+        else:
+            strength = "WEAK"
+
+        prices = [float(x[1]) for x in g["pivots"]]
+        # Use the first edge price would actually meet, not the zone midpoint.
+        edge = min(prices) if side == "LONG" else max(prices)
+        zones.append({
+            "price": edge,
+            "center": g["center"],
+            "strength": strength,
+            "touches": touches,
+            "reaction_atr": max_reaction,
+        })
+    return zones
 
 
 def space_context(rows15, side, entry, risk, trigger_time, a):
+    """Grade forward structural space without making every nearby swing a hard gate.
+
+    Only a STRONG structural zone inside 1R can block a Formal. NORMAL/WEAK zones
+    are kept as quality context, matching the agreed design that Space should be
+    natural rather than an all-or-nothing wall.
+    """
     highs, lows = local_pivots(rows15, 2, 2)
     pivots = highs if side == "LONG" else lows
-
-    effective = []
+    candidates = []
     for pivot in pivots:
         t, p, _ = pivot
         if t == trigger_time:
@@ -572,28 +615,48 @@ def space_context(rows15, side, entry, risk, trigger_time, a):
             continue
         if side == "SHORT" and p >= entry:
             continue
-        if _pivot_is_effective(rows15, pivot, side, a, pivots):
-            effective.append(float(p))
+        candidates.append(pivot)
 
+    zones = _structure_zones(rows15, candidates, side, a)
     if side == "LONG":
-        target = min(effective) if effective else None
-        space_r = ((target-entry)/risk) if target is not None else None
+        zones.sort(key=lambda z: z["price"])
     else:
-        target = max(effective) if effective else None
-        space_r = ((entry-target)/risk) if target is not None else None
+        zones.sort(key=lambda z: z["price"], reverse=True)
 
-    if space_r is None:
+    nearest = zones[0] if zones else None
+    strong = next((z for z in zones if z["strength"] == "STRONG"), None)
+
+    def r_to(z):
+        if z is None or risk <= 0:
+            return None
+        return ((z["price"] - entry) / risk) if side == "LONG" else ((entry - z["price"]) / risk)
+
+    nearest_r = r_to(nearest)
+    strong_r = r_to(strong)
+    hard_block = strong_r is not None and strong_r < SPACE_MIN_R
+
+    if nearest is None:
         label = "開放"
-    elif space_r < 1.0:
-        label = "不足"
-    elif space_r < 1.5:
-        label = "普通"
-    elif space_r < 2.0:
-        label = "良好"
+    elif nearest["strength"] == "STRONG":
+        label = "強結構區・空間受限" if nearest_r is not None and nearest_r < 1.0 else "強結構區"
+    elif nearest["strength"] == "NORMAL":
+        label = "一般結構區（不硬擋）"
     else:
-        label = "很好"
-    return {"target": target, "space_r": space_r, "label": label}
+        label = "弱結構（不硬擋）"
 
+    # space_r intentionally means distance to the nearest STRONG obstacle because
+    # that is the only obstacle allowed to control Formal/TP logic.
+    return {
+        "target": strong["price"] if strong else None,
+        "space_r": strong_r,
+        "label": label,
+        "hard_block": hard_block,
+        "nearest_target": nearest["price"] if nearest else None,
+        "nearest_r": nearest_r,
+        "nearest_strength": nearest["strength"] if nearest else "OPEN",
+        "reaction_atr": nearest["reaction_atr"] if nearest else None,
+        "touches": nearest["touches"] if nearest else 0,
+    }
 
 def update_oi(state):
     hist = state.setdefault("oi_history", [])
@@ -1103,6 +1166,9 @@ def check_news(state):
 
 def maybe_prepare(state, side, setup, price, trend, ema_pos, vol, reg, oi, cvd):
     sig = setup_signature(setup)
+    # Prepare is optional. If this setup already became Formal, never send a late Prepare.
+    if sig in state["formal_seen"]:
+        return
     if sig in state["prepare_seen"]:
         return
     if side == "LONG":
@@ -1132,33 +1198,33 @@ def maybe_prepare(state, side, setup, price, trend, ema_pos, vol, reg, oi, cvd):
 def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd, event_rows=None):
     sig = setup_signature(setup)
     if sig in state["formal_seen"]:
-        return
+        return True
     ext = (price - setup["trigger"])/a if side == "LONG" else (setup["trigger"] - price)/a
     wh, wl = window_high_low(event_rows or [], price)
     trigger_level = setup["trigger"] + BREAK_BUFFER_ATR*a if side == "LONG" else setup["trigger"] - BREAK_BUFFER_ATR*a
     crossed = wh >= trigger_level if side == "LONG" else wl <= trigger_level
     if not crossed:
-        return
+        return False
     touch_setup_lifecycle(state, side, setup, price, "TRIGGERED", "1分鐘區間已穿越觸發價")
 
     # If the move crossed between GitHub runs and then made a small retest, keep the
     # opportunity alive. A deep failure back through the trigger is not treated as a fill.
     if side == "LONG" and price < setup["trigger"] - TRIGGER_RETEST_ATR*a:
-        return
+        return False
     if side == "SHORT" and price > setup["trigger"] + TRIGGER_RETEST_ATR*a:
-        return
+        return False
 
     plan = risk_plan(setup, side, price, a)
     if not plan:
-        return
+        return False
     space = space_context(rows15, side, price, plan["risk"], setup["trigger_time"], a)
     reasons = []
     if vol["ratio"] < VOL_HARD_MIN:
         reasons.append("成交量過低")
     if plan["risk_atr"] > MAX_STOP_ATR:
         reasons.append(f"停損距離過大（{plan['risk_atr']:.2f} ATR）")
-    if space["space_r"] is not None and space["space_r"] < SPACE_MIN_R:
-        reasons.append("前方空間不足")
+    if space.get("hard_block"):
+        reasons.append("前方強結構區空間不足")
     if ext > EXT_WAIT_ATR:
         reasons.append("價格過度延伸")
 
@@ -1171,7 +1237,7 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
     if reasons:
         record_blocked(state, side, setup, " / ".join(reasons), price,
                        {"volume_ratio": vol["ratio"], "space_r": space["space_r"], "extension_atr": ext})
-        return
+        return False
 
     # If there is a known structure before 2R, don't invent a fake 2R TP2.
     if space["space_r"] is not None and space["space_r"] < 2.0:
@@ -1188,7 +1254,12 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
     state["formal_seen"] = state["formal_seen"][-500:]
 
     tp2_text = f"${plan['tp2']:,.0f}" if plan.get("tp2") is not None else "—（前方空間不足 2R）"
-    space_text = "開放" if space["space_r"] is None else f"{space['space_r']:.2f}R（{space['label']}）"
+    if space.get("nearest_target") is None:
+        space_text = "開放"
+    else:
+        shown_r = space.get("nearest_r")
+        rtxt = f"{shown_r:.2f}R" if shown_r is not None else "—"
+        space_text = f"{rtxt}（{space['label']}）"
     opposite = ((side == "LONG" and trend["state"] == "BEAR") or (side == "SHORT" and trend["state"] == "BULL"))
     bg_note = " ⚠️ 與1H背景反向" if opposite else ""
     send_discord(
@@ -1205,6 +1276,7 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
         f"進場位置：{extension_quality(ext)}（{ext:.2f} ATR）\n\n"
         f"🧾 已建立模擬單 #{t['id']}"
     )
+    return True
 
 
 atr15_global = 1.0
@@ -1274,8 +1346,13 @@ def main():
             setup = choose_setup(rows15, a, side, live)
             if not setup:
                 continue
-            maybe_prepare(state, side, setup, live, trend, ema_pos, vol, reg, oi, cvd)
-            formal_check(state, side, setup, live, rows15, a, trend, ema_pos, vol, reg, oi, cvd, events)
+            # Formal is evaluated first. If the setup is already actionable on first sight,
+            # go directly DETECTED -> FORMAL and skip the unnecessary Prepare message.
+            became_formal = formal_check(
+                state, side, setup, live, rows15, a, trend, ema_pos, vol, reg, oi, cvd, events
+            )
+            if not became_formal:
+                maybe_prepare(state, side, setup, live, trend, ema_pos, vol, reg, oi, cvd)
 
     export_data(state)
     save_json(STATE_FILE, state)
