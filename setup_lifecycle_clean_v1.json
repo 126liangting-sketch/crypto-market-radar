@@ -648,12 +648,12 @@
     "defense": 83713.4,
     "first_seen": 1790772479,
     "first_seen_iso": "2026-09-30T12:47:59+00:00",
-    "last_seen": 1790773392,
-    "last_seen_iso": "2026-09-30T13:03:12+00:00",
-    "last_price": 85094.4,
+    "last_seen": 1790774521,
+    "last_seen_iso": "2026-09-30T13:22:01+00:00",
+    "last_price": 85299.8,
     "status": "BLOCKED",
-    "last_note": "停損距離過大（4.60 ATR） / 價格過度延伸",
-    "block_count": 2
+    "last_note": "停損距離過大（5.07 ATR） / 價格過度延伸",
+    "block_count": 3
   },
   {
     "setup_key": "BO:S:1790770500",
@@ -664,9 +664,9 @@
     "defense": 83944.0,
     "first_seen": 1790772479,
     "first_seen_iso": "2026-09-30T12:47:59+00:00",
-    "last_seen": 1790773392,
-    "last_seen_iso": "2026-09-30T13:03:12+00:00",
-    "last_price": 85094.4,
+    "last_seen": 1790774521,
+    "last_seen_iso": "2026-09-30T13:22:01+00:00",
+    "last_price": 85299.8,
     "status": "DETECTED",
     "last_note": null,
     "block_count": 0
