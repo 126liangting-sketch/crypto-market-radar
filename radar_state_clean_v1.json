@@ -2035,6 +2035,23 @@
       "volume_ratio": 1.1409183110724983,
       "space_r": 0.20404831214135444,
       "extension_atr": 0.5246266189860724
+    },
+    {
+      "key": "CONT:S:1790775000",
+      "setup_key": "CONT:S:1790775000",
+      "first_time": 1790778933,
+      "first_time_iso": "2026-09-30T14:35:33+00:00",
+      "time": 1790778933,
+      "time_iso": "2026-09-30T14:35:33+00:00",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "reason": "停損距離過大（4.25 ATR） / 前方強結構區空間不足 / 價格過度延伸",
+      "trigger": 83976.1,
+      "price": 83395.3,
+      "block_count": 1,
+      "volume_ratio": 2.5315147338232333,
+      "space_r": 0.011415009864372643,
+      "extension_atr": 1.118074939841871
     }
   ],
   "prepare_seen": [
@@ -4872,6 +4889,10 @@
     {
       "time": 1790777832,
       "value": 27526.56020000009
+    },
+    {
+      "time": 1790778932,
+      "value": 27546.23160000009
     }
   ],
   "news": {
@@ -5824,7 +5845,7 @@
       "closed_iso": "2026-09-30T13:03:12+00:00"
     }
   ],
-  "last_event_scan": 1790777820,
+  "last_event_scan": 1790778900,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -6507,9 +6528,25 @@
       "defense": 85525.0,
       "first_seen": 1790776843,
       "first_seen_iso": "2026-09-30T14:00:43+00:00",
-      "last_seen": 1790777833,
-      "last_seen_iso": "2026-09-30T14:17:13+00:00",
-      "last_price": 84180.2,
+      "last_seen": 1790778933,
+      "last_seen_iso": "2026-09-30T14:35:33+00:00",
+      "last_price": 83395.3,
+      "status": "BLOCKED",
+      "last_note": "停損距離過大（4.25 ATR） / 前方強結構區空間不足 / 價格過度延伸",
+      "block_count": 1
+    },
+    {
+      "setup_key": "BO:L:1790773200",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 85639.0,
+      "defense": 83713.4,
+      "first_seen": 1790778933,
+      "first_seen_iso": "2026-09-30T14:35:33+00:00",
+      "last_seen": 1790778933,
+      "last_seen_iso": "2026-09-30T14:35:33+00:00",
+      "last_price": 83395.3,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
