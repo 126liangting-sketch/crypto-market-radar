@@ -2052,6 +2052,23 @@
       "volume_ratio": 0.4782546890433983,
       "space_r": 0.035694963870261186,
       "extension_atr": 0.3248313605701961
+    },
+    {
+      "key": "CONT:L:1790781300",
+      "setup_key": "CONT:L:1790781300",
+      "first_time": 1790783590,
+      "first_time_iso": "2026-09-30T15:53:10+00:00",
+      "time": 1790783590,
+      "time_iso": "2026-09-30T15:53:10+00:00",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "reason": "前方強結構區空間不足",
+      "trigger": 83986.8,
+      "price": 84207.5,
+      "block_count": 1,
+      "volume_ratio": 0.923872111674713,
+      "space_r": 0.12528494188893954,
+      "extension_atr": 0.37407232533080914
     }
   ],
   "prepare_seen": [
@@ -4909,6 +4926,10 @@
     {
       "time": 1790782747,
       "value": 27639.705300000085
+    },
+    {
+      "time": 1790783589,
+      "value": 27690.765900000093
     }
   ],
   "news": {
@@ -5862,7 +5883,7 @@
       "closed_iso": "2026-09-30T13:03:12+00:00"
     }
   ],
-  "last_event_scan": 1790782740,
+  "last_event_scan": 1790783580,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -6545,9 +6566,9 @@
       "defense": 85525.0,
       "first_seen": 1790776843,
       "first_seen_iso": "2026-09-30T14:00:43+00:00",
-      "last_seen": 1790782748,
-      "last_seen_iso": "2026-09-30T15:39:08+00:00",
-      "last_price": 84153.0,
+      "last_seen": 1790783590,
+      "last_seen_iso": "2026-09-30T15:53:10+00:00",
+      "last_price": 84207.5,
       "status": "TRIGGERED",
       "last_note": "1分鐘區間已穿越觸發價",
       "block_count": 4
@@ -6567,6 +6588,22 @@
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
+    },
+    {
+      "setup_key": "CONT:L:1790781300",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 83986.8,
+      "defense": 83637.5,
+      "first_seen": 1790783590,
+      "first_seen_iso": "2026-09-30T15:53:10+00:00",
+      "last_seen": 1790783590,
+      "last_seen_iso": "2026-09-30T15:53:10+00:00",
+      "last_price": 84207.5,
+      "status": "BLOCKED",
+      "last_note": "前方強結構區空間不足",
+      "block_count": 1
     }
   ]
 }
