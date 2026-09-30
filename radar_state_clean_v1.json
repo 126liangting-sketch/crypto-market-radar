@@ -5035,6 +5035,10 @@
     {
       "time": 1790793794,
       "value": 27648.356500000064
+    },
+    {
+      "time": 1790794643,
+      "value": 27576.15150000007
     }
   ],
   "news": {
@@ -5124,15 +5128,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 83770.0,
-      "worst_price": 83866.0,
-      "mfe_atr": 0.3703397536579326,
-      "mae_atr": 0.0,
+      "best_price": 83750.8,
+      "worst_price": 83919.7,
+      "mfe_atr": 0.4444077043895079,
+      "mae_atr": 0.2071587997023948,
       "mfe_atr_30": null,
       "mae_atr_30": null,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 15
+      "duration_min": 29
     }
   ],
   "prepare_history": [
@@ -6055,7 +6059,7 @@
       "closed_iso": "2026-09-30T18:27:27+00:00"
     }
   ],
-  "last_event_scan": 1790793780,
+  "last_event_scan": 1790794620,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -6824,6 +6828,22 @@
       "status": "BLOCKED",
       "last_note": "成交量過低 / 前方強結構區空間不足 / 偏追價，等待較好位置",
       "block_count": 4
+    },
+    {
+      "setup_key": "BO:S:1790789400",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 83841.4,
+      "defense": 84433.8,
+      "first_seen": 1790794644,
+      "first_seen_iso": "2026-09-30T18:57:24+00:00",
+      "last_seen": 1790794644,
+      "last_seen_iso": "2026-09-30T18:57:24+00:00",
+      "last_price": 83908.5,
+      "status": "TRIGGERED",
+      "last_note": "1分鐘區間已穿越觸發價",
+      "block_count": 0
     }
   ]
 }
