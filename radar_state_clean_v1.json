@@ -2086,6 +2086,23 @@
       "volume_ratio": 0.2271117570435588,
       "space_r": 0.19666212645849027,
       "extension_atr": -0.07191033362325713
+    },
+    {
+      "key": "BO:S:1790785800",
+      "setup_key": "BO:S:1790785800",
+      "first_time": 1790789159,
+      "first_time_iso": "2026-09-30T17:25:59+00:00",
+      "time": 1790789159,
+      "time_iso": "2026-09-30T17:25:59+00:00",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "reason": "成交量過低 / 前方強結構區空間不足",
+      "trigger": 84164.1,
+      "price": 84041.0,
+      "block_count": 1,
+      "volume_ratio": 0.3321250290789806,
+      "space_r": 0.14313733212554478,
+      "extension_atr": 0.36629117959619273
     }
   ],
   "prepare_seen": [
@@ -4972,6 +4989,10 @@
     {
       "time": 1790788260,
       "value": 27805.34440000008
+    },
+    {
+      "time": 1790789158,
+      "value": 27732.36950000008
     }
   ],
   "news": {
@@ -5062,14 +5083,14 @@
       "formal_delay_min": null,
       "status": "WATCHING",
       "best_price": 84295.4,
-      "worst_price": 84295.4,
+      "worst_price": 84041.0,
       "mfe_atr": 0.0,
-      "mae_atr": 0.0,
+      "mae_atr": 0.5844724879793768,
       "mfe_atr_30": null,
       "mae_atr_30": null,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 0
+      "duration_min": 14
     }
   ],
   "prepare_history": [
@@ -5958,7 +5979,7 @@
       "closed_iso": "2026-09-30T13:03:12+00:00"
     }
   ],
-  "last_event_scan": 1790788200,
+  "last_event_scan": 1790789100,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -6710,6 +6731,22 @@
       "last_price": 84295.4,
       "status": "PREPARED",
       "last_note": "進入準備距離",
+      "block_count": 1
+    },
+    {
+      "setup_key": "BO:S:1790785800",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 84164.1,
+      "defense": 84444.0,
+      "first_seen": 1790789159,
+      "first_seen_iso": "2026-09-30T17:25:59+00:00",
+      "last_seen": 1790789159,
+      "last_seen_iso": "2026-09-30T17:25:59+00:00",
+      "last_price": 84041.0,
+      "status": "BLOCKED",
+      "last_note": "成交量過低 / 前方強結構區空間不足",
       "block_count": 1
     }
   ]
