@@ -776,12 +776,12 @@
     "defense": 84433.8,
     "first_seen": 1790794644,
     "first_seen_iso": "2026-09-30T18:57:24+00:00",
-    "last_seen": 1790795335,
-    "last_seen_iso": "2026-09-30T19:08:55+00:00",
-    "last_price": 83812.8,
-    "status": "BLOCKED",
-    "last_note": "成交量過低 / 停損距離過大（3.00 ATR） / 前方強結構區空間不足",
-    "block_count": 1
+    "last_seen": 1790796917,
+    "last_seen_iso": "2026-09-30T19:35:17+00:00",
+    "last_price": 83846.0,
+    "status": "PREPARED",
+    "last_note": "進入準備距離",
+    "block_count": 2
   },
   {
     "setup_key": "CONT:S:1790793900",
