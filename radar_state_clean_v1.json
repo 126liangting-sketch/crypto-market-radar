@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84498.8,
-      "duration_min": 3111,
+      "duration_min": 3128,
       "excluded_from_stats": true,
       "legacy_rule_mismatch": true
     },
@@ -66,7 +66,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84498.8,
-      "duration_min": 2989,
+      "duration_min": 3007,
       "excluded_from_stats": true,
       "legacy_rule_mismatch": true
     }
@@ -4675,6 +4675,10 @@
     {
       "time": 1790752512,
       "value": 28771.370400000083
+    },
+    {
+      "time": 1790753557,
+      "value": 28579.743100000076
     }
   ],
   "news": {
@@ -5548,7 +5552,7 @@
       "closed_iso": "2026-09-30T07:00:33+00:00"
     }
   ],
-  "last_event_scan": 1790752500,
+  "last_event_scan": 1790753520,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -6055,9 +6059,9 @@
       "defense": 83149.9,
       "first_seen": 1790748569,
       "first_seen_iso": "2026-09-30T06:09:29+00:00",
-      "last_seen": 1790752514,
-      "last_seen_iso": "2026-09-30T07:15:14+00:00",
-      "last_price": 83000.0,
+      "last_seen": 1790753559,
+      "last_seen_iso": "2026-09-30T07:32:39+00:00",
+      "last_price": 83287.5,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
@@ -6077,6 +6081,22 @@
       "status": "BLOCKED",
       "last_note": "停損距離過大（2.70 ATR） / 前方空間不足 / 價格過度延伸",
       "block_count": 1
+    },
+    {
+      "setup_key": "CONT:S:1790750700",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 82935.0,
+      "defense": 83161.2,
+      "first_seen": 1790753559,
+      "first_seen_iso": "2026-09-30T07:32:39+00:00",
+      "last_seen": 1790753559,
+      "last_seen_iso": "2026-09-30T07:32:39+00:00",
+      "last_price": 83287.5,
+      "status": "DETECTED",
+      "last_note": null,
+      "block_count": 0
     }
   ]
 }
