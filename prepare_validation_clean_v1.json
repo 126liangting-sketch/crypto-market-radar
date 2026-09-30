@@ -30,7 +30,7 @@
       "mae_atr_30": 0.304,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 44
+      "duration_min": 58
     },
     {
       "id": 30,
@@ -62,7 +62,7 @@
       "mae_atr_30": 0.1297,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 33
+      "duration_min": 46
     }
   ],
   "history": [

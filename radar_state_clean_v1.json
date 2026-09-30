@@ -2160,17 +2160,17 @@
       "setup_key": "CONT:S:1790796600",
       "first_time": 1790798636,
       "first_time_iso": "2026-09-30T20:03:56+00:00",
-      "time": 1790799589,
-      "time_iso": "2026-09-30T20:19:49+00:00",
+      "time": 1790800415,
+      "time_iso": "2026-09-30T20:33:35+00:00",
       "side": "SHORT",
       "type": "PULLBACK",
-      "reason": "前方強結構區空間不足 / 偏追價，等待較好位置",
+      "reason": "成交量過低 / 前方強結構區空間不足",
       "trigger": 83707.1,
-      "price": 83584.3,
-      "block_count": 2,
-      "volume_ratio": 0.7310647153175825,
-      "space_r": 0.1830552389369137,
-      "extension_atr": 0.5860576103630644
+      "price": 83634.8,
+      "block_count": 3,
+      "volume_ratio": 0.5153206173858229,
+      "space_r": 0.37885846181220145,
+      "extension_atr": 0.34508386744853636
     }
   ],
   "prepare_seen": [
@@ -5120,6 +5120,10 @@
     {
       "time": 1790799588,
       "value": 27504.71230000006
+    },
+    {
+      "time": 1790800414,
+      "value": 27476.37200000007
     }
   ],
   "news": {
@@ -5217,7 +5221,7 @@
       "mae_atr_30": 0.304,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 44
+      "duration_min": 58
     },
     {
       "id": 30,
@@ -5249,7 +5253,7 @@
       "mae_atr_30": 0.1297,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 33
+      "duration_min": 46
     }
   ],
   "prepare_history": [
@@ -6206,7 +6210,7 @@
       "closed_iso": "2026-09-30T19:35:16+00:00"
     }
   ],
-  "last_event_scan": 1790799540,
+  "last_event_scan": 1790800380,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -7017,9 +7021,9 @@
       "defense": 83562.7,
       "first_seen": 1790798636,
       "first_seen_iso": "2026-09-30T20:03:56+00:00",
-      "last_seen": 1790799589,
-      "last_seen_iso": "2026-09-30T20:19:49+00:00",
-      "last_price": 83584.3,
+      "last_seen": 1790800415,
+      "last_seen_iso": "2026-09-30T20:33:35+00:00",
+      "last_price": 83634.8,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
@@ -7033,12 +7037,12 @@
       "defense": 83908.5,
       "first_seen": 1790798636,
       "first_seen_iso": "2026-09-30T20:03:56+00:00",
-      "last_seen": 1790799589,
-      "last_seen_iso": "2026-09-30T20:19:49+00:00",
-      "last_price": 83584.3,
+      "last_seen": 1790800415,
+      "last_seen_iso": "2026-09-30T20:33:35+00:00",
+      "last_price": 83634.8,
       "status": "BLOCKED",
-      "last_note": "前方強結構區空間不足 / 偏追價，等待較好位置",
-      "block_count": 2
+      "last_note": "成交量過低 / 前方強結構區空間不足",
+      "block_count": 3
     }
   ]
 }
