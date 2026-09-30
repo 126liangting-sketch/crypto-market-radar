@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84498.8,
-      "duration_min": 2869,
+      "duration_min": 2884,
       "excluded_from_stats": true,
       "legacy_rule_mismatch": true
     },
@@ -66,7 +66,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84498.8,
-      "duration_min": 2748,
+      "duration_min": 2763,
       "excluded_from_stats": true,
       "legacy_rule_mismatch": true
     }
@@ -1896,6 +1896,23 @@
       "volume_ratio": 0.8265218739234544,
       "space_r": 0.018817291515079656,
       "extension_atr": 0.6193388113892959
+    },
+    {
+      "key": "CONT:S:1790736300",
+      "setup_key": "CONT:S:1790736300",
+      "first_time": 1790738921,
+      "first_time_iso": "2026-09-30T03:28:41+00:00",
+      "time": 1790738921,
+      "time_iso": "2026-09-30T03:28:41+00:00",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "reason": "前方空間不足",
+      "trigger": 83317.0,
+      "price": 83280.8,
+      "block_count": 1,
+      "volume_ratio": 1.6694510984455428,
+      "space_r": 0.11929387890102919,
+      "extension_atr": 0.24766652006057516
     }
   ],
   "prepare_seen": [
@@ -4533,6 +4550,10 @@
     {
       "time": 1790738025,
       "value": 27898.231200000093
+    },
+    {
+      "time": 1790738920,
+      "value": 28027.37230000009
     }
   ],
   "news": {
@@ -4610,15 +4631,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 83258.0,
+      "best_price": 83132.6,
       "worst_price": 83450.0,
-      "mfe_atr": 0.781376518218642,
+      "mfe_atr": 1.6275303643724477,
       "mae_atr": 0.5141700404858096,
       "mfe_atr_30": 0.7814,
       "mae_atr_30": 0.5142,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 44
+      "duration_min": 59
     },
     {
       "id": 22,
@@ -4642,15 +4663,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 83292.3,
+      "best_price": 83132.6,
       "worst_price": 83450.0,
-      "mfe_atr": 0.694353537681437,
+      "mfe_atr": 1.7249135745562743,
       "mae_atr": 0.3233002996082422,
       "mfe_atr_30": 0.6944,
       "mae_atr_30": 0.3233,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 31
+      "duration_min": 46
     }
   ],
   "prepare_history": [
@@ -5335,7 +5356,7 @@
       "closed_iso": "2026-09-30T02:16:18+00:00"
     }
   ],
-  "last_event_scan": 1790737980,
+  "last_event_scan": 1790738880,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -5736,6 +5757,38 @@
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
+    },
+    {
+      "setup_key": "BO:L:1790736300",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 83450.0,
+      "defense": 83258.0,
+      "first_seen": 1790738921,
+      "first_seen_iso": "2026-09-30T03:28:41+00:00",
+      "last_seen": 1790738921,
+      "last_seen_iso": "2026-09-30T03:28:41+00:00",
+      "last_price": 83280.8,
+      "status": "DETECTED",
+      "last_note": null,
+      "block_count": 0
+    },
+    {
+      "setup_key": "CONT:S:1790736300",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 83317.0,
+      "defense": 83450.0,
+      "first_seen": 1790738921,
+      "first_seen_iso": "2026-09-30T03:28:41+00:00",
+      "last_seen": 1790738921,
+      "last_seen_iso": "2026-09-30T03:28:41+00:00",
+      "last_price": 83280.8,
+      "status": "BLOCKED",
+      "last_note": "前方空間不足",
+      "block_count": 1
     }
   ]
 }
