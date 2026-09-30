@@ -2177,17 +2177,17 @@
       "setup_key": "CONT:L:1790801100",
       "first_time": 1790802934,
       "first_time_iso": "2026-09-30T21:15:34+00:00",
-      "time": 1790807479,
-      "time_iso": "2026-09-30T22:31:19+00:00",
+      "time": 1790808260,
+      "time_iso": "2026-09-30T22:44:20+00:00",
       "side": "LONG",
       "type": "PULLBACK",
-      "reason": "成交量過低 / 前方強結構區空間不足 / 價格過度延伸",
+      "reason": "成交量過低 / 前方強結構區空間不足 / 偏追價，等待較好位置",
       "trigger": 83684.6,
-      "price": 83811.0,
-      "block_count": 7,
+      "price": 83774.2,
+      "block_count": 8,
       "volume_ratio": 0.6323521532905789,
-      "space_r": 0.023842211170870212,
-      "extension_atr": 0.7975841709108737
+      "space_r": 0.06229242479622782,
+      "extension_atr": 0.5653761211519828
     }
   ],
   "prepare_seen": [
@@ -5183,6 +5183,10 @@
     {
       "time": 1790807478,
       "value": 27450.36380000006
+    },
+    {
+      "time": 1790808259,
+      "value": 27447.425900000064
     }
   ],
   "news": {
@@ -5274,14 +5278,14 @@
       "formal_delay_min": null,
       "status": "WATCHING",
       "best_price": 83533.0,
-      "worst_price": 83812.8,
+      "worst_price": 83815.1,
       "mfe_atr": 1.0506318232614635,
-      "mae_atr": 0.6330267342903736,
+      "mae_atr": 0.6468666723975004,
       "mfe_atr_30": 1.0506,
       "mae_atr_30": 0.633,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 36
+      "duration_min": 49
     }
   ],
   "prepare_history": [
@@ -6340,7 +6344,7 @@
       "closed_iso": "2026-09-30T22:02:11+00:00"
     }
   ],
-  "last_event_scan": 1790807460,
+  "last_event_scan": 1790808240,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -7215,12 +7219,12 @@
       "defense": 83595.7,
       "first_seen": 1790802934,
       "first_seen_iso": "2026-09-30T21:15:34+00:00",
-      "last_seen": 1790807479,
-      "last_seen_iso": "2026-09-30T22:31:19+00:00",
-      "last_price": 83811.0,
+      "last_seen": 1790808260,
+      "last_seen_iso": "2026-09-30T22:44:20+00:00",
+      "last_price": 83774.2,
       "status": "BLOCKED",
-      "last_note": "成交量過低 / 前方強結構區空間不足 / 價格過度延伸",
-      "block_count": 7
+      "last_note": "成交量過低 / 前方強結構區空間不足 / 偏追價，等待較好位置",
+      "block_count": 8
     },
     {
       "setup_key": "CONT:S:1790802900",
