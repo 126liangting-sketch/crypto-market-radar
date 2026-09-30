@@ -1725,16 +1725,16 @@
     "setup_key": "CONT:S:1790728200",
     "first_time": 1790730180,
     "first_time_iso": "2026-09-30T01:03:00+00:00",
-    "time": 1790730180,
-    "time_iso": "2026-09-30T01:03:00+00:00",
+    "time": 1790731128,
+    "time_iso": "2026-09-30T01:18:48+00:00",
     "side": "SHORT",
     "type": "PULLBACK",
     "reason": "前方空間不足",
     "trigger": 83420.3,
-    "price": 83431.9,
-    "block_count": 1,
-    "volume_ratio": 1.309013381142235,
-    "space_r": 0.16257091102143859,
-    "extension_atr": -0.07728548993474399
+    "price": 83391.1,
+    "block_count": 2,
+    "volume_ratio": 0.7610239779951455,
+    "space_r": 0.09545020680878369,
+    "extension_atr": 0.19810040705561202
   }
 ]
