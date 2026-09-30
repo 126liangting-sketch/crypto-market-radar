@@ -872,11 +872,11 @@
     "defense": 83595.7,
     "first_seen": 1790802934,
     "first_seen_iso": "2026-09-30T21:15:34+00:00",
-    "last_seen": 1790809278,
-    "last_seen_iso": "2026-09-30T23:01:18+00:00",
-    "last_price": 83677.0,
-    "status": "PREPARED",
-    "last_note": "進入準備距離",
+    "last_seen": 1790809989,
+    "last_seen_iso": "2026-09-30T23:13:09+00:00",
+    "last_price": 83629.7,
+    "status": "TRIGGERED",
+    "last_note": "1分鐘區間已穿越觸發價",
     "block_count": 10
   },
   {
@@ -888,11 +888,11 @@
     "defense": 83791.7,
     "first_seen": 1790805305,
     "first_seen_iso": "2026-09-30T21:55:05+00:00",
-    "last_seen": 1790809279,
-    "last_seen_iso": "2026-09-30T23:01:19+00:00",
-    "last_price": 83677.0,
+    "last_seen": 1790809989,
+    "last_seen_iso": "2026-09-30T23:13:09+00:00",
+    "last_price": 83629.7,
     "status": "BLOCKED",
     "last_note": "成交量過低 / 前方強結構區空間不足",
-    "block_count": 2
+    "block_count": 3
   }
 ]
