@@ -1827,16 +1827,16 @@
     "setup_key": "BO:L:1790754300",
     "first_time": 1790760918,
     "first_time_iso": "2026-09-30T09:35:18+00:00",
-    "time": 1790760918,
-    "time_iso": "2026-09-30T09:35:18+00:00",
+    "time": 1790761814,
+    "time_iso": "2026-09-30T09:50:14+00:00",
     "side": "LONG",
     "type": "BREAKOUT",
-    "reason": "停損距離過大（3.58 ATR） / 前方空間不足 / 價格過度延伸",
+    "reason": "停損距離過大（3.45 ATR） / 前方空間不足 / 價格過度延伸",
     "trigger": 83429.0,
-    "price": 83596.1,
-    "block_count": 1,
-    "volume_ratio": 4.0,
-    "space_r": 0.02023140809891281,
-    "extension_atr": 0.8461677578037703
+    "price": 83587.2,
+    "block_count": 2,
+    "volume_ratio": 3.598691832039544,
+    "space_r": 0.009160392751851687,
+    "extension_atr": 0.7816205533596678
   }
 ]
