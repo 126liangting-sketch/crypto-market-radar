@@ -2177,34 +2177,34 @@
       "setup_key": "CONT:L:1790801100",
       "first_time": 1790802934,
       "first_time_iso": "2026-09-30T21:15:34+00:00",
-      "time": 1790808896,
-      "time_iso": "2026-09-30T22:54:56+00:00",
+      "time": 1790809278,
+      "time_iso": "2026-09-30T23:01:18+00:00",
       "side": "LONG",
       "type": "PULLBACK",
-      "reason": "前方強結構區空間不足",
+      "reason": "成交量過低 / 前方強結構區空間不足",
       "trigger": 83684.6,
-      "price": 83689.2,
-      "block_count": 9,
-      "volume_ratio": 0.7021591635680089,
-      "space_r": 0.046846389079166106,
-      "extension_atr": 0.031694473153146746
+      "price": 83677.0,
+      "block_count": 10,
+      "volume_ratio": 0.665754229990285,
+      "space_r": 0.007809912312842595,
+      "extension_atr": -0.05394169835238685
     },
     {
       "key": "CONT:S:1790802900",
       "setup_key": "CONT:S:1790802900",
       "first_time": 1790808896,
       "first_time_iso": "2026-09-30T22:54:56+00:00",
-      "time": 1790808896,
-      "time_iso": "2026-09-30T22:54:56+00:00",
+      "time": 1790809279,
+      "time_iso": "2026-09-30T23:01:19+00:00",
       "side": "SHORT",
       "type": "PULLBACK",
-      "reason": "前方強結構區空間不足",
+      "reason": "成交量過低 / 前方強結構區空間不足",
       "trigger": 83688.1,
-      "price": 83689.2,
-      "block_count": 1,
-      "volume_ratio": 0.7021591635680089,
-      "space_r": 0.31141779012921605,
-      "extension_atr": -0.007579113145271927
+      "price": 83677.0,
+      "block_count": 2,
+      "volume_ratio": 0.665754229990285,
+      "space_r": 0.19509116962677162,
+      "extension_atr": 0.07878326996201966
     }
   ],
   "prepare_seen": [
@@ -2276,7 +2276,8 @@
     "BO:S:1790789400",
     "CONT:S:1790793900",
     "BO:L:1790799300",
-    "CONT:S:1790802900"
+    "CONT:S:1790802900",
+    "CONT:L:1790801100"
   ],
   "formal_seen": [
     "BO:S:1790334000",
@@ -5208,6 +5209,10 @@
     {
       "time": 1790808895,
       "value": 27427.404500000066
+    },
+    {
+      "time": 1790809277,
+      "value": 27432.631400000064
     }
   ],
   "news": {
@@ -5274,39 +5279,39 @@
     ],
     "last_notify": 1790807479
   },
-  "next_prepare_id": 33,
+  "next_prepare_id": 34,
   "prepare_active": [
     {
-      "id": 32,
-      "setup_key": "CONT:S:1790802900",
-      "side": "SHORT",
+      "id": 33,
+      "setup_key": "CONT:L:1790801100",
+      "side": "LONG",
       "trigger_type": "回踩再啟動",
-      "opened_at": 1790805305,
-      "opened_iso": "2026-09-30T21:55:05+00:00",
-      "prepare_price": 83707.6,
-      "trigger": 83688.1,
-      "atr_open": 166.18571428571158,
+      "opened_at": 1790809278,
+      "opened_iso": "2026-09-30T23:01:18+00:00",
+      "prepare_price": 83677.0,
+      "trigger": 83684.6,
+      "atr_open": 140.89285714285506,
       "trend_1h": "NEUTRAL",
       "ema_position": "偏離",
-      "ema_distance_atr": 0.7722044218407096,
-      "volume_ratio": 0.33217022552502085,
+      "ema_distance_atr": 0.9765916886819695,
+      "volume_ratio": 0.665754229990285,
       "regime": "RANGE",
-      "oi_dir": "FLAT",
+      "oi_dir": "DOWN",
       "cvd_dir": "FLAT",
       "formal_promoted": false,
       "formal_trade_id": null,
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 83533.0,
-      "worst_price": 83815.1,
-      "mfe_atr": 1.0506318232614635,
-      "mae_atr": 0.6468666723975004,
-      "mfe_atr_30": 1.0506,
-      "mae_atr_30": 0.633,
+      "best_price": 83677.0,
+      "worst_price": 83677.0,
+      "mfe_atr": 0.0,
+      "mae_atr": 0.0,
+      "mfe_atr_30": null,
+      "mae_atr_30": null,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 59
+      "duration_min": 0
     }
   ],
   "prepare_history": [
@@ -6363,9 +6368,43 @@
       "duration_min": 60,
       "closed_at": 1790805731,
       "closed_iso": "2026-09-30T22:02:11+00:00"
+    },
+    {
+      "id": 32,
+      "setup_key": "CONT:S:1790802900",
+      "side": "SHORT",
+      "trigger_type": "回踩再啟動",
+      "opened_at": 1790805305,
+      "opened_iso": "2026-09-30T21:55:05+00:00",
+      "prepare_price": 83707.6,
+      "trigger": 83688.1,
+      "atr_open": 166.18571428571158,
+      "trend_1h": "NEUTRAL",
+      "ema_position": "偏離",
+      "ema_distance_atr": 0.7722044218407096,
+      "volume_ratio": 0.33217022552502085,
+      "regime": "RANGE",
+      "oi_dir": "FLAT",
+      "cvd_dir": "FLAT",
+      "formal_promoted": false,
+      "formal_trade_id": null,
+      "formal_at": null,
+      "formal_delay_min": null,
+      "status": "NO_FORMAL",
+      "best_price": 83533.0,
+      "worst_price": 83815.1,
+      "mfe_atr": 1.0506318232614635,
+      "mae_atr": 0.6468666723975004,
+      "mfe_atr_30": 1.0506,
+      "mae_atr_30": 0.633,
+      "mfe_atr_60": 1.0506,
+      "mae_atr_60": 0.6469,
+      "duration_min": 66,
+      "closed_at": 1790809278,
+      "closed_iso": "2026-09-30T23:01:18+00:00"
     }
   ],
-  "last_event_scan": 1790808840,
+  "last_event_scan": 1790809260,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -7240,12 +7279,12 @@
       "defense": 83595.7,
       "first_seen": 1790802934,
       "first_seen_iso": "2026-09-30T21:15:34+00:00",
-      "last_seen": 1790808896,
-      "last_seen_iso": "2026-09-30T22:54:56+00:00",
-      "last_price": 83689.2,
-      "status": "BLOCKED",
-      "last_note": "前方強結構區空間不足",
-      "block_count": 9
+      "last_seen": 1790809278,
+      "last_seen_iso": "2026-09-30T23:01:18+00:00",
+      "last_price": 83677.0,
+      "status": "PREPARED",
+      "last_note": "進入準備距離",
+      "block_count": 10
     },
     {
       "setup_key": "CONT:S:1790802900",
@@ -7256,12 +7295,12 @@
       "defense": 83791.7,
       "first_seen": 1790805305,
       "first_seen_iso": "2026-09-30T21:55:05+00:00",
-      "last_seen": 1790808896,
-      "last_seen_iso": "2026-09-30T22:54:56+00:00",
-      "last_price": 83689.2,
+      "last_seen": 1790809279,
+      "last_seen_iso": "2026-09-30T23:01:19+00:00",
+      "last_price": 83677.0,
       "status": "BLOCKED",
-      "last_note": "前方強結構區空間不足",
-      "block_count": 1
+      "last_note": "成交量過低 / 前方強結構區空間不足",
+      "block_count": 2
     }
   ]
 }
