@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84498.8,
-      "duration_min": 3128,
+      "duration_min": 3143,
       "excluded_from_stats": true,
       "legacy_rule_mismatch": true
     },
@@ -66,7 +66,7 @@
       "tp2_hit": false,
       "best_price": 82628.4,
       "worst_price": 84498.8,
-      "duration_min": 3007,
+      "duration_min": 3021,
       "excluded_from_stats": true,
       "legacy_rule_mismatch": true
     }
@@ -4679,6 +4679,10 @@
     {
       "time": 1790753557,
       "value": 28579.743100000076
+    },
+    {
+      "time": 1790754431,
+      "value": 28560.66630000008
     }
   ],
   "news": {
@@ -5552,7 +5556,7 @@
       "closed_iso": "2026-09-30T07:00:33+00:00"
     }
   ],
-  "last_event_scan": 1790753520,
+  "last_event_scan": 1790754420,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -6059,9 +6063,9 @@
       "defense": 83149.9,
       "first_seen": 1790748569,
       "first_seen_iso": "2026-09-30T06:09:29+00:00",
-      "last_seen": 1790753559,
-      "last_seen_iso": "2026-09-30T07:32:39+00:00",
-      "last_price": 83287.5,
+      "last_seen": 1790754432,
+      "last_seen_iso": "2026-09-30T07:47:12+00:00",
+      "last_price": 83364.2,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
@@ -6091,9 +6095,9 @@
       "defense": 83161.2,
       "first_seen": 1790753559,
       "first_seen_iso": "2026-09-30T07:32:39+00:00",
-      "last_seen": 1790753559,
-      "last_seen_iso": "2026-09-30T07:32:39+00:00",
-      "last_price": 83287.5,
+      "last_seen": 1790754432,
+      "last_seen_iso": "2026-09-30T07:47:12+00:00",
+      "last_price": 83364.2,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
