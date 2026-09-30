@@ -488,11 +488,27 @@
     "defense": 83393.4,
     "first_seen": 1790743535,
     "first_seen_iso": "2026-09-30T04:45:35+00:00",
-    "last_seen": 1790747878,
-    "last_seen_iso": "2026-09-30T05:57:58+00:00",
-    "last_price": 83268.6,
+    "last_seen": 1790748569,
+    "last_seen_iso": "2026-09-30T06:09:29+00:00",
+    "last_price": 83252.2,
     "status": "BLOCKED",
     "last_note": "前方空間不足",
-    "block_count": 5
+    "block_count": 6
+  },
+  {
+    "setup_key": "BO:L:1790746200",
+    "side": "LONG",
+    "type": "BREAKOUT",
+    "label": "有效突破",
+    "trigger": 83487.9,
+    "defense": 83149.9,
+    "first_seen": 1790748569,
+    "first_seen_iso": "2026-09-30T06:09:29+00:00",
+    "last_seen": 1790748569,
+    "last_seen_iso": "2026-09-30T06:09:29+00:00",
+    "last_price": 83252.2,
+    "status": "DETECTED",
+    "last_note": null,
+    "block_count": 0
   }
 ]
