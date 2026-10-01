@@ -2290,6 +2290,23 @@
       "volume_ratio": 1.1270088446034872,
       "space_r": 0.04063803818295926,
       "extension_atr": 2.1370515929425724
+    },
+    {
+      "key": "BO:L:1790827200",
+      "setup_key": "BO:L:1790827200",
+      "first_time": 1790834487,
+      "first_time_iso": "2026-10-01T06:01:27+00:00",
+      "time": 1790834487,
+      "time_iso": "2026-10-01T06:01:27+00:00",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "reason": "停損距離過大（5.19 ATR） / 前方強結構區空間不足 / 價格過度延伸",
+      "trigger": 83914.7,
+      "price": 84236.6,
+      "block_count": 1,
+      "volume_ratio": 1.045771771540462,
+      "space_r": 0.060324790414515814,
+      "extension_atr": 1.8855278021840556
     }
   ],
   "prepare_seen": [
@@ -5430,6 +5447,10 @@
     {
       "time": 1790833878,
       "value": 28019.808400000093
+    },
+    {
+      "time": 1790834486,
+      "value": 28082.93070000009
     }
   ],
   "news": {
@@ -6765,7 +6786,7 @@
       "closed_iso": "2026-10-01T04:32:54+00:00"
     }
   ],
-  "last_event_scan": 1790833860,
+  "last_event_scan": 1790834460,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -7816,12 +7837,28 @@
       "defense": 83914.7,
       "first_seen": 1790833879,
       "first_seen_iso": "2026-10-01T05:51:19+00:00",
-      "last_seen": 1790833879,
-      "last_seen_iso": "2026-10-01T05:51:19+00:00",
-      "last_price": 84265.1,
+      "last_seen": 1790834487,
+      "last_seen_iso": "2026-10-01T06:01:27+00:00",
+      "last_price": 84236.6,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
+    },
+    {
+      "setup_key": "BO:L:1790827200",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 83914.7,
+      "defense": 83377.0,
+      "first_seen": 1790834487,
+      "first_seen_iso": "2026-10-01T06:01:27+00:00",
+      "last_seen": 1790834487,
+      "last_seen_iso": "2026-10-01T06:01:27+00:00",
+      "last_price": 84236.6,
+      "status": "BLOCKED",
+      "last_note": "停損距離過大（5.19 ATR） / 前方強結構區空間不足 / 價格過度延伸",
+      "block_count": 1
     }
   ]
 }
