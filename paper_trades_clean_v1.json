@@ -24,13 +24,13 @@
       "oi_dir": "FLAT",
       "cvd_dir": "DOWN",
       "flow_quality": "偏支持",
-      "mfe_r": 0.44931901143060093,
+      "mfe_r": 0.5786755899845618,
       "mae_r": 0.16530209946840205,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 83480.0,
+      "best_price": 83425.3,
       "worst_price": 83739.9,
-      "duration_min": 11
+      "duration_min": 30
     }
   ],
   "history": [
