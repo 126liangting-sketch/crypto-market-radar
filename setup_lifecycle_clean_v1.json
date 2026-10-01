@@ -1224,11 +1224,27 @@
     "defense": 84020.0,
     "first_seen": 1790862897,
     "first_seen_iso": "2026-10-01T13:54:57+00:00",
-    "last_seen": 1790864569,
-    "last_seen_iso": "2026-10-01T14:22:49+00:00",
-    "last_price": 83844.6,
+    "last_seen": 1790865560,
+    "last_seen_iso": "2026-10-01T14:39:20+00:00",
+    "last_price": 84180.8,
     "status": "DETECTED",
     "last_note": null,
     "block_count": 0
+  },
+  {
+    "setup_key": "CONT:L:1790863200",
+    "side": "LONG",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 84021.7,
+    "defense": 83515.6,
+    "first_seen": 1790865560,
+    "first_seen_iso": "2026-10-01T14:39:20+00:00",
+    "last_seen": 1790865560,
+    "last_seen_iso": "2026-10-01T14:39:20+00:00",
+    "last_price": 84180.8,
+    "status": "BLOCKED",
+    "last_note": "停損距離過大（2.74 ATR）",
+    "block_count": 1
   }
 ]
