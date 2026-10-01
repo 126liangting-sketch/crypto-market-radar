@@ -2273,6 +2273,23 @@
       "volume_ratio": 1.8267059396991265,
       "space_r": 0.08408479287533974,
       "extension_atr": 1.080549740602563
+    },
+    {
+      "key": "CONT:L:1790828100",
+      "setup_key": "CONT:L:1790828100",
+      "first_time": 1790830141,
+      "first_time_iso": "2026-10-01T04:49:01+00:00",
+      "time": 1790830141,
+      "time_iso": "2026-10-01T04:49:01+00:00",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "reason": "停損距離過大（2.62 ATR） / 前方強結構區空間不足 / 價格過度延伸",
+      "trigger": 83900.0,
+      "price": 84075.4,
+      "block_count": 1,
+      "volume_ratio": 3.11170608042305,
+      "space_r": 0.22416927745650458,
+      "extension_atr": 1.0891510689257127
     }
   ],
   "prepare_seen": [
@@ -5389,6 +5406,10 @@
     {
       "time": 1790829173,
       "value": 28387.440900000085
+    },
+    {
+      "time": 1790830140,
+      "value": 28290.34460000008
     }
   ],
   "news": {
@@ -6722,7 +6743,7 @@
       "closed_iso": "2026-10-01T04:32:54+00:00"
     }
   ],
-  "last_event_scan": 1790829120,
+  "last_event_scan": 1790830080,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -7747,6 +7768,22 @@
       "status": "PREPARED",
       "last_note": "進入準備距離",
       "block_count": 0
+    },
+    {
+      "setup_key": "CONT:L:1790828100",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 83900.0,
+      "defense": 83678.0,
+      "first_seen": 1790830141,
+      "first_seen_iso": "2026-10-01T04:49:01+00:00",
+      "last_seen": 1790830141,
+      "last_seen_iso": "2026-10-01T04:49:01+00:00",
+      "last_price": 84075.4,
+      "status": "BLOCKED",
+      "last_note": "停損距離過大（2.62 ATR） / 前方強結構區空間不足 / 價格過度延伸",
+      "block_count": 1
     }
   ]
 }
