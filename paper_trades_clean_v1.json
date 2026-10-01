@@ -30,7 +30,7 @@
       "tp2_hit": false,
       "best_price": 84285.4,
       "worst_price": 83781.6,
-      "duration_min": 57
+      "duration_min": 69
     },
     {
       "id": 8,
@@ -62,7 +62,39 @@
       "tp2_hit": false,
       "best_price": 84265.2,
       "worst_price": 83788.0,
-      "duration_min": 43
+      "duration_min": 54
+    },
+    {
+      "id": 9,
+      "setup_key": "CONT:L:1790868600",
+      "side": "LONG",
+      "trigger_type": "回踩再啟動",
+      "opened_at": 1790871030,
+      "opened_iso": "2026-10-01T16:10:30+00:00",
+      "status": "OPEN",
+      "entry": 84173.7,
+      "sl": 83725.10857142857,
+      "tp1": 84622.29142857142,
+      "tp2": null,
+      "risk": 448.59142857142433,
+      "risk_atr": 1.2967211760819257,
+      "trigger": 84041.3,
+      "extension_atr": 0.38272216716219254,
+      "trend_1h": "NEUTRAL",
+      "ema_position": "偏離",
+      "volume_ratio": 1.696291615044492,
+      "regime": "RANGE",
+      "space_r": 0.2592559567407912,
+      "oi_dir": "UP",
+      "cvd_dir": "FLAT",
+      "flow_quality": "普通",
+      "mfe_r": 0.0,
+      "mae_r": 0.0,
+      "tp1_hit": false,
+      "tp2_hit": false,
+      "best_price": 84173.7,
+      "worst_price": 84173.7,
+      "duration_min": 0
     }
   ],
   "history": [
