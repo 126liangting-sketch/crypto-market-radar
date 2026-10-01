@@ -2681,6 +2681,23 @@
       "volume_ratio": 0.442630205321097,
       "space_r": 0.9456436125894934,
       "extension_atr": 0.8446555819477822
+    },
+    {
+      "key": "CONT:S:1790889300",
+      "setup_key": "CONT:S:1790889300",
+      "first_time": 1790891581,
+      "first_time_iso": "2026-10-01T21:53:01+00:00",
+      "time": 1790891581,
+      "time_iso": "2026-10-01T21:53:01+00:00",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "reason": "成交量過低",
+      "trigger": 84520.0,
+      "price": 84475.1,
+      "block_count": 1,
+      "volume_ratio": 0.4498427424191762,
+      "space_r": 1.9041345371412777,
+      "extension_atr": 0.24518293158589785
     }
   ],
   "prepare_seen": [
@@ -6112,6 +6129,10 @@
     {
       "time": 1790890843,
       "value": 28693.713400000106
+    },
+    {
+      "time": 1790891580,
+      "value": 28676.225700000115
     }
   ],
   "news": {
@@ -7628,7 +7649,7 @@
       "closed_iso": "2026-10-01T20:43:50+00:00"
     }
   ],
-  "last_event_scan": 1790890800,
+  "last_event_scan": 1790891520,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -9015,9 +9036,9 @@
       "defense": 84621.2,
       "first_seen": 1790882244,
       "first_seen_iso": "2026-10-01T19:17:24+00:00",
-      "last_seen": 1790890844,
-      "last_seen_iso": "2026-10-01T21:40:44+00:00",
-      "last_price": 84459.9,
+      "last_seen": 1790891581,
+      "last_seen_iso": "2026-10-01T21:53:01+00:00",
+      "last_price": 84475.1,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
@@ -9053,6 +9074,22 @@
       "status": "BLOCKED",
       "last_note": "成交量過低 / 價格過度延伸",
       "block_count": 6
+    },
+    {
+      "setup_key": "CONT:S:1790889300",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 84520.0,
+      "defense": 84650.4,
+      "first_seen": 1790891581,
+      "first_seen_iso": "2026-10-01T21:53:01+00:00",
+      "last_seen": 1790891581,
+      "last_seen_iso": "2026-10-01T21:53:01+00:00",
+      "last_price": 84475.1,
+      "status": "BLOCKED",
+      "last_note": "成交量過低",
+      "block_count": 1
     }
   ]
 }
