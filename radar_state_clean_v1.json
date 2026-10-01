@@ -1,7 +1,40 @@
 {
   "version": "BTC_RADAR_CLEAN_V1",
-  "next_trade_id": 7,
-  "trades": [],
+  "next_trade_id": 8,
+  "trades": [
+    {
+      "id": 7,
+      "setup_key": "CONT:L:1790863200",
+      "side": "LONG",
+      "trigger_type": "回踩再啟動",
+      "opened_at": 1790866875,
+      "opened_iso": "2026-10-01T15:01:15+00:00",
+      "status": "OPEN",
+      "entry": 84005.7,
+      "sl": 83472.23607142858,
+      "tp1": 84539.16392857142,
+      "tp2": null,
+      "risk": 533.463928571422,
+      "risk_atr": 1.8453030415338447,
+      "trigger": 84021.7,
+      "extension_atr": -0.055345539001309674,
+      "trend_1h": "NEUTRAL",
+      "ema_position": "偏離",
+      "volume_ratio": 1.6435707935026713,
+      "regime": "RANGE",
+      "space_r": 0.025493757443780015,
+      "oi_dir": "FLAT",
+      "cvd_dir": "FLAT",
+      "flow_quality": "普通",
+      "mfe_r": 0.0,
+      "mae_r": 0.0,
+      "tp1_hit": false,
+      "tp2_hit": false,
+      "best_price": 84005.7,
+      "worst_price": 84005.7,
+      "duration_min": 0
+    }
+  ],
   "history": [
     {
       "id": 1,
@@ -2581,7 +2614,8 @@
     "BO:S:1790560800",
     "BO:S:1790566200",
     "CONT:L:1790853300",
-    "BO:S:1790853300"
+    "BO:S:1790853300",
+    "CONT:L:1790863200"
   ],
   "oi_history": [
     {
@@ -5791,6 +5825,10 @@
     {
       "time": 1790866387,
       "value": 28366.643000000116
+    },
+    {
+      "time": 1790866874,
+      "value": 28454.119000000115
     }
   ],
   "news": {
@@ -7234,7 +7272,7 @@
       "closed_iso": "2026-10-01T10:14:50+00:00"
     }
   ],
-  "last_event_scan": 1790866380,
+  "last_event_scan": 1790866860,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -8461,9 +8499,9 @@
       "defense": 84020.0,
       "first_seen": 1790862897,
       "first_seen_iso": "2026-10-01T13:54:57+00:00",
-      "last_seen": 1790866388,
-      "last_seen_iso": "2026-10-01T14:53:08+00:00",
-      "last_price": 83743.8,
+      "last_seen": 1790866876,
+      "last_seen_iso": "2026-10-01T15:01:16+00:00",
+      "last_price": 84005.7,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
@@ -8477,11 +8515,11 @@
       "defense": 83515.6,
       "first_seen": 1790865560,
       "first_seen_iso": "2026-10-01T14:39:20+00:00",
-      "last_seen": 1790866388,
-      "last_seen_iso": "2026-10-01T14:53:08+00:00",
-      "last_price": 83743.8,
-      "status": "TRIGGERED",
-      "last_note": "1分鐘區間已穿越觸發價",
+      "last_seen": 1790866875,
+      "last_seen_iso": "2026-10-01T15:01:15+00:00",
+      "last_price": 84005.7,
+      "status": "FORMAL",
+      "last_note": "建立模擬單 #7",
       "block_count": 1
     }
   ]
