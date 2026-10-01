@@ -2320,16 +2320,16 @@
     "setup_key": "CONT:S:1790884800",
     "first_time": 1790887431,
     "first_time_iso": "2026-10-01T20:43:51+00:00",
-    "time": 1790890025,
-    "time_iso": "2026-10-01T21:27:05+00:00",
+    "time": 1790890844,
+    "time_iso": "2026-10-01T21:40:44+00:00",
     "side": "SHORT",
     "type": "PULLBACK",
-    "reason": "成交量過低",
+    "reason": "成交量過低 / 價格過度延伸",
     "trigger": 84625.0,
-    "price": 84566.7,
-    "block_count": 5,
-    "volume_ratio": 0.1905593614935176,
-    "space_r": 0.11974975880964063,
-    "extension_atr": 0.28059680968098466
+    "price": 84459.9,
+    "block_count": 6,
+    "volume_ratio": 0.442630205321097,
+    "space_r": 0.9456436125894934,
+    "extension_atr": 0.8446555819477822
   }
 ]

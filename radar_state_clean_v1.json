@@ -2670,17 +2670,17 @@
       "setup_key": "CONT:S:1790884800",
       "first_time": 1790887431,
       "first_time_iso": "2026-10-01T20:43:51+00:00",
-      "time": 1790890025,
-      "time_iso": "2026-10-01T21:27:05+00:00",
+      "time": 1790890844,
+      "time_iso": "2026-10-01T21:40:44+00:00",
       "side": "SHORT",
       "type": "PULLBACK",
-      "reason": "成交量過低",
+      "reason": "成交量過低 / 價格過度延伸",
       "trigger": 84625.0,
-      "price": 84566.7,
-      "block_count": 5,
-      "volume_ratio": 0.1905593614935176,
-      "space_r": 0.11974975880964063,
-      "extension_atr": 0.28059680968098466
+      "price": 84459.9,
+      "block_count": 6,
+      "volume_ratio": 0.442630205321097,
+      "space_r": 0.9456436125894934,
+      "extension_atr": 0.8446555819477822
     }
   ],
   "prepare_seen": [
@@ -6108,6 +6108,10 @@
     {
       "time": 1790890024,
       "value": 28780.771900000116
+    },
+    {
+      "time": 1790890843,
+      "value": 28693.713400000106
     }
   ],
   "news": {
@@ -7624,7 +7628,7 @@
       "closed_iso": "2026-10-01T20:43:50+00:00"
     }
   ],
-  "last_event_scan": 1790890020,
+  "last_event_scan": 1790890800,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -9011,9 +9015,9 @@
       "defense": 84621.2,
       "first_seen": 1790882244,
       "first_seen_iso": "2026-10-01T19:17:24+00:00",
-      "last_seen": 1790890025,
-      "last_seen_iso": "2026-10-01T21:27:05+00:00",
-      "last_price": 84566.7,
+      "last_seen": 1790890844,
+      "last_seen_iso": "2026-10-01T21:40:44+00:00",
+      "last_price": 84459.9,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
@@ -9043,12 +9047,12 @@
       "defense": 84822.8,
       "first_seen": 1790886610,
       "first_seen_iso": "2026-10-01T20:30:10+00:00",
-      "last_seen": 1790890025,
-      "last_seen_iso": "2026-10-01T21:27:05+00:00",
-      "last_price": 84566.7,
+      "last_seen": 1790890844,
+      "last_seen_iso": "2026-10-01T21:40:44+00:00",
+      "last_price": 84459.9,
       "status": "BLOCKED",
-      "last_note": "成交量過低",
-      "block_count": 5
+      "last_note": "成交量過低 / 價格過度延伸",
+      "block_count": 6
     }
   ]
 }
