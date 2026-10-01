@@ -1032,11 +1032,27 @@
     "defense": 83678.0,
     "first_seen": 1790830141,
     "first_seen_iso": "2026-10-01T04:49:01+00:00",
-    "last_seen": 1790833093,
-    "last_seen_iso": "2026-10-01T05:38:13+00:00",
-    "last_price": 84253.1,
+    "last_seen": 1790833879,
+    "last_seen_iso": "2026-10-01T05:51:19+00:00",
+    "last_price": 84265.1,
     "status": "BLOCKED",
-    "last_note": "停損距離過大（3.46 ATR） / 前方強結構區空間不足 / 價格過度延伸",
-    "block_count": 5
+    "last_note": "停損距離過大（3.59 ATR） / 前方強結構區空間不足 / 價格過度延伸",
+    "block_count": 6
+  },
+  {
+    "setup_key": "BO:S:1790828100",
+    "side": "SHORT",
+    "type": "BREAKOUT",
+    "label": "有效突破",
+    "trigger": 83678.0,
+    "defense": 83914.7,
+    "first_seen": 1790833879,
+    "first_seen_iso": "2026-10-01T05:51:19+00:00",
+    "last_seen": 1790833879,
+    "last_seen_iso": "2026-10-01T05:51:19+00:00",
+    "last_price": 84265.1,
+    "status": "DETECTED",
+    "last_note": null,
+    "block_count": 0
   }
 ]
