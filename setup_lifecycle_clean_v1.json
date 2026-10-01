@@ -1384,9 +1384,9 @@
     "defense": 84621.2,
     "first_seen": 1790882244,
     "first_seen_iso": "2026-10-01T19:17:24+00:00",
-    "last_seen": 1790884823,
-    "last_seen_iso": "2026-10-01T20:00:23+00:00",
-    "last_price": 84654.9,
+    "last_seen": 1790885613,
+    "last_seen_iso": "2026-10-01T20:13:33+00:00",
+    "last_price": 84750.0,
     "status": "DETECTED",
     "last_note": null,
     "block_count": 0
