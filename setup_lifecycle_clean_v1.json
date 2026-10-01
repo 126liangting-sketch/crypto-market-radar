@@ -1384,9 +1384,9 @@
     "defense": 84621.2,
     "first_seen": 1790882244,
     "first_seen_iso": "2026-10-01T19:17:24+00:00",
-    "last_seen": 1790885613,
-    "last_seen_iso": "2026-10-01T20:13:33+00:00",
-    "last_price": 84750.0,
+    "last_seen": 1790886610,
+    "last_seen_iso": "2026-10-01T20:30:10+00:00",
+    "last_price": 84722.0,
     "status": "DETECTED",
     "last_note": null,
     "block_count": 0
@@ -1406,5 +1406,21 @@
     "status": "TRIGGERED",
     "last_note": "1分鐘區間已穿越觸發價",
     "block_count": 2
+  },
+  {
+    "setup_key": "CONT:S:1790884800",
+    "side": "SHORT",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 84625.0,
+    "defense": 84822.8,
+    "first_seen": 1790886610,
+    "first_seen_iso": "2026-10-01T20:30:10+00:00",
+    "last_seen": 1790886610,
+    "last_seen_iso": "2026-10-01T20:30:10+00:00",
+    "last_price": 84722.0,
+    "status": "DETECTED",
+    "last_note": null,
+    "block_count": 0
   }
 ]
