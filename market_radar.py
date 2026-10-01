@@ -14,7 +14,7 @@ OKX_SYMBOL = "BTC-USDT-SWAP"
 WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
-VERSION = "BTC_RADAR_CLEAN_V1_ENGINE_SPACE_GRADED"
+VERSION = "BTC_RADAR_CLEAN_V1_ENGINE_SPACE_EXIT"
 STATE_FILE = "radar_state_clean_v1.json"
 TRADES_JSON = "paper_trades_clean_v1.json"
 TRADES_CSV = "paper_trades_clean_v1.csv"
@@ -598,11 +598,11 @@ def _structure_zones(rows15, pivots, side, a):
 
 
 def space_context(rows15, side, entry, risk, trigger_time, a):
-    """Grade forward structural space without making every nearby swing a hard gate.
+    """Describe forward structural space for exit planning and message context.
 
-    Only a STRONG structural zone inside 1R can block a Formal. NORMAL/WEAK zones
-    are kept as quality context, matching the agreed design that Space should be
-    natural rather than an all-or-nothing wall.
+    Space is deliberately NOT an entry veto. Structural zones are still graded so
+    the radar can shorten/omit ambitious targets and warn about nearby obstacles,
+    while Formal entry remains controlled by trigger, participation, risk and chase.
     """
     highs, lows = local_pivots(rows15, 2, 2)
     pivots = highs if side == "LONG" else lows
@@ -633,19 +633,21 @@ def space_context(rows15, side, entry, risk, trigger_time, a):
 
     nearest_r = r_to(nearest)
     strong_r = r_to(strong)
-    hard_block = strong_r is not None and strong_r < SPACE_MIN_R
+    # Space no longer blocks Formal. Keep the old field for state/backward
+    # compatibility, but it is always False in the exit-management design.
+    hard_block = False
 
     if nearest is None:
         label = "開放"
     elif nearest["strength"] == "STRONG":
-        label = "強結構區・空間受限" if nearest_r is not None and nearest_r < 1.0 else "強結構區"
+        label = "強結構區・目標需保守" if nearest_r is not None and nearest_r < 1.0 else "強結構區"
     elif nearest["strength"] == "NORMAL":
         label = "一般結構區（不硬擋）"
     else:
         label = "弱結構（不硬擋）"
 
-    # space_r intentionally means distance to the nearest STRONG obstacle because
-    # that is the only obstacle allowed to control Formal/TP logic.
+    # space_r remains the distance to the nearest STRONG obstacle for historical
+    # comparability. It controls exit ambition/message context, never Formal entry.
     return {
         "target": strong["price"] if strong else None,
         "space_r": strong_r,
@@ -1223,15 +1225,13 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
         reasons.append("成交量過低")
     if plan["risk_atr"] > MAX_STOP_ATR:
         reasons.append(f"停損距離過大（{plan['risk_atr']:.2f} ATR）")
-    if space.get("hard_block"):
-        reasons.append("前方強結構區空間不足")
     if ext > EXT_WAIT_ATR:
         reasons.append("價格過度延伸")
 
-    # 0.50~0.75 ATR is a quality gate, not a blanket ban: allow strong participation + room.
+    # 0.50~0.75 ATR is a chase-quality gate. Space is intentionally excluded here:
+    # a nearby structure changes the exit plan, not whether the entry is allowed.
     if EXT_WARN_ATR < ext <= EXT_WAIT_ATR:
-        flow, _ = flow_quality(side, oi, cvd)
-        if not (vol["ratio"] >= 1.30 and (space["space_r"] is None or space["space_r"] >= SPACE_GOOD_R)):
+        if vol["ratio"] < 1.30:
             reasons.append("偏追價，等待較好位置")
 
     if reasons:
@@ -1239,8 +1239,12 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
                        {"volume_ratio": vol["ratio"], "space_r": space["space_r"], "extension_atr": ext})
         return False
 
-    # If there is a known structure before 2R, don't invent a fake 2R TP2.
-    if space["space_r"] is not None and space["space_r"] < 2.0:
+    # Space now manages exit ambition instead of vetoing the trade. Ignore WEAK
+    # noise; a NORMAL/STRONG zone before 2R removes the fixed 2R target.
+    significant_r = None
+    if space.get("nearest_strength") in ("NORMAL", "STRONG"):
+        significant_r = space.get("nearest_r")
+    if significant_r is not None and significant_r < 2.0:
         plan["tp2"] = None
 
     flow, icon = flow_quality(side, oi, cvd)
@@ -1253,13 +1257,15 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
     state["formal_seen"].append(sig)
     state["formal_seen"] = state["formal_seen"][-500:]
 
-    tp2_text = f"${plan['tp2']:,.0f}" if plan.get("tp2") is not None else "—（前方空間不足 2R）"
+    tp2_text = f"${plan['tp2']:,.0f}" if plan.get("tp2") is not None else "—（前方結構限制延伸目標）"
     if space.get("nearest_target") is None:
         space_text = "開放"
     else:
         shown_r = space.get("nearest_r")
         rtxt = f"{shown_r:.2f}R" if shown_r is not None else "—"
         space_text = f"{rtxt}（{space['label']}）"
+        if space.get("nearest_strength") == "STRONG" and shown_r is not None and shown_r < 1.0:
+            space_text += " ⚠️ TP1前有強結構"
     opposite = ((side == "LONG" and trend["state"] == "BEAR") or (side == "SHORT" and trend["state"] == "BULL"))
     bg_note = " ⚠️ 與1H背景反向" if opposite else ""
     send_discord(
