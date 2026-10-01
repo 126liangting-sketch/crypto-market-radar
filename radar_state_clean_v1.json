@@ -27,12 +27,12 @@
       "cvd_dir": "FLAT",
       "flow_quality": "普通",
       "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mae_r": 0.9393040612581228,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 84967.3,
-      "worst_price": 84967.3,
-      "duration_min": 0
+      "worst_price": 84621.2,
+      "duration_min": 13
     }
   ],
   "history": [
@@ -2725,7 +2725,8 @@
     "CONT:S:1790821800",
     "CONT:L:1790832600",
     "BO:S:1790836200",
-    "BO:L:1790843400"
+    "BO:L:1790843400",
+    "BO:S:1790877600"
   ],
   "formal_seen": [
     "BO:S:1790334000",
@@ -6015,6 +6016,10 @@
     {
       "time": 1790880081,
       "value": 28963.855500000125
+    },
+    {
+      "time": 1790880878,
+      "value": 28955.74200000013
     }
   ],
   "news": {
@@ -6097,8 +6102,41 @@
     ],
     "last_notify": 1790876547
   },
-  "next_prepare_id": 41,
-  "prepare_active": [],
+  "next_prepare_id": 42,
+  "prepare_active": [
+    {
+      "id": 41,
+      "setup_key": "BO:S:1790877600",
+      "side": "SHORT",
+      "trigger_type": "有效突破",
+      "opened_at": 1790880879,
+      "opened_iso": "2026-10-01T18:54:39+00:00",
+      "prepare_price": 84720.4,
+      "trigger": 84646.0,
+      "atr_open": 313.4785714285702,
+      "trend_1h": "NEUTRAL",
+      "ema_position": "偏離",
+      "ema_distance_atr": 1.5457016629169127,
+      "volume_ratio": 1.02996849862075,
+      "regime": "TREND",
+      "oi_dir": "FLAT",
+      "cvd_dir": "FLAT",
+      "formal_promoted": false,
+      "formal_trade_id": null,
+      "formal_at": null,
+      "formal_delay_min": null,
+      "status": "WATCHING",
+      "best_price": 84720.4,
+      "worst_price": 84720.4,
+      "mfe_atr": 0.0,
+      "mae_atr": 0.0,
+      "mfe_atr_30": null,
+      "mae_atr_30": null,
+      "mfe_atr_60": null,
+      "mae_atr_60": null,
+      "duration_min": 0
+    }
+  ],
   "prepare_history": [
     {
       "id": 1,
@@ -7461,7 +7499,7 @@
       "closed_iso": "2026-10-01T10:14:50+00:00"
     }
   ],
-  "last_event_scan": 1790880060,
+  "last_event_scan": 1790880840,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -8832,11 +8870,11 @@
       "defense": 85041.9,
       "first_seen": 1790880083,
       "first_seen_iso": "2026-10-01T18:41:23+00:00",
-      "last_seen": 1790880083,
-      "last_seen_iso": "2026-10-01T18:41:23+00:00",
-      "last_price": 84967.3,
-      "status": "DETECTED",
-      "last_note": null,
+      "last_seen": 1790880879,
+      "last_seen_iso": "2026-10-01T18:54:39+00:00",
+      "last_price": 84720.4,
+      "status": "PREPARED",
+      "last_note": "進入準備距離",
       "block_count": 0
     }
   ]
