@@ -24,13 +24,13 @@
       "oi_dir": "FLAT",
       "cvd_dir": "FLAT",
       "flow_quality": "普通",
-      "mfe_r": 0.5243091144869224,
+      "mfe_r": 0.755814926568208,
       "mae_r": 0.42008463552562014,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 84285.4,
+      "best_price": 84408.9,
       "worst_price": 83781.6,
-      "duration_min": 69
+      "duration_min": 84
     },
     {
       "id": 8,
@@ -56,13 +56,13 @@
       "oi_dir": "UP",
       "cvd_dir": "DOWN",
       "flow_quality": "分歧",
-      "mfe_r": 0.46961124527622233,
+      "mfe_r": 0.8147935263309117,
       "mae_r": 0.6766725718379052,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 84265.2,
+      "best_price": 84408.9,
       "worst_price": 83788.0,
-      "duration_min": 54
+      "duration_min": 69
     },
     {
       "id": 9,
@@ -88,13 +88,13 @@
       "oi_dir": "UP",
       "cvd_dir": "FLAT",
       "flow_quality": "普通",
-      "mfe_r": 0.0,
+      "mfe_r": 0.5243078334087,
       "mae_r": 0.0,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 84173.7,
+      "best_price": 84408.9,
       "worst_price": 84173.7,
-      "duration_min": 0
+      "duration_min": 14
     }
   ],
   "history": [

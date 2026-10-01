@@ -26,13 +26,13 @@
       "oi_dir": "FLAT",
       "cvd_dir": "FLAT",
       "flow_quality": "普通",
-      "mfe_r": 0.5243091144869224,
+      "mfe_r": 0.755814926568208,
       "mae_r": 0.42008463552562014,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 84285.4,
+      "best_price": 84408.9,
       "worst_price": 83781.6,
-      "duration_min": 69
+      "duration_min": 84
     },
     {
       "id": 8,
@@ -58,13 +58,13 @@
       "oi_dir": "UP",
       "cvd_dir": "DOWN",
       "flow_quality": "分歧",
-      "mfe_r": 0.46961124527622233,
+      "mfe_r": 0.8147935263309117,
       "mae_r": 0.6766725718379052,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 84265.2,
+      "best_price": 84408.9,
       "worst_price": 83788.0,
-      "duration_min": 54
+      "duration_min": 69
     },
     {
       "id": 9,
@@ -90,13 +90,13 @@
       "oi_dir": "UP",
       "cvd_dir": "FLAT",
       "flow_quality": "普通",
-      "mfe_r": 0.0,
+      "mfe_r": 0.5243078334087,
       "mae_r": 0.0,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 84173.7,
+      "best_price": 84408.9,
       "worst_price": 84173.7,
-      "duration_min": 0
+      "duration_min": 14
     }
   ],
   "history": [
@@ -5915,6 +5915,10 @@
     {
       "time": 1790871029,
       "value": 28722.45840000011
+    },
+    {
+      "time": 1790871917,
+      "value": 28629.943700000105
     }
   ],
   "news": {
@@ -7360,7 +7364,7 @@
       "closed_iso": "2026-10-01T10:14:50+00:00"
     }
   ],
-  "last_event_scan": 1790871000,
+  "last_event_scan": 1790871900,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -8667,9 +8671,9 @@
       "defense": 84285.4,
       "first_seen": 1790871030,
       "first_seen_iso": "2026-10-01T16:10:30+00:00",
-      "last_seen": 1790871030,
-      "last_seen_iso": "2026-10-01T16:10:30+00:00",
-      "last_price": 84173.7,
+      "last_seen": 1790871918,
+      "last_seen_iso": "2026-10-01T16:25:18+00:00",
+      "last_price": 84320.0,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
