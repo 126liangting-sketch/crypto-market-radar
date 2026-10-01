@@ -2687,17 +2687,17 @@
       "setup_key": "CONT:S:1790889300",
       "first_time": 1790891581,
       "first_time_iso": "2026-10-01T21:53:01+00:00",
-      "time": 1790891581,
-      "time_iso": "2026-10-01T21:53:01+00:00",
+      "time": 1790892006,
+      "time_iso": "2026-10-01T22:00:06+00:00",
       "side": "SHORT",
       "type": "PULLBACK",
       "reason": "成交量過低",
       "trigger": 84520.0,
-      "price": 84475.1,
-      "block_count": 1,
-      "volume_ratio": 0.4498427424191762,
-      "space_r": 1.9041345371412777,
-      "extension_atr": 0.24518293158589785
+      "price": 84507.4,
+      "block_count": 2,
+      "volume_ratio": 0.2996832022737876,
+      "space_r": 2.463847363949198,
+      "extension_atr": 0.07048106121147649
     }
   ],
   "prepare_seen": [
@@ -6133,6 +6133,10 @@
     {
       "time": 1790891580,
       "value": 28676.225700000115
+    },
+    {
+      "time": 1790892005,
+      "value": 28694.648700000114
     }
   ],
   "news": {
@@ -7649,7 +7653,7 @@
       "closed_iso": "2026-10-01T20:43:50+00:00"
     }
   ],
-  "last_event_scan": 1790891520,
+  "last_event_scan": 1790892000,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -9084,12 +9088,28 @@
       "defense": 84650.4,
       "first_seen": 1790891581,
       "first_seen_iso": "2026-10-01T21:53:01+00:00",
-      "last_seen": 1790891581,
-      "last_seen_iso": "2026-10-01T21:53:01+00:00",
-      "last_price": 84475.1,
+      "last_seen": 1790892006,
+      "last_seen_iso": "2026-10-01T22:00:06+00:00",
+      "last_price": 84507.4,
       "status": "BLOCKED",
       "last_note": "成交量過低",
-      "block_count": 1
+      "block_count": 2
+    },
+    {
+      "setup_key": "BO:L:1790889300",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 84650.4,
+      "defense": 84517.3,
+      "first_seen": 1790892006,
+      "first_seen_iso": "2026-10-01T22:00:06+00:00",
+      "last_seen": 1790892006,
+      "last_seen_iso": "2026-10-01T22:00:06+00:00",
+      "last_price": 84507.4,
+      "status": "DETECTED",
+      "last_note": null,
+      "block_count": 0
     }
   ]
 }
