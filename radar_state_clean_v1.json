@@ -5477,6 +5477,10 @@
     {
       "time": 1790836965,
       "value": 28045.230300000105
+    },
+    {
+      "time": 1790837944,
+      "value": 28041.510500000095
     }
   ],
   "news": {
@@ -5578,11 +5582,11 @@
       "worst_price": 84069.8,
       "mfe_atr": 0.09980822146255354,
       "mae_atr": 1.1918619194529942,
-      "mfe_atr_30": null,
-      "mae_atr_30": null,
+      "mfe_atr_30": 0.0998,
+      "mae_atr_30": 1.1919,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 21
+      "duration_min": 38
     }
   ],
   "prepare_history": [
@@ -6845,7 +6849,7 @@
       "closed_iso": "2026-10-01T04:32:54+00:00"
     }
   ],
-  "last_event_scan": 1790836920,
+  "last_event_scan": 1790837940,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -7896,9 +7900,9 @@
       "defense": 83914.7,
       "first_seen": 1790833879,
       "first_seen_iso": "2026-10-01T05:51:19+00:00",
-      "last_seen": 1790836967,
-      "last_seen_iso": "2026-10-01T06:42:47+00:00",
-      "last_price": 84094.3,
+      "last_seen": 1790837945,
+      "last_seen_iso": "2026-10-01T06:59:05+00:00",
+      "last_price": 84100.0,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
