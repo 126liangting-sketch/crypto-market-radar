@@ -26,13 +26,13 @@
       "oi_dir": "FLAT",
       "cvd_dir": "DOWN",
       "flow_quality": "偏支持",
-      "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mfe_r": 0.44931901143060093,
+      "mae_r": 0.16530209946840205,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 83670.0,
-      "worst_price": 83670.0,
-      "duration_min": 0
+      "best_price": 83480.0,
+      "worst_price": 83739.9,
+      "duration_min": 11
     }
   ],
   "history": [
@@ -5741,6 +5741,10 @@
     {
       "time": 1790859356,
       "value": 28198.162700000114
+    },
+    {
+      "time": 1790860030,
+      "value": 28252.416700000114
     }
   ],
   "news": {
@@ -7182,7 +7186,7 @@
       "closed_iso": "2026-10-01T10:14:50+00:00"
     }
   ],
-  "last_event_scan": 1790859300,
+  "last_event_scan": 1790860020,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
