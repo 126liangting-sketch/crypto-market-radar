@@ -1032,11 +1032,11 @@
     "defense": 83678.0,
     "first_seen": 1790830141,
     "first_seen_iso": "2026-10-01T04:49:01+00:00",
-    "last_seen": 1790830141,
-    "last_seen_iso": "2026-10-01T04:49:01+00:00",
-    "last_price": 84075.4,
+    "last_seen": 1790830777,
+    "last_seen_iso": "2026-10-01T04:59:37+00:00",
+    "last_price": 84060.0,
     "status": "BLOCKED",
-    "last_note": "停損距離過大（2.62 ATR） / 前方強結構區空間不足 / 價格過度延伸",
-    "block_count": 1
+    "last_note": "停損距離過大（2.52 ATR） / 前方強結構區空間不足 / 價格過度延伸",
+    "block_count": 2
   }
 ]
