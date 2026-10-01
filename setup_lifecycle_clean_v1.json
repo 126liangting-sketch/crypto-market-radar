@@ -984,12 +984,12 @@
     "defense": 83442.9,
     "first_seen": 1790820581,
     "first_seen_iso": "2026-10-01T02:09:41+00:00",
-    "last_seen": 1790826778,
-    "last_seen_iso": "2026-10-01T03:52:58+00:00",
-    "last_price": 83709.8,
+    "last_seen": 1790827304,
+    "last_seen_iso": "2026-10-01T04:01:44+00:00",
+    "last_price": 83750.0,
     "status": "BLOCKED",
     "last_note": "前方強結構區空間不足 / 價格過度延伸",
-    "block_count": 3
+    "block_count": 4
   },
   {
     "setup_key": "BO:S:1790818200",
