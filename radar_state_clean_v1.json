@@ -2670,17 +2670,17 @@
       "setup_key": "CONT:S:1790884800",
       "first_time": 1790887431,
       "first_time_iso": "2026-10-01T20:43:51+00:00",
-      "time": 1790887431,
-      "time_iso": "2026-10-01T20:43:51+00:00",
+      "time": 1790888045,
+      "time_iso": "2026-10-01T20:54:05+00:00",
       "side": "SHORT",
       "type": "PULLBACK",
       "reason": "成交量過低",
       "trigger": 84625.0,
-      "price": 84566.4,
-      "block_count": 1,
-      "volume_ratio": 0.19776878318710522,
-      "space_r": 0.11545637797328884,
-      "extension_atr": 0.2256760102330172
+      "price": 84585.3,
+      "block_count": 2,
+      "volume_ratio": 0.21836516216087934,
+      "space_r": 0.1925847100198537,
+      "extension_atr": 0.1579425973287763
     }
   ],
   "prepare_seen": [
@@ -6092,6 +6092,10 @@
     {
       "time": 1790887429,
       "value": 28865.371200000118
+    },
+    {
+      "time": 1790888044,
+      "value": 28839.21310000012
     }
   ],
   "news": {
@@ -7607,7 +7611,7 @@
       "closed_iso": "2026-10-01T20:43:50+00:00"
     }
   ],
-  "last_event_scan": 1790887380,
+  "last_event_scan": 1790888040,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -8994,9 +8998,9 @@
       "defense": 84621.2,
       "first_seen": 1790882244,
       "first_seen_iso": "2026-10-01T19:17:24+00:00",
-      "last_seen": 1790887431,
-      "last_seen_iso": "2026-10-01T20:43:51+00:00",
-      "last_price": 84566.4,
+      "last_seen": 1790888045,
+      "last_seen_iso": "2026-10-01T20:54:05+00:00",
+      "last_price": 84585.3,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
@@ -9026,12 +9030,12 @@
       "defense": 84822.8,
       "first_seen": 1790886610,
       "first_seen_iso": "2026-10-01T20:30:10+00:00",
-      "last_seen": 1790887431,
-      "last_seen_iso": "2026-10-01T20:43:51+00:00",
-      "last_price": 84566.4,
+      "last_seen": 1790888045,
+      "last_seen_iso": "2026-10-01T20:54:05+00:00",
+      "last_price": 84585.3,
       "status": "BLOCKED",
       "last_note": "成交量過低",
-      "block_count": 1
+      "block_count": 2
     }
   ]
 }
