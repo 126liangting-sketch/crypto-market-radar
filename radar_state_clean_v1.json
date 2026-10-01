@@ -2364,17 +2364,17 @@
       "setup_key": "BO:L:1790843400",
       "first_time": 1790845277,
       "first_time_iso": "2026-10-01T09:01:17+00:00",
-      "time": 1790847197,
-      "time_iso": "2026-10-01T09:33:17+00:00",
+      "time": 1790848149,
+      "time_iso": "2026-10-01T09:49:09+00:00",
       "side": "LONG",
       "type": "BREAKOUT",
-      "reason": "前方強結構區空間不足 / 價格過度延伸",
+      "reason": "成交量過低 / 前方強結構區空間不足 / 價格過度延伸",
       "trigger": 83550.0,
-      "price": 83812.7,
-      "block_count": 3,
-      "volume_ratio": 1.3114502936713193,
-      "space_r": 0.004375042725042601,
-      "extension_atr": 1.0986706497386036
+      "price": 83834.8,
+      "block_count": 4,
+      "volume_ratio": 0.6888950861152879,
+      "space_r": 0.14014417836621737,
+      "extension_atr": 1.2092684702171728
     }
   ],
   "prepare_seen": [
@@ -5578,6 +5578,10 @@
     {
       "time": 1790847196,
       "value": 28258.894200000108
+    },
+    {
+      "time": 1790848148,
+      "value": 28172.24380000011
     }
   ],
   "news": {
@@ -5677,15 +5681,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 83856.7,
+      "best_price": 83862.7,
       "worst_price": 83538.1,
-      "mfe_atr": 1.3565693430656622,
+      "mfe_atr": 1.382116788321137,
       "mae_atr": 0.0,
       "mfe_atr_30": 1.3566,
       "mae_atr_30": 0.0,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 32
+      "duration_min": 47
     }
   ],
   "prepare_history": [
@@ -7016,7 +7020,7 @@
       "closed_iso": "2026-10-01T08:22:37+00:00"
     }
   ],
-  "last_event_scan": 1790847180,
+  "last_event_scan": 1790848140,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -8163,12 +8167,12 @@
       "defense": 83300.0,
       "first_seen": 1790845277,
       "first_seen_iso": "2026-10-01T09:01:17+00:00",
-      "last_seen": 1790847197,
-      "last_seen_iso": "2026-10-01T09:33:17+00:00",
-      "last_price": 83812.7,
+      "last_seen": 1790848149,
+      "last_seen_iso": "2026-10-01T09:49:09+00:00",
+      "last_price": 83834.8,
       "status": "BLOCKED",
-      "last_note": "前方強結構區空間不足 / 價格過度延伸",
-      "block_count": 3
+      "last_note": "成交量過低 / 前方強結構區空間不足 / 價格過度延伸",
+      "block_count": 4
     },
     {
       "setup_key": "CONT:S:1790843400",
@@ -8179,9 +8183,9 @@
       "defense": 83550.0,
       "first_seen": 1790845277,
       "first_seen_iso": "2026-10-01T09:01:17+00:00",
-      "last_seen": 1790847197,
-      "last_seen_iso": "2026-10-01T09:33:17+00:00",
-      "last_price": 83812.7,
+      "last_seen": 1790848149,
+      "last_seen_iso": "2026-10-01T09:49:09+00:00",
+      "last_price": 83834.8,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
