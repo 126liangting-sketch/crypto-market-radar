@@ -25,12 +25,12 @@
       "cvd_dir": "FLAT",
       "flow_quality": "普通",
       "mfe_r": 0.9235575483895775,
-      "mae_r": 0.0407943594871635,
+      "mae_r": 0.34864687561700103,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 84588.0,
-      "worst_price": 84155.4,
-      "duration_min": 38
+      "worst_price": 84017.3,
+      "duration_min": 49
     }
   ],
   "history": [
