@@ -2279,17 +2279,17 @@
       "setup_key": "CONT:L:1790828100",
       "first_time": 1790830141,
       "first_time_iso": "2026-10-01T04:49:01+00:00",
-      "time": 1790832344,
-      "time_iso": "2026-10-01T05:25:44+00:00",
+      "time": 1790833093,
+      "time_iso": "2026-10-01T05:38:13+00:00",
       "side": "LONG",
       "type": "PULLBACK",
-      "reason": "停損距離過大（3.30 ATR） / 前方強結構區空間不足 / 價格過度延伸",
+      "reason": "停損距離過大（3.46 ATR） / 前方強結構區空間不足 / 價格過度延伸",
       "trigger": 83900.0,
-      "price": 84230.6,
-      "block_count": 4,
-      "volume_ratio": 1.643368711241137,
-      "space_r": 0.10260529350035731,
-      "extension_atr": 1.884297520661177
+      "price": 84253.1,
+      "block_count": 5,
+      "volume_ratio": 0.9954719790602629,
+      "space_r": 0.061379105084083306,
+      "extension_atr": 2.0307275192047185
     }
   ],
   "prepare_seen": [
@@ -5422,6 +5422,10 @@
     {
       "time": 1790832344,
       "value": 28109.671400000094
+    },
+    {
+      "time": 1790833092,
+      "value": 28070.35610000009
     }
   ],
   "news": {
@@ -6757,7 +6761,7 @@
       "closed_iso": "2026-10-01T04:32:54+00:00"
     }
   ],
-  "last_event_scan": 1790832300,
+  "last_event_scan": 1790833080,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -7792,12 +7796,12 @@
       "defense": 83678.0,
       "first_seen": 1790830141,
       "first_seen_iso": "2026-10-01T04:49:01+00:00",
-      "last_seen": 1790832344,
-      "last_seen_iso": "2026-10-01T05:25:44+00:00",
-      "last_price": 84230.6,
+      "last_seen": 1790833093,
+      "last_seen_iso": "2026-10-01T05:38:13+00:00",
+      "last_price": 84253.1,
       "status": "BLOCKED",
-      "last_note": "停損距離過大（3.30 ATR） / 前方強結構區空間不足 / 價格過度延伸",
-      "block_count": 4
+      "last_note": "停損距離過大（3.46 ATR） / 前方強結構區空間不足 / 價格過度延伸",
+      "block_count": 5
     }
   ]
 }
