@@ -2670,17 +2670,17 @@
       "setup_key": "CONT:S:1790884800",
       "first_time": 1790887431,
       "first_time_iso": "2026-10-01T20:43:51+00:00",
-      "time": 1790888437,
-      "time_iso": "2026-10-01T21:00:37+00:00",
+      "time": 1790889183,
+      "time_iso": "2026-10-01T21:13:03+00:00",
       "side": "SHORT",
       "type": "PULLBACK",
       "reason": "成交量過低",
       "trigger": 84625.0,
-      "price": 84585.2,
-      "block_count": 3,
+      "price": 84608.7,
+      "block_count": 4,
       "volume_ratio": 0.18495043742946773,
-      "space_r": 0.19506670354125116,
-      "extension_atr": 0.17773524720894607
+      "space_r": 0.3084509682349359,
+      "extension_atr": 0.07279106858055594
     }
   ],
   "prepare_seen": [
@@ -6100,6 +6100,10 @@
     {
       "time": 1790888435,
       "value": 28832.55500000012
+    },
+    {
+      "time": 1790889182,
+      "value": 28828.88970000012
     }
   ],
   "news": {
@@ -7616,7 +7620,7 @@
       "closed_iso": "2026-10-01T20:43:50+00:00"
     }
   ],
-  "last_event_scan": 1790888400,
+  "last_event_scan": 1790889180,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -9003,9 +9007,9 @@
       "defense": 84621.2,
       "first_seen": 1790882244,
       "first_seen_iso": "2026-10-01T19:17:24+00:00",
-      "last_seen": 1790888437,
-      "last_seen_iso": "2026-10-01T21:00:37+00:00",
-      "last_price": 84585.2,
+      "last_seen": 1790889183,
+      "last_seen_iso": "2026-10-01T21:13:03+00:00",
+      "last_price": 84608.7,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
@@ -9035,12 +9039,12 @@
       "defense": 84822.8,
       "first_seen": 1790886610,
       "first_seen_iso": "2026-10-01T20:30:10+00:00",
-      "last_seen": 1790888437,
-      "last_seen_iso": "2026-10-01T21:00:37+00:00",
-      "last_price": 84585.2,
+      "last_seen": 1790889183,
+      "last_seen_iso": "2026-10-01T21:13:03+00:00",
+      "last_price": 84608.7,
       "status": "BLOCKED",
       "last_note": "成交量過低",
-      "block_count": 3
+      "block_count": 4
     }
   ]
 }
