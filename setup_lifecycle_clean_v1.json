@@ -1310,5 +1310,37 @@
     "status": "DETECTED",
     "last_note": null,
     "block_count": 0
+  },
+  {
+    "setup_key": "CONT:L:1790873100",
+    "side": "LONG",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 84387.0,
+    "defense": 84017.3,
+    "first_seen": 1790875693,
+    "first_seen_iso": "2026-10-01T17:28:13+00:00",
+    "last_seen": 1790875693,
+    "last_seen_iso": "2026-10-01T17:28:13+00:00",
+    "last_price": 84796.5,
+    "status": "BLOCKED",
+    "last_note": "價格過度延伸",
+    "block_count": 1
+  },
+  {
+    "setup_key": "BO:S:1790873100",
+    "side": "SHORT",
+    "type": "BREAKOUT",
+    "label": "有效突破",
+    "trigger": 84017.3,
+    "defense": 84588.0,
+    "first_seen": 1790875693,
+    "first_seen_iso": "2026-10-01T17:28:13+00:00",
+    "last_seen": 1790875693,
+    "last_seen_iso": "2026-10-01T17:28:13+00:00",
+    "last_price": 84796.5,
+    "status": "DETECTED",
+    "last_note": null,
+    "block_count": 0
   }
 ]
