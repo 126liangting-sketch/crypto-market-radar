@@ -1,6 +1,6 @@
 {
   "version": "BTC_RADAR_CLEAN_V1",
-  "next_trade_id": 12,
+  "next_trade_id": 13,
   "trades": [
     {
       "id": 11,
@@ -27,12 +27,44 @@
       "cvd_dir": "FLAT",
       "flow_quality": "普通",
       "mfe_r": 0.3331931651430982,
-      "mae_r": 0.04641253766656258,
+      "mae_r": 0.11139009039976441,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 84833.3,
-      "worst_price": 84755.6,
-      "duration_min": 11
+      "worst_price": 84742.3,
+      "duration_min": 19
+    },
+    {
+      "id": 12,
+      "setup_key": "CONT:L:1790896500",
+      "side": "LONG",
+      "trigger_type": "回踩再啟動",
+      "opened_at": 1790898857,
+      "opened_iso": "2026-10-01T23:54:17+00:00",
+      "status": "OPEN",
+      "entry": 84793.9,
+      "sl": 84587.19785714285,
+      "tp1": 85000.60214285714,
+      "tp2": null,
+      "risk": 206.7021428571461,
+      "risk_atr": 1.5898417756290921,
+      "trigger": 84736.2,
+      "extension_atr": 0.44379738490273984,
+      "trend_1h": "BULL",
+      "ema_position": "偏離",
+      "volume_ratio": 0.9527838027785773,
+      "regime": "TREND",
+      "space_r": 0.13981470922622127,
+      "oi_dir": "FLAT",
+      "cvd_dir": "FLAT",
+      "flow_quality": "普通",
+      "mfe_r": 0.0,
+      "mae_r": 0.0,
+      "tp1_hit": false,
+      "tp2_hit": false,
+      "best_price": 84793.9,
+      "worst_price": 84793.9,
+      "duration_min": 0
     }
   ],
   "history": [
@@ -2861,7 +2893,8 @@
     "CONT:L:1790865900",
     "CONT:L:1790868600",
     "CONT:L:1790877600",
-    "CONT:L:1790894700"
+    "CONT:L:1790894700",
+    "CONT:L:1790896500"
   ],
   "oi_history": [
     {
@@ -6247,6 +6280,10 @@
     {
       "time": 1790898345,
       "value": 28680.530800000113
+    },
+    {
+      "time": 1790898856,
+      "value": 28637.258200000113
     }
   ],
   "news": {
@@ -6363,7 +6400,7 @@
       "mae_atr_30": 0.9382,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 50
+      "duration_min": 58
     },
     {
       "id": 44,
@@ -6395,7 +6432,7 @@
       "mae_atr_30": null,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 21
+      "duration_min": 29
     }
   ],
   "prepare_history": [
@@ -7828,7 +7865,7 @@
       "closed_iso": "2026-10-01T20:43:50+00:00"
     }
   ],
-  "last_event_scan": 1790898300,
+  "last_event_scan": 1790898840,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -9311,9 +9348,9 @@
       "defense": 84755.0,
       "first_seen": 1790894081,
       "first_seen_iso": "2026-10-01T22:34:41+00:00",
-      "last_seen": 1790898346,
-      "last_seen_iso": "2026-10-01T23:45:46+00:00",
-      "last_price": 84777.6,
+      "last_seen": 1790898857,
+      "last_seen_iso": "2026-10-01T23:54:17+00:00",
+      "last_price": 84793.9,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
@@ -9359,11 +9396,11 @@
       "defense": 84606.7,
       "first_seen": 1790898346,
       "first_seen_iso": "2026-10-01T23:45:46+00:00",
-      "last_seen": 1790898346,
-      "last_seen_iso": "2026-10-01T23:45:46+00:00",
-      "last_price": 84777.6,
-      "status": "BLOCKED",
-      "last_note": "成交量過低",
+      "last_seen": 1790898857,
+      "last_seen_iso": "2026-10-01T23:54:17+00:00",
+      "last_price": 84793.9,
+      "status": "FORMAL",
+      "last_note": "建立模擬單 #12",
       "block_count": 1
     }
   ]
