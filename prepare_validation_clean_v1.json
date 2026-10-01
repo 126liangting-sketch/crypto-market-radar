@@ -23,14 +23,14 @@
       "formal_delay_min": null,
       "status": "WATCHING",
       "best_price": 83405.1,
-      "worst_price": 83509.9,
+      "worst_price": 83601.2,
       "mfe_atr": 0.38594217347948007,
-      "mae_atr": 0.3454636091724826,
+      "mae_atr": 0.9826520438684152,
       "mfe_atr_30": null,
       "mae_atr_30": null,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 15
+      "duration_min": 29
     },
     {
       "id": 37,
@@ -55,14 +55,14 @@
       "formal_delay_min": null,
       "status": "WATCHING",
       "best_price": 83414.4,
-      "worst_price": 83414.4,
+      "worst_price": 83601.2,
       "mfe_atr": 0.0,
-      "mae_atr": 0.0,
+      "mae_atr": 1.3537633295372382,
       "mfe_atr_30": null,
       "mae_atr_30": null,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 0
+      "duration_min": 13
     }
   ],
   "history": [
