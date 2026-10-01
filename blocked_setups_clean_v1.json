@@ -2354,16 +2354,16 @@
     "setup_key": "BO:L:1790889300",
     "first_time": 1790892677,
     "first_time_iso": "2026-10-01T22:11:17+00:00",
-    "time": 1790892677,
-    "time_iso": "2026-10-01T22:11:17+00:00",
+    "time": 1790893403,
+    "time_iso": "2026-10-01T22:23:23+00:00",
     "side": "LONG",
     "type": "BREAKOUT",
     "reason": "成交量過低",
     "trigger": 84650.4,
-    "price": 84725.6,
-    "block_count": 1,
-    "volume_ratio": 0.46700652980601454,
-    "space_r": 0.41341345598822865,
-    "extension_atr": 0.42064887326201617
+    "price": 84693.0,
+    "block_count": 2,
+    "volume_ratio": 0.4198025522822406,
+    "space_r": 0.6490243384127277,
+    "extension_atr": 0.263044149428875
   }
 ]

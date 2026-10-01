@@ -2704,17 +2704,17 @@
       "setup_key": "BO:L:1790889300",
       "first_time": 1790892677,
       "first_time_iso": "2026-10-01T22:11:17+00:00",
-      "time": 1790892677,
-      "time_iso": "2026-10-01T22:11:17+00:00",
+      "time": 1790893403,
+      "time_iso": "2026-10-01T22:23:23+00:00",
       "side": "LONG",
       "type": "BREAKOUT",
       "reason": "成交量過低",
       "trigger": 84650.4,
-      "price": 84725.6,
-      "block_count": 1,
-      "volume_ratio": 0.46700652980601454,
-      "space_r": 0.41341345598822865,
-      "extension_atr": 0.42064887326201617
+      "price": 84693.0,
+      "block_count": 2,
+      "volume_ratio": 0.4198025522822406,
+      "space_r": 0.6490243384127277,
+      "extension_atr": 0.263044149428875
     }
   ],
   "prepare_seen": [
@@ -6158,6 +6158,10 @@
     {
       "time": 1790892676,
       "value": 28648.29810000011
+    },
+    {
+      "time": 1790893401,
+      "value": 28624.17550000011
     }
   ],
   "news": {
@@ -7674,7 +7678,7 @@
       "closed_iso": "2026-10-01T20:43:50+00:00"
     }
   ],
-  "last_event_scan": 1790892660,
+  "last_event_scan": 1790893380,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -9109,9 +9113,9 @@
       "defense": 84650.4,
       "first_seen": 1790891581,
       "first_seen_iso": "2026-10-01T21:53:01+00:00",
-      "last_seen": 1790892677,
-      "last_seen_iso": "2026-10-01T22:11:17+00:00",
-      "last_price": 84725.6,
+      "last_seen": 1790893403,
+      "last_seen_iso": "2026-10-01T22:23:23+00:00",
+      "last_price": 84693.0,
       "status": "TRIGGERED",
       "last_note": "1分鐘區間已穿越觸發價",
       "block_count": 2
@@ -9125,12 +9129,12 @@
       "defense": 84517.3,
       "first_seen": 1790892006,
       "first_seen_iso": "2026-10-01T22:00:06+00:00",
-      "last_seen": 1790892677,
-      "last_seen_iso": "2026-10-01T22:11:17+00:00",
-      "last_price": 84725.6,
+      "last_seen": 1790893403,
+      "last_seen_iso": "2026-10-01T22:23:23+00:00",
+      "last_price": 84693.0,
       "status": "BLOCKED",
       "last_note": "成交量過低",
-      "block_count": 1
+      "block_count": 2
     }
   ]
 }
