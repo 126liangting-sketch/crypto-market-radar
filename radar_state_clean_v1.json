@@ -5787,6 +5787,10 @@
     {
       "time": 1790865559,
       "value": 28518.231600000112
+    },
+    {
+      "time": 1790866387,
+      "value": 28366.643000000116
     }
   ],
   "news": {
@@ -7230,7 +7234,7 @@
       "closed_iso": "2026-10-01T10:14:50+00:00"
     }
   ],
-  "last_event_scan": 1790865540,
+  "last_event_scan": 1790866380,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -8457,9 +8461,9 @@
       "defense": 84020.0,
       "first_seen": 1790862897,
       "first_seen_iso": "2026-10-01T13:54:57+00:00",
-      "last_seen": 1790865560,
-      "last_seen_iso": "2026-10-01T14:39:20+00:00",
-      "last_price": 84180.8,
+      "last_seen": 1790866388,
+      "last_seen_iso": "2026-10-01T14:53:08+00:00",
+      "last_price": 83743.8,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
@@ -8473,11 +8477,11 @@
       "defense": 83515.6,
       "first_seen": 1790865560,
       "first_seen_iso": "2026-10-01T14:39:20+00:00",
-      "last_seen": 1790865560,
-      "last_seen_iso": "2026-10-01T14:39:20+00:00",
-      "last_price": 84180.8,
-      "status": "BLOCKED",
-      "last_note": "停損距離過大（2.74 ATR）",
+      "last_seen": 1790866388,
+      "last_seen_iso": "2026-10-01T14:53:08+00:00",
+      "last_price": 83743.8,
+      "status": "TRIGGERED",
+      "last_note": "1分鐘區間已穿越觸發價",
       "block_count": 1
     }
   ]
