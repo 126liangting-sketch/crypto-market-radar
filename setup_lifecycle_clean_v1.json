@@ -1886,5 +1886,37 @@
     "status": "DETECTED",
     "last_note": null,
     "block_count": 0
+  },
+  {
+    "setup_key": "BO:L:1790956800",
+    "side": "LONG",
+    "type": "BREAKOUT",
+    "label": "有效突破",
+    "trigger": 85477.5,
+    "defense": 85100.0,
+    "first_seen": 1790959072,
+    "first_seen_iso": "2026-10-02T16:37:52+00:00",
+    "last_seen": 1790959072,
+    "last_seen_iso": "2026-10-02T16:37:52+00:00",
+    "last_price": 85115.3,
+    "status": "DETECTED",
+    "last_note": null,
+    "block_count": 0
+  },
+  {
+    "setup_key": "CONT:S:1790956800",
+    "side": "SHORT",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 85101.8,
+    "defense": 85477.5,
+    "first_seen": 1790959072,
+    "first_seen_iso": "2026-10-02T16:37:52+00:00",
+    "last_seen": 1790959072,
+    "last_seen_iso": "2026-10-02T16:37:52+00:00",
+    "last_price": 85115.3,
+    "status": "PREPARED",
+    "last_note": "進入準備距離",
+    "block_count": 0
   }
 ]
