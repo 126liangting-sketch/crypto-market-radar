@@ -3225,6 +3225,26 @@
       "context_reason": "尚未進入情境一致性判斷",
       "volume_ratio": 0.4307568617377703,
       "space_r": 0.4846855653307186
+    },
+    {
+      "key": "CONT:S:1790959500",
+      "setup_key": "CONT:S:1790959500",
+      "first_time": 1790962069,
+      "first_time_iso": "2026-10-02T17:27:49+00:00",
+      "time": 1790962069,
+      "time_iso": "2026-10-02T17:27:49+00:00",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "engine_version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
+      "reason": "價格過度延伸",
+      "trigger": 85054.9,
+      "price": 84641.2,
+      "block_count": 1,
+      "volume_ratio": 1.6990792075166454,
+      "space_r": 0.15695519683741485,
+      "extension_atr": 1.0168188202247146,
+      "context_class": "UNASSESSED",
+      "context_reason": "尚未進入情境一致性判斷"
     }
   ],
   "prepare_seen": [
@@ -6842,6 +6862,10 @@
     {
       "time": 1790961780,
       "value": 29221.28070000013
+    },
+    {
+      "time": 1790962068,
+      "value": 29430.884300000132
     }
   ],
   "news": {
@@ -6961,15 +6985,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 84668.9,
+      "best_price": 84588.0,
       "worst_price": 85274.0,
-      "mfe_atr": 1.062459623950244,
+      "mfe_atr": 1.255006630172392,
       "mae_atr": 0.37771582061132913,
       "mfe_atr_30": 0.3594,
       "mae_atr_30": 0.3777,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 45
+      "duration_min": 49
     }
   ],
   "prepare_history": [
@@ -8674,7 +8698,7 @@
       "closed_iso": "2026-10-02T11:57:34+00:00"
     }
   ],
-  "last_event_scan": 1790961720,
+  "last_event_scan": 1790962020,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -10595,6 +10619,38 @@
       "status": "BLOCKED",
       "last_note": "成交量過低",
       "block_count": 3
+    },
+    {
+      "setup_key": "BO:L:1790959500",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 85274.0,
+      "defense": 84964.3,
+      "first_seen": 1790962069,
+      "first_seen_iso": "2026-10-02T17:27:49+00:00",
+      "last_seen": 1790962069,
+      "last_seen_iso": "2026-10-02T17:27:49+00:00",
+      "last_price": 84641.2,
+      "status": "DETECTED",
+      "last_note": null,
+      "block_count": 0
+    },
+    {
+      "setup_key": "CONT:S:1790959500",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 85054.9,
+      "defense": 85274.0,
+      "first_seen": 1790962069,
+      "first_seen_iso": "2026-10-02T17:27:49+00:00",
+      "last_seen": 1790962069,
+      "last_seen_iso": "2026-10-02T17:27:49+00:00",
+      "last_price": 84641.2,
+      "status": "BLOCKED",
+      "last_note": "價格過度延伸",
+      "block_count": 1
     }
   ]
 }
