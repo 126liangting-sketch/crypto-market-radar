@@ -2651,5 +2651,23 @@
     "extension_atr": 0.26486276252919105,
     "context_class": "UNASSESSED",
     "context_reason": "尚未進入情境一致性判斷"
+  },
+  {
+    "key": "CONT:L:1790978400",
+    "setup_key": "CONT:L:1790978400",
+    "first_time": 1790980297,
+    "first_time_iso": "2026-10-02T22:31:37+00:00",
+    "time": 1790980297,
+    "time_iso": "2026-10-02T22:31:37+00:00",
+    "side": "LONG",
+    "type": "PULLBACK",
+    "engine_version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
+    "reason": "突破後回撤過深",
+    "trigger": 84506.9,
+    "price": 84489.8,
+    "block_count": 1,
+    "extension_atr": -0.10584958217264871,
+    "context_class": "UNASSESSED",
+    "context_reason": "Trigger穿越後未能守住"
   }
 ]
