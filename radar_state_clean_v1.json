@@ -3463,10 +3463,6 @@
   ],
   "oi_history": [
     {
-      "time": 1790377896,
-      "value": 28376.58230000011
-    },
-    {
       "time": 1790378499,
       "value": 28367.101100000113
     },
@@ -6945,6 +6941,10 @@
     {
       "time": 1790982604,
       "value": 28630.47600000012
+    },
+    {
+      "time": 1790983245,
+      "value": 28633.038000000113
     }
   ],
   "news": {
@@ -7066,14 +7066,14 @@
       "formal_delay_min": null,
       "status": "WATCHING",
       "best_price": 84518.7,
-      "worst_price": 84450.0,
+      "worst_price": 84444.6,
       "mfe_atr": 0.17889198390587682,
-      "mae_atr": 0.2463633549984724,
+      "mae_atr": 0.2797895388424478,
       "mfe_atr_30": 0.1789,
       "mae_atr_30": 0.2464,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 38
+      "duration_min": 49
     }
   ],
   "prepare_history": [
@@ -8880,7 +8880,7 @@
       "closed_iso": "2026-10-02T23:10:05+00:00"
     }
   ],
-  "last_event_scan": 1790982600,
+  "last_event_scan": 1790983200,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
