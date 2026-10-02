@@ -15,6 +15,7 @@ WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
 VERSION = "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0"
+BUILD = "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0_ARBITRATION"
 STATE_FILE = "radar_state_clean_v1.json"
 TRADES_JSON = "paper_trades_clean_v1.json"
 TRADES_CSV = "paper_trades_clean_v1.csv"
@@ -1314,6 +1315,93 @@ def maybe_prepare(state, side, setup, price, trend, ema_pos, vol, reg, oi, cvd):
         )
 
 
+
+def preview_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd, event_rows=None):
+    """Evaluate whether a setup is Formal-ready without creating a trade or sending Discord.
+
+    This mirrors the eligibility + context logic in formal_check so LONG/SHORT can
+    be compared globally before either side is committed.
+    """
+    ext = (price - setup["trigger"])/a if side == "LONG" else (setup["trigger"] - price)/a
+    wh, wl = window_high_low(event_rows or [], price)
+    trigger_level = setup["trigger"] + BREAK_BUFFER_ATR*a if side == "LONG" else setup["trigger"] - BREAK_BUFFER_ATR*a
+    crossed = wh >= trigger_level if side == "LONG" else wl <= trigger_level
+    if not crossed:
+        return {"ready": False, "reason": "TRIGGER_NOT_CROSSED", "side": side, "setup": setup}
+
+    if side == "LONG" and price < setup["trigger"] - TRIGGER_RETEST_ATR*a:
+        return {"ready": False, "reason": "TRIGGER_RETEST_FAILED", "side": side, "setup": setup}
+    if side == "SHORT" and price > setup["trigger"] + TRIGGER_RETEST_ATR*a:
+        return {"ready": False, "reason": "TRIGGER_RETEST_FAILED", "side": side, "setup": setup}
+
+    plan = risk_plan(setup, side, price, a)
+    if not plan:
+        return {"ready": False, "reason": "NO_RISK_PLAN", "side": side, "setup": setup}
+    space = space_context(rows15, side, price, plan["risk"], setup["trigger_time"], a)
+
+    if vol["ratio"] < VOL_HARD_MIN:
+        return {"ready": False, "reason": "LOW_VOLUME", "side": side, "setup": setup}
+    if plan["risk_atr"] > MAX_STOP_ATR:
+        return {"ready": False, "reason": "RISK_TOO_LARGE", "side": side, "setup": setup}
+    if ext > EXT_WAIT_ATR:
+        return {"ready": False, "reason": "OVEREXTENDED", "side": side, "setup": setup}
+    if EXT_WARN_ATR < ext <= EXT_WAIT_ATR and vol["ratio"] < 1.30:
+        return {"ready": False, "reason": "CHASE_WAIT", "side": side, "setup": setup}
+
+    context = formal_context(side, setup, trend, reg, ema_pos, vol, oi, cvd, ext, space)
+    if context["class"] == "CONFLICT":
+        return {"ready": False, "reason": "CONTEXT_CONFLICT", "side": side, "setup": setup,
+                "context": context, "plan": plan, "space": space, "ext": ext}
+
+    return {"ready": True, "side": side, "setup": setup, "context": context,
+            "plan": plan, "space": space, "ext": ext}
+
+
+def _trend_alignment(side, trend_state):
+    if trend_state == "NEUTRAL":
+        return 0
+    if (side == "LONG" and trend_state == "BULL") or (side == "SHORT" and trend_state == "BEAR"):
+        return 1
+    return -1
+
+
+def choose_arbitration_winner(candidates, trend):
+    """Pick one Formal candidate when LONG and SHORT are both actionable.
+
+    This is not a trading score. It is a deterministic conflict resolver:
+    context class first, then 1H alignment, then entry freshness/risk.
+    If both sides remain effectively tied, return None rather than opening both.
+    """
+    ready = [c for c in candidates if c and c.get("ready")]
+    if not ready:
+        return None
+    if len(ready) == 1:
+        return ready[0]
+
+    cls_rank = {"CONSISTENT": 2, "MIXED": 1}
+    trend_state = trend.get("state", "NEUTRAL")
+    def key(c):
+        return (
+            cls_rank.get(c["context"]["class"], 0),
+            _trend_alignment(c["side"], trend_state),
+            1 if c["setup"].get("kind") == "PULLBACK" else 0,
+            -abs(float(c.get("ext") or 0.0)),
+            -float(c["plan"].get("risk_atr") or 99.0),
+        )
+
+    ordered = sorted(ready, key=key, reverse=True)
+    if key(ordered[0]) == key(ordered[1]):
+        return None
+    return ordered[0]
+
+
+def active_valid_trade(state):
+    """Only one live BTC thesis/position is allowed at a time."""
+    for t in state.get("trades", []):
+        if t.get("status") == "OPEN" and not t.get("excluded_from_stats"):
+            return t
+    return None
+
 def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd, event_rows=None):
     sig = setup_signature(setup)
     if sig in state["formal_seen"]:
@@ -1500,12 +1588,80 @@ def main():
     if MANUAL_RUN:
         manual_summary(state, live, trend, reg, oi, cvd)
     else:
+        setups = {}
+        previews = {}
         for side in ("LONG", "SHORT"):
             setup = choose_setup(rows15, a, side, live)
             if not setup:
                 continue
-            # Formal is evaluated first. If the setup is already actionable on first sight,
-            # go directly DETECTED -> FORMAL and skip the unnecessary Prepare message.
+            setups[side] = setup
+            previews[side] = preview_formal_candidate(
+                side, setup, live, rows15, a, trend, ema_pos, vol, reg, oi, cvd, events
+            )
+
+        active = active_valid_trade(state)
+        ready = [x for x in previews.values() if x.get("ready")]
+        winner = None if active else choose_arbitration_winner(ready, trend)
+
+        # If both directions are simultaneously Formal-ready but indistinguishable,
+        # do not open a hedge pair. Internally block both until the market resolves.
+        unresolved_tie = (not active and len(ready) >= 2 and winner is None)
+
+        for side in ("LONG", "SHORT"):
+            setup = setups.get(side)
+            if not setup:
+                continue
+            preview = previews.get(side, {})
+
+            if active:
+                # While a Formal trade is live, keep other theses internal so Discord
+                # does not alternate between new LONG/SHORT Prepare messages.
+                if preview.get("ready"):
+                    relation = "同方向" if active.get("side") == side else "反向"
+                    record_blocked(
+                        state, side, setup, f"全局仲裁：已有{relation}正式單 #{active.get('id')} 進行中", live,
+                        {"volume_ratio": vol["ratio"], "extension_atr": preview.get("ext"),
+                         "context_class": preview.get("context", {}).get("class", "UNASSESSED"),
+                         "context_reason": "同一時間只保留一個有效BTC正式交易 thesis"}
+                    )
+                else:
+                    touch_setup_lifecycle(state, side, setup, live, "DETECTED",
+                                          f"已有正式單 #{active.get('id')} 進行中，暫不新增外部訊號")
+                continue
+
+            if unresolved_tie and preview.get("ready"):
+                record_blocked(
+                    state, side, setup, "全局仲裁：多空同時成立且無明確優先方向", live,
+                    {"volume_ratio": vol["ratio"], "extension_atr": preview.get("ext"),
+                     "context_class": preview.get("context", {}).get("class", "UNASSESSED"),
+                     "context_reason": "多空候選品質接近，等待市場自行選邊"}
+                )
+                continue
+
+            if winner is not None:
+                if side != winner["side"]:
+                    # A Formal winner defines the current thesis for this scan. The
+                    # opposite side stays internal even when it is only a Prepare,
+                    # preventing contradictory Discord messages around the same price.
+                    if preview.get("ready"):
+                        record_blocked(
+                            state, side, setup, f"全局仲裁：{winner['side']} 情境優先", live,
+                            {"volume_ratio": vol["ratio"], "extension_atr": preview.get("ext"),
+                             "context_class": preview.get("context", {}).get("class", "UNASSESSED"),
+                             "context_reason": "同輪多空同時可交易，只採用較一致的主要方向"}
+                        )
+                    else:
+                        touch_setup_lifecycle(state, side, setup, live, "DETECTED",
+                                              f"本輪由 {winner['side']} 正式候選主導，反向訊號僅內部追蹤")
+                    continue
+                became_formal = formal_check(
+                    state, side, setup, live, rows15, a, trend, ema_pos, vol, reg, oi, cvd, events
+                )
+                if not became_formal:
+                    maybe_prepare(state, side, setup, live, trend, ema_pos, vol, reg, oi, cvd)
+                continue
+
+            # Not Formal-ready: keep the existing diagnostic/Prepare behavior.
             became_formal = formal_check(
                 state, side, setup, live, rows15, a, trend, ema_pos, vol, reg, oi, cvd, events
             )
@@ -1516,7 +1672,7 @@ def main():
     save_json(STATE_FILE, state)
     valid_open = [x for x in state.get("trades", []) if not x.get("excluded_from_stats")]
     valid_history = [x for x in state.get("history", []) if not x.get("excluded_from_stats")]
-    print(f"{VERSION}: BTC={live:.0f} 1H={trend['state']} Regime={reg['state']} Vol={vol['ratio']:.2f}x Open={len(valid_open)} Done={len(valid_history)}")
+    print(f"{BUILD}: BTC={live:.0f} 1H={trend['state']} Regime={reg['state']} Vol={vol['ratio']:.2f}x Open={len(valid_open)} Done={len(valid_history)}")
 
 
 if __name__ == "__main__":
