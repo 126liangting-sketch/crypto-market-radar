@@ -2671,5 +2671,25 @@
     "context_reason": "Trigger穿越後未能守住",
     "volume_ratio": 0.2568066280493953,
     "space_r": 0.5305620715755169
+  },
+  {
+    "key": "CONT:L:1790982000",
+    "setup_key": "CONT:L:1790982000",
+    "first_time": 1790983863,
+    "first_time_iso": "2026-10-02T23:31:03+00:00",
+    "time": 1790983863,
+    "time_iso": "2026-10-02T23:31:03+00:00",
+    "side": "LONG",
+    "type": "PULLBACK",
+    "engine_version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
+    "reason": "成交量過低",
+    "trigger": 84517.5,
+    "price": 84514.0,
+    "block_count": 1,
+    "volume_ratio": 0.18716077761552188,
+    "space_r": 0.8421702956131553,
+    "extension_atr": -0.028427220514011087,
+    "context_class": "UNASSESSED",
+    "context_reason": "尚未進入情境一致性判斷"
   }
 ]
