@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 86631.0,
       "worst_price": 86028.6,
-      "duration_min": 61
+      "duration_min": 75
     }
   ],
   "history": [
@@ -3094,10 +3094,6 @@
     "CONT:L:1790920800"
   ],
   "oi_history": [
-    {
-      "time": 1790327022,
-      "value": 28761.443500000085
-    },
     {
       "time": 1790327916,
       "value": 28716.60200000009
@@ -6625,6 +6621,10 @@
     {
       "time": 1790931610,
       "value": 29219.201200000112
+    },
+    {
+      "time": 1790932413,
+      "value": 29162.47370000012
     }
   ],
   "news": {
@@ -8353,7 +8353,7 @@
       "closed_iso": "2026-10-02T07:33:04+00:00"
     }
   ],
-  "last_event_scan": 1790931600,
+  "last_event_scan": 1790932380,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
