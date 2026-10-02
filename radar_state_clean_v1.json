@@ -3093,18 +3093,18 @@
       "setup_key": "CONT:L:1790942400",
       "first_time": 1790945275,
       "first_time_iso": "2026-10-02T12:47:55+00:00",
-      "time": 1790945275,
-      "time_iso": "2026-10-02T12:47:55+00:00",
+      "time": 1790946061,
+      "time_iso": "2026-10-02T13:01:01+00:00",
       "side": "LONG",
       "type": "PULLBACK",
       "engine_version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
       "reason": "價格過度延伸",
       "trigger": 86450.0,
-      "price": 86704.9,
-      "block_count": 1,
-      "volume_ratio": 8.023458414377126,
-      "space_r": 0.38716469149844496,
-      "extension_atr": 1.1237207544792924,
+      "price": 86765.9,
+      "block_count": 2,
+      "volume_ratio": 1.3975364506483414,
+      "space_r": 0.22730294826312633,
+      "extension_atr": 1.2714466421342774,
       "context_class": "UNASSESSED",
       "context_reason": "尚未進入情境一致性判斷"
     }
@@ -3218,10 +3218,6 @@
     "CONT:L:1790938800"
   ],
   "oi_history": [
-    {
-      "time": 1790340734,
-      "value": 28643.72500000006
-    },
     {
       "time": 1790341296,
       "value": 28668.11550000006
@@ -6741,6 +6737,10 @@
     {
       "time": 1790945273,
       "value": 29178.9034000001
+    },
+    {
+      "time": 1790946060,
+      "value": 29397.798300000115
     }
   ],
   "news": {
@@ -8539,7 +8539,7 @@
       "closed_iso": "2026-10-02T11:57:34+00:00"
     }
   ],
-  "last_event_scan": 1790945220,
+  "last_event_scan": 1790946000,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -10358,12 +10358,12 @@
       "defense": 86266.0,
       "first_seen": 1790945275,
       "first_seen_iso": "2026-10-02T12:47:55+00:00",
-      "last_seen": 1790945275,
-      "last_seen_iso": "2026-10-02T12:47:55+00:00",
-      "last_price": 86704.9,
+      "last_seen": 1790946061,
+      "last_seen_iso": "2026-10-02T13:01:01+00:00",
+      "last_price": 86765.9,
       "status": "BLOCKED",
       "last_note": "價格過度延伸",
-      "block_count": 1
+      "block_count": 2
     }
   ]
 }

@@ -1816,11 +1816,11 @@
     "defense": 86266.0,
     "first_seen": 1790945275,
     "first_seen_iso": "2026-10-02T12:47:55+00:00",
-    "last_seen": 1790945275,
-    "last_seen_iso": "2026-10-02T12:47:55+00:00",
-    "last_price": 86704.9,
+    "last_seen": 1790946061,
+    "last_seen_iso": "2026-10-02T13:01:01+00:00",
+    "last_price": 86765.9,
     "status": "BLOCKED",
     "last_note": "價格過度延伸",
-    "block_count": 1
+    "block_count": 2
   }
 ]
