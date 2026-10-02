@@ -3331,16 +3331,16 @@
       "setup_key": "CONT:L:1790978400",
       "first_time": 1790980297,
       "first_time_iso": "2026-10-02T22:31:37+00:00",
-      "time": 1790980297,
-      "time_iso": "2026-10-02T22:31:37+00:00",
+      "time": 1790981671,
+      "time_iso": "2026-10-02T22:54:31+00:00",
       "side": "LONG",
       "type": "PULLBACK",
       "engine_version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
       "reason": "突破後回撤過深",
       "trigger": 84506.9,
-      "price": 84489.8,
-      "block_count": 1,
-      "extension_atr": -0.10584958217264871,
+      "price": 84474.4,
+      "block_count": 2,
+      "extension_atr": -0.2189710765676922,
       "context_class": "UNASSESSED",
       "context_reason": "Trigger穿越後未能守住"
     }
@@ -3460,10 +3460,6 @@
     "CONT:S:1790946000"
   ],
   "oi_history": [
-    {
-      "time": 1790376482,
-      "value": 28391.31110000011
-    },
     {
       "time": 1790376887,
       "value": 28395.07830000011
@@ -6943,6 +6939,10 @@
     {
       "time": 1790981046,
       "value": 28621.57040000012
+    },
+    {
+      "time": 1790981669,
+      "value": 28647.106400000117
     }
   ],
   "news": {
@@ -7071,7 +7071,7 @@
       "mae_atr_30": 0.1983,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 39
+      "duration_min": 50
     },
     {
       "id": 54,
@@ -7095,15 +7095,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 84513.9,
+      "best_price": 84518.7,
       "worst_price": 84452.6,
-      "mfe_atr": 0.14917982048895978,
+      "mfe_atr": 0.17889198390587682,
       "mae_atr": 0.2302692664809494,
       "mfe_atr_30": null,
       "mae_atr_30": null,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 12
+      "duration_min": 22
     }
   ],
   "prepare_history": [
@@ -8876,7 +8876,7 @@
       "closed_iso": "2026-10-02T21:56:38+00:00"
     }
   ],
-  "last_event_scan": 1790981040,
+  "last_event_scan": 1790981640,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -10967,12 +10967,12 @@
       "defense": 84404.8,
       "first_seen": 1790980297,
       "first_seen_iso": "2026-10-02T22:31:37+00:00",
-      "last_seen": 1790980297,
-      "last_seen_iso": "2026-10-02T22:31:37+00:00",
-      "last_price": 84489.8,
-      "status": "PREPARED",
-      "last_note": "進入準備距離",
-      "block_count": 1
+      "last_seen": 1790981671,
+      "last_seen_iso": "2026-10-02T22:54:31+00:00",
+      "last_price": 84474.4,
+      "status": "BLOCKED",
+      "last_note": "突破後回撤過深",
+      "block_count": 2
     }
   ]
 }
