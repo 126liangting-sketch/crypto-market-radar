@@ -3311,18 +3311,18 @@
       "setup_key": "CONT:L:1790973000",
       "first_time": 1790975438,
       "first_time_iso": "2026-10-02T21:10:38+00:00",
-      "time": 1790975438,
-      "time_iso": "2026-10-02T21:10:38+00:00",
+      "time": 1790976264,
+      "time_iso": "2026-10-02T21:24:24+00:00",
       "side": "LONG",
       "type": "PULLBACK",
       "engine_version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
       "reason": "成交量過低",
       "trigger": 84400.0,
-      "price": 84462.1,
-      "block_count": 1,
-      "volume_ratio": 0.4284676366689861,
-      "space_r": 0.06289598649707896,
-      "extension_atr": 0.22208031061614325,
+      "price": 84433.8,
+      "block_count": 2,
+      "volume_ratio": 0.2280471649041077,
+      "space_r": 0.032875539148472945,
+      "extension_atr": 0.12592809431302107,
       "context_class": "UNASSESSED",
       "context_reason": "尚未進入情境一致性判斷"
     }
@@ -3440,10 +3440,6 @@
     "CONT:S:1790946000"
   ],
   "oi_history": [
-    {
-      "time": 1790371162,
-      "value": 28429.5025000001
-    },
     {
       "time": 1790371836,
       "value": 28423.238400000104
@@ -6927,6 +6923,10 @@
     {
       "time": 1790975437,
       "value": 28587.05620000008
+    },
+    {
+      "time": 1790976263,
+      "value": 28557.80080000008
     }
   ],
   "news": {
@@ -7051,11 +7051,11 @@
       "worst_price": 84514.0,
       "mfe_atr": 0.002096383738072186,
       "mae_atr": 0.6994933739299566,
-      "mfe_atr_30": null,
-      "mae_atr_30": null,
+      "mfe_atr_30": 0.0021,
+      "mae_atr_30": 0.6995,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 20
+      "duration_min": 34
     }
   ],
   "prepare_history": [
@@ -8794,7 +8794,7 @@
       "closed_iso": "2026-10-02T17:39:56+00:00"
     }
   ],
-  "last_event_scan": 1790975400,
+  "last_event_scan": 1790976240,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -10853,12 +10853,12 @@
       "defense": 84163.8,
       "first_seen": 1790975438,
       "first_seen_iso": "2026-10-02T21:10:38+00:00",
-      "last_seen": 1790975438,
-      "last_seen_iso": "2026-10-02T21:10:38+00:00",
-      "last_price": 84462.1,
+      "last_seen": 1790976264,
+      "last_seen_iso": "2026-10-02T21:24:24+00:00",
+      "last_price": 84433.8,
       "status": "BLOCKED",
       "last_note": "成交量過低",
-      "block_count": 1
+      "block_count": 2
     }
   ]
 }
