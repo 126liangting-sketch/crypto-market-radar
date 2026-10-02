@@ -1768,12 +1768,12 @@
     "defense": 86413.2,
     "first_seen": 1790937169,
     "first_seen_iso": "2026-10-02T10:32:49+00:00",
-    "last_seen": 1790938040,
-    "last_seen_iso": "2026-10-02T10:47:20+00:00",
-    "last_price": 86350.0,
-    "status": "DETECTED",
-    "last_note": null,
-    "block_count": 0
+    "last_seen": 1790938624,
+    "last_seen_iso": "2026-10-02T10:57:04+00:00",
+    "last_price": 86280.1,
+    "status": "PREPARED",
+    "last_note": "進入準備距離",
+    "block_count": 1
   },
   {
     "setup_key": "CONT:L:1790936100",

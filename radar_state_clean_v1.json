@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 86631.0,
       "worst_price": 86028.6,
-      "duration_min": 168
+      "duration_min": 178
     }
   ],
   "history": [
@@ -3024,6 +3024,26 @@
       "extension_atr": -0.13901253167157407,
       "context_class": "UNASSESSED",
       "context_reason": "Trigger穿越後未能守住"
+    },
+    {
+      "key": "CONT:S:1790935200",
+      "setup_key": "CONT:S:1790935200",
+      "first_time": 1790938624,
+      "first_time_iso": "2026-10-02T10:57:04+00:00",
+      "time": 1790938624,
+      "time_iso": "2026-10-02T10:57:04+00:00",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "engine_version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
+      "reason": "成交量過低",
+      "trigger": 86275.9,
+      "price": 86280.1,
+      "block_count": 1,
+      "volume_ratio": 0.5439248736336333,
+      "space_r": 1.277433314939522,
+      "extension_atr": -0.020132849414559634,
+      "context_class": "UNASSESSED",
+      "context_reason": "尚未進入情境一致性判斷"
     }
   ],
   "prepare_seen": [
@@ -3112,7 +3132,8 @@
     "BO:S:1790901000",
     "BO:S:1790919000",
     "CONT:L:1790920800",
-    "CONT:L:1790936100"
+    "CONT:L:1790936100",
+    "CONT:S:1790935200"
   ],
   "formal_seen": [
     "BO:S:1790334000",
@@ -3133,10 +3154,6 @@
     "CONT:L:1790920800"
   ],
   "oi_history": [
-    {
-      "time": 1790333675,
-      "value": 28561.268200000075
-    },
     {
       "time": 1790334041,
       "value": 28576.16120000007
@@ -6660,6 +6677,10 @@
     {
       "time": 1790938038,
       "value": 29339.527400000123
+    },
+    {
+      "time": 1790938623,
+      "value": 29374.516100000128
     }
   ],
   "news": {
@@ -6753,7 +6774,7 @@
     ],
     "last_notify": 1790929617
   },
-  "next_prepare_id": 50,
+  "next_prepare_id": 51,
   "prepare_active": [
     {
       "id": 49,
@@ -6777,8 +6798,40 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 86350.0,
-      "worst_price": 86350.0,
+      "best_price": 86365.2,
+      "worst_price": 86245.5,
+      "mfe_atr": 0.07286174073819038,
+      "mae_atr": 0.5009244675751549,
+      "mfe_atr_30": null,
+      "mae_atr_30": null,
+      "mfe_atr_60": null,
+      "mae_atr_60": null,
+      "duration_min": 9
+    },
+    {
+      "id": 50,
+      "setup_key": "CONT:S:1790935200",
+      "side": "SHORT",
+      "trigger_type": "回踩再啟動",
+      "opened_at": 1790938624,
+      "opened_iso": "2026-10-02T10:57:04+00:00",
+      "prepare_price": 86280.1,
+      "trigger": 86275.9,
+      "atr_open": 208.61428571428613,
+      "trend_1h": "BULL",
+      "ema_position": "偏離",
+      "ema_distance_atr": 1.7112441593830108,
+      "volume_ratio": 0.5439248736336333,
+      "regime": "TREND",
+      "oi_dir": "UP",
+      "cvd_dir": "FLAT",
+      "formal_promoted": false,
+      "formal_trade_id": null,
+      "formal_at": null,
+      "formal_delay_min": null,
+      "status": "WATCHING",
+      "best_price": 86280.1,
+      "worst_price": 86280.1,
       "mfe_atr": 0.0,
       "mae_atr": 0.0,
       "mfe_atr_30": null,
@@ -8422,7 +8475,7 @@
       "closed_iso": "2026-10-02T07:33:04+00:00"
     }
   ],
-  "last_event_scan": 1790938020,
+  "last_event_scan": 1790938620,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -10193,12 +10246,12 @@
       "defense": 86413.2,
       "first_seen": 1790937169,
       "first_seen_iso": "2026-10-02T10:32:49+00:00",
-      "last_seen": 1790938040,
-      "last_seen_iso": "2026-10-02T10:47:20+00:00",
-      "last_price": 86350.0,
-      "status": "DETECTED",
-      "last_note": null,
-      "block_count": 0
+      "last_seen": 1790938624,
+      "last_seen_iso": "2026-10-02T10:57:04+00:00",
+      "last_price": 86280.1,
+      "status": "PREPARED",
+      "last_note": "進入準備距離",
+      "block_count": 1
     },
     {
       "setup_key": "CONT:L:1790936100",
