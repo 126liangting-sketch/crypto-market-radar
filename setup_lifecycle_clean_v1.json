@@ -1768,12 +1768,12 @@
     "defense": 86413.2,
     "first_seen": 1790937169,
     "first_seen_iso": "2026-10-02T10:32:49+00:00",
-    "last_seen": 1790939152,
-    "last_seen_iso": "2026-10-02T11:05:52+00:00",
-    "last_price": 86330.0,
+    "last_seen": 1790942933,
+    "last_seen_iso": "2026-10-02T12:08:53+00:00",
+    "last_price": 86421.6,
     "status": "BLOCKED",
     "last_note": "突破後回撤過深",
-    "block_count": 2
+    "block_count": 3
   },
   {
     "setup_key": "CONT:L:1790936100",
