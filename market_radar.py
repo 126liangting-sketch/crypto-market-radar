@@ -14,7 +14,7 @@ OKX_SYMBOL = "BTC-USDT-SWAP"
 WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
-VERSION = "BTC_RADAR_CLEAN_V1_ENGINE_SPACE_EXIT"
+VERSION = "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0"
 STATE_FILE = "radar_state_clean_v1.json"
 TRADES_JSON = "paper_trades_clean_v1.json"
 TRADES_CSV = "paper_trades_clean_v1.csv"
@@ -730,6 +730,117 @@ def flow_quality(side, oi, cvd):
     return "普通", "⚪"
 
 
+def formal_context(side, setup, trend, reg, ema_pos, vol, oi, cvd, ext, space):
+    """Classify the whole trading context without using a numeric score.
+
+    The engine uses combination rules: clear alignment -> CONSISTENT, clearly
+    conflicting combinations -> CONFLICT, and everything in between -> MIXED.
+    No single soft factor (EMA, Flow, Space, 1H background) can veto a trade by itself.
+    """
+    trend_state = trend.get("state", "NEUTRAL")
+    regime = reg.get("state", "RANGE")
+    vr = float(vol.get("ratio") or 0.0)
+    ema_d = float(ema_pos.get("distance_atr") or 0.0)
+    flow, _ = flow_quality(side, oi, cvd)
+    aligned = ((side == "LONG" and trend_state == "BULL") or
+               (side == "SHORT" and trend_state == "BEAR"))
+    opposite = ((side == "LONG" and trend_state == "BEAR") or
+                (side == "SHORT" and trend_state == "BULL"))
+    neutral = trend_state == "NEUTRAL"
+    strong_near = (space.get("nearest_strength") == "STRONG" and
+                   space.get("nearest_r") is not None and
+                   float(space.get("nearest_r")) < 1.0)
+
+    # Clearly conflicting combinations. These are intentionally combination-based:
+    # no single soft signal blocks by itself.
+    if opposite and regime == "RANGE" and vr < 1.0:
+        return {"class": "CONFLICT", "label": "🔴 衝突",
+                "reason": "逆1H背景＋震盪環境＋成交量偏弱", "flow": flow}
+    if opposite and ema_d > 1.25 and flow in ("普通", "分歧", "可能偏回補/平倉推動") and (vr < 1.0 or regime == "RANGE"):
+        return {"class": "CONFLICT", "label": "🔴 衝突",
+                "reason": "逆1H背景＋EMA偏離較大＋資金流未形成支持", "flow": flow}
+    if regime == "RANGE" and vr < 0.85 and ema_d > 1.25:
+        return {"class": "CONFLICT", "label": "🔴 衝突",
+                "reason": "震盪環境＋量能偏弱＋位置過度偏離", "flow": flow}
+    if flow == "分歧" and regime == "RANGE" and vr < 1.0:
+        return {"class": "CONFLICT", "label": "🔴 衝突",
+                "reason": "資金流分歧＋震盪環境＋成交量不足", "flow": flow}
+    if strong_near and opposite and vr < 1.0:
+        return {"class": "CONFLICT", "label": "🔴 衝突",
+                "reason": "逆1H背景＋前方強結構很近＋成交量不足", "flow": flow}
+
+    # Clear alignment. A consistent trade should have several important pieces
+    # pointing the same way, not merely one strong indicator.
+    if aligned and regime == "TREND" and vr >= 1.0 and ext <= EXT_WARN_ATR and flow != "分歧":
+        return {"class": "CONSISTENT", "label": "🟢 一致",
+                "reason": "順1H背景＋趨勢環境＋成交量合格＋進場未明顯延伸", "flow": flow}
+    if aligned and vr >= 1.30 and ext <= EXT_NORMAL_ATR and flow in ("支持", "偏支持", "普通"):
+        return {"class": "CONSISTENT", "label": "🟢 一致",
+                "reason": "順1H背景＋放量＋進場貼近Trigger", "flow": flow}
+    if neutral and regime == "TREND" and vr >= 1.30 and ext <= EXT_WARN_ATR and flow != "分歧":
+        return {"class": "CONSISTENT", "label": "🟢 一致",
+                "reason": "1H中性但15M趨勢明確＋放量＋進場位置合理", "flow": flow}
+    if setup.get("kind") == "PULLBACK" and aligned and vr >= 1.0 and ema_d <= 0.75 and ext <= EXT_WARN_ATR:
+        return {"class": "CONSISTENT", "label": "🟢 一致",
+                "reason": "順1H的回踩延續＋EMA位置合理＋成交量合格", "flow": flow}
+
+    # Mixed is deliberately broad: it means the setup is valid, but important
+    # context is not fully aligned. These trades may still be simulated, with a
+    # more conservative exit profile.
+    notes = []
+    if opposite:
+        notes.append("逆1H背景")
+    elif neutral:
+        notes.append("1H中性")
+    if regime == "RANGE":
+        notes.append("震盪環境")
+    if vr < 1.0:
+        notes.append("成交量偏弱")
+    if ema_d > 1.0:
+        notes.append("EMA偏離較大")
+    if flow in ("分歧", "可能偏回補/平倉推動"):
+        notes.append(f"資金流{flow}")
+    if strong_near:
+        notes.append("前方強結構較近")
+    if ext > EXT_NORMAL_ATR:
+        notes.append("進場稍有延伸")
+    if not notes:
+        notes.append("條件可交易，但主要背景未形成明確共振")
+    return {"class": "MIXED", "label": "🟡 混合",
+            "reason": "＋".join(notes[:4]), "flow": flow}
+
+
+def apply_exit_profile(plan, context, space, reg, vol):
+    """Make exit ambition follow context instead of forcing every trade into 1R/2R.
+
+    TP1 stays at 1R so reward/risk accounting remains interpretable. TP2 is the
+    optional extension target and is only retained when both context and forward
+    structure justify it.
+    """
+    cls = context["class"]
+    significant_r = None
+    if space.get("nearest_strength") in ("NORMAL", "STRONG"):
+        significant_r = space.get("nearest_r")
+
+    if cls == "CONSISTENT":
+        profile = "標準延伸"
+        if significant_r is not None and float(significant_r) < 2.0:
+            plan["tp2"] = None
+            profile = "一致但前方結構限制延伸"
+    else:  # MIXED
+        profile = "保守TP1優先"
+        allow_tp2 = (
+            (significant_r is None or float(significant_r) >= 2.0) and
+            reg.get("state") == "TREND" and
+            float(vol.get("ratio") or 0.0) >= 1.0
+        )
+        if not allow_tp2:
+            plan["tp2"] = None
+        else:
+            profile = "混合但趨勢/空間允許延伸"
+    return profile
+
+
 def zh_dir(d):
     return {"BULL": "偏多", "BEAR": "偏空", "NEUTRAL": "中性",
             "UP": "上升", "DOWN": "下降", "FLAT": "持平", "UNAVAILABLE": "資料不足"}.get(d, d)
@@ -748,7 +859,7 @@ def load_state():
             s = {}
     else:
         s = {}
-    s.setdefault("version", VERSION)
+    s["version"] = VERSION
     s.setdefault("next_trade_id", 1)
     s.setdefault("trades", [])
     s.setdefault("history", [])
@@ -835,12 +946,13 @@ def record_blocked(state, side, setup, reason, price, extra=None):
         row = {
             "key": setup["setup_key"], "setup_key": setup["setup_key"],
             "first_time": now, "first_time_iso": iso(now), "time": now, "time_iso": iso(now),
-            "side": side, "type": setup["kind"], "reason": reason,
+            "side": side, "type": setup["kind"], "engine_version": VERSION, "reason": reason,
             "trigger": setup["trigger"], "price": price, "block_count": 1,
         }
         state["blocked"].append(row)
     else:
         row["time"] = now; row["time_iso"] = iso(now); row["reason"] = reason; row["price"] = price
+        row["engine_version"] = VERSION
         row["block_count"] = int(row.get("block_count", 1)) + 1
     if extra:
         row.update(extra)
@@ -946,19 +1058,23 @@ def create_trade(state, side, setup, plan, ctx):
     state["next_trade_id"] += 1
     t = {
         "id": tid, "setup_key": setup["setup_key"], "side": side, "trigger_type": setup["label"],
+        "engine_version": VERSION,
         "opened_at": now_utc(), "opened_iso": iso(now_utc()), "status": "OPEN",
         "entry": plan["entry"], "sl": plan["sl"], "tp1": plan["tp1"], "tp2": plan.get("tp2"),
         "risk": plan["risk"], "risk_atr": plan["risk_atr"], "trigger": setup["trigger"],
         "extension_atr": ctx["extension_atr"], "trend_1h": ctx["trend_1h"],
-        "ema_position": ctx["ema_position"], "volume_ratio": ctx["volume_ratio"],
+        "ema_position": ctx["ema_position"], "ema_distance_atr": ctx.get("ema_distance_atr"),
+        "volume_ratio": ctx["volume_ratio"],
         "regime": ctx["regime"], "space_r": ctx["space_r"],
+        "space_strength": ctx.get("space_strength"),
         "oi_dir": ctx["oi_dir"], "cvd_dir": ctx["cvd_dir"], "flow_quality": ctx["flow_quality"],
+        "context_class": ctx.get("context_class"), "context_reason": ctx.get("context_reason"),
+        "exit_profile": ctx.get("exit_profile"),
         "mfe_r": 0.0, "mae_r": 0.0, "tp1_hit": False, "tp2_hit": False,
         "best_price": plan["entry"], "worst_price": plan["entry"], "duration_min": 0,
     }
     state["trades"].append(t)
     return t
-
 
 def update_trades(state, live_price, event_rows=None):
     remain = []
@@ -1015,14 +1131,15 @@ def update_trades(state, live_price, event_rows=None):
 def export_data(state):
     save_json(TRADES_JSON, {"open": state["trades"], "history": state["history"]})
     rows = state["history"] + state["trades"]
-    fields = ["id","setup_key","side","trigger_type","opened_iso","closed_iso","status","entry","sl","tp1","tp2",
-              "risk_atr","trigger","extension_atr","trend_1h","ema_position","volume_ratio","regime","space_r",
-              "oi_dir","cvd_dir","flow_quality","mfe_r","mae_r","duration_min","excluded_from_stats","legacy_rule_mismatch","intrabar_ambiguous"]
+    fields = ["id","setup_key","side","trigger_type","engine_version","opened_iso","closed_iso","status","entry","sl","tp1","tp2",
+              "risk_atr","trigger","extension_atr","trend_1h","ema_position","ema_distance_atr","volume_ratio","regime","space_r","space_strength",
+              "oi_dir","cvd_dir","flow_quality","context_class","context_reason","exit_profile",
+              "mfe_r","mae_r","duration_min","excluded_from_stats","legacy_rule_mismatch","intrabar_ambiguous"]
     with open(TRADES_CSV, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
         w.writeheader(); w.writerows(rows)
     save_json(BLOCKED_JSON, state["blocked"])
-    bfields = ["first_time_iso","time_iso","setup_key","side","type","reason","trigger","price","block_count","volume_ratio","space_r","extension_atr"]
+    bfields = ["first_time_iso","time_iso","setup_key","side","type","engine_version","reason","trigger","price","block_count","volume_ratio","space_r","extension_atr","context_class","context_reason"]
     with open(BLOCKED_CSV, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.DictWriter(f, fieldnames=bfields, extrasaction="ignore")
         w.writeheader(); w.writerows(state["blocked"])
@@ -1201,25 +1318,39 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
     sig = setup_signature(setup)
     if sig in state["formal_seen"]:
         return True
+
     ext = (price - setup["trigger"])/a if side == "LONG" else (setup["trigger"] - price)/a
     wh, wl = window_high_low(event_rows or [], price)
     trigger_level = setup["trigger"] + BREAK_BUFFER_ATR*a if side == "LONG" else setup["trigger"] - BREAK_BUFFER_ATR*a
     crossed = wh >= trigger_level if side == "LONG" else wl <= trigger_level
     if not crossed:
         return False
+
     touch_setup_lifecycle(state, side, setup, price, "TRIGGERED", "1分鐘區間已穿越觸發價")
 
-    # If the move crossed between GitHub runs and then made a small retest, keep the
-    # opportunity alive. A deep failure back through the trigger is not treated as a fill.
+    # A trigger that crossed and then failed deeply before the next GitHub run is
+    # a real Formal failure, so record it instead of silently returning False.
     if side == "LONG" and price < setup["trigger"] - TRIGGER_RETEST_ATR*a:
+        record_blocked(state, side, setup, "突破後回撤過深", price,
+                       {"extension_atr": ext, "context_class": "UNASSESSED",
+                        "context_reason": "Trigger穿越後未能守住"})
         return False
     if side == "SHORT" and price > setup["trigger"] + TRIGGER_RETEST_ATR*a:
+        record_blocked(state, side, setup, "突破後回撤過深", price,
+                       {"extension_atr": ext, "context_class": "UNASSESSED",
+                        "context_reason": "Trigger穿越後未能守住"})
         return False
 
     plan = risk_plan(setup, side, price, a)
     if not plan:
+        record_blocked(state, side, setup, "無法建立有效風控", price,
+                       {"extension_atr": ext, "context_class": "UNASSESSED",
+                        "context_reason": "SL/風險距離無法形成有效交易計畫"})
         return False
+
     space = space_context(rows15, side, price, plan["risk"], setup["trigger_time"], a)
+
+    # Hard eligibility: these are objective execution/risk limits, not soft context.
     reasons = []
     if vol["ratio"] < VOL_HARD_MIN:
         reasons.append("成交量過低")
@@ -1227,37 +1358,50 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
         reasons.append(f"停損距離過大（{plan['risk_atr']:.2f} ATR）")
     if ext > EXT_WAIT_ATR:
         reasons.append("價格過度延伸")
-
-    # 0.50~0.75 ATR is a chase-quality gate. Space is intentionally excluded here:
-    # a nearby structure changes the exit plan, not whether the entry is allowed.
-    if EXT_WARN_ATR < ext <= EXT_WAIT_ATR:
-        if vol["ratio"] < 1.30:
-            reasons.append("偏追價，等待較好位置")
+    if EXT_WARN_ATR < ext <= EXT_WAIT_ATR and vol["ratio"] < 1.30:
+        reasons.append("偏追價，等待較好位置")
 
     if reasons:
         record_blocked(state, side, setup, " / ".join(reasons), price,
-                       {"volume_ratio": vol["ratio"], "space_r": space["space_r"], "extension_atr": ext})
+                       {"volume_ratio": vol["ratio"], "space_r": space["space_r"],
+                        "extension_atr": ext, "context_class": "UNASSESSED",
+                        "context_reason": "尚未進入情境一致性判斷"})
         return False
 
-    # Space now manages exit ambition instead of vetoing the trade. Ignore WEAK
-    # noise; a NORMAL/STRONG zone before 2R removes the fixed 2R target.
-    significant_r = None
-    if space.get("nearest_strength") in ("NORMAL", "STRONG"):
-        significant_r = space.get("nearest_r")
-    if significant_r is not None and significant_r < 2.0:
-        plan["tp2"] = None
+    # Formal Decision Engine 2.0: judge the whole context after basic eligibility.
+    context = formal_context(side, setup, trend, reg, ema_pos, vol, oi, cvd, ext, space)
+    if context["class"] == "CONFLICT":
+        record_blocked(state, side, setup, f"情境衝突：{context['reason']}", price,
+                       {"volume_ratio": vol["ratio"], "space_r": space["space_r"],
+                        "extension_atr": ext, "context_class": context["class"],
+                        "context_reason": context["reason"]})
+        return False
 
+    exit_profile = apply_exit_profile(plan, context, space, reg, vol)
     flow, icon = flow_quality(side, oi, cvd)
-    ctx = {"extension_atr": ext, "trend_1h": trend["state"], "ema_position": ema_pos["label"],
-           "volume_ratio": vol["ratio"], "regime": reg["state"], "space_r": space["space_r"],
-           "oi_dir": oi["dir"], "cvd_dir": cvd["dir"], "flow_quality": flow}
+    ctx = {
+        "extension_atr": ext, "trend_1h": trend["state"],
+        "ema_position": ema_pos["label"], "ema_distance_atr": ema_pos.get("distance_atr"),
+        "volume_ratio": vol["ratio"], "regime": reg["state"], "space_r": space["space_r"],
+        "space_strength": space.get("nearest_strength"),
+        "oi_dir": oi["dir"], "cvd_dir": cvd["dir"], "flow_quality": flow,
+        "context_class": context["class"], "context_reason": context["reason"],
+        "exit_profile": exit_profile,
+    }
     t = create_trade(state, side, setup, plan, ctx)
-    touch_setup_lifecycle(state, side, setup, price, "FORMAL", f"建立模擬單 #{t["id"]}")
+    touch_setup_lifecycle(state, side, setup, price, "FORMAL",
+                          f"建立模擬單 #{t['id']}｜{context['label']}")
     mark_prepare_promoted(state, setup["setup_key"], t["id"])
     state["formal_seen"].append(sig)
     state["formal_seen"] = state["formal_seen"][-500:]
 
-    tp2_text = f"${plan['tp2']:,.0f}" if plan.get("tp2") is not None else "—（前方結構限制延伸目標）"
+    if plan.get("tp2") is not None:
+        tp2_text = f"${plan['tp2']:,.0f}"
+    elif context["class"] == "MIXED":
+        tp2_text = "—（情境混合，TP1優先）"
+    else:
+        tp2_text = "—（前方結構限制延伸目標）"
+
     if space.get("nearest_target") is None:
         space_text = "開放"
     else:
@@ -1266,12 +1410,15 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
         space_text = f"{rtxt}（{space['label']}）"
         if space.get("nearest_strength") == "STRONG" and shown_r is not None and shown_r < 1.0:
             space_text += " ⚠️ TP1前有強結構"
-    opposite = ((side == "LONG" and trend["state"] == "BEAR") or (side == "SHORT" and trend["state"] == "BULL"))
+
+    opposite = ((side == "LONG" and trend["state"] == "BEAR") or
+                (side == "SHORT" and trend["state"] == "BULL"))
     bg_note = " ⚠️ 與1H背景反向" if opposite else ""
     send_discord(
         f"⚡ BTC 正式{zh_side(side)}訊號\n\n"
         f"進場：${plan['entry']:,.0f}\n停損：${plan['sl']:,.0f}\n止盈1：${plan['tp1']:,.0f}\n止盈2：{tp2_text}\n"
         f"風險距離：{plan['risk_atr']:.2f} ATR（{risk_quality(plan['risk_atr'])}）\n\n"
+        f"交易情境：{context['label']}\n"
         f"1H背景：{zh_dir(trend['state'])}{bg_note}\n"
         f"15M觸發：{setup['label']}\n"
         f"EMA位置：{ema_pos['label']}（{ema_pos['distance_atr']:.2f} ATR）\n"
@@ -1279,7 +1426,9 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
         f"前方空間：{space_text}\n"
         f"市場狀態：{'趨勢' if reg['state']=='TREND' else '震盪'}\n"
         f"資金流：{icon} {flow}｜OI {zh_dir(oi['dir'])} / CVD Proxy {zh_dir(cvd['dir'])}\n"
-        f"進場位置：{extension_quality(ext)}（{ext:.2f} ATR）\n\n"
+        f"進場位置：{extension_quality(ext)}（{ext:.2f} ATR）\n"
+        f"判斷：{context['reason']}\n"
+        f"出場策略：{exit_profile}\n\n"
         f"🧾 已建立模擬單 #{t['id']}"
     )
     return True
@@ -1305,6 +1454,9 @@ def manual_summary(state, price, trend, reg, oi, cvd):
         f"👀 準備驗證 完成：{p_done}｜追蹤中：{p_open}\n"
         f"⚡ 正式單 完成：{completed}｜進行中：{open_n}\n"
     )
+    engine2_done = sum(1 for x in valid_history if x.get("engine_version") == VERSION)
+    engine2_open = sum(1 for x in valid_open if x.get("engine_version") == VERSION)
+    base += f"🧠 Engine 2.0 樣本 完成：{engine2_done}｜進行中：{engine2_open}\n"
     if excluded:
         base += f"舊規則排除樣本：{excluded}\n"
     if last:
