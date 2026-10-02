@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 86631.0,
       "worst_price": 86028.6,
-      "duration_min": 124
+      "duration_min": 140
     }
   ],
   "history": [
@@ -2992,17 +2992,17 @@
       "setup_key": "CONT:L:1790932500",
       "first_time": 1790934951,
       "first_time_iso": "2026-10-02T09:55:51+00:00",
-      "time": 1790935395,
-      "time_iso": "2026-10-02T10:03:15+00:00",
+      "time": 1790936331,
+      "time_iso": "2026-10-02T10:18:51+00:00",
       "side": "LONG",
       "type": "PULLBACK",
-      "reason": "偏追價，等待較好位置",
+      "reason": "成交量過低",
       "trigger": 86228.0,
-      "price": 86343.1,
-      "block_count": 2,
-      "volume_ratio": 0.8419629923753187,
-      "space_r": 0.946857043520736,
-      "extension_atr": 0.5558851938733544
+      "price": 86315.9,
+      "block_count": 3,
+      "volume_ratio": 0.5597670256526619,
+      "space_r": 1.1397096342073767,
+      "extension_atr": 0.42984386461277546
     }
   ],
   "prepare_seen": [
@@ -3111,10 +3111,6 @@
     "CONT:L:1790920800"
   ],
   "oi_history": [
-    {
-      "time": 1790331025,
-      "value": 28565.249800000078
-    },
     {
       "time": 1790331805,
       "value": 28642.320700000073
@@ -6638,6 +6634,10 @@
     {
       "time": 1790935394,
       "value": 29325.21750000013
+    },
+    {
+      "time": 1790936330,
+      "value": 29320.722600000117
     }
   ],
   "news": {
@@ -8367,7 +8367,7 @@
       "closed_iso": "2026-10-02T07:33:04+00:00"
     }
   ],
-  "last_event_scan": 1790935380,
+  "last_event_scan": 1790936280,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -10106,12 +10106,12 @@
       "defense": 86070.1,
       "first_seen": 1790934951,
       "first_seen_iso": "2026-10-02T09:55:51+00:00",
-      "last_seen": 1790935395,
-      "last_seen_iso": "2026-10-02T10:03:15+00:00",
-      "last_price": 86343.1,
+      "last_seen": 1790936331,
+      "last_seen_iso": "2026-10-02T10:18:51+00:00",
+      "last_price": 86315.9,
       "status": "BLOCKED",
-      "last_note": "偏追價，等待較好位置",
-      "block_count": 2
+      "last_note": "成交量過低",
+      "block_count": 3
     },
     {
       "setup_key": "BO:S:1790932500",
@@ -10122,9 +10122,9 @@
       "defense": 86631.0,
       "first_seen": 1790935395,
       "first_seen_iso": "2026-10-02T10:03:15+00:00",
-      "last_seen": 1790935395,
-      "last_seen_iso": "2026-10-02T10:03:15+00:00",
-      "last_price": 86343.1,
+      "last_seen": 1790936331,
+      "last_seen_iso": "2026-10-02T10:18:51+00:00",
+      "last_price": 86315.9,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
