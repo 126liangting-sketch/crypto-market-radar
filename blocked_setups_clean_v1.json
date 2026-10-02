@@ -2537,17 +2537,19 @@
     "setup_key": "CONT:S:1790956800",
     "first_time": 1790959886,
     "first_time_iso": "2026-10-02T16:51:26+00:00",
-    "time": 1790960419,
-    "time_iso": "2026-10-02T17:00:19+00:00",
+    "time": 1790961168,
+    "time_iso": "2026-10-02T17:12:48+00:00",
     "side": "SHORT",
     "type": "PULLBACK",
     "engine_version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
-    "reason": "突破後回撤過深",
+    "reason": "成交量過低",
     "trigger": 85101.8,
-    "price": 85147.8,
-    "block_count": 2,
-    "extension_atr": -0.10910815939278949,
+    "price": 85049.7,
+    "block_count": 3,
+    "extension_atr": 0.1235768500948906,
     "context_class": "UNASSESSED",
-    "context_reason": "Trigger穿越後未能守住"
+    "context_reason": "尚未進入情境一致性判斷",
+    "volume_ratio": 0.4307568617377703,
+    "space_r": 0.4846855653307186
   }
 ]
