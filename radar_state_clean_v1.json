@@ -1,5 +1,5 @@
 {
-  "version": "BTC_RADAR_CLEAN_V1",
+  "version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
   "next_trade_id": 17,
   "trades": [
     {
@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 86631.0,
       "worst_price": 86028.6,
-      "duration_min": 140
+      "duration_min": 152
     }
   ],
   "history": [
@@ -3111,10 +3111,6 @@
     "CONT:L:1790920800"
   ],
   "oi_history": [
-    {
-      "time": 1790331805,
-      "value": 28642.320700000073
-    },
     {
       "time": 1790332484,
       "value": 28546.21140000008
@@ -6638,6 +6634,10 @@
     {
       "time": 1790936330,
       "value": 29320.722600000117
+    },
+    {
+      "time": 1790937037,
+      "value": 29335.383700000122
     }
   ],
   "news": {
@@ -8367,7 +8367,7 @@
       "closed_iso": "2026-10-02T07:33:04+00:00"
     }
   ],
-  "last_event_scan": 1790936280,
+  "last_event_scan": 1790937000,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
