@@ -3319,10 +3319,6 @@
   ],
   "oi_history": [
     {
-      "time": 1790349791,
-      "value": 28766.51720000007
-    },
-    {
       "time": 1790350437,
       "value": 28763.10610000007
     },
@@ -6829,6 +6825,10 @@
     {
       "time": 1790953995,
       "value": 29488.719500000076
+    },
+    {
+      "time": 1790955036,
+      "value": 29245.74330000007
     }
   ],
   "news": {
@@ -8627,7 +8627,7 @@
       "closed_iso": "2026-10-02T11:57:34+00:00"
     }
   ],
-  "last_event_scan": 1790953980,
+  "last_event_scan": 1790955000,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -10484,6 +10484,22 @@
       "status": "FORMAL",
       "last_note": "建立模擬單 #19｜🟡 混合",
       "block_count": 1
+    },
+    {
+      "setup_key": "BO:L:1790944200",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 87239.0,
+      "defense": 86266.0,
+      "first_seen": 1790955037,
+      "first_seen_iso": "2026-10-02T15:30:37+00:00",
+      "last_seen": 1790955037,
+      "last_seen_iso": "2026-10-02T15:30:37+00:00",
+      "last_price": 85490.4,
+      "status": "DETECTED",
+      "last_note": null,
+      "block_count": 0
     }
   ]
 }
