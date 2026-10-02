@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 86631.0,
       "worst_price": 86028.6,
-      "duration_min": 75
+      "duration_min": 91
     }
   ],
   "history": [
@@ -3094,10 +3094,6 @@
     "CONT:L:1790920800"
   ],
   "oi_history": [
-    {
-      "time": 1790327916,
-      "value": 28716.60200000009
-    },
     {
       "time": 1790328706,
       "value": 28793.41720000008
@@ -6625,6 +6621,10 @@
     {
       "time": 1790932413,
       "value": 29162.47370000012
+    },
+    {
+      "time": 1790933404,
+      "value": 29265.100400000127
     }
   ],
   "news": {
@@ -8353,7 +8353,7 @@
       "closed_iso": "2026-10-02T07:33:04+00:00"
     }
   ],
-  "last_event_scan": 1790932380,
+  "last_event_scan": 1790933400,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -10066,6 +10066,22 @@
       "status": "FORMAL",
       "last_note": "建立模擬單 #15",
       "block_count": 2
+    },
+    {
+      "setup_key": "BO:L:1790928900",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 86631.0,
+      "defense": 85725.8,
+      "first_seen": 1790933405,
+      "first_seen_iso": "2026-10-02T09:30:05+00:00",
+      "last_seen": 1790933405,
+      "last_seen_iso": "2026-10-02T09:30:05+00:00",
+      "last_price": 86185.0,
+      "status": "DETECTED",
+      "last_note": null,
+      "block_count": 0
     }
   ]
 }

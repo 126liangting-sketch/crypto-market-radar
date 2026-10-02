@@ -1710,5 +1710,21 @@
     "status": "FORMAL",
     "last_note": "建立模擬單 #15",
     "block_count": 2
+  },
+  {
+    "setup_key": "BO:L:1790928900",
+    "side": "LONG",
+    "type": "BREAKOUT",
+    "label": "有效突破",
+    "trigger": 86631.0,
+    "defense": 85725.8,
+    "first_seen": 1790933405,
+    "first_seen_iso": "2026-10-02T09:30:05+00:00",
+    "last_seen": 1790933405,
+    "last_seen_iso": "2026-10-02T09:30:05+00:00",
+    "last_price": 86185.0,
+    "status": "DETECTED",
+    "last_note": null,
+    "block_count": 0
   }
 ]
