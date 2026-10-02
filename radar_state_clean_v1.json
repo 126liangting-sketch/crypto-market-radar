@@ -6523,6 +6523,10 @@
     {
       "time": 1790923754,
       "value": 29452.98540000012
+    },
+    {
+      "time": 1790924507,
+      "value": 29409.506000000125
     }
   ],
   "news": {
@@ -6636,15 +6640,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 85905.7,
-      "worst_price": 86030.0,
-      "mfe_atr": 0.06155192532090346,
-      "mae_atr": 0.30105017502916137,
+      "best_price": 85888.5,
+      "worst_price": 86081.3,
+      "mfe_atr": 0.11172695449242327,
+      "mae_atr": 0.4507001166861119,
       "mfe_atr_30": 0.0616,
       "mae_atr_30": 0.3011,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 38
+      "duration_min": 51
     },
     {
       "id": 48,
@@ -6668,15 +6672,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 86009.3,
-      "worst_price": 85905.7,
-      "mfe_atr": 0.0191181643251911,
-      "mae_atr": 0.2809790817487729,
-      "mfe_atr_30": null,
-      "mae_atr_30": null,
+      "best_price": 86081.3,
+      "worst_price": 85888.5,
+      "mfe_atr": 0.22767995696345553,
+      "mae_atr": 0.3308021766567943,
+      "mfe_atr_30": 0.2277,
+      "mae_atr_30": 0.3308,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 18
+      "duration_min": 31
     }
   ],
   "prepare_history": [
@@ -8245,7 +8249,7 @@
       "closed_iso": "2026-10-02T02:07:08+00:00"
     }
   ],
-  "last_event_scan": 1790923740,
+  "last_event_scan": 1790924460,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
