@@ -1688,11 +1688,11 @@
     "defense": 85850.0,
     "first_seen": 1790922616,
     "first_seen_iso": "2026-10-02T06:30:16+00:00",
-    "last_seen": 1790922616,
-    "last_seen_iso": "2026-10-02T06:30:16+00:00",
-    "last_price": 86002.7,
-    "status": "PREPARED",
-    "last_note": "進入準備距離",
+    "last_seen": 1790927904,
+    "last_seen_iso": "2026-10-02T07:58:24+00:00",
+    "last_price": 86123.9,
+    "status": "FORMAL",
+    "last_note": "建立模擬單 #16",
     "block_count": 0
   },
   {
