@@ -2405,16 +2405,16 @@
     "setup_key": "CONT:L:1790908200",
     "first_time": 1790910354,
     "first_time_iso": "2026-10-02T03:05:54+00:00",
-    "time": 1790911306,
-    "time_iso": "2026-10-02T03:21:46+00:00",
+    "time": 1790912178,
+    "time_iso": "2026-10-02T03:36:18+00:00",
     "side": "LONG",
     "type": "PULLBACK",
-    "reason": "價格過度延伸",
+    "reason": "停損距離過大（3.20 ATR） / 價格過度延伸",
     "trigger": 84949.9,
-    "price": 85187.2,
-    "block_count": 2,
-    "volume_ratio": 5.191413157611026,
-    "space_r": 0.12096248047143643,
-    "extension_atr": 1.2031725336810242
+    "price": 85418.4,
+    "block_count": 3,
+    "volume_ratio": 2.4263617096504673,
+    "space_r": 0.34655506824445387,
+    "extension_atr": 2.3541868561788832
   }
 ]
