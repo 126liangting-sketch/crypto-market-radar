@@ -30,13 +30,13 @@
       "context_class": "CONSISTENT",
       "context_reason": "順1H背景＋趨勢環境＋成交量合格＋進場未明顯延伸",
       "exit_profile": "一致但前方結構限制延伸",
-      "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mfe_r": 0.8311980599677008,
+      "mae_r": 0.871844212255716,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 86540.8,
-      "worst_price": 86540.8,
-      "duration_min": 0
+      "best_price": 86804.6,
+      "worst_price": 86264.1,
+      "duration_min": 13
     },
     {
       "id": 19,
@@ -68,13 +68,13 @@
       "context_class": "MIXED",
       "context_reason": "逆1H背景＋EMA偏離較大＋前方強結構較近",
       "exit_profile": "保守TP1優先",
-      "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mfe_r": 0.6802316137897075,
+      "mae_r": 0.648518611195261,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 86540.8,
-      "worst_price": 86540.8,
-      "duration_min": 0
+      "best_price": 86264.1,
+      "worst_price": 86804.6,
+      "duration_min": 13
     }
   ],
   "history": [
