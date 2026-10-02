@@ -32,7 +32,7 @@
       "tp2_hit": false,
       "best_price": 86631.0,
       "worst_price": 86028.6,
-      "duration_min": 216
+      "duration_min": 229
     },
     {
       "id": 17,
@@ -64,13 +64,13 @@
       "context_class": "CONSISTENT",
       "context_reason": "順1H背景＋趨勢環境＋成交量合格＋進場未明顯延伸",
       "exit_profile": "一致但前方結構限制延伸",
-      "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mfe_r": 0.12671108058047198,
+      "mae_r": 0.22762469565358212,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 86462.0,
-      "worst_price": 86462.0,
-      "duration_min": 0
+      "best_price": 86495.4,
+      "worst_price": 86402.0,
+      "duration_min": 13
     }
   ],
   "history": [
@@ -3195,14 +3195,6 @@
     "CONT:L:1790938800"
   ],
   "oi_history": [
-    {
-      "time": 1790336185,
-      "value": 28896.928400000084
-    },
-    {
-      "time": 1790336830,
-      "value": 28940.29060000008
-    },
     {
       "time": 1790337314,
       "value": 28967.054900000086
@@ -6722,6 +6714,10 @@
     {
       "time": 1790940866,
       "value": 29401.156800000124
+    },
+    {
+      "time": 1790941668,
+      "value": 29415.651700000133
     }
   ],
   "news": {
@@ -6819,38 +6815,6 @@
   "next_prepare_id": 51,
   "prepare_active": [
     {
-      "id": 49,
-      "setup_key": "CONT:L:1790936100",
-      "side": "LONG",
-      "trigger_type": "回踩再啟動",
-      "opened_at": 1790938039,
-      "opened_iso": "2026-10-02T10:47:19+00:00",
-      "prepare_price": 86350.0,
-      "trigger": 86379.0,
-      "atr_open": 208.61428571428613,
-      "trend_1h": "BULL",
-      "ema_position": "偏離",
-      "ema_distance_atr": 2.0463122960672253,
-      "volume_ratio": 0.4968603476978673,
-      "regime": "TREND",
-      "oi_dir": "UP",
-      "cvd_dir": "FLAT",
-      "formal_promoted": false,
-      "formal_trade_id": null,
-      "formal_at": null,
-      "formal_delay_min": null,
-      "status": "WATCHING",
-      "best_price": 86517.3,
-      "worst_price": 86227.4,
-      "mfe_atr": 0.8019585016777498,
-      "mae_atr": 0.5876874614805444,
-      "mfe_atr_30": 0.5685,
-      "mae_atr_30": 0.5877,
-      "mfe_atr_60": null,
-      "mae_atr_60": null,
-      "duration_min": 47
-    },
-    {
       "id": 50,
       "setup_key": "CONT:S:1790935200",
       "side": "SHORT",
@@ -6880,7 +6844,7 @@
       "mae_atr_30": 1.137,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 37
+      "duration_min": 50
     }
   ],
   "prepare_history": [
@@ -8515,9 +8479,43 @@
       "duration_min": 62,
       "closed_at": 1790926384,
       "closed_iso": "2026-10-02T07:33:04+00:00"
+    },
+    {
+      "id": 49,
+      "setup_key": "CONT:L:1790936100",
+      "side": "LONG",
+      "trigger_type": "回踩再啟動",
+      "opened_at": 1790938039,
+      "opened_iso": "2026-10-02T10:47:19+00:00",
+      "prepare_price": 86350.0,
+      "trigger": 86379.0,
+      "atr_open": 208.61428571428613,
+      "trend_1h": "BULL",
+      "ema_position": "偏離",
+      "ema_distance_atr": 2.0463122960672253,
+      "volume_ratio": 0.4968603476978673,
+      "regime": "TREND",
+      "oi_dir": "UP",
+      "cvd_dir": "FLAT",
+      "formal_promoted": false,
+      "formal_trade_id": null,
+      "formal_at": null,
+      "formal_delay_min": null,
+      "status": "NO_FORMAL",
+      "best_price": 86517.3,
+      "worst_price": 86227.4,
+      "mfe_atr": 0.8019585016777498,
+      "mae_atr": 0.5876874614805444,
+      "mfe_atr_30": 0.5685,
+      "mae_atr_30": 0.5877,
+      "mfe_atr_60": 0.802,
+      "mae_atr_60": 0.5877,
+      "duration_min": 60,
+      "closed_at": 1790941669,
+      "closed_iso": "2026-10-02T11:47:49+00:00"
     }
   ],
-  "last_event_scan": 1790940840,
+  "last_event_scan": 1790941620,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",

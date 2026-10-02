@@ -30,7 +30,7 @@
       "tp2_hit": false,
       "best_price": 86631.0,
       "worst_price": 86028.6,
-      "duration_min": 216
+      "duration_min": 229
     },
     {
       "id": 17,
@@ -62,13 +62,13 @@
       "context_class": "CONSISTENT",
       "context_reason": "順1H背景＋趨勢環境＋成交量合格＋進場未明顯延伸",
       "exit_profile": "一致但前方結構限制延伸",
-      "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mfe_r": 0.12671108058047198,
+      "mae_r": 0.22762469565358212,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 86462.0,
-      "worst_price": 86462.0,
-      "duration_min": 0
+      "best_price": 86495.4,
+      "worst_price": 86402.0,
+      "duration_min": 13
     }
   ],
   "history": [
