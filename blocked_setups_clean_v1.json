@@ -2382,5 +2382,22 @@
     "volume_ratio": 0.698370475419416,
     "space_r": 0.23739228625124634,
     "extension_atr": 0.31842654653341823
+  },
+  {
+    "key": "BO:S:1790901000",
+    "setup_key": "BO:S:1790901000",
+    "first_time": 1790904022,
+    "first_time_iso": "2026-10-02T01:20:22+00:00",
+    "time": 1790904022,
+    "time_iso": "2026-10-02T01:20:22+00:00",
+    "side": "SHORT",
+    "type": "BREAKOUT",
+    "reason": "停損距離過大（2.58 ATR）",
+    "trigger": 84652.3,
+    "price": 84583.7,
+    "block_count": 1,
+    "volume_ratio": 1.497698552403074,
+    "space_r": 0.009441788004882634,
+    "extension_atr": 0.4765543591525267
   }
 ]
