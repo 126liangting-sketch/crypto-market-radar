@@ -2046,5 +2046,21 @@
     "status": "PREPARED",
     "last_note": "進入準備距離",
     "block_count": 1
+  },
+  {
+    "setup_key": "CONT:L:1790973000",
+    "side": "LONG",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 84400.0,
+    "defense": 84163.8,
+    "first_seen": 1790975438,
+    "first_seen_iso": "2026-10-02T21:10:38+00:00",
+    "last_seen": 1790975438,
+    "last_seen_iso": "2026-10-02T21:10:38+00:00",
+    "last_price": 84462.1,
+    "status": "BLOCKED",
+    "last_note": "成交量過低",
+    "block_count": 1
   }
 ]
