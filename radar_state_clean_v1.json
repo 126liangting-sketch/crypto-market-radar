@@ -3416,7 +3416,8 @@
     "CONT:L:1790936100",
     "CONT:S:1790935200",
     "CONT:S:1790956800",
-    "CONT:S:1790972100"
+    "CONT:S:1790972100",
+    "CONT:L:1790976600"
   ],
   "formal_seen": [
     "BO:S:1790334000",
@@ -3440,10 +3441,6 @@
     "CONT:S:1790946000"
   ],
   "oi_history": [
-    {
-      "time": 1790373419,
-      "value": 28412.611600000106
-    },
     {
       "time": 1790373911,
       "value": 28406.9728000001
@@ -6927,6 +6924,10 @@
     {
       "time": 1790978197,
       "value": 28553.871700000083
+    },
+    {
+      "time": 1790978648,
+      "value": 28536.898100000086
     }
   ],
   "news": {
@@ -7023,8 +7024,41 @@
     ],
     "last_notify": 1790961781
   },
-  "next_prepare_id": 53,
-  "prepare_active": [],
+  "next_prepare_id": 54,
+  "prepare_active": [
+    {
+      "id": 53,
+      "setup_key": "CONT:L:1790976600",
+      "side": "LONG",
+      "trigger_type": "回踩再啟動",
+      "opened_at": 1790978649,
+      "opened_iso": "2026-10-02T22:04:09+00:00",
+      "prepare_price": 84460.4,
+      "trigger": 84500.0,
+      "atr_open": 234.02857142857206,
+      "trend_1h": "BULL",
+      "ema_position": "偏離",
+      "ema_distance_atr": 1.5897300295066983,
+      "volume_ratio": 0.2700511063680913,
+      "regime": "TREND",
+      "oi_dir": "DOWN",
+      "cvd_dir": "FLAT",
+      "formal_promoted": false,
+      "formal_trade_id": null,
+      "formal_at": null,
+      "formal_delay_min": null,
+      "status": "WATCHING",
+      "best_price": 84460.4,
+      "worst_price": 84460.4,
+      "mfe_atr": 0.0,
+      "mae_atr": 0.0,
+      "mfe_atr_30": null,
+      "mae_atr_30": null,
+      "mfe_atr_60": null,
+      "mae_atr_60": null,
+      "duration_min": 0
+    }
+  ],
   "prepare_history": [
     {
       "id": 1,
@@ -8795,7 +8829,7 @@
       "closed_iso": "2026-10-02T21:56:38+00:00"
     }
   ],
-  "last_event_scan": 1790978160,
+  "last_event_scan": 1790978640,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -10860,6 +10894,22 @@
       "status": "BLOCKED",
       "last_note": "成交量過低",
       "block_count": 5
+    },
+    {
+      "setup_key": "CONT:L:1790976600",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 84500.0,
+      "defense": 84370.4,
+      "first_seen": 1790978649,
+      "first_seen_iso": "2026-10-02T22:04:09+00:00",
+      "last_seen": 1790978649,
+      "last_seen_iso": "2026-10-02T22:04:09+00:00",
+      "last_price": 84460.4,
+      "status": "PREPARED",
+      "last_note": "進入準備距離",
+      "block_count": 0
     }
   ]
 }
