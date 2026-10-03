@@ -3524,6 +3524,26 @@
       "extension_atr": 0.06629955947140732,
       "context_class": "UNASSESSED",
       "context_reason": "尚未進入情境一致性判斷"
+    },
+    {
+      "key": "CONT:L:1791003600",
+      "setup_key": "CONT:L:1791003600",
+      "first_time": 1791006379,
+      "first_time_iso": "2026-10-03T05:46:19+00:00",
+      "time": 1791006379,
+      "time_iso": "2026-10-03T05:46:19+00:00",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "engine_version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
+      "reason": "成交量過低 / 偏追價，等待較好位置",
+      "trigger": 84550.0,
+      "price": 84598.0,
+      "block_count": 1,
+      "volume_ratio": 0.29040072033945746,
+      "space_r": 0.5982369298766911,
+      "extension_atr": 0.7353906762967569,
+      "context_class": "UNASSESSED",
+      "context_reason": "尚未進入情境一致性判斷"
     }
   ],
   "prepare_seen": [
@@ -3644,14 +3664,6 @@
     "CONT:L:1790992800"
   ],
   "oi_history": [
-    {
-      "time": 1790401165,
-      "value": 28546.064700000097
-    },
-    {
-      "time": 1790401557,
-      "value": 28542.319800000103
-    },
     {
       "time": 1790401977,
       "value": 28546.3812000001
@@ -7079,6 +7091,10 @@
     {
       "time": 1791005349,
       "value": 28743.916300000128
+    },
+    {
+      "time": 1791006378,
+      "value": 28737.799300000122
     }
   ],
   "news": {
@@ -9049,7 +9065,7 @@
       "closed_iso": "2026-10-03T00:45:51+00:00"
     }
   ],
-  "last_event_scan": 1791005340,
+  "last_event_scan": 1791006360,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11284,12 +11300,28 @@
       "defense": 84579.0,
       "first_seen": 1791005350,
       "first_seen_iso": "2026-10-03T05:29:10+00:00",
-      "last_seen": 1791005350,
-      "last_seen_iso": "2026-10-03T05:29:10+00:00",
-      "last_price": 84583.3,
+      "last_seen": 1791006379,
+      "last_seen_iso": "2026-10-03T05:46:19+00:00",
+      "last_price": 84598.0,
       "status": "DETECTED",
       "last_note": null,
       "block_count": 0
+    },
+    {
+      "setup_key": "CONT:L:1791003600",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 84550.0,
+      "defense": 84520.2,
+      "first_seen": 1791006379,
+      "first_seen_iso": "2026-10-03T05:46:19+00:00",
+      "last_seen": 1791006379,
+      "last_seen_iso": "2026-10-03T05:46:19+00:00",
+      "last_price": 84598.0,
+      "status": "BLOCKED",
+      "last_note": "成交量過低 / 偏追價，等待較好位置",
+      "block_count": 1
     }
   ]
 }
