@@ -1,7 +1,46 @@
 {
   "version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
-  "next_trade_id": 22,
-  "trades": [],
+  "next_trade_id": 23,
+  "trades": [
+    {
+      "id": 22,
+      "setup_key": "BO:L:1791002700",
+      "side": "LONG",
+      "trigger_type": "有效突破",
+      "engine_version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
+      "opened_at": 1791008595,
+      "opened_iso": "2026-10-03T06:23:15+00:00",
+      "status": "OPEN",
+      "entry": 84600.6,
+      "sl": 84470.19285714286,
+      "tp1": 84731.00714285715,
+      "tp2": null,
+      "risk": 130.40714285714785,
+      "risk_atr": 2.0793849658314456,
+      "trigger": 84579.0,
+      "extension_atr": 0.3444191343964368,
+      "trend_1h": "BULL",
+      "ema_position": "位置佳",
+      "ema_distance_atr": 0.08484323216958066,
+      "volume_ratio": 0.8102841540718162,
+      "regime": "TREND",
+      "space_r": 0.38188092238583027,
+      "space_strength": "STRONG",
+      "oi_dir": "FLAT",
+      "cvd_dir": "DOWN",
+      "flow_quality": "普通",
+      "context_class": "MIXED",
+      "context_reason": "成交量偏弱＋前方強結構較近＋進場稍有延伸",
+      "exit_profile": "保守TP1優先",
+      "mfe_r": 0.0,
+      "mae_r": 0.0,
+      "tp1_hit": false,
+      "tp2_hit": false,
+      "best_price": 84600.6,
+      "worst_price": 84600.6,
+      "duration_min": 0
+    }
+  ],
   "history": [
     {
       "id": 1,
@@ -3661,13 +3700,10 @@
     "CONT:L:1790942400",
     "CONT:S:1790946000",
     "CONT:L:1790982000",
-    "CONT:L:1790992800"
+    "CONT:L:1790992800",
+    "BO:L:1791002700"
   ],
   "oi_history": [
-    {
-      "time": 1790403078,
-      "value": 28537.4396000001
-    },
     {
       "time": 1790404047,
       "value": 28532.686200000102
@@ -7091,6 +7127,10 @@
     {
       "time": 1791007304,
       "value": 28730.061000000125
+    },
+    {
+      "time": 1791008594,
+      "value": 28752.544500000124
     }
   ],
   "news": {
@@ -9061,7 +9101,7 @@
       "closed_iso": "2026-10-03T00:45:51+00:00"
     }
   ],
-  "last_event_scan": 1791007260,
+  "last_event_scan": 1791008580,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11280,11 +11320,11 @@
       "defense": 84479.6,
       "first_seen": 1791005350,
       "first_seen_iso": "2026-10-03T05:29:10+00:00",
-      "last_seen": 1791005350,
-      "last_seen_iso": "2026-10-03T05:29:10+00:00",
-      "last_price": 84583.3,
-      "status": "BLOCKED",
-      "last_note": "成交量過低",
+      "last_seen": 1791008595,
+      "last_seen_iso": "2026-10-03T06:23:15+00:00",
+      "last_price": 84600.6,
+      "status": "FORMAL",
+      "last_note": "建立模擬單 #22｜🟡 混合",
       "block_count": 1
     },
     {
@@ -11296,11 +11336,11 @@
       "defense": 84579.0,
       "first_seen": 1791005350,
       "first_seen_iso": "2026-10-03T05:29:10+00:00",
-      "last_seen": 1791007306,
-      "last_seen_iso": "2026-10-03T06:01:46+00:00",
-      "last_price": 84627.7,
+      "last_seen": 1791008596,
+      "last_seen_iso": "2026-10-03T06:23:16+00:00",
+      "last_price": 84600.6,
       "status": "DETECTED",
-      "last_note": null,
+      "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
       "block_count": 0
     },
     {
