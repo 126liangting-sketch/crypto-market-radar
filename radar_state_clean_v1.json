@@ -1,46 +1,7 @@
 {
   "version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
   "next_trade_id": 23,
-  "trades": [
-    {
-      "id": 22,
-      "setup_key": "BO:L:1791002700",
-      "side": "LONG",
-      "trigger_type": "有效突破",
-      "engine_version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
-      "opened_at": 1791008595,
-      "opened_iso": "2026-10-03T06:23:15+00:00",
-      "status": "OPEN",
-      "entry": 84600.6,
-      "sl": 84470.19285714286,
-      "tp1": 84731.00714285715,
-      "tp2": null,
-      "risk": 130.40714285714785,
-      "risk_atr": 2.0793849658314456,
-      "trigger": 84579.0,
-      "extension_atr": 0.3444191343964368,
-      "trend_1h": "BULL",
-      "ema_position": "位置佳",
-      "ema_distance_atr": 0.08484323216958066,
-      "volume_ratio": 0.8102841540718162,
-      "regime": "TREND",
-      "space_r": 0.38188092238583027,
-      "space_strength": "STRONG",
-      "oi_dir": "FLAT",
-      "cvd_dir": "DOWN",
-      "flow_quality": "普通",
-      "context_class": "MIXED",
-      "context_reason": "成交量偏弱＋前方強結構較近＋進場稍有延伸",
-      "exit_profile": "保守TP1優先",
-      "mfe_r": 0.168702415511852,
-      "mae_r": 0.7407569699293585,
-      "tp1_hit": false,
-      "tp2_hit": false,
-      "best_price": 84622.6,
-      "worst_price": 84504.0,
-      "duration_min": 287
-    }
-  ],
+  "trades": [],
   "history": [
     {
       "id": 1,
@@ -789,6 +750,46 @@
       "duration_min": 14,
       "closed_at": 1791001320,
       "closed_iso": "2026-10-03T04:22:00+00:00"
+    },
+    {
+      "id": 22,
+      "setup_key": "BO:L:1791002700",
+      "side": "LONG",
+      "trigger_type": "有效突破",
+      "engine_version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
+      "opened_at": 1791008595,
+      "opened_iso": "2026-10-03T06:23:15+00:00",
+      "status": "TP1",
+      "entry": 84600.6,
+      "sl": 84470.19285714286,
+      "tp1": 84731.00714285715,
+      "tp2": null,
+      "risk": 130.40714285714785,
+      "risk_atr": 2.0793849658314456,
+      "trigger": 84579.0,
+      "extension_atr": 0.3444191343964368,
+      "trend_1h": "BULL",
+      "ema_position": "位置佳",
+      "ema_distance_atr": 0.08484323216958066,
+      "volume_ratio": 0.8102841540718162,
+      "regime": "TREND",
+      "space_r": 0.38188092238583027,
+      "space_strength": "STRONG",
+      "oi_dir": "FLAT",
+      "cvd_dir": "DOWN",
+      "flow_quality": "普通",
+      "context_class": "MIXED",
+      "context_reason": "成交量偏弱＋前方強結構較近＋進場稍有延伸",
+      "exit_profile": "保守TP1優先",
+      "mfe_r": 1.3158788409923787,
+      "mae_r": 0.7407569699293585,
+      "tp1_hit": true,
+      "tp2_hit": false,
+      "best_price": 84772.2,
+      "worst_price": 84504.0,
+      "duration_min": 489,
+      "closed_at": 1791037260,
+      "closed_iso": "2026-10-03T14:21:00+00:00"
     }
   ],
   "blocked": [
@@ -3761,90 +3762,6 @@
     "BO:L:1791002700"
   ],
   "oi_history": [
-    {
-      "time": 1790421375,
-      "value": 28386.892300000083
-    },
-    {
-      "time": 1790421982,
-      "value": 28399.60250000009
-    },
-    {
-      "time": 1790422502,
-      "value": 28397.205900000085
-    },
-    {
-      "time": 1790422996,
-      "value": 28394.519900000087
-    },
-    {
-      "time": 1790423383,
-      "value": 28376.703500000083
-    },
-    {
-      "time": 1790423742,
-      "value": 28377.391900000082
-    },
-    {
-      "time": 1790424172,
-      "value": 28379.620000000083
-    },
-    {
-      "time": 1790425240,
-      "value": 28356.62990000008
-    },
-    {
-      "time": 1790426172,
-      "value": 28357.774400000082
-    },
-    {
-      "time": 1790426898,
-      "value": 28361.35700000008
-    },
-    {
-      "time": 1790427406,
-      "value": 28390.52310000005
-    },
-    {
-      "time": 1790427859,
-      "value": 28398.84040000005
-    },
-    {
-      "time": 1790428635,
-      "value": 28543.51950000005
-    },
-    {
-      "time": 1790429223,
-      "value": 28578.818100000088
-    },
-    {
-      "time": 1790429743,
-      "value": 28570.929100000085
-    },
-    {
-      "time": 1790430222,
-      "value": 28560.85680000009
-    },
-    {
-      "time": 1790430610,
-      "value": 28577.984600000087
-    },
-    {
-      "time": 1790430978,
-      "value": 28577.08150000009
-    },
-    {
-      "time": 1790431444,
-      "value": 28556.01490000009
-    },
-    {
-      "time": 1790432251,
-      "value": 28565.448400000085
-    },
-    {
-      "time": 1790432912,
-      "value": 28547.268800000085
-    },
     {
       "time": 1790433515,
       "value": 28532.644600000094
@@ -7144,101 +7061,106 @@
     {
       "time": 1791025859,
       "value": 28409.22170000012
+    },
+    {
+      "time": 1791037980,
+      "value": 28424.23740000006
     }
   ],
   "news": {
     "seen": [
-      "53188565f7042199",
-      "2c54f27485a4fcae",
-      "503329e6bd73225f",
-      "0e6a10f863599dc3",
-      "4586e62c5fddb046",
-      "e715914ebf311c0f",
-      "45c0ceb8dc6ff2bb",
-      "e0a30bf7598cd083",
-      "344d160658199a5e",
-      "1e830ea6d1837949",
-      "70c1407e4dfc4d25",
-      "d02c5f561f046c60",
-      "70d08a11dc99193f",
-      "be08dfc96ecf8c72",
-      "44bb34eb90eca23f",
-      "5c07676a4b0fc7da",
-      "2c7ddfbc6b95dcf2",
-      "353bd44de6e601b8",
-      "59c4e7d8d83be762",
-      "b6ff6da1610ec28b",
-      "2c901abbe2b65d0d",
       "d900a1556981c826",
-      "b8644dcbde37106a",
+      "43d5dd2581355593",
+      "94d0a2ec11ce4bbc",
+      "cb6f7578a6781b37",
+      "fb6dcf5bd4113e14",
+      "cc4c13b18038316c",
+      "699e7946dc3ec7be",
+      "e11a886267289a99",
+      "53188565f7042199",
+      "d0f63158fe029452",
+      "0c53c954fdb0aa9f",
+      "7a775a02dac5862b",
+      "8bf6f66be40d8550",
+      "9e753999bb334d84",
+      "10e11d33d76d2c6a",
+      "673427af56eb3553",
       "73e90c66645f5d59",
+      "155fa72d1f1634f8",
+      "2c901abbe2b65d0d",
       "fc6239b8a75471bb",
+      "59c4e7d8d83be762",
+      "470de0d22f076de8",
+      "65e67eba4e10d07e",
+      "6d65505ed6c7e01f",
+      "70d08a11dc99193f",
+      "1e830ea6d1837949",
+      "32a2d7bda44660bc",
+      "eb9d3d0684bcedfb",
       "04fa8d398d457673",
       "c9a5072bd97bc0c9",
-      "02b31c95764bb33a",
-      "a16ec0baa53c3925",
-      "cb6f7578a6781b37",
-      "699e7946dc3ec7be",
-      "deefcc8ae178a300",
-      "e05cc633facc8d4e",
-      "b09e239ef0395e31",
-      "d5c08f229586ea91",
-      "dec8815a9cc83af9",
-      "aa665f1bb6b198f0",
-      "155fa72d1f1634f8",
-      "1a10f7ebabf6d2b7",
-      "4eb738a2501d6b41",
-      "3216a3515b8d9233",
-      "acd22f7de9e1a5b7",
-      "43d5dd2581355593",
-      "081b1313dec52cc9",
-      "eb9d3d0684bcedfb",
-      "9e753999bb334d84",
-      "01bf4d3dfc90952d",
-      "c1066196aa5c0ac5",
-      "d0f63158fe029452",
-      "d4b33d3d9c0c7359",
-      "6d65505ed6c7e01f",
-      "f9d847b30a35efca",
-      "673427af56eb3553",
-      "45d791ae8b948fb9",
-      "c9b19a97023fe76a",
-      "730a7dfeda8cc542",
-      "ce1634fb6e4f2a9c",
-      "10e11d33d76d2c6a",
-      "caa32c74016f6df9",
-      "e510c9e70a4c14d7",
-      "fb6dcf5bd4113e14",
-      "fe4ac5a66962a769",
-      "94d0a2ec11ce4bbc",
-      "65942db91fe3b4d5",
-      "5354bd9a9bd4fd81",
-      "405360f467e75f5b",
-      "b13173b48c1fc3bb",
-      "b62ea6723645c03c",
-      "8bf6f66be40d8550",
-      "6340d211369b888d",
-      "e11a886267289a99",
-      "470de0d22f076de8",
-      "42cb1af7dadfd536",
       "54f58f6d7a4fa207",
-      "c56da440f4967cd1",
-      "97c4545393a380d3",
       "96ed6655b0525163",
-      "360276899cb12ace",
-      "0c53c954fdb0aa9f",
-      "310fae5a42ba6cb9",
+      "fe4ac5a66962a769",
+      "e0a30bf7598cd083",
+      "5c07676a4b0fc7da",
+      "2c54f27485a4fcae",
+      "b13173b48c1fc3bb",
       "a0792699ec630637",
-      "38c3a3e1a9f64c9f",
-      "32a2d7bda44660bc",
-      "eabacffa4722d70b",
-      "65e67eba4e10d07e",
-      "4e9bbdc275116e1f",
+      "b09e239ef0395e31",
+      "e715914ebf311c0f",
+      "3216a3515b8d9233",
+      "b62ea6723645c03c",
+      "2c7ddfbc6b95dcf2",
+      "42cb1af7dadfd536",
+      "360276899cb12ace",
+      "5354bd9a9bd4fd81",
       "6e7ec8de038d2275",
+      "4eb738a2501d6b41",
+      "e05cc633facc8d4e",
+      "deefcc8ae178a300",
+      "eabacffa4722d70b",
+      "d4b33d3d9c0c7359",
+      "081b1313dec52cc9",
+      "b8644dcbde37106a",
+      "38c3a3e1a9f64c9f",
+      "65942db91fe3b4d5",
+      "344d160658199a5e",
+      "44bb34eb90eca23f",
+      "d5c08f229586ea91",
+      "c56da440f4967cd1",
+      "730a7dfeda8cc542",
+      "6340d211369b888d",
+      "01bf4d3dfc90952d",
+      "97c4545393a380d3",
+      "dec8815a9cc83af9",
+      "02b31c95764bb33a",
+      "1a10f7ebabf6d2b7",
+      "c1066196aa5c0ac5",
+      "310fae5a42ba6cb9",
+      "45c0ceb8dc6ff2bb",
+      "70c1407e4dfc4d25",
+      "353bd44de6e601b8",
+      "0e6a10f863599dc3",
+      "503329e6bd73225f",
+      "aa665f1bb6b198f0",
+      "d02c5f561f046c60",
+      "f9d847b30a35efca",
       "6846fd3f14ddc1c0",
-      "7a775a02dac5862b"
+      "b6ff6da1610ec28b",
+      "4586e62c5fddb046",
+      "c9b19a97023fe76a",
+      "405360f467e75f5b",
+      "ce1634fb6e4f2a9c",
+      "caa32c74016f6df9",
+      "a16ec0baa53c3925",
+      "4e9bbdc275116e1f",
+      "45d791ae8b948fb9",
+      "e510c9e70a4c14d7",
+      "be08dfc96ecf8c72",
+      "acd22f7de9e1a5b7"
     ],
-    "last_notify": 1790961781
+    "last_notify": 1791037981
   },
   "next_prepare_id": 56,
   "prepare_active": [],
@@ -9114,7 +9036,7 @@
       "closed_iso": "2026-10-03T00:45:51+00:00"
     }
   ],
-  "last_event_scan": 1791025800,
+  "last_event_scan": 1791037920,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11483,6 +11405,38 @@
       "status": "BLOCKED",
       "last_note": "全局仲裁：已有反向正式單 #22 進行中",
       "block_count": 1
+    },
+    {
+      "setup_key": "CONT:L:1791036000",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 84831.5,
+      "defense": 84742.3,
+      "first_seen": 1791037982,
+      "first_seen_iso": "2026-10-03T14:33:02+00:00",
+      "last_seen": 1791037982,
+      "last_seen_iso": "2026-10-03T14:33:02+00:00",
+      "last_price": 84770.9,
+      "status": "DETECTED",
+      "last_note": null,
+      "block_count": 0
+    },
+    {
+      "setup_key": "BO:S:1791036000",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 84742.3,
+      "defense": 84947.7,
+      "first_seen": 1791037982,
+      "first_seen_iso": "2026-10-03T14:33:02+00:00",
+      "last_seen": 1791037982,
+      "last_seen_iso": "2026-10-03T14:33:02+00:00",
+      "last_price": 84770.9,
+      "status": "DETECTED",
+      "last_note": null,
+      "block_count": 0
     }
   ]
 }
