@@ -32,13 +32,13 @@
       "context_class": "MIXED",
       "context_reason": "EMA偏離較大＋前方強結構較近＋進場稍有延伸",
       "exit_profile": "保守TP1優先",
-      "mfe_r": 0.5979757242021733,
+      "mfe_r": 0.7662775817272633,
       "mae_r": 0.7523170589832222,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 84640.3,
+      "best_price": 84662.0,
       "worst_price": 84466.2,
-      "duration_min": 132
+      "duration_min": 154
     }
   ],
   "history": [
@@ -3563,14 +3563,6 @@
   ],
   "oi_history": [
     {
-      "time": 1790394266,
-      "value": 28548.937900000135
-    },
-    {
-      "time": 1790394725,
-      "value": 28550.840400000132
-    },
-    {
       "time": 1790395076,
       "value": 28542.170400000097
     },
@@ -7013,6 +7005,10 @@
     {
       "time": 1790998499,
       "value": 28743.61750000012
+    },
+    {
+      "time": 1790999848,
+      "value": 28687.74760000013
     }
   ],
   "news": {
@@ -8983,7 +8979,7 @@
       "closed_iso": "2026-10-03T00:45:51+00:00"
     }
   ],
-  "last_event_scan": 1790998440,
+  "last_event_scan": 1790999820,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11154,9 +11150,9 @@
       "defense": 84557.9,
       "first_seen": 1790994792,
       "first_seen_iso": "2026-10-03T02:33:12+00:00",
-      "last_seen": 1790998500,
-      "last_seen_iso": "2026-10-03T03:35:00+00:00",
-      "last_price": 84583.0,
+      "last_seen": 1790999849,
+      "last_seen_iso": "2026-10-03T03:57:29+00:00",
+      "last_price": 84662.0,
       "status": "DETECTED",
       "last_note": "已有正式單 #20 進行中，暫不新增外部訊號",
       "block_count": 1
@@ -11186,9 +11182,9 @@
       "defense": 84657.4,
       "first_seen": 1790997277,
       "first_seen_iso": "2026-10-03T03:14:37+00:00",
-      "last_seen": 1790998500,
-      "last_seen_iso": "2026-10-03T03:35:00+00:00",
-      "last_price": 84583.0,
+      "last_seen": 1790999849,
+      "last_seen_iso": "2026-10-03T03:57:29+00:00",
+      "last_price": 84662.0,
       "status": "DETECTED",
       "last_note": "已有正式單 #20 進行中，暫不新增外部訊號",
       "block_count": 0
