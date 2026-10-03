@@ -30,13 +30,13 @@
       "context_class": "MIXED",
       "context_reason": "成交量偏弱＋前方強結構較近＋進場稍有延伸",
       "exit_profile": "保守TP1優先",
-      "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mfe_r": 0.13802924905515165,
+      "mae_r": 0.7407569699293585,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 84600.6,
-      "worst_price": 84600.6,
-      "duration_min": 0
+      "best_price": 84618.6,
+      "worst_price": 84504.0,
+      "duration_min": 27
     }
   ],
   "history": [
