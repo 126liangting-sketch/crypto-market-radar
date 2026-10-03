@@ -2200,11 +2200,11 @@
     "defense": 84657.4,
     "first_seen": 1790997277,
     "first_seen_iso": "2026-10-03T03:14:37+00:00",
-    "last_seen": 1791003497,
-    "last_seen_iso": "2026-10-03T04:58:17+00:00",
-    "last_price": 84542.0,
+    "last_seen": 1791004058,
+    "last_seen_iso": "2026-10-03T05:07:38+00:00",
+    "last_price": 84530.4,
     "status": "BLOCKED",
-    "last_note": "價格過度延伸",
-    "block_count": 4
+    "last_note": "成交量過低 / 價格過度延伸",
+    "block_count": 5
   }
 ]
