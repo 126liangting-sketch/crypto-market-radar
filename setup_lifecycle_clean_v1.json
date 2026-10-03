@@ -2200,11 +2200,11 @@
     "defense": 84657.4,
     "first_seen": 1790997277,
     "first_seen_iso": "2026-10-03T03:14:37+00:00",
-    "last_seen": 1791000615,
-    "last_seen_iso": "2026-10-03T04:10:15+00:00",
-    "last_price": 84627.2,
-    "status": "DETECTED",
-    "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
-    "block_count": 0
+    "last_seen": 1791001499,
+    "last_seen_iso": "2026-10-03T04:24:59+00:00",
+    "last_price": 84553.5,
+    "status": "BLOCKED",
+    "last_note": "偏追價，等待較好位置",
+    "block_count": 1
   }
 ]
