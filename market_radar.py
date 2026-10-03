@@ -14,8 +14,8 @@ OKX_SYMBOL = "BTC-USDT-SWAP"
 WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
-VERSION = "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0"
-BUILD = "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0_ARBITRATION"
+VERSION = "BTC_RADAR_CLEAN_V1_QUALITY_ENGINE_2_1"
+BUILD = "BTC_RADAR_CLEAN_V1_QUALITY_ENGINE_2_1_INTEGRATED"
 STATE_FILE = "radar_state_clean_v1.json"
 TRADES_JSON = "paper_trades_clean_v1.json"
 TRADES_CSV = "paper_trades_clean_v1.csv"
@@ -48,6 +48,9 @@ MAX_STOP_ATR = 2.50
 PREPARE_VALIDATE_MIN = 60
 TRIGGER_RETEST_ATR = 0.10
 EVENT_LOOKBACK_MIN = 12
+TRIGGER_FRESH_MIN = 6
+TRIGGER_AGING_MIN = 12
+THESIS_HOLD_MIN = 20
 OI_FLAT_PCT = 0.0010
 CVD_FLAT_REL = 0.05
 NEWS_NOTIFY_COOLDOWN = 3 * 3600
@@ -526,7 +529,7 @@ def risk_plan(setup, side, entry, a):
     if risk <= 0:
         return None
     return {"entry": entry, "sl": sl, "risk": risk, "risk_atr": risk/a,
-            "tp1": tp1, "tp2": tp2}
+            "tp1": tp1, "tp2": tp2, "side": side, "tp1_r": 1.0, "tp2_r": 2.0}
 
 
 def _pivot_reaction_atr(rows15, pivot, side, a):
@@ -731,13 +734,102 @@ def flow_quality(side, oi, cvd):
     return "普通", "⚪"
 
 
-def formal_context(side, setup, trend, reg, ema_pos, vol, oi, cvd, ext, space):
-    """Classify the whole trading context without using a numeric score.
+def trigger_freshness(side, setup, price, a, event_rows=None):
+    """Describe how fresh and well-held the trigger is.
 
-    The engine uses combination rules: clear alignment -> CONSISTENT, clearly
-    conflicting combinations -> CONFLICT, and everything in between -> MIXED.
-    No single soft factor (EMA, Flow, Space, 1H background) can veto a trade by itself.
+    GitHub still runs every few minutes, so this uses the 1m event window rather than
+    pretending the current ticker alone tells us when the trigger happened. Freshness
+    is context, not a standalone veto: only a deep failed retest remains a hard reject.
     """
+    rows = sorted(event_rows or [], key=lambda r: int(r.get("time", 0)))
+    level = float(setup["trigger"]) + (BREAK_BUFFER_ATR * a if side == "LONG" else -BREAK_BUFFER_ATR * a)
+    crossed_rows = []
+    for r in rows:
+        if side == "LONG" and float(r.get("high", price)) >= level:
+            crossed_rows.append(r)
+        if side == "SHORT" and float(r.get("low", price)) <= level:
+            crossed_rows.append(r)
+
+    crossed_at = int(crossed_rows[0]["time"]) if crossed_rows else None
+    if crossed_at is not None:
+        age = max(0.0, (now_utc() - crossed_at) / 60.0)
+    else:
+        # If price is already beyond the buffered trigger but the crossing happened
+        # before our retained event window, treat it as aged rather than falsely fresh.
+        beyond = price >= level if side == "LONG" else price <= level
+        age = float(EVENT_LOOKBACK_MIN + 1) if beyond else None
+
+    hold_atr = ((price - float(setup["trigger"])) / a) if side == "LONG" else ((float(setup["trigger"]) - price) / a)
+    recent = rows[-3:]
+    if recent:
+        good = 0
+        for r in recent:
+            c = float(r.get("close", price))
+            if (side == "LONG" and c >= float(setup["trigger"])) or (side == "SHORT" and c <= float(setup["trigger"])):
+                good += 1
+        hold_ratio = good / len(recent)
+    else:
+        hold_ratio = 1.0 if hold_atr >= 0 else 0.0
+
+    if age is not None and age <= TRIGGER_FRESH_MIN and hold_atr >= -0.02 and hold_ratio >= 0.5:
+        state, label = "FRESH", "新鮮"
+    elif age is not None and age <= TRIGGER_AGING_MIN and hold_atr >= -0.05:
+        state, label = "AGING", "仍有效"
+    else:
+        state, label = "STALE", "偏舊/承接不足"
+
+    return {
+        "state": state, "label": label, "age_min": age,
+        "hold_atr": hold_atr, "hold_ratio": hold_ratio,
+        "crossed_at": crossed_at,
+    }
+
+
+def trade_geometry(plan, space, ext):
+    """Judge Entry/SL/forward-path as one geometry instead of separate micro filters."""
+    risk_atr = float(plan.get("risk_atr") or 99.0)
+    strong_r = space.get("space_r")
+    strong_r = float(strong_r) if strong_r is not None else None
+
+    poor = (
+        (risk_atr > 2.0 and ext > EXT_NORMAL_ATR) or
+        (risk_atr > RISK_WARN_ATR and ext > EXT_WARN_ATR) or
+        (strong_r is not None and strong_r < 0.35 and (risk_atr > RISK_WARN_ATR or ext > EXT_NORMAL_ATR))
+    )
+    balanced = (
+        risk_atr <= RISK_WARN_ATR and
+        ext <= EXT_NORMAL_ATR and
+        (strong_r is None or strong_r >= 0.80)
+    )
+
+    if poor:
+        cls, label = "POOR", "偏差"
+    elif balanced:
+        cls, label = "BALANCED", "平衡"
+    else:
+        cls, label = "MANAGE", "可管理"
+
+    notes = []
+    if risk_atr > RISK_WARN_ATR:
+        notes.append("停損較寬")
+    if ext > EXT_NORMAL_ATR:
+        notes.append("進場有延伸")
+    if strong_r is not None and strong_r < 1.0:
+        notes.append("前方強結構較近")
+    if not notes:
+        notes.append("Entry/SL/空間協調")
+    return {"class": cls, "label": label, "reason": "＋".join(notes[:3]), "strong_r": strong_r}
+
+
+def formal_context(side, setup, trend, reg, ema_pos, vol, oi, cvd, ext, space, freshness=None, geometry=None):
+    """Quality Engine 2.1 context: alignment + trigger quality + trade geometry.
+
+    There is deliberately no numeric score. A trade is rejected only when multiple
+    important pieces conflict; otherwise it is CONSISTENT or MIXED and the exit plan
+    adapts to its quality.
+    """
+    freshness = freshness or {"state": "AGING", "label": "仍有效"}
+    geometry = geometry or {"class": "MANAGE", "label": "可管理"}
     trend_state = trend.get("state", "NEUTRAL")
     regime = reg.get("state", "RANGE")
     vr = float(vol.get("ratio") or 0.0)
@@ -751,12 +843,19 @@ def formal_context(side, setup, trend, reg, ema_pos, vol, oi, cvd, ext, space):
     strong_near = (space.get("nearest_strength") == "STRONG" and
                    space.get("nearest_r") is not None and
                    float(space.get("nearest_r")) < 1.0)
+    stale = freshness.get("state") == "STALE"
+    geom_poor = geometry.get("class") == "POOR"
 
-    # Clearly conflicting combinations. These are intentionally combination-based:
-    # no single soft signal blocks by itself.
+    # Conflict means several meaningful pieces disagree. No single soft metric vetoes.
     if opposite and regime == "RANGE" and vr < 1.0:
         return {"class": "CONFLICT", "label": "🔴 衝突",
                 "reason": "逆1H背景＋震盪環境＋成交量偏弱", "flow": flow}
+    if stale and (regime == "RANGE" or vr < 1.0) and not aligned:
+        return {"class": "CONFLICT", "label": "🔴 衝突",
+                "reason": "Trigger偏舊/承接不足＋背景未形成支持", "flow": flow}
+    if geom_poor and (opposite or regime == "RANGE" or vr < 1.0):
+        return {"class": "CONFLICT", "label": "🔴 衝突",
+                "reason": "交易幾何偏差＋市場情境未形成共振", "flow": flow}
     if opposite and ema_d > 1.25 and flow in ("普通", "分歧", "可能偏回補/平倉推動") and (vr < 1.0 or regime == "RANGE"):
         return {"class": "CONFLICT", "label": "🔴 衝突",
                 "reason": "逆1H背景＋EMA偏離較大＋資金流未形成支持", "flow": flow}
@@ -770,24 +869,21 @@ def formal_context(side, setup, trend, reg, ema_pos, vol, oi, cvd, ext, space):
         return {"class": "CONFLICT", "label": "🔴 衝突",
                 "reason": "逆1H背景＋前方強結構很近＋成交量不足", "flow": flow}
 
-    # Clear alignment. A consistent trade should have several important pieces
-    # pointing the same way, not merely one strong indicator.
-    if aligned and regime == "TREND" and vr >= 1.0 and ext <= EXT_WARN_ATR and flow != "分歧":
+    fresh_ok = freshness.get("state") == "FRESH"
+    geometry_ok = geometry.get("class") == "BALANCED"
+    if aligned and regime == "TREND" and vr >= 1.0 and fresh_ok and geometry_ok and flow != "分歧":
         return {"class": "CONSISTENT", "label": "🟢 一致",
-                "reason": "順1H背景＋趨勢環境＋成交量合格＋進場未明顯延伸", "flow": flow}
-    if aligned and vr >= 1.30 and ext <= EXT_NORMAL_ATR and flow in ("支持", "偏支持", "普通"):
+                "reason": "順1H＋趨勢＋Trigger新鮮＋交易幾何平衡", "flow": flow}
+    if aligned and vr >= 1.30 and fresh_ok and geometry_ok and ext <= EXT_NORMAL_ATR and flow in ("支持", "偏支持", "普通"):
         return {"class": "CONSISTENT", "label": "🟢 一致",
-                "reason": "順1H背景＋放量＋進場貼近Trigger", "flow": flow}
-    if neutral and regime == "TREND" and vr >= 1.30 and ext <= EXT_WARN_ATR and flow != "分歧":
+                "reason": "順1H＋放量＋Trigger新鮮＋進場貼近", "flow": flow}
+    if neutral and regime == "TREND" and vr >= 1.30 and fresh_ok and geometry_ok and flow != "分歧":
         return {"class": "CONSISTENT", "label": "🟢 一致",
-                "reason": "1H中性但15M趨勢明確＋放量＋進場位置合理", "flow": flow}
-    if setup.get("kind") == "PULLBACK" and aligned and vr >= 1.0 and ema_d <= 0.75 and ext <= EXT_WARN_ATR:
+                "reason": "1H中性但15M趨勢明確＋放量＋Trigger新鮮", "flow": flow}
+    if setup.get("kind") == "PULLBACK" and aligned and vr >= 1.0 and ema_d <= 0.75 and fresh_ok and geometry_ok:
         return {"class": "CONSISTENT", "label": "🟢 一致",
-                "reason": "順1H的回踩延續＋EMA位置合理＋成交量合格", "flow": flow}
+                "reason": "順1H回踩延續＋EMA位置合理＋Trigger新鮮", "flow": flow}
 
-    # Mixed is deliberately broad: it means the setup is valid, but important
-    # context is not fully aligned. These trades may still be simulated, with a
-    # more conservative exit profile.
     notes = []
     if opposite:
         notes.append("逆1H背景")
@@ -799,48 +895,73 @@ def formal_context(side, setup, trend, reg, ema_pos, vol, oi, cvd, ext, space):
         notes.append("成交量偏弱")
     if ema_d > 1.0:
         notes.append("EMA偏離較大")
+    if freshness.get("state") != "FRESH":
+        notes.append(f"Trigger{freshness.get('label','仍有效')}")
+    if geometry.get("class") != "BALANCED":
+        notes.append(f"幾何{geometry.get('label','可管理')}")
     if flow in ("分歧", "可能偏回補/平倉推動"):
         notes.append(f"資金流{flow}")
     if strong_near:
         notes.append("前方強結構較近")
-    if ext > EXT_NORMAL_ATR:
-        notes.append("進場稍有延伸")
     if not notes:
-        notes.append("條件可交易，但主要背景未形成明確共振")
+        notes.append("Setup有效，但主要背景未形成完整共振")
     return {"class": "MIXED", "label": "🟡 混合",
             "reason": "＋".join(notes[:4]), "flow": flow}
 
 
-def apply_exit_profile(plan, context, space, reg, vol):
-    """Make exit ambition follow context instead of forcing every trade into 1R/2R.
+def apply_exit_profile(plan, context, space, reg, vol, freshness=None, geometry=None):
+    """Quality Engine 2.1 dynamic exit.
 
-    TP1 stays at 1R so reward/risk accounting remains interpretable. TP2 is the
-    optional extension target and is only retained when both context and forward
-    structure justify it.
+    The first objective remains 1R so performance stays interpretable. A second
+    target only exists when context, trigger freshness, geometry and forward
+    structure justify keeping risk on. Strong trend setups may stretch TP2 to 2.5R.
     """
+    freshness = freshness or {"state": "AGING"}
+    geometry = geometry or {"class": "MANAGE"}
     cls = context["class"]
-    significant_r = None
-    if space.get("nearest_strength") in ("NORMAL", "STRONG"):
-        significant_r = space.get("nearest_r")
+    vr = float(vol.get("ratio") or 0.0)
+    strong_r = space.get("space_r")
+    strong_r = float(strong_r) if strong_r is not None else None
 
-    if cls == "CONSISTENT":
-        profile = "標準延伸"
-        if significant_r is not None and float(significant_r) < 2.0:
-            plan["tp2"] = None
-            profile = "一致但前方結構限制延伸"
-    else:  # MIXED
-        profile = "保守TP1優先"
-        allow_tp2 = (
-            (significant_r is None or float(significant_r) >= 2.0) and
-            reg.get("state") == "TREND" and
-            float(vol.get("ratio") or 0.0) >= 1.0
-        )
-        if not allow_tp2:
-            plan["tp2"] = None
+    plan["tp1_r"] = 1.0
+    plan["tp2_r"] = None
+    if plan.get("side") == "SHORT":
+        plan["tp1"] = plan["entry"] - plan["risk"]
+    else:
+        plan["tp1"] = plan["entry"] + plan["risk"]
+
+    # Base ambition from overall quality.
+    if (cls == "CONSISTENT" and reg.get("state") == "TREND" and vr >= 1.50 and
+            freshness.get("state") == "FRESH" and geometry.get("class") == "BALANCED"):
+        target_r, profile = 2.5, "趨勢延伸型"
+    elif cls == "CONSISTENT" and freshness.get("state") == "FRESH" and geometry.get("class") != "POOR":
+        target_r, profile = 2.0, "標準型"
+    elif (cls == "MIXED" and reg.get("state") == "TREND" and vr >= 1.20 and
+          freshness.get("state") == "FRESH" and geometry.get("class") == "BALANCED"):
+        target_r, profile = 1.5, "保守延伸型"
+    else:
+        target_r, profile = None, "1R保守型"
+
+    # Do not place TP2 through a meaningful strong structural zone. If a useful
+    # target still exists before it, trim TP2; otherwise publish only the 1R target.
+    if target_r is not None and strong_r is not None and strong_r < target_r:
+        before_zone = strong_r - 0.15
+        if before_zone >= 1.25:
+            target_r = round(before_zone, 2)
+            profile += "・結構前收斂"
         else:
-            profile = "混合但趨勢/空間允許延伸"
-    return profile
+            target_r = None
+            profile = "1R保守型・前方結構近"
 
+    if target_r is not None:
+        plan["tp2_r"] = float(target_r)
+        if plan.get("side") == "SHORT":
+            plan["tp2"] = plan["entry"] - plan["risk"] * float(target_r)
+        else:
+            plan["tp2"] = plan["entry"] + plan["risk"] * float(target_r)
+    else:
+        plan["tp2"] = None
+    return {"profile": profile, "tp1_r": 1.0, "tp2_r": plan.get("tp2_r")}
 
 def zh_dir(d):
     return {"BULL": "偏多", "BEAR": "偏空", "NEUTRAL": "中性",
@@ -874,6 +995,7 @@ def load_state():
     s.setdefault("news", {"seen": [], "last_notify": 0})
     s.setdefault("last_event_scan", 0)
     s.setdefault("setup_lifecycle", [])
+    s.setdefault("active_thesis", None)
     # Historical trades created before the risk guard remain visible, but they must not
     # contaminate performance statistics for the current ruleset.
     for t in s.get("trades", []) + s.get("history", []):
@@ -1070,7 +1192,11 @@ def create_trade(state, side, setup, plan, ctx):
         "space_strength": ctx.get("space_strength"),
         "oi_dir": ctx["oi_dir"], "cvd_dir": ctx["cvd_dir"], "flow_quality": ctx["flow_quality"],
         "context_class": ctx.get("context_class"), "context_reason": ctx.get("context_reason"),
-        "exit_profile": ctx.get("exit_profile"),
+        "quality_state": ctx.get("quality_state"),
+        "trigger_freshness": ctx.get("trigger_freshness"), "trigger_age_min": ctx.get("trigger_age_min"),
+        "trigger_hold_atr": ctx.get("trigger_hold_atr"),
+        "geometry_class": ctx.get("geometry_class"), "geometry_reason": ctx.get("geometry_reason"),
+        "exit_profile": ctx.get("exit_profile"), "tp1_r": plan.get("tp1_r", 1.0), "tp2_r": plan.get("tp2_r"),
         "mfe_r": 0.0, "mae_r": 0.0, "tp1_hit": False, "tp2_hit": False,
         "best_price": plan["entry"], "worst_price": plan["entry"], "duration_min": 0,
     }
@@ -1134,13 +1260,15 @@ def export_data(state):
     rows = state["history"] + state["trades"]
     fields = ["id","setup_key","side","trigger_type","engine_version","opened_iso","closed_iso","status","entry","sl","tp1","tp2",
               "risk_atr","trigger","extension_atr","trend_1h","ema_position","ema_distance_atr","volume_ratio","regime","space_r","space_strength",
-              "oi_dir","cvd_dir","flow_quality","context_class","context_reason","exit_profile",
+              "oi_dir","cvd_dir","flow_quality","context_class","context_reason","quality_state",
+              "trigger_freshness","trigger_age_min","trigger_hold_atr","geometry_class","geometry_reason",
+              "exit_profile","tp1_r","tp2_r",
               "mfe_r","mae_r","duration_min","excluded_from_stats","legacy_rule_mismatch","intrabar_ambiguous"]
     with open(TRADES_CSV, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
         w.writeheader(); w.writerows(rows)
     save_json(BLOCKED_JSON, state["blocked"])
-    bfields = ["first_time_iso","time_iso","setup_key","side","type","engine_version","reason","trigger","price","block_count","volume_ratio","space_r","extension_atr","context_class","context_reason"]
+    bfields = ["first_time_iso","time_iso","setup_key","side","type","engine_version","reason","trigger","price","block_count","volume_ratio","space_r","extension_atr","context_class","context_reason","trigger_freshness","trigger_age_min","geometry_class"]
     with open(BLOCKED_CSV, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.DictWriter(f, fieldnames=bfields, extrasaction="ignore")
         w.writeheader(); w.writerows(state["blocked"])
@@ -1316,45 +1444,58 @@ def maybe_prepare(state, side, setup, price, trend, ema_pos, vol, reg, oi, cvd):
 
 
 
-def preview_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd, event_rows=None):
-    """Evaluate whether a setup is Formal-ready without creating a trade or sending Discord.
-
-    This mirrors the eligibility + context logic in formal_check so LONG/SHORT can
-    be compared globally before either side is committed.
-    """
+def evaluate_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd, event_rows=None):
+    """Single source of truth for Quality Engine 2.1 Formal eligibility."""
     ext = (price - setup["trigger"])/a if side == "LONG" else (setup["trigger"] - price)/a
     wh, wl = window_high_low(event_rows or [], price)
     trigger_level = setup["trigger"] + BREAK_BUFFER_ATR*a if side == "LONG" else setup["trigger"] - BREAK_BUFFER_ATR*a
     crossed = wh >= trigger_level if side == "LONG" else wl <= trigger_level
     if not crossed:
-        return {"ready": False, "reason": "TRIGGER_NOT_CROSSED", "side": side, "setup": setup}
+        return {"ready": False, "reason": "TRIGGER_NOT_CROSSED", "side": side, "setup": setup, "ext": ext}
 
+    freshness = trigger_freshness(side, setup, price, a, event_rows)
     if side == "LONG" and price < setup["trigger"] - TRIGGER_RETEST_ATR*a:
-        return {"ready": False, "reason": "TRIGGER_RETEST_FAILED", "side": side, "setup": setup}
+        return {"ready": False, "reason": "TRIGGER_RETEST_FAILED", "side": side, "setup": setup,
+                "ext": ext, "freshness": freshness}
     if side == "SHORT" and price > setup["trigger"] + TRIGGER_RETEST_ATR*a:
-        return {"ready": False, "reason": "TRIGGER_RETEST_FAILED", "side": side, "setup": setup}
+        return {"ready": False, "reason": "TRIGGER_RETEST_FAILED", "side": side, "setup": setup,
+                "ext": ext, "freshness": freshness}
 
     plan = risk_plan(setup, side, price, a)
     if not plan:
-        return {"ready": False, "reason": "NO_RISK_PLAN", "side": side, "setup": setup}
+        return {"ready": False, "reason": "NO_RISK_PLAN", "side": side, "setup": setup,
+                "ext": ext, "freshness": freshness}
     space = space_context(rows15, side, price, plan["risk"], setup["trigger_time"], a)
+    geometry = trade_geometry(plan, space, ext)
 
     if vol["ratio"] < VOL_HARD_MIN:
-        return {"ready": False, "reason": "LOW_VOLUME", "side": side, "setup": setup}
+        return {"ready": False, "reason": "LOW_VOLUME", "side": side, "setup": setup,
+                "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
     if plan["risk_atr"] > MAX_STOP_ATR:
-        return {"ready": False, "reason": "RISK_TOO_LARGE", "side": side, "setup": setup}
+        return {"ready": False, "reason": "RISK_TOO_LARGE", "side": side, "setup": setup,
+                "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
     if ext > EXT_WAIT_ATR:
-        return {"ready": False, "reason": "OVEREXTENDED", "side": side, "setup": setup}
+        return {"ready": False, "reason": "OVEREXTENDED", "side": side, "setup": setup,
+                "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
     if EXT_WARN_ATR < ext <= EXT_WAIT_ATR and vol["ratio"] < 1.30:
-        return {"ready": False, "reason": "CHASE_WAIT", "side": side, "setup": setup}
+        return {"ready": False, "reason": "CHASE_WAIT", "side": side, "setup": setup,
+                "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
 
-    context = formal_context(side, setup, trend, reg, ema_pos, vol, oi, cvd, ext, space)
+    context = formal_context(side, setup, trend, reg, ema_pos, vol, oi, cvd, ext, space, freshness, geometry)
     if context["class"] == "CONFLICT":
         return {"ready": False, "reason": "CONTEXT_CONFLICT", "side": side, "setup": setup,
-                "context": context, "plan": plan, "space": space, "ext": ext}
+                "context": context, "plan": plan, "space": space, "ext": ext,
+                "freshness": freshness, "geometry": geometry}
 
+    exit_info = apply_exit_profile(plan, context, space, reg, vol, freshness, geometry)
+    quality_state = "HIGH" if (context["class"] == "CONSISTENT" and freshness["state"] == "FRESH" and geometry["class"] == "BALANCED") else "STANDARD"
     return {"ready": True, "side": side, "setup": setup, "context": context,
-            "plan": plan, "space": space, "ext": ext}
+            "plan": plan, "space": space, "ext": ext, "freshness": freshness,
+            "geometry": geometry, "exit_info": exit_info, "quality_state": quality_state}
+
+
+def preview_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd, event_rows=None):
+    return evaluate_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd, event_rows)
 
 
 def _trend_alignment(side, trend_state):
@@ -1366,12 +1507,7 @@ def _trend_alignment(side, trend_state):
 
 
 def choose_arbitration_winner(candidates, trend):
-    """Pick one Formal candidate when LONG and SHORT are both actionable.
-
-    This is not a trading score. It is a deterministic conflict resolver:
-    context class first, then 1H alignment, then entry freshness/risk.
-    If both sides remain effectively tied, return None rather than opening both.
-    """
+    """Global arbitration uses context, trigger freshness and geometry before tie-breaks."""
     ready = [c for c in candidates if c and c.get("ready")]
     if not ready:
         return None
@@ -1379,10 +1515,14 @@ def choose_arbitration_winner(candidates, trend):
         return ready[0]
 
     cls_rank = {"CONSISTENT": 2, "MIXED": 1}
+    fresh_rank = {"FRESH": 2, "AGING": 1, "STALE": 0}
+    geom_rank = {"BALANCED": 2, "MANAGE": 1, "POOR": 0}
     trend_state = trend.get("state", "NEUTRAL")
     def key(c):
         return (
             cls_rank.get(c["context"]["class"], 0),
+            fresh_rank.get(c.get("freshness", {}).get("state"), 0),
+            geom_rank.get(c.get("geometry", {}).get("class"), 0),
             _trend_alignment(c["side"], trend_state),
             1 if c["setup"].get("kind") == "PULLBACK" else 0,
             -abs(float(c.get("ext") or 0.0)),
@@ -1402,93 +1542,74 @@ def active_valid_trade(state):
             return t
     return None
 
+
+def _blocked_extra(ev, vol):
+    return {
+        "volume_ratio": vol.get("ratio"),
+        "space_r": (ev.get("space") or {}).get("space_r"),
+        "extension_atr": ev.get("ext"),
+        "context_class": (ev.get("context") or {}).get("class", "UNASSESSED"),
+        "context_reason": (ev.get("context") or {}).get("reason", ev.get("reason")),
+        "trigger_freshness": (ev.get("freshness") or {}).get("state"),
+        "trigger_age_min": (ev.get("freshness") or {}).get("age_min"),
+        "geometry_class": (ev.get("geometry") or {}).get("class"),
+    }
+
+
 def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd, event_rows=None):
     sig = setup_signature(setup)
     if sig in state["formal_seen"]:
         return True
 
-    ext = (price - setup["trigger"])/a if side == "LONG" else (setup["trigger"] - price)/a
-    wh, wl = window_high_low(event_rows or [], price)
-    trigger_level = setup["trigger"] + BREAK_BUFFER_ATR*a if side == "LONG" else setup["trigger"] - BREAK_BUFFER_ATR*a
-    crossed = wh >= trigger_level if side == "LONG" else wl <= trigger_level
-    if not crossed:
+    ev = evaluate_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd, event_rows)
+    if not ev.get("ready"):
+        reason_map = {
+            "TRIGGER_NOT_CROSSED": None,
+            "TRIGGER_RETEST_FAILED": "Trigger穿越後未能守住",
+            "NO_RISK_PLAN": "無法建立有效風控",
+            "LOW_VOLUME": "成交量過低",
+            "RISK_TOO_LARGE": f"停損距離過大（{float((ev.get('plan') or {}).get('risk_atr') or 0):.2f} ATR）",
+            "OVEREXTENDED": "價格過度延伸",
+            "CHASE_WAIT": "偏追價，等待較好位置",
+            "CONTEXT_CONFLICT": f"情境衝突：{(ev.get('context') or {}).get('reason','整體條件不一致')}",
+        }
+        reason = reason_map.get(ev.get("reason"))
+        if reason:
+            record_blocked(state, side, setup, reason, price, _blocked_extra(ev, vol))
         return False
 
-    touch_setup_lifecycle(state, side, setup, price, "TRIGGERED", "1分鐘區間已穿越觸發價")
-
-    # A trigger that crossed and then failed deeply before the next GitHub run is
-    # a real Formal failure, so record it instead of silently returning False.
-    if side == "LONG" and price < setup["trigger"] - TRIGGER_RETEST_ATR*a:
-        record_blocked(state, side, setup, "突破後回撤過深", price,
-                       {"extension_atr": ext, "context_class": "UNASSESSED",
-                        "context_reason": "Trigger穿越後未能守住"})
-        return False
-    if side == "SHORT" and price > setup["trigger"] + TRIGGER_RETEST_ATR*a:
-        record_blocked(state, side, setup, "突破後回撤過深", price,
-                       {"extension_atr": ext, "context_class": "UNASSESSED",
-                        "context_reason": "Trigger穿越後未能守住"})
-        return False
-
-    plan = risk_plan(setup, side, price, a)
-    if not plan:
-        record_blocked(state, side, setup, "無法建立有效風控", price,
-                       {"extension_atr": ext, "context_class": "UNASSESSED",
-                        "context_reason": "SL/風險距離無法形成有效交易計畫"})
-        return False
-
-    space = space_context(rows15, side, price, plan["risk"], setup["trigger_time"], a)
-
-    # Hard eligibility: these are objective execution/risk limits, not soft context.
-    reasons = []
-    if vol["ratio"] < VOL_HARD_MIN:
-        reasons.append("成交量過低")
-    if plan["risk_atr"] > MAX_STOP_ATR:
-        reasons.append(f"停損距離過大（{plan['risk_atr']:.2f} ATR）")
-    if ext > EXT_WAIT_ATR:
-        reasons.append("價格過度延伸")
-    if EXT_WARN_ATR < ext <= EXT_WAIT_ATR and vol["ratio"] < 1.30:
-        reasons.append("偏追價，等待較好位置")
-
-    if reasons:
-        record_blocked(state, side, setup, " / ".join(reasons), price,
-                       {"volume_ratio": vol["ratio"], "space_r": space["space_r"],
-                        "extension_atr": ext, "context_class": "UNASSESSED",
-                        "context_reason": "尚未進入情境一致性判斷"})
-        return False
-
-    # Formal Decision Engine 2.0: judge the whole context after basic eligibility.
-    context = formal_context(side, setup, trend, reg, ema_pos, vol, oi, cvd, ext, space)
-    if context["class"] == "CONFLICT":
-        record_blocked(state, side, setup, f"情境衝突：{context['reason']}", price,
-                       {"volume_ratio": vol["ratio"], "space_r": space["space_r"],
-                        "extension_atr": ext, "context_class": context["class"],
-                        "context_reason": context["reason"]})
-        return False
-
-    exit_profile = apply_exit_profile(plan, context, space, reg, vol)
+    plan = ev["plan"]; space = ev["space"]; context = ev["context"]
+    freshness = ev["freshness"]; geometry = ev["geometry"]; exit_info = ev["exit_info"]
     flow, icon = flow_quality(side, oi, cvd)
     ctx = {
-        "extension_atr": ext, "trend_1h": trend["state"],
+        "extension_atr": ev["ext"], "trend_1h": trend["state"],
         "ema_position": ema_pos["label"], "ema_distance_atr": ema_pos.get("distance_atr"),
         "volume_ratio": vol["ratio"], "regime": reg["state"], "space_r": space["space_r"],
         "space_strength": space.get("nearest_strength"),
         "oi_dir": oi["dir"], "cvd_dir": cvd["dir"], "flow_quality": flow,
         "context_class": context["class"], "context_reason": context["reason"],
-        "exit_profile": exit_profile,
+        "quality_state": ev.get("quality_state"),
+        "trigger_freshness": freshness.get("state"), "trigger_age_min": freshness.get("age_min"),
+        "trigger_hold_atr": freshness.get("hold_atr"),
+        "geometry_class": geometry.get("class"), "geometry_reason": geometry.get("reason"),
+        "exit_profile": exit_info.get("profile"),
     }
     t = create_trade(state, side, setup, plan, ctx)
     touch_setup_lifecycle(state, side, setup, price, "FORMAL",
-                          f"建立模擬單 #{t['id']}｜{context['label']}")
+                          f"建立模擬單 #{t['id']}｜{context['label']}｜Trigger {freshness['label']}｜幾何{geometry['label']}")
     mark_prepare_promoted(state, setup["setup_key"], t["id"])
     state["formal_seen"].append(sig)
     state["formal_seen"] = state["formal_seen"][-500:]
+    state["active_thesis"] = {
+        "side": side, "setup_key": setup["setup_key"], "source": "FORMAL",
+        "context_class": context["class"], "updated_at": now_utc(), "updated_iso": iso(now_utc())
+    }
 
-    if plan.get("tp2") is not None:
-        tp2_text = f"${plan['tp2']:,.0f}"
-    elif context["class"] == "MIXED":
-        tp2_text = "—（情境混合，TP1優先）"
+    if plan.get("tp2") is None:
+        targets_text = f"止盈：1R（${plan['tp1']:,.0f}）"
     else:
-        tp2_text = "—（前方結構限制延伸目標）"
+        targets_text = (f"TP1：1R（${plan['tp1']:,.0f}）\n"
+                        f"TP2：{float(plan.get('tp2_r') or 2.0):.2g}R（${plan['tp2']:,.0f}）")
 
     if space.get("nearest_target") is None:
         space_text = "開放"
@@ -1497,16 +1618,17 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
         rtxt = f"{shown_r:.2f}R" if shown_r is not None else "—"
         space_text = f"{rtxt}（{space['label']}）"
         if space.get("nearest_strength") == "STRONG" and shown_r is not None and shown_r < 1.0:
-            space_text += " ⚠️ TP1前有強結構"
+            space_text += " ⚠️ 前方強結構近"
 
     opposite = ((side == "LONG" and trend["state"] == "BEAR") or
                 (side == "SHORT" and trend["state"] == "BULL"))
     bg_note = " ⚠️ 與1H背景反向" if opposite else ""
+    age_txt = "—" if freshness.get("age_min") is None else f"{freshness['age_min']:.0f}分"
     send_discord(
         f"⚡ BTC 正式{zh_side(side)}訊號\n\n"
-        f"進場：${plan['entry']:,.0f}\n停損：${plan['sl']:,.0f}\n止盈1：${plan['tp1']:,.0f}\n止盈2：{tp2_text}\n"
+        f"進場：${plan['entry']:,.0f}\n停損：${plan['sl']:,.0f}\n{targets_text}\n"
         f"風險距離：{plan['risk_atr']:.2f} ATR（{risk_quality(plan['risk_atr'])}）\n\n"
-        f"交易情境：{context['label']}\n"
+        f"交易品質：{context['label']}｜Trigger {freshness['label']} {age_txt}｜幾何{geometry['label']}\n"
         f"1H背景：{zh_dir(trend['state'])}{bg_note}\n"
         f"15M觸發：{setup['label']}\n"
         f"EMA位置：{ema_pos['label']}（{ema_pos['distance_atr']:.2f} ATR）\n"
@@ -1514,12 +1636,55 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
         f"前方空間：{space_text}\n"
         f"市場狀態：{'趨勢' if reg['state']=='TREND' else '震盪'}\n"
         f"資金流：{icon} {flow}｜OI {zh_dir(oi['dir'])} / CVD Proxy {zh_dir(cvd['dir'])}\n"
-        f"進場位置：{extension_quality(ext)}（{ext:.2f} ATR）\n"
+        f"進場位置：{extension_quality(ev['ext'])}（{ev['ext']:.2f} ATR）\n"
         f"判斷：{context['reason']}\n"
-        f"出場策略：{exit_profile}\n\n"
+        f"出場策略：{exit_info['profile']}\n\n"
         f"🧾 已建立模擬單 #{t['id']}"
     )
     return True
+
+
+def preview_prepare_candidate(side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd):
+    dist = ((float(setup["trigger"]) - price) / a) if side == "LONG" else ((price - float(setup["trigger"])) / a)
+    if not (0 <= dist <= PREPARE_DISTANCE_ATR):
+        return {"ready": False, "side": side, "setup": setup, "dist": dist}
+    plan = risk_plan(setup, side, price, a)
+    if not plan:
+        return {"ready": False, "side": side, "setup": setup, "dist": dist}
+    space = space_context(rows15, side, price, plan["risk"], setup["trigger_time"], a)
+    geometry = trade_geometry(plan, space, max(0.0, -dist))
+    pre_fresh = {"state": "FRESH", "label": "待觸發"}
+    context = formal_context(side, setup, trend, reg, ema_pos, vol, oi, cvd, max(0.0, -dist), space, pre_fresh, geometry)
+    if context["class"] == "CONFLICT":
+        return {"ready": False, "side": side, "setup": setup, "dist": dist, "context": context}
+    return {"ready": True, "side": side, "setup": setup, "dist": dist, "context": context, "geometry": geometry}
+
+
+def choose_prepare_winner(candidates, trend, state):
+    ready = [c for c in candidates if c and c.get("ready")]
+    if not ready:
+        return None
+    cls_rank = {"CONSISTENT": 2, "MIXED": 1}
+    geom_rank = {"BALANCED": 2, "MANAGE": 1, "POOR": 0}
+    trend_state = trend.get("state", "NEUTRAL")
+    def key(c):
+        return (
+            cls_rank.get(c.get("context", {}).get("class"), 0),
+            _trend_alignment(c["side"], trend_state),
+            geom_rank.get(c.get("geometry", {}).get("class"), 0),
+            1 if c["setup"].get("kind") == "PULLBACK" else 0,
+            -abs(float(c.get("dist") or 0.0)),
+        )
+    ordered = sorted(ready, key=key, reverse=True)
+    winner = ordered[0]
+    thesis = state.get("active_thesis") or {}
+    old_side = thesis.get("side")
+    old_age = (now_utc() - int(thesis.get("updated_at", 0) or 0))/60 if thesis.get("updated_at") else 999
+    if old_side and old_side != winner["side"] and old_age < THESIS_HOLD_MIN:
+        old = next((c for c in ready if c["side"] == old_side), None)
+        if old is not None and key(winner) <= key(old):
+            winner = old
+    return winner
 
 
 atr15_global = 1.0
@@ -1544,7 +1709,7 @@ def manual_summary(state, price, trend, reg, oi, cvd):
     )
     engine2_done = sum(1 for x in valid_history if x.get("engine_version") == VERSION)
     engine2_open = sum(1 for x in valid_open if x.get("engine_version") == VERSION)
-    base += f"🧠 Engine 2.0 樣本 完成：{engine2_done}｜進行中：{engine2_open}\n"
+    base += f"🧠 Quality 2.1 樣本 完成：{engine2_done}｜進行中：{engine2_open}\n"
     if excluded:
         base += f"舊規則排除樣本：{excluded}\n"
     if last:
@@ -1590,6 +1755,7 @@ def main():
     else:
         setups = {}
         previews = {}
+        prepare_previews = {}
         for side in ("LONG", "SHORT"):
             setup = choose_setup(rows15, a, side, live)
             if not setup:
@@ -1598,14 +1764,31 @@ def main():
             previews[side] = preview_formal_candidate(
                 side, setup, live, rows15, a, trend, ema_pos, vol, reg, oi, cvd, events
             )
+            prepare_previews[side] = preview_prepare_candidate(
+                side, setup, live, rows15, a, trend, ema_pos, vol, reg, oi, cvd
+            )
 
         active = active_valid_trade(state)
         ready = [x for x in previews.values() if x.get("ready")]
         winner = None if active else choose_arbitration_winner(ready, trend)
-
-        # If both directions are simultaneously Formal-ready but indistinguishable,
-        # do not open a hedge pair. Internally block both until the market resolves.
         unresolved_tie = (not active and len(ready) >= 2 and winner is None)
+        prepare_winner = None if (active or winner or unresolved_tie) else choose_prepare_winner(prepare_previews.values(), trend, state)
+
+        if active:
+            state["active_thesis"] = {
+                "side": active.get("side"), "setup_key": active.get("setup_key"), "source": "FORMAL",
+                "context_class": active.get("context_class"), "updated_at": now_utc(), "updated_iso": iso(now_utc())
+            }
+        elif winner is not None:
+            state["active_thesis"] = {
+                "side": winner["side"], "setup_key": winner["setup"]["setup_key"], "source": "FORMAL_CANDIDATE",
+                "context_class": winner.get("context", {}).get("class"), "updated_at": now_utc(), "updated_iso": iso(now_utc())
+            }
+        elif prepare_winner is not None:
+            state["active_thesis"] = {
+                "side": prepare_winner["side"], "setup_key": prepare_winner["setup"]["setup_key"], "source": "PREPARE",
+                "context_class": prepare_winner.get("context", {}).get("class"), "updated_at": now_utc(), "updated_iso": iso(now_utc())
+            }
 
         for side in ("LONG", "SHORT"):
             setup = setups.get(side)
@@ -1614,14 +1797,11 @@ def main():
             preview = previews.get(side, {})
 
             if active:
-                # While a Formal trade is live, keep other theses internal so Discord
-                # does not alternate between new LONG/SHORT Prepare messages.
                 if preview.get("ready"):
                     relation = "同方向" if active.get("side") == side else "反向"
                     record_blocked(
                         state, side, setup, f"全局仲裁：已有{relation}正式單 #{active.get('id')} 進行中", live,
-                        {"volume_ratio": vol["ratio"], "extension_atr": preview.get("ext"),
-                         "context_class": preview.get("context", {}).get("class", "UNASSESSED"),
+                        {**_blocked_extra(preview, vol),
                          "context_reason": "同一時間只保留一個有效BTC正式交易 thesis"}
                     )
                 else:
@@ -1632,23 +1812,18 @@ def main():
             if unresolved_tie and preview.get("ready"):
                 record_blocked(
                     state, side, setup, "全局仲裁：多空同時成立且無明確優先方向", live,
-                    {"volume_ratio": vol["ratio"], "extension_atr": preview.get("ext"),
-                     "context_class": preview.get("context", {}).get("class", "UNASSESSED"),
+                    {**_blocked_extra(preview, vol),
                      "context_reason": "多空候選品質接近，等待市場自行選邊"}
                 )
                 continue
 
             if winner is not None:
                 if side != winner["side"]:
-                    # A Formal winner defines the current thesis for this scan. The
-                    # opposite side stays internal even when it is only a Prepare,
-                    # preventing contradictory Discord messages around the same price.
                     if preview.get("ready"):
                         record_blocked(
-                            state, side, setup, f"全局仲裁：{winner['side']} 情境優先", live,
-                            {"volume_ratio": vol["ratio"], "extension_atr": preview.get("ext"),
-                             "context_class": preview.get("context", {}).get("class", "UNASSESSED"),
-                             "context_reason": "同輪多空同時可交易，只採用較一致的主要方向"}
+                            state, side, setup, f"全局仲裁：{winner['side']} 品質優先", live,
+                            {**_blocked_extra(preview, vol),
+                             "context_reason": "同輪多空同時可交易，只採用較完整的主要方向"}
                         )
                     else:
                         touch_setup_lifecycle(state, side, setup, live, "DETECTED",
@@ -1657,16 +1832,15 @@ def main():
                 became_formal = formal_check(
                     state, side, setup, live, rows15, a, trend, ema_pos, vol, reg, oi, cvd, events
                 )
-                if not became_formal:
+                if not became_formal and prepare_winner and side == prepare_winner["side"]:
                     maybe_prepare(state, side, setup, live, trend, ema_pos, vol, reg, oi, cvd)
                 continue
 
-            # Not Formal-ready: keep the existing diagnostic/Prepare behavior.
-            became_formal = formal_check(
-                state, side, setup, live, rows15, a, trend, ema_pos, vol, reg, oi, cvd, events
-            )
-            if not became_formal:
+            # No Formal candidate: only the current internal thesis may notify Prepare.
+            if prepare_winner is not None and side == prepare_winner["side"]:
                 maybe_prepare(state, side, setup, live, trend, ema_pos, vol, reg, oi, cvd)
+            else:
+                touch_setup_lifecycle(state, side, setup, live, "DETECTED", "非本輪主要 thesis，僅內部追蹤")
 
     export_data(state)
     save_json(STATE_FILE, state)
