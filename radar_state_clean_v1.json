@@ -3490,18 +3490,18 @@
       "setup_key": "CONT:S:1790994600",
       "first_time": 1791001499,
       "first_time_iso": "2026-10-03T04:24:59+00:00",
-      "time": 1791002978,
-      "time_iso": "2026-10-03T04:49:38+00:00",
+      "time": 1791003497,
+      "time_iso": "2026-10-03T04:58:17+00:00",
       "side": "SHORT",
       "type": "PULLBACK",
       "engine_version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
-      "reason": "偏追價，等待較好位置",
+      "reason": "價格過度延伸",
       "trigger": 84601.9,
-      "price": 84565.8,
-      "block_count": 3,
+      "price": 84542.0,
+      "block_count": 4,
       "volume_ratio": 0.7435329593928042,
-      "space_r": 0.05861644260996875,
-      "extension_atr": 0.5032360848350782,
+      "space_r": 0.07688627568653252,
+      "extension_atr": 0.8350094593248073,
       "context_class": "UNASSESSED",
       "context_reason": "尚未進入情境一致性判斷"
     }
@@ -3624,14 +3624,6 @@
     "CONT:L:1790992800"
   ],
   "oi_history": [
-    {
-      "time": 1790398258,
-      "value": 28570.9440000001
-    },
-    {
-      "time": 1790398618,
-      "value": 28571.445500000103
-    },
     {
       "time": 1790399088,
       "value": 28571.9553000001
@@ -7067,6 +7059,10 @@
     {
       "time": 1791002977,
       "value": 28737.968900000124
+    },
+    {
+      "time": 1791003496,
+      "value": 28748.55560000012
     }
   ],
   "news": {
@@ -9037,7 +9033,7 @@
       "closed_iso": "2026-10-03T00:45:51+00:00"
     }
   ],
-  "last_event_scan": 1791002940,
+  "last_event_scan": 1791003480,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11240,12 +11236,12 @@
       "defense": 84657.4,
       "first_seen": 1790997277,
       "first_seen_iso": "2026-10-03T03:14:37+00:00",
-      "last_seen": 1791002978,
-      "last_seen_iso": "2026-10-03T04:49:38+00:00",
-      "last_price": 84565.8,
+      "last_seen": 1791003497,
+      "last_seen_iso": "2026-10-03T04:58:17+00:00",
+      "last_price": 84542.0,
       "status": "BLOCKED",
-      "last_note": "偏追價，等待較好位置",
-      "block_count": 3
+      "last_note": "價格過度延伸",
+      "block_count": 4
     }
   ]
 }
