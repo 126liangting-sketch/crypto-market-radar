@@ -2809,5 +2809,24 @@
     "extension_atr": 0.6764144945963002,
     "context_class": "MIXED",
     "context_reason": "同一時間只保留一個有效BTC正式交易 thesis"
+  },
+  {
+    "key": "BO:S:1791019800",
+    "setup_key": "BO:S:1791019800",
+    "first_time": 1791023125,
+    "first_time_iso": "2026-10-03T10:25:25+00:00",
+    "time": 1791023125,
+    "time_iso": "2026-10-03T10:25:25+00:00",
+    "side": "SHORT",
+    "type": "BREAKOUT",
+    "engine_version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
+    "reason": "全局仲裁：已有反向正式單 #22 進行中",
+    "trigger": 84540.9,
+    "price": 84536.1,
+    "block_count": 1,
+    "volume_ratio": 1.0903577332146563,
+    "extension_atr": 0.09434227151458198,
+    "context_class": "MIXED",
+    "context_reason": "同一時間只保留一個有效BTC正式交易 thesis"
   }
 ]
