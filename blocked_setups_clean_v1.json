@@ -2711,5 +2711,24 @@
     "extension_atr": 0.21325136612025275,
     "context_class": "UNASSESSED",
     "context_reason": "尚未進入情境一致性判斷"
+  },
+  {
+    "key": "CONT:L:1790992800",
+    "setup_key": "CONT:L:1790992800",
+    "first_time": 1790994792,
+    "first_time_iso": "2026-10-03T02:33:12+00:00",
+    "time": 1790994792,
+    "time_iso": "2026-10-03T02:33:12+00:00",
+    "side": "LONG",
+    "type": "PULLBACK",
+    "engine_version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
+    "reason": "全局仲裁：已有同方向正式單 #20 進行中",
+    "trigger": 84600.2,
+    "price": 84612.5,
+    "block_count": 1,
+    "volume_ratio": 0.7388977029624119,
+    "extension_atr": 0.18330849478394914,
+    "context_class": "MIXED",
+    "context_reason": "同一時間只保留一個有效BTC正式交易 thesis"
   }
 ]

@@ -32,13 +32,13 @@
       "context_class": "MIXED",
       "context_reason": "EMA偏離較大＋前方強結構較近＋進場稍有延伸",
       "exit_profile": "保守TP1優先",
-      "mfe_r": 0.43975646643656197,
+      "mfe_r": 0.5669523403265765,
       "mae_r": 0.04110598363518832,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 84619.9,
+      "best_price": 84636.3,
       "worst_price": 84557.9,
-      "duration_min": 50
+      "duration_min": 70
     }
   ],
   "history": [
@@ -3424,6 +3424,25 @@
       "extension_atr": 0.21325136612025275,
       "context_class": "UNASSESSED",
       "context_reason": "尚未進入情境一致性判斷"
+    },
+    {
+      "key": "CONT:L:1790992800",
+      "setup_key": "CONT:L:1790992800",
+      "first_time": 1790994792,
+      "first_time_iso": "2026-10-03T02:33:12+00:00",
+      "time": 1790994792,
+      "time_iso": "2026-10-03T02:33:12+00:00",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "engine_version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
+      "reason": "全局仲裁：已有同方向正式單 #20 進行中",
+      "trigger": 84600.2,
+      "price": 84612.5,
+      "block_count": 1,
+      "volume_ratio": 0.7388977029624119,
+      "extension_atr": 0.18330849478394914,
+      "context_class": "MIXED",
+      "context_reason": "同一時間只保留一個有效BTC正式交易 thesis"
     }
   ],
   "prepare_seen": [
@@ -3543,14 +3562,6 @@
     "CONT:L:1790982000"
   ],
   "oi_history": [
-    {
-      "time": 1790389035,
-      "value": 28520.7144000001
-    },
-    {
-      "time": 1790389707,
-      "value": 28519.678300000098
-    },
     {
       "time": 1790390303,
       "value": 28495.049900000096
@@ -7014,6 +7025,10 @@
     {
       "time": 1790993600,
       "value": 28596.724400000123
+    },
+    {
+      "time": 1790994791,
+      "value": 28594.660300000127
     }
   ],
   "news": {
@@ -8984,7 +8999,7 @@
       "closed_iso": "2026-10-03T00:45:51+00:00"
     }
   ],
-  "last_event_scan": 1790993580,
+  "last_event_scan": 1790994780,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11142,6 +11157,38 @@
       "last_seen": 1790993602,
       "last_seen_iso": "2026-10-03T02:13:22+00:00",
       "last_price": 84569.6,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #20 進行中，暫不新增外部訊號",
+      "block_count": 0
+    },
+    {
+      "setup_key": "CONT:L:1790992800",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 84600.2,
+      "defense": 84557.9,
+      "first_seen": 1790994792,
+      "first_seen_iso": "2026-10-03T02:33:12+00:00",
+      "last_seen": 1790994792,
+      "last_seen_iso": "2026-10-03T02:33:12+00:00",
+      "last_price": 84612.5,
+      "status": "BLOCKED",
+      "last_note": "全局仲裁：已有同方向正式單 #20 進行中",
+      "block_count": 1
+    },
+    {
+      "setup_key": "BO:S:1790992800",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 84557.9,
+      "defense": 84688.2,
+      "first_seen": 1790994792,
+      "first_seen_iso": "2026-10-03T02:33:12+00:00",
+      "last_seen": 1790994792,
+      "last_seen_iso": "2026-10-03T02:33:12+00:00",
+      "last_price": 84612.5,
       "status": "DETECTED",
       "last_note": "已有正式單 #20 進行中，暫不新增外部訊號",
       "block_count": 0

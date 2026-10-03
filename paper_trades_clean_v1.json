@@ -30,13 +30,13 @@
       "context_class": "MIXED",
       "context_reason": "EMA偏離較大＋前方強結構較近＋進場稍有延伸",
       "exit_profile": "保守TP1優先",
-      "mfe_r": 0.43975646643656197,
+      "mfe_r": 0.5669523403265765,
       "mae_r": 0.04110598363518832,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 84619.9,
+      "best_price": 84636.3,
       "worst_price": 84557.9,
-      "duration_min": 50
+      "duration_min": 70
     }
   ],
   "history": [
