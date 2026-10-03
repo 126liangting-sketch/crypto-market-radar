@@ -2750,5 +2750,25 @@
     "extension_atr": 1.0763440860214717,
     "context_class": "UNASSESSED",
     "context_reason": "尚未進入情境一致性判斷"
+  },
+  {
+    "key": "BO:L:1791002700",
+    "setup_key": "BO:L:1791002700",
+    "first_time": 1791005350,
+    "first_time_iso": "2026-10-03T05:29:10+00:00",
+    "time": 1791005350,
+    "time_iso": "2026-10-03T05:29:10+00:00",
+    "side": "LONG",
+    "type": "BREAKOUT",
+    "engine_version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
+    "reason": "成交量過低",
+    "trigger": 84579.0,
+    "price": 84583.3,
+    "block_count": 1,
+    "volume_ratio": 0.5580524131345934,
+    "space_r": 0.041435768261941355,
+    "extension_atr": 0.06629955947140732,
+    "context_class": "UNASSESSED",
+    "context_reason": "尚未進入情境一致性判斷"
   }
 ]

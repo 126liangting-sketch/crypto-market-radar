@@ -2206,5 +2206,37 @@
     "status": "BLOCKED",
     "last_note": "成交量過低 / 價格過度延伸",
     "block_count": 5
+  },
+  {
+    "setup_key": "BO:L:1791002700",
+    "side": "LONG",
+    "type": "BREAKOUT",
+    "label": "有效突破",
+    "trigger": 84579.0,
+    "defense": 84479.6,
+    "first_seen": 1791005350,
+    "first_seen_iso": "2026-10-03T05:29:10+00:00",
+    "last_seen": 1791005350,
+    "last_seen_iso": "2026-10-03T05:29:10+00:00",
+    "last_price": 84583.3,
+    "status": "BLOCKED",
+    "last_note": "成交量過低",
+    "block_count": 1
+  },
+  {
+    "setup_key": "CONT:S:1791002700",
+    "side": "SHORT",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 84524.9,
+    "defense": 84579.0,
+    "first_seen": 1791005350,
+    "first_seen_iso": "2026-10-03T05:29:10+00:00",
+    "last_seen": 1791005350,
+    "last_seen_iso": "2026-10-03T05:29:10+00:00",
+    "last_price": 84583.3,
+    "status": "DETECTED",
+    "last_note": null,
+    "block_count": 0
   }
 ]
