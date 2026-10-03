@@ -2152,9 +2152,9 @@
     "defense": 84559.8,
     "first_seen": 1790991991,
     "first_seen_iso": "2026-10-03T01:46:31+00:00",
-    "last_seen": 1790991991,
-    "last_seen_iso": "2026-10-03T01:46:31+00:00",
-    "last_price": 84590.7,
+    "last_seen": 1790992480,
+    "last_seen_iso": "2026-10-03T01:54:40+00:00",
+    "last_price": 84576.9,
     "status": "DETECTED",
     "last_note": "已有正式單 #20 進行中，暫不新增外部訊號",
     "block_count": 0
