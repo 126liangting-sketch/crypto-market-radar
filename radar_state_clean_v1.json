@@ -33,12 +33,12 @@
       "context_reason": "EMA偏離較大＋前方強結構較近＋進場稍有延伸",
       "exit_profile": "保守TP1優先",
       "mfe_r": 0.43975646643656197,
-      "mae_r": 0.003102338387514534,
+      "mae_r": 0.04110598363518832,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 84619.9,
-      "worst_price": 84562.8,
-      "duration_min": 37
+      "worst_price": 84557.9,
+      "duration_min": 50
     }
   ],
   "history": [
@@ -3544,10 +3544,6 @@
   ],
   "oi_history": [
     {
-      "time": 1790388211,
-      "value": 28395.0440000001
-    },
-    {
       "time": 1790389035,
       "value": 28520.7144000001
     },
@@ -7014,6 +7010,10 @@
     {
       "time": 1790992833,
       "value": 28606.866200000124
+    },
+    {
+      "time": 1790993600,
+      "value": 28596.724400000123
     }
   ],
   "news": {
@@ -8984,7 +8984,7 @@
       "closed_iso": "2026-10-03T00:45:51+00:00"
     }
   ],
-  "last_event_scan": 1790992800,
+  "last_event_scan": 1790993580,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11139,9 +11139,9 @@
       "defense": 84559.8,
       "first_seen": 1790991991,
       "first_seen_iso": "2026-10-03T01:46:31+00:00",
-      "last_seen": 1790992834,
-      "last_seen_iso": "2026-10-03T02:00:34+00:00",
-      "last_price": 84599.9,
+      "last_seen": 1790993602,
+      "last_seen_iso": "2026-10-03T02:13:22+00:00",
+      "last_price": 84569.6,
       "status": "DETECTED",
       "last_note": "已有正式單 #20 進行中，暫不新增外部訊號",
       "block_count": 0
