@@ -2104,11 +2104,11 @@
     "defense": 84444.6,
     "first_seen": 1790983863,
     "first_seen_iso": "2026-10-02T23:31:03+00:00",
-    "last_seen": 1790989771,
-    "last_seen_iso": "2026-10-03T01:09:31+00:00",
-    "last_price": 84643.6,
-    "status": "BLOCKED",
-    "last_note": "停損距離過大（2.85 ATR） / 價格過度延伸",
+    "last_seen": 1790990561,
+    "last_seen_iso": "2026-10-03T01:22:41+00:00",
+    "last_price": 84563.2,
+    "status": "FORMAL",
+    "last_note": "建立模擬單 #20｜🟡 混合",
     "block_count": 7
   },
   {
@@ -2136,11 +2136,11 @@
     "defense": 84538.2,
     "first_seen": 1790988351,
     "first_seen_iso": "2026-10-03T00:45:51+00:00",
-    "last_seen": 1790989771,
-    "last_seen_iso": "2026-10-03T01:09:31+00:00",
-    "last_price": 84643.6,
+    "last_seen": 1790990561,
+    "last_seen_iso": "2026-10-03T01:22:41+00:00",
+    "last_price": 84563.2,
     "status": "DETECTED",
-    "last_note": null,
+    "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
     "block_count": 0
   }
 ]
