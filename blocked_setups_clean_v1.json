@@ -2691,5 +2691,25 @@
     "extension_atr": -0.3267394695787412,
     "context_class": "UNASSESSED",
     "context_reason": "Trigger穿越後未能守住"
+  },
+  {
+    "key": "BO:S:1790982000",
+    "setup_key": "BO:S:1790982000",
+    "first_time": 1790986069,
+    "first_time_iso": "2026-10-03T00:07:49+00:00",
+    "time": 1790986069,
+    "time_iso": "2026-10-03T00:07:49+00:00",
+    "side": "SHORT",
+    "type": "BREAKOUT",
+    "engine_version": "BTC_RADAR_CLEAN_V1_FORMAL_ENGINE_2_0",
+    "reason": "成交量過低",
+    "trigger": 84444.6,
+    "price": 84422.3,
+    "block_count": 1,
+    "volume_ratio": 0.5673417999537514,
+    "space_r": 0.463038490950886,
+    "extension_atr": 0.21325136612025275,
+    "context_class": "UNASSESSED",
+    "context_reason": "尚未進入情境一致性判斷"
   }
 ]
