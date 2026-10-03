@@ -33,12 +33,12 @@
       "context_reason": "EMA偏離較大＋前方強結構較近＋進場稍有延伸",
       "exit_profile": "保守TP1優先",
       "mfe_r": 0.5979757242021733,
-      "mae_r": 0.04110598363518832,
+      "mae_r": 0.7523170589832222,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 84640.3,
-      "worst_price": 84557.9,
-      "duration_min": 93
+      "worst_price": 84466.2,
+      "duration_min": 111
     }
   ],
   "history": [
@@ -3563,14 +3563,6 @@
   ],
   "oi_history": [
     {
-      "time": 1790391622,
-      "value": 28464.142900000134
-    },
-    {
-      "time": 1790392287,
-      "value": 28458.826600000128
-    },
-    {
       "time": 1790392977,
       "value": 28488.755800000134
     },
@@ -7021,6 +7013,10 @@
     {
       "time": 1790996184,
       "value": 28645.96050000012
+    },
+    {
+      "time": 1790997276,
+      "value": 28722.67080000012
     }
   ],
   "news": {
@@ -8991,7 +8987,7 @@
       "closed_iso": "2026-10-03T00:45:51+00:00"
     }
   ],
-  "last_event_scan": 1790996160,
+  "last_event_scan": 1790997240,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11162,9 +11158,9 @@
       "defense": 84557.9,
       "first_seen": 1790994792,
       "first_seen_iso": "2026-10-03T02:33:12+00:00",
-      "last_seen": 1790996186,
-      "last_seen_iso": "2026-10-03T02:56:26+00:00",
-      "last_price": 84574.1,
+      "last_seen": 1790997277,
+      "last_seen_iso": "2026-10-03T03:14:37+00:00",
+      "last_price": 84499.3,
       "status": "DETECTED",
       "last_note": "已有正式單 #20 進行中，暫不新增外部訊號",
       "block_count": 1
@@ -11181,6 +11177,22 @@
       "last_seen": 1790996186,
       "last_seen_iso": "2026-10-03T02:56:26+00:00",
       "last_price": 84574.1,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #20 進行中，暫不新增外部訊號",
+      "block_count": 0
+    },
+    {
+      "setup_key": "CONT:S:1790994600",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 84601.9,
+      "defense": 84657.4,
+      "first_seen": 1790997277,
+      "first_seen_iso": "2026-10-03T03:14:37+00:00",
+      "last_seen": 1790997277,
+      "last_seen_iso": "2026-10-03T03:14:37+00:00",
+      "last_price": 84499.3,
       "status": "DETECTED",
       "last_note": "已有正式單 #20 進行中，暫不新增外部訊號",
       "block_count": 0
