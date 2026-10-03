@@ -38,7 +38,7 @@
       "tp2_hit": false,
       "best_price": 84622.6,
       "worst_price": 84504.0,
-      "duration_min": 176
+      "duration_min": 190
     }
   ],
   "history": [
@@ -3724,14 +3724,6 @@
   ],
   "oi_history": [
     {
-      "time": 1790414553,
-      "value": 28351.411000000095
-    },
-    {
-      "time": 1790415135,
-      "value": 28307.874100000095
-    },
-    {
       "time": 1790415702,
       "value": 28307.835100000095
     },
@@ -7126,6 +7118,10 @@
     {
       "time": 1791019156,
       "value": 28535.33310000012
+    },
+    {
+      "time": 1791020008,
+      "value": 28504.001700000117
     }
   ],
   "news": {
@@ -9096,7 +9092,7 @@
       "closed_iso": "2026-10-03T00:45:51+00:00"
     }
   ],
-  "last_event_scan": 1791019140,
+  "last_event_scan": 1791019980,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11395,9 +11391,9 @@
       "defense": 84608.6,
       "first_seen": 1791016740,
       "first_seen_iso": "2026-10-03T08:39:00+00:00",
-      "last_seen": 1791019157,
-      "last_seen_iso": "2026-10-03T09:19:17+00:00",
-      "last_price": 84584.4,
+      "last_seen": 1791020009,
+      "last_seen_iso": "2026-10-03T09:33:29+00:00",
+      "last_price": 84550.1,
       "status": "DETECTED",
       "last_note": "已有正式單 #22 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -11414,6 +11410,22 @@
       "last_seen": 1791019157,
       "last_seen_iso": "2026-10-03T09:19:17+00:00",
       "last_price": 84584.4,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #22 進行中，暫不新增外部訊號",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BO:L:1791018000",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 84620.5,
+      "defense": 84518.0,
+      "first_seen": 1791020009,
+      "first_seen_iso": "2026-10-03T09:33:29+00:00",
+      "last_seen": 1791020009,
+      "last_seen_iso": "2026-10-03T09:33:29+00:00",
+      "last_price": 84550.1,
       "status": "DETECTED",
       "last_note": "已有正式單 #22 進行中，暫不新增外部訊號",
       "block_count": 0
