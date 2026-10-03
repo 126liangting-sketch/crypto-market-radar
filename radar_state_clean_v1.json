@@ -32,13 +32,13 @@
       "context_class": "MIXED",
       "context_reason": "成交量偏弱＋前方強結構較近＋進場稍有延伸",
       "exit_profile": "保守TP1優先",
-      "mfe_r": 0.13802924905515165,
+      "mfe_r": 0.168702415511852,
       "mae_r": 0.7407569699293585,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 84618.6,
+      "best_price": 84622.6,
       "worst_price": 84504.0,
-      "duration_min": 59
+      "duration_min": 74
     }
   ],
   "history": [
@@ -3705,10 +3705,6 @@
   ],
   "oi_history": [
     {
-      "time": 1790407866,
-      "value": 28536.4330000001
-    },
-    {
       "time": 1790408448,
       "value": 28460.778600000096
     },
@@ -7119,6 +7115,10 @@
     {
       "time": 1791012174,
       "value": 28707.12540000012
+    },
+    {
+      "time": 1791013079,
+      "value": 28716.63590000012
     }
   ],
   "news": {
@@ -9089,7 +9089,7 @@
       "closed_iso": "2026-10-03T00:45:51+00:00"
     }
   ],
-  "last_event_scan": 1791012120,
+  "last_event_scan": 1791013020,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11356,9 +11356,9 @@
       "defense": 84584.6,
       "first_seen": 1791010220,
       "first_seen_iso": "2026-10-03T06:50:20+00:00",
-      "last_seen": 1791012175,
-      "last_seen_iso": "2026-10-03T07:22:55+00:00",
-      "last_price": 84553.4,
+      "last_seen": 1791013080,
+      "last_seen_iso": "2026-10-03T07:38:00+00:00",
+      "last_price": 84602.0,
       "status": "DETECTED",
       "last_note": "已有正式單 #22 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -11372,9 +11372,9 @@
       "defense": 84635.0,
       "first_seen": 1791010220,
       "first_seen_iso": "2026-10-03T06:50:20+00:00",
-      "last_seen": 1791012175,
-      "last_seen_iso": "2026-10-03T07:22:55+00:00",
-      "last_price": 84553.4,
+      "last_seen": 1791013080,
+      "last_seen_iso": "2026-10-03T07:38:00+00:00",
+      "last_price": 84602.0,
       "status": "DETECTED",
       "last_note": "已有正式單 #22 進行中，暫不新增外部訊號",
       "block_count": 0
