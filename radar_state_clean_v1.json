@@ -41,12 +41,12 @@
       "tp1_r": 1.0,
       "tp2_r": null,
       "mfe_r": 0.4272125146707285,
-      "mae_r": 0.4743230932116453,
+      "mae_r": 0.4966144401309834,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 86777.0,
-      "worst_price": 86384.7,
-      "duration_min": 21
+      "worst_price": 86375.0,
+      "duration_min": 29
     }
   ],
   "history": [
@@ -3742,22 +3742,22 @@
       "setup_key": "CONT:L:1791153000",
       "first_time": 1791157055,
       "first_time_iso": "2026-10-04T23:37:35+00:00",
-      "time": 1791157664,
-      "time_iso": "2026-10-04T23:47:44+00:00",
+      "time": 1791158124,
+      "time_iso": "2026-10-04T23:55:24+00:00",
       "side": "LONG",
       "type": "PULLBACK",
       "engine_version": "BTC_RADAR_CLEAN_V1_QUALITY_ENGINE_2_1",
       "reason": "全局仲裁：已有同方向正式單 #24 進行中",
       "trigger": 86446.7,
-      "price": 86489.4,
-      "block_count": 2,
+      "price": 86460.0,
+      "block_count": 3,
       "volume_ratio": 1.259102056282542,
-      "space_r": 0.5838045800754089,
-      "extension_atr": 0.15568519193706934,
+      "space_r": 0.7343793669748616,
+      "extension_atr": 0.04849210896401912,
       "context_class": "MIXED",
       "context_reason": "同一時間只保留一個有效BTC正式交易 thesis",
       "trigger_freshness": "AGING",
-      "trigger_age_min": 11.733333333333333,
+      "trigger_age_min": 9.4,
       "geometry_class": "MANAGE"
     }
   ],
@@ -3884,10 +3884,6 @@
     "CONT:L:1791153000"
   ],
   "oi_history": [
-    {
-      "time": 1790553112,
-      "value": 28046.69220000007
-    },
     {
       "time": 1790553460,
       "value": 28036.43250000007
@@ -6435,6 +6431,10 @@
     {
       "time": 1791157663,
       "value": 28744.173600000107
+    },
+    {
+      "time": 1791158123,
+      "value": 28806.07500000011
     }
   ],
   "news": {
@@ -6565,7 +6565,7 @@
       "mae_atr_30": 0.2438,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 45
+      "duration_min": 53
     }
   ],
   "prepare_history": [
@@ -8474,7 +8474,7 @@
       "closed_iso": "2026-10-04T17:59:11+00:00"
     }
   ],
-  "last_event_scan": 1791157620,
+  "last_event_scan": 1791158100,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11157,12 +11157,12 @@
       "defense": 86191.9,
       "first_seen": 1791154936,
       "first_seen_iso": "2026-10-04T23:02:16+00:00",
-      "last_seen": 1791157664,
-      "last_seen_iso": "2026-10-04T23:47:44+00:00",
-      "last_price": 86489.4,
+      "last_seen": 1791158124,
+      "last_seen_iso": "2026-10-04T23:55:24+00:00",
+      "last_price": 86460.0,
       "status": "BLOCKED",
       "last_note": "全局仲裁：已有同方向正式單 #24 進行中",
-      "block_count": 2
+      "block_count": 3
     },
     {
       "setup_key": "BO:S:1791153000",
@@ -11173,9 +11173,9 @@
       "defense": 86687.1,
       "first_seen": 1791154936,
       "first_seen_iso": "2026-10-04T23:02:16+00:00",
-      "last_seen": 1791157664,
-      "last_seen_iso": "2026-10-04T23:47:44+00:00",
-      "last_price": 86489.4,
+      "last_seen": 1791158124,
+      "last_seen_iso": "2026-10-04T23:55:24+00:00",
+      "last_price": 86460.0,
       "status": "DETECTED",
       "last_note": "已有正式單 #24 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -11186,7 +11186,7 @@
     "setup_key": "CONT:L:1791153000",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791157664,
-    "updated_iso": "2026-10-04T23:47:44+00:00"
+    "updated_at": 1791158124,
+    "updated_iso": "2026-10-04T23:55:24+00:00"
   }
 }
