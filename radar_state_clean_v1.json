@@ -3814,10 +3814,6 @@
   ],
   "oi_history": [
     {
-      "time": 1790550430,
-      "value": 27852.899900000073
-    },
-    {
       "time": 1790551149,
       "value": 27883.11200000007
     },
@@ -6368,6 +6364,10 @@
     {
       "time": 1791154935,
       "value": 28493.301700000102
+    },
+    {
+      "time": 1791155647,
+      "value": 28533.139500000096
     }
   ],
   "news": {
@@ -6490,15 +6490,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 86417.1,
-      "worst_price": 86417.1,
-      "mfe_atr": 0.0,
-      "mae_atr": 0.0,
+      "best_price": 86613.5,
+      "worst_price": 86360.0,
+      "mfe_atr": 0.8384716250419041,
+      "mae_atr": 0.24377153660844716,
       "mfe_atr_30": null,
       "mae_atr_30": null,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 0
+      "duration_min": 11
     }
   ],
   "prepare_history": [
@@ -8407,7 +8407,7 @@
       "closed_iso": "2026-10-04T17:59:11+00:00"
     }
   ],
-  "last_event_scan": 1791154920,
+  "last_event_scan": 1791155640,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11090,11 +11090,11 @@
       "defense": 86191.9,
       "first_seen": 1791154936,
       "first_seen_iso": "2026-10-04T23:02:16+00:00",
-      "last_seen": 1791154936,
-      "last_seen_iso": "2026-10-04T23:02:16+00:00",
-      "last_price": 86417.1,
-      "status": "PREPARED",
-      "last_note": "進入準備距離",
+      "last_seen": 1791155648,
+      "last_seen_iso": "2026-10-04T23:14:08+00:00",
+      "last_price": 86584.8,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
     },
     {
@@ -11106,9 +11106,9 @@
       "defense": 86687.1,
       "first_seen": 1791154936,
       "first_seen_iso": "2026-10-04T23:02:16+00:00",
-      "last_seen": 1791154936,
-      "last_seen_iso": "2026-10-04T23:02:16+00:00",
-      "last_price": 86417.1,
+      "last_seen": 1791155648,
+      "last_seen_iso": "2026-10-04T23:14:08+00:00",
+      "last_price": 86584.8,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
