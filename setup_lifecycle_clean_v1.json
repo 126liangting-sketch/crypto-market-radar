@@ -2494,5 +2494,37 @@
     "status": "DETECTED",
     "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
     "block_count": 0
+  },
+  {
+    "setup_key": "CONT:L:1791086400",
+    "side": "LONG",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 84814.7,
+    "defense": 84771.3,
+    "first_seen": 1791093102,
+    "first_seen_iso": "2026-10-04T05:51:42+00:00",
+    "last_seen": 1791093102,
+    "last_seen_iso": "2026-10-04T05:51:42+00:00",
+    "last_price": 84865.5,
+    "status": "DETECTED",
+    "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "block_count": 0
+  },
+  {
+    "setup_key": "CONT:S:1791088200",
+    "side": "SHORT",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 84778.7,
+    "defense": 84781.6,
+    "first_seen": 1791093102,
+    "first_seen_iso": "2026-10-04T05:51:42+00:00",
+    "last_seen": 1791093102,
+    "last_seen_iso": "2026-10-04T05:51:42+00:00",
+    "last_price": 84865.5,
+    "status": "DETECTED",
+    "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "block_count": 0
   }
 ]
