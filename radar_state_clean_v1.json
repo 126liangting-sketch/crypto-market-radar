@@ -1,7 +1,54 @@
 {
   "version": "BTC_RADAR_CLEAN_V1_QUALITY_ENGINE_2_1",
-  "next_trade_id": 23,
-  "trades": [],
+  "next_trade_id": 24,
+  "trades": [
+    {
+      "id": 23,
+      "setup_key": "CONT:L:1791083700",
+      "side": "LONG",
+      "trigger_type": "回踩再啟動",
+      "engine_version": "BTC_RADAR_CLEAN_V1_QUALITY_ENGINE_2_1",
+      "opened_at": 1791086485,
+      "opened_iso": "2026-10-04T04:01:25+00:00",
+      "status": "OPEN",
+      "entry": 84802.4,
+      "sl": 84744.22892857144,
+      "tp1": 84860.57107142855,
+      "tp2": null,
+      "risk": 58.17107142855821,
+      "risk_atr": 1.0811031461566807,
+      "trigger": 84790.1,
+      "extension_atr": 0.22859418558322006,
+      "trend_1h": "BULL",
+      "ema_position": "偏離",
+      "ema_distance_atr": 0.6559761629751576,
+      "volume_ratio": 1.016144679547227,
+      "regime": "RANGE",
+      "space_r": 0.3506897758461031,
+      "space_strength": "STRONG",
+      "oi_dir": "UP",
+      "cvd_dir": "DOWN",
+      "flow_quality": "分歧",
+      "context_class": "MIXED",
+      "context_reason": "震盪環境＋Trigger仍有效＋幾何可管理＋資金流分歧",
+      "quality_state": "STANDARD",
+      "trigger_freshness": "AGING",
+      "trigger_age_min": 11.416666666666666,
+      "trigger_hold_atr": 0.22859418558322006,
+      "geometry_class": "MANAGE",
+      "geometry_reason": "前方強結構較近",
+      "exit_profile": "1R保守型",
+      "tp1_r": 1.0,
+      "tp2_r": null,
+      "mfe_r": 0.0,
+      "mae_r": 0.0,
+      "tp1_hit": false,
+      "tp2_hit": false,
+      "best_price": 84802.4,
+      "worst_price": 84802.4,
+      "duration_min": 0
+    }
+  ],
   "history": [
     {
       "id": 1,
@@ -3759,77 +3806,10 @@
     "CONT:S:1790946000",
     "CONT:L:1790982000",
     "CONT:L:1790992800",
-    "BO:L:1791002700"
+    "BO:L:1791002700",
+    "CONT:L:1791083700"
   ],
   "oi_history": [
-    {
-      "time": 1790472064,
-      "value": 28266.542200000058
-    },
-    {
-      "time": 1790472695,
-      "value": 28263.48660000006
-    },
-    {
-      "time": 1790473306,
-      "value": 28265.622900000053
-    },
-    {
-      "time": 1790473789,
-      "value": 28260.193900000057
-    },
-    {
-      "time": 1790474223,
-      "value": 28232.390000000098
-    },
-    {
-      "time": 1790474723,
-      "value": 28240.981400000095
-    },
-    {
-      "time": 1790475582,
-      "value": 28253.412800000086
-    },
-    {
-      "time": 1790476316,
-      "value": 28269.780100000087
-    },
-    {
-      "time": 1790476998,
-      "value": 28254.85720000009
-    },
-    {
-      "time": 1790477545,
-      "value": 28272.759900000092
-    },
-    {
-      "time": 1790477950,
-      "value": 28280.66860000009
-    },
-    {
-      "time": 1790478591,
-      "value": 28279.399000000092
-    },
-    {
-      "time": 1790479365,
-      "value": 28307.652400000094
-    },
-    {
-      "time": 1790480076,
-      "value": 28297.84530000009
-    },
-    {
-      "time": 1790480758,
-      "value": 28285.598400000094
-    },
-    {
-      "time": 1790481269,
-      "value": 28269.999400000095
-    },
-    {
-      "time": 1790481629,
-      "value": 28272.723600000096
-    },
     {
       "time": 1790482334,
       "value": 28243.912800000093
@@ -6801,6 +6781,10 @@
     {
       "time": 1791076264,
       "value": 28354.898800000075
+    },
+    {
+      "time": 1791086484,
+      "value": 28428.499000000094
     }
   ],
   "news": {
@@ -8772,7 +8756,7 @@
       "closed_iso": "2026-10-03T00:45:51+00:00"
     }
   ],
-  "last_event_scan": 1791076260,
+  "last_event_scan": 1791086460,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11237,7 +11221,46 @@
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
+    },
+    {
+      "setup_key": "CONT:L:1791083700",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 84790.1,
+      "defense": 84752.3,
+      "first_seen": 1791086485,
+      "first_seen_iso": "2026-10-04T04:01:25+00:00",
+      "last_seen": 1791086485,
+      "last_seen_iso": "2026-10-04T04:01:25+00:00",
+      "last_price": 84802.4,
+      "status": "FORMAL",
+      "last_note": "建立模擬單 #23｜🟡 混合｜Trigger 仍有效｜幾何可管理",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BO:S:1791081900",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 84737.5,
+      "defense": 84848.4,
+      "first_seen": 1791086486,
+      "first_seen_iso": "2026-10-04T04:01:26+00:00",
+      "last_seen": 1791086486,
+      "last_seen_iso": "2026-10-04T04:01:26+00:00",
+      "last_price": 84802.4,
+      "status": "DETECTED",
+      "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
+      "block_count": 0
     }
   ],
-  "active_thesis": null
+  "active_thesis": {
+    "side": "LONG",
+    "setup_key": "CONT:L:1791083700",
+    "source": "FORMAL",
+    "context_class": "MIXED",
+    "updated_at": 1791086485,
+    "updated_iso": "2026-10-04T04:01:25+00:00"
+  }
 }
