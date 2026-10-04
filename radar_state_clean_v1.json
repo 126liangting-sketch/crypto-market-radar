@@ -3813,182 +3813,6 @@
   ],
   "oi_history": [
     {
-      "time": 1790507504,
-      "value": 28171.26990000009
-    },
-    {
-      "time": 1790508173,
-      "value": 28179.719000000085
-    },
-    {
-      "time": 1790508780,
-      "value": 28133.840300000084
-    },
-    {
-      "time": 1790509387,
-      "value": 28142.066200000092
-    },
-    {
-      "time": 1790509857,
-      "value": 28147.69080000009
-    },
-    {
-      "time": 1790510194,
-      "value": 28150.84280000009
-    },
-    {
-      "time": 1790510732,
-      "value": 28143.283400000084
-    },
-    {
-      "time": 1790511833,
-      "value": 28038.29750000008
-    },
-    {
-      "time": 1790512715,
-      "value": 28066.12790000008
-    },
-    {
-      "time": 1790513454,
-      "value": 28116.220600000084
-    },
-    {
-      "time": 1790513941,
-      "value": 28113.078200000087
-    },
-    {
-      "time": 1790514529,
-      "value": 28136.656300000097
-    },
-    {
-      "time": 1790515244,
-      "value": 28104.3251000001
-    },
-    {
-      "time": 1790515838,
-      "value": 28095.41920000009
-    },
-    {
-      "time": 1790516449,
-      "value": 28154.939800000084
-    },
-    {
-      "time": 1790516921,
-      "value": 28183.089800000096
-    },
-    {
-      "time": 1790517282,
-      "value": 28210.64870000009
-    },
-    {
-      "time": 1790517649,
-      "value": 28277.324400000096
-    },
-    {
-      "time": 1790518319,
-      "value": 28204.569100000102
-    },
-    {
-      "time": 1790518964,
-      "value": 28214.978900000096
-    },
-    {
-      "time": 1790519553,
-      "value": 28086.133100000086
-    },
-    {
-      "time": 1790520181,
-      "value": 28164.82460000009
-    },
-    {
-      "time": 1790520641,
-      "value": 27912.890600000086
-    },
-    {
-      "time": 1790520992,
-      "value": 27903.37120000006
-    },
-    {
-      "time": 1790521462,
-      "value": 27729.046300000056
-    },
-    {
-      "time": 1790522292,
-      "value": 27980.959100000066
-    },
-    {
-      "time": 1790522920,
-      "value": 27804.18070000006
-    },
-    {
-      "time": 1790523530,
-      "value": 27844.39470000006
-    },
-    {
-      "time": 1790523988,
-      "value": 27824.355600000057
-    },
-    {
-      "time": 1790524405,
-      "value": 27851.17980000006
-    },
-    {
-      "time": 1790524774,
-      "value": 27961.517700000062
-    },
-    {
-      "time": 1790525433,
-      "value": 27979.741200000095
-    },
-    {
-      "time": 1790526187,
-      "value": 27869.068900000093
-    },
-    {
-      "time": 1790526846,
-      "value": 27757.969100000086
-    },
-    {
-      "time": 1790527475,
-      "value": 27759.235000000084
-    },
-    {
-      "time": 1790527999,
-      "value": 27829.00820000008
-    },
-    {
-      "time": 1790528320,
-      "value": 27844.08520000008
-    },
-    {
-      "time": 1790528871,
-      "value": 27864.152800000084
-    },
-    {
-      "time": 1790529562,
-      "value": 27944.66960000009
-    },
-    {
-      "time": 1790530173,
-      "value": 27975.390500000092
-    },
-    {
-      "time": 1790530740,
-      "value": 27982.482500000093
-    },
-    {
-      "time": 1790531189,
-      "value": 27956.9235000001
-    },
-    {
-      "time": 1790531572,
-      "value": 27947.5382000001
-    },
-    {
-      "time": 1790531914,
-      "value": 27951.059600000102
-    },
-    {
       "time": 1790532581,
       "value": 27950.200600000095
     },
@@ -6627,6 +6451,10 @@
     {
       "time": 1791112228,
       "value": 28501.995800000088
+    },
+    {
+      "time": 1791136751,
+      "value": 28539.246900000093
     }
   ],
   "news": {
@@ -6725,40 +6553,7 @@
     "last_notify": 1791037981
   },
   "next_prepare_id": 57,
-  "prepare_active": [
-    {
-      "id": 56,
-      "setup_key": "CONT:L:1791108000",
-      "side": "LONG",
-      "trigger_type": "回踩再啟動",
-      "opened_at": 1791112229,
-      "opened_iso": "2026-10-04T11:10:29+00:00",
-      "prepare_price": 85229.9,
-      "trigger": 85236.8,
-      "atr_open": 101.86428571429029,
-      "trend_1h": "BULL",
-      "ema_position": "偏離",
-      "ema_distance_atr": 2.047045335333832,
-      "volume_ratio": 0.932811573436902,
-      "regime": "TREND",
-      "oi_dir": "FLAT",
-      "cvd_dir": "DOWN",
-      "formal_promoted": false,
-      "formal_trade_id": null,
-      "formal_at": null,
-      "formal_delay_min": null,
-      "status": "WATCHING",
-      "best_price": 85229.9,
-      "worst_price": 85229.9,
-      "mfe_atr": 0.0,
-      "mae_atr": 0.0,
-      "mfe_atr_30": null,
-      "mae_atr_30": null,
-      "mfe_atr_60": null,
-      "mae_atr_60": null,
-      "duration_min": 0
-    }
-  ],
+  "prepare_active": [],
   "prepare_history": [
     {
       "id": 1,
@@ -8629,9 +8424,43 @@
       "duration_min": 74,
       "closed_at": 1790988351,
       "closed_iso": "2026-10-03T00:45:51+00:00"
+    },
+    {
+      "id": 56,
+      "setup_key": "CONT:L:1791108000",
+      "side": "LONG",
+      "trigger_type": "回踩再啟動",
+      "opened_at": 1791112229,
+      "opened_iso": "2026-10-04T11:10:29+00:00",
+      "prepare_price": 85229.9,
+      "trigger": 85236.8,
+      "atr_open": 101.86428571429029,
+      "trend_1h": "BULL",
+      "ema_position": "偏離",
+      "ema_distance_atr": 2.047045335333832,
+      "volume_ratio": 0.932811573436902,
+      "regime": "TREND",
+      "oi_dir": "FLAT",
+      "cvd_dir": "DOWN",
+      "formal_promoted": false,
+      "formal_trade_id": null,
+      "formal_at": null,
+      "formal_delay_min": null,
+      "status": "NO_FORMAL",
+      "best_price": 85400.1,
+      "worst_price": 85229.9,
+      "mfe_atr": 1.6708505714887147,
+      "mae_atr": 0.0,
+      "mfe_atr_30": 1.6709,
+      "mae_atr_30": 0.0,
+      "mfe_atr_60": 1.6709,
+      "mae_atr_60": 0.0,
+      "duration_min": 408,
+      "closed_at": 1791136751,
+      "closed_iso": "2026-10-04T17:59:11+00:00"
     }
   ],
-  "last_event_scan": 1791112200,
+  "last_event_scan": 1791136740,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11189,6 +11018,38 @@
       "last_seen": 1791112229,
       "last_seen_iso": "2026-10-04T11:10:29+00:00",
       "last_price": 85229.9,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "CONT:L:1791133200",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 85362.9,
+      "defense": 85276.0,
+      "first_seen": 1791136752,
+      "first_seen_iso": "2026-10-04T17:59:12+00:00",
+      "last_seen": 1791136752,
+      "last_seen_iso": "2026-10-04T17:59:12+00:00",
+      "last_price": 85276.8,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "CONT:S:1791132300",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 85288.3,
+      "defense": 85411.2,
+      "first_seen": 1791136752,
+      "first_seen_iso": "2026-10-04T17:59:12+00:00",
+      "last_seen": 1791136752,
+      "last_seen_iso": "2026-10-04T17:59:12+00:00",
+      "last_price": 85276.8,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
