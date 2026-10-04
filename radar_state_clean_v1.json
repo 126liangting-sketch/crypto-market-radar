@@ -40,13 +40,13 @@
       "exit_profile": "1R保守型",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mfe_r": 0.4272125146707285,
+      "mae_r": 0.38768559023646654,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 86591.1,
-      "worst_price": 86591.1,
-      "duration_min": 0
+      "best_price": 86777.0,
+      "worst_price": 86422.4,
+      "duration_min": 11
     }
   ],
   "history": [
@@ -3736,6 +3736,29 @@
       "extension_atr": 0.14875531268973827,
       "context_class": "CONSISTENT",
       "context_reason": "同一時間只保留一個有效BTC正式交易 thesis"
+    },
+    {
+      "key": "CONT:L:1791153000",
+      "setup_key": "CONT:L:1791153000",
+      "first_time": 1791157055,
+      "first_time_iso": "2026-10-04T23:37:35+00:00",
+      "time": 1791157055,
+      "time_iso": "2026-10-04T23:37:35+00:00",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "engine_version": "BTC_RADAR_CLEAN_V1_QUALITY_ENGINE_2_1",
+      "reason": "全局仲裁：已有同方向正式單 #24 進行中",
+      "trigger": 86446.7,
+      "price": 86470.4,
+      "block_count": 1,
+      "volume_ratio": 1.7779447857810187,
+      "space_r": 0.6834768601697827,
+      "extension_atr": 0.09220508545226046,
+      "context_class": "MIXED",
+      "context_reason": "同一時間只保留一個有效BTC正式交易 thesis",
+      "trigger_freshness": "AGING",
+      "trigger_age_min": 11.583333333333334,
+      "geometry_class": "MANAGE"
     }
   ],
   "prepare_seen": [
@@ -3861,10 +3884,6 @@
     "CONT:L:1791153000"
   ],
   "oi_history": [
-    {
-      "time": 1790551749,
-      "value": 27928.880100000075
-    },
     {
       "time": 1790552296,
       "value": 27971.89500000007
@@ -6416,6 +6435,10 @@
     {
       "time": 1791156372,
       "value": 28617.587300000097
+    },
+    {
+      "time": 1791157054,
+      "value": 28683.26600000011
     }
   ],
   "news": {
@@ -6538,15 +6561,15 @@
       "formal_at": 1791156373,
       "formal_delay_min": 23.9,
       "status": "WATCHING",
-      "best_price": 86646.4,
+      "best_price": 86777.0,
       "worst_price": 86360.0,
-      "mfe_atr": 0.9789284298477828,
+      "mfe_atr": 1.5364864452779294,
       "mae_atr": 0.24377153660844716,
-      "mfe_atr_30": null,
-      "mae_atr_30": null,
+      "mfe_atr_30": 1.5365,
+      "mae_atr_30": 0.2438,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 23
+      "duration_min": 35
     }
   ],
   "prepare_history": [
@@ -8455,7 +8478,7 @@
       "closed_iso": "2026-10-04T17:59:11+00:00"
     }
   ],
-  "last_event_scan": 1791156360,
+  "last_event_scan": 1791157020,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11138,12 +11161,12 @@
       "defense": 86191.9,
       "first_seen": 1791154936,
       "first_seen_iso": "2026-10-04T23:02:16+00:00",
-      "last_seen": 1791156373,
-      "last_seen_iso": "2026-10-04T23:26:13+00:00",
-      "last_price": 86591.1,
-      "status": "FORMAL",
-      "last_note": "建立模擬單 #24",
-      "block_count": 0
+      "last_seen": 1791157055,
+      "last_seen_iso": "2026-10-04T23:37:35+00:00",
+      "last_price": 86470.4,
+      "status": "BLOCKED",
+      "last_note": "全局仲裁：已有同方向正式單 #24 進行中",
+      "block_count": 1
     },
     {
       "setup_key": "BO:S:1791153000",
@@ -11154,11 +11177,11 @@
       "defense": 86687.1,
       "first_seen": 1791154936,
       "first_seen_iso": "2026-10-04T23:02:16+00:00",
-      "last_seen": 1791156373,
-      "last_seen_iso": "2026-10-04T23:26:13+00:00",
-      "last_price": 86591.1,
+      "last_seen": 1791157055,
+      "last_seen_iso": "2026-10-04T23:37:35+00:00",
+      "last_price": 86470.4,
       "status": "DETECTED",
-      "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
+      "last_note": "已有正式單 #24 進行中，暫不新增外部訊號",
       "block_count": 0
     }
   ],
@@ -11167,7 +11190,7 @@
     "setup_key": "CONT:L:1791153000",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791156373,
-    "updated_iso": "2026-10-04T23:26:13+00:00"
+    "updated_at": 1791157055,
+    "updated_iso": "2026-10-04T23:37:35+00:00"
   }
 }

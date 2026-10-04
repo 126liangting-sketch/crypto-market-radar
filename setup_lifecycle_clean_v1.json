@@ -2680,12 +2680,12 @@
     "defense": 86191.9,
     "first_seen": 1791154936,
     "first_seen_iso": "2026-10-04T23:02:16+00:00",
-    "last_seen": 1791156373,
-    "last_seen_iso": "2026-10-04T23:26:13+00:00",
-    "last_price": 86591.1,
-    "status": "FORMAL",
-    "last_note": "建立模擬單 #24",
-    "block_count": 0
+    "last_seen": 1791157055,
+    "last_seen_iso": "2026-10-04T23:37:35+00:00",
+    "last_price": 86470.4,
+    "status": "BLOCKED",
+    "last_note": "全局仲裁：已有同方向正式單 #24 進行中",
+    "block_count": 1
   },
   {
     "setup_key": "BO:S:1791153000",
@@ -2696,11 +2696,11 @@
     "defense": 86687.1,
     "first_seen": 1791154936,
     "first_seen_iso": "2026-10-04T23:02:16+00:00",
-    "last_seen": 1791156373,
-    "last_seen_iso": "2026-10-04T23:26:13+00:00",
-    "last_price": 86591.1,
+    "last_seen": 1791157055,
+    "last_seen_iso": "2026-10-04T23:37:35+00:00",
+    "last_price": 86470.4,
     "status": "DETECTED",
-    "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
+    "last_note": "已有正式單 #24 進行中，暫不新增外部訊號",
     "block_count": 0
   }
 ]
