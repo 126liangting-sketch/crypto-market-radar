@@ -3176,11 +3176,11 @@
     "defense": 85821.8,
     "first_seen": 1791241293,
     "first_seen_iso": "2026-10-05T23:01:33+00:00",
-    "last_seen": 1791241994,
-    "last_seen_iso": "2026-10-05T23:13:14+00:00",
-    "last_price": 85946.2,
-    "status": "FORMAL",
-    "last_note": "建立模擬單 #28｜🟡 混合｜Trigger 偏舊/承接不足｜幾何可管理",
+    "last_seen": 1791242681,
+    "last_seen_iso": "2026-10-05T23:24:41+00:00",
+    "last_price": 85924.4,
+    "status": "DETECTED",
+    "last_note": "非本輪主要 thesis，僅內部追蹤",
     "block_count": 0
   },
   {
@@ -3192,11 +3192,11 @@
     "defense": 85979.2,
     "first_seen": 1791241293,
     "first_seen_iso": "2026-10-05T23:01:33+00:00",
-    "last_seen": 1791241994,
-    "last_seen_iso": "2026-10-05T23:13:14+00:00",
-    "last_price": 85946.2,
+    "last_seen": 1791242681,
+    "last_seen_iso": "2026-10-05T23:24:41+00:00",
+    "last_price": 85924.4,
     "status": "DETECTED",
-    "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
+    "last_note": "非本輪主要 thesis，僅內部追蹤",
     "block_count": 0
   }
 ]
