@@ -40,13 +40,13 @@
       "exit_profile": "1R保守型",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.5971298438904338,
+      "mfe_r": 0.7902276765251438,
       "mae_r": 0.18922036611594095,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 86158.0,
+      "best_price": 86257.6,
       "worst_price": 85752.4,
-      "duration_min": 48
+      "duration_min": 65
     }
   ],
   "history": [
@@ -3957,10 +3957,6 @@
   ],
   "oi_history": [
     {
-      "time": 1790578942,
-      "value": 29114.028900000107
-    },
-    {
       "time": 1790579952,
       "value": 29118.73630000011
     },
@@ -6471,6 +6467,10 @@
     {
       "time": 1791183013,
       "value": 28875.00900000012
+    },
+    {
+      "time": 1791184023,
+      "value": 28933.84920000011
     }
   ],
   "news": {
@@ -8512,7 +8512,7 @@
       "closed_iso": "2026-10-05T00:02:36+00:00"
     }
   ],
-  "last_event_scan": 1791183000,
+  "last_event_scan": 1791184020,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11371,9 +11371,9 @@
       "defense": 85763.5,
       "first_seen": 1791180121,
       "first_seen_iso": "2026-10-05T06:02:01+00:00",
-      "last_seen": 1791183014,
-      "last_seen_iso": "2026-10-05T06:50:14+00:00",
-      "last_price": 86146.5,
+      "last_seen": 1791184024,
+      "last_seen_iso": "2026-10-05T07:07:04+00:00",
+      "last_price": 86202.1,
       "status": "DETECTED",
       "last_note": "已有正式單 #25 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -11393,6 +11393,22 @@
       "status": "DETECTED",
       "last_note": "已有正式單 #25 進行中，暫不新增外部訊號",
       "block_count": 0
+    },
+    {
+      "setup_key": "CONT:L:1791181800",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 85919.7,
+      "defense": 85752.4,
+      "first_seen": 1791184024,
+      "first_seen_iso": "2026-10-05T07:07:04+00:00",
+      "last_seen": 1791184024,
+      "last_seen_iso": "2026-10-05T07:07:04+00:00",
+      "last_price": 86202.1,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #25 進行中，暫不新增外部訊號",
+      "block_count": 0
     }
   ],
   "active_thesis": {
@@ -11400,7 +11416,7 @@
     "setup_key": "BO:L:1791178200",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791183014,
-    "updated_iso": "2026-10-05T06:50:14+00:00"
+    "updated_at": 1791184024,
+    "updated_iso": "2026-10-05T07:07:04+00:00"
   }
 }
