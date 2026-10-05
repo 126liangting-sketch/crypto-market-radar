@@ -38,13 +38,13 @@
       "exit_profile": "1R保守型",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.4272125146707285,
+      "mfe_r": 0.58003463530335,
       "mae_r": 0.7990413735934477,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 86777.0,
+      "best_price": 86843.5,
       "worst_price": 86243.4,
-      "duration_min": 97
+      "duration_min": 113
     }
   ],
   "history": [
