@@ -2840,11 +2840,11 @@
     "defense": 85367.6,
     "first_seen": 1791180120,
     "first_seen_iso": "2026-10-05T06:02:00+00:00",
-    "last_seen": 1791180120,
-    "last_seen_iso": "2026-10-05T06:02:00+00:00",
-    "last_price": 85850.0,
-    "status": "FORMAL",
-    "last_note": "建立模擬單 #25｜🟡 混合｜Trigger 新鮮｜幾何偏差",
+    "last_seen": 1791181535,
+    "last_seen_iso": "2026-10-05T06:25:35+00:00",
+    "last_price": 85900.0,
+    "status": "DETECTED",
+    "last_note": "已有正式單 #25 進行中，暫不新增外部訊號",
     "block_count": 0
   },
   {
@@ -2856,11 +2856,11 @@
     "defense": 85763.5,
     "first_seen": 1791180121,
     "first_seen_iso": "2026-10-05T06:02:01+00:00",
-    "last_seen": 1791180121,
-    "last_seen_iso": "2026-10-05T06:02:01+00:00",
-    "last_price": 85850.0,
+    "last_seen": 1791181535,
+    "last_seen_iso": "2026-10-05T06:25:35+00:00",
+    "last_price": 85900.0,
     "status": "DETECTED",
-    "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
+    "last_note": "已有正式單 #25 進行中，暫不新增外部訊號",
     "block_count": 0
   }
 ]

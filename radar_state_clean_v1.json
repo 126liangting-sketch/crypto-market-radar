@@ -40,13 +40,13 @@
       "exit_profile": "1R保守型",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.0,
+      "mfe_r": 0.32260521436157374,
       "mae_r": 0.0,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 85850.0,
+      "best_price": 86016.4,
       "worst_price": 85850.0,
-      "duration_min": 0
+      "duration_min": 23
     }
   ],
   "history": [
@@ -3957,10 +3957,6 @@
   ],
   "oi_history": [
     {
-      "time": 1790575750,
-      "value": 28975.19530000009
-    },
-    {
       "time": 1790577057,
       "value": 29062.2579000001
     },
@@ -6475,6 +6471,10 @@
     {
       "time": 1791180119,
       "value": 29079.708900000085
+    },
+    {
+      "time": 1791181534,
+      "value": 29026.414200000087
     }
   ],
   "news": {
@@ -8516,7 +8516,7 @@
       "closed_iso": "2026-10-05T00:02:36+00:00"
     }
   ],
-  "last_event_scan": 1791180060,
+  "last_event_scan": 1791181500,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11359,11 +11359,11 @@
       "defense": 85367.6,
       "first_seen": 1791180120,
       "first_seen_iso": "2026-10-05T06:02:00+00:00",
-      "last_seen": 1791180120,
-      "last_seen_iso": "2026-10-05T06:02:00+00:00",
-      "last_price": 85850.0,
-      "status": "FORMAL",
-      "last_note": "建立模擬單 #25｜🟡 混合｜Trigger 新鮮｜幾何偏差",
+      "last_seen": 1791181535,
+      "last_seen_iso": "2026-10-05T06:25:35+00:00",
+      "last_price": 85900.0,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #25 進行中，暫不新增外部訊號",
       "block_count": 0
     },
     {
@@ -11375,11 +11375,11 @@
       "defense": 85763.5,
       "first_seen": 1791180121,
       "first_seen_iso": "2026-10-05T06:02:01+00:00",
-      "last_seen": 1791180121,
-      "last_seen_iso": "2026-10-05T06:02:01+00:00",
-      "last_price": 85850.0,
+      "last_seen": 1791181535,
+      "last_seen_iso": "2026-10-05T06:25:35+00:00",
+      "last_price": 85900.0,
       "status": "DETECTED",
-      "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
+      "last_note": "已有正式單 #25 進行中，暫不新增外部訊號",
       "block_count": 0
     }
   ],
@@ -11388,7 +11388,7 @@
     "setup_key": "BO:L:1791178200",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791180120,
-    "updated_iso": "2026-10-05T06:02:00+00:00"
+    "updated_at": 1791181535,
+    "updated_iso": "2026-10-05T06:25:35+00:00"
   }
 }
