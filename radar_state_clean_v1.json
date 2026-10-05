@@ -41,12 +41,12 @@
       "tp1_r": 1.0,
       "tp2_r": null,
       "mfe_r": 0.8562634909430591,
-      "mae_r": 0.7990413735934477,
+      "mae_r": 0.8757971454600442,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 86963.7,
-      "worst_price": 86243.4,
-      "duration_min": 246
+      "worst_price": 86210.0,
+      "duration_min": 264
     }
   ],
   "history": [
@@ -3908,14 +3908,6 @@
   ],
   "oi_history": [
     {
-      "time": 1790566633,
-      "value": 28840.67590000012
-    },
-    {
-      "time": 1790567430,
-      "value": 28844.764100000106
-    },
-    {
       "time": 1790567953,
       "value": 28896.9270000001
     },
@@ -6446,6 +6438,10 @@
     {
       "time": 1791171175,
       "value": 29441.553500000125
+    },
+    {
+      "time": 1791172245,
+      "value": 29520.17950000012
     }
   ],
   "news": {
@@ -8486,7 +8482,7 @@
       "closed_iso": "2026-10-05T00:02:36+00:00"
     }
   ],
-  "last_event_scan": 1791171120,
+  "last_event_scan": 1791172200,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11265,9 +11261,9 @@
       "defense": 86361.7,
       "first_seen": 1791169252,
       "first_seen_iso": "2026-10-05T03:00:52+00:00",
-      "last_seen": 1791171176,
-      "last_seen_iso": "2026-10-05T03:32:56+00:00",
-      "last_price": 86361.6,
+      "last_seen": 1791172246,
+      "last_seen_iso": "2026-10-05T03:50:46+00:00",
+      "last_price": 86237.5,
       "status": "DETECTED",
       "last_note": "已有正式單 #24 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -11281,9 +11277,9 @@
       "defense": 86683.3,
       "first_seen": 1791169252,
       "first_seen_iso": "2026-10-05T03:00:52+00:00",
-      "last_seen": 1791171176,
-      "last_seen_iso": "2026-10-05T03:32:56+00:00",
-      "last_price": 86361.6,
+      "last_seen": 1791172246,
+      "last_seen_iso": "2026-10-05T03:50:46+00:00",
+      "last_price": 86237.5,
       "status": "DETECTED",
       "last_note": "已有正式單 #24 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -11294,7 +11290,7 @@
     "setup_key": "CONT:L:1791153000",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791171176,
-    "updated_iso": "2026-10-05T03:32:56+00:00"
+    "updated_at": 1791172246,
+    "updated_iso": "2026-10-05T03:50:46+00:00"
   }
 }
