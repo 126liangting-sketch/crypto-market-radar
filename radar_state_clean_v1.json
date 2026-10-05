@@ -40,13 +40,13 @@
       "exit_profile": "1R保守型",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.32260521436157374,
-      "mae_r": 0.0,
+      "mfe_r": 0.5971298438904338,
+      "mae_r": 0.18922036611594095,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 86016.4,
-      "worst_price": 85850.0,
-      "duration_min": 23
+      "best_price": 86158.0,
+      "worst_price": 85752.4,
+      "duration_min": 48
     }
   ],
   "history": [
@@ -3957,14 +3957,6 @@
   ],
   "oi_history": [
     {
-      "time": 1790577057,
-      "value": 29062.2579000001
-    },
-    {
-      "time": 1790578196,
-      "value": 29094.972900000106
-    },
-    {
       "time": 1790578942,
       "value": 29114.028900000107
     },
@@ -6475,6 +6467,10 @@
     {
       "time": 1791181534,
       "value": 29026.414200000087
+    },
+    {
+      "time": 1791183013,
+      "value": 28875.00900000012
     }
   ],
   "news": {
@@ -8516,7 +8512,7 @@
       "closed_iso": "2026-10-05T00:02:36+00:00"
     }
   ],
-  "last_event_scan": 1791181500,
+  "last_event_scan": 1791183000,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11375,9 +11371,25 @@
       "defense": 85763.5,
       "first_seen": 1791180121,
       "first_seen_iso": "2026-10-05T06:02:01+00:00",
-      "last_seen": 1791181535,
-      "last_seen_iso": "2026-10-05T06:25:35+00:00",
-      "last_price": 85900.0,
+      "last_seen": 1791183014,
+      "last_seen_iso": "2026-10-05T06:50:14+00:00",
+      "last_price": 86146.5,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #25 進行中，暫不新增外部訊號",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BO:L:1791180900",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 86016.4,
+      "defense": 85367.6,
+      "first_seen": 1791183014,
+      "first_seen_iso": "2026-10-05T06:50:14+00:00",
+      "last_seen": 1791183014,
+      "last_seen_iso": "2026-10-05T06:50:14+00:00",
+      "last_price": 86146.5,
       "status": "DETECTED",
       "last_note": "已有正式單 #25 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -11388,7 +11400,7 @@
     "setup_key": "BO:L:1791178200",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791181535,
-    "updated_iso": "2026-10-05T06:25:35+00:00"
+    "updated_at": 1791183014,
+    "updated_iso": "2026-10-05T06:50:14+00:00"
   }
 }
