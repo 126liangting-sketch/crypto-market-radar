@@ -2830,5 +2830,37 @@
     "status": "DETECTED",
     "last_note": "非本輪主要 thesis，僅內部追蹤",
     "block_count": 0
+  },
+  {
+    "setup_key": "BO:L:1791178200",
+    "side": "LONG",
+    "type": "BREAKOUT",
+    "label": "有效突破",
+    "trigger": 85763.5,
+    "defense": 85367.6,
+    "first_seen": 1791180120,
+    "first_seen_iso": "2026-10-05T06:02:00+00:00",
+    "last_seen": 1791180120,
+    "last_seen_iso": "2026-10-05T06:02:00+00:00",
+    "last_price": 85850.0,
+    "status": "FORMAL",
+    "last_note": "建立模擬單 #25｜🟡 混合｜Trigger 新鮮｜幾何偏差",
+    "block_count": 0
+  },
+  {
+    "setup_key": "CONT:S:1791178200",
+    "side": "SHORT",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 85421.9,
+    "defense": 85763.5,
+    "first_seen": 1791180121,
+    "first_seen_iso": "2026-10-05T06:02:01+00:00",
+    "last_seen": 1791180121,
+    "last_seen_iso": "2026-10-05T06:02:01+00:00",
+    "last_price": 85850.0,
+    "status": "DETECTED",
+    "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
+    "block_count": 0
   }
 ]
