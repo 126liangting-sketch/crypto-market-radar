@@ -40,13 +40,13 @@
       "exit_profile": "1R保守型",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mfe_r": 0.10880525919939896,
+      "mae_r": 0.3880330928438156,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 86102.1,
-      "worst_price": 86102.1,
-      "duration_min": 0
+      "best_price": 86130.0,
+      "worst_price": 86002.6,
+      "duration_min": 16
     }
   ],
   "history": [
@@ -4007,14 +4007,6 @@
   ],
   "oi_history": [
     {
-      "time": 1790595445,
-      "value": 29249.9032000001
-    },
-    {
-      "time": 1790596195,
-      "value": 29338.413000000102
-    },
-    {
       "time": 1790596698,
       "value": 29322.751100000103
     },
@@ -6509,6 +6501,10 @@
     {
       "time": 1791200068,
       "value": 28980.3176000001
+    },
+    {
+      "time": 1791201036,
+      "value": 29028.524400000093
     }
   ],
   "news": {
@@ -6643,7 +6639,7 @@
       "mae_atr_30": 0.9914,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 41
+      "duration_min": 57
     }
   ],
   "prepare_history": [
@@ -8586,7 +8582,7 @@
       "closed_iso": "2026-10-05T00:02:36+00:00"
     }
   ],
-  "last_event_scan": 1791200040,
+  "last_event_scan": 1791201000,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11557,11 +11553,11 @@
       "defense": 86134.5,
       "first_seen": 1791197560,
       "first_seen_iso": "2026-10-05T10:52:40+00:00",
-      "last_seen": 1791200070,
-      "last_seen_iso": "2026-10-05T11:34:30+00:00",
-      "last_price": 86102.1,
+      "last_seen": 1791201037,
+      "last_seen_iso": "2026-10-05T11:50:37+00:00",
+      "last_price": 86039.5,
       "status": "DETECTED",
-      "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
+      "last_note": "已有正式單 #26 進行中，暫不新增外部訊號",
       "block_count": 0
     },
     {
@@ -11589,11 +11585,11 @@
       "defense": 85874.8,
       "first_seen": 1791200069,
       "first_seen_iso": "2026-10-05T11:34:29+00:00",
-      "last_seen": 1791200069,
-      "last_seen_iso": "2026-10-05T11:34:29+00:00",
-      "last_price": 86102.1,
-      "status": "FORMAL",
-      "last_note": "建立模擬單 #26｜🟡 混合｜Trigger 仍有效｜幾何平衡",
+      "last_seen": 1791201037,
+      "last_seen_iso": "2026-10-05T11:50:37+00:00",
+      "last_price": 86039.5,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #26 進行中，暫不新增外部訊號",
       "block_count": 0
     }
   ],
@@ -11602,7 +11598,7 @@
     "setup_key": "CONT:L:1791198000",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791200069,
-    "updated_iso": "2026-10-05T11:34:29+00:00"
+    "updated_at": 1791201037,
+    "updated_iso": "2026-10-05T11:50:37+00:00"
   }
 }
