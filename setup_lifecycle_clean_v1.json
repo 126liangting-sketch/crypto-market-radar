@@ -2968,11 +2968,11 @@
     "defense": 86134.5,
     "first_seen": 1791197560,
     "first_seen_iso": "2026-10-05T10:52:40+00:00",
-    "last_seen": 1791199053,
-    "last_seen_iso": "2026-10-05T11:17:33+00:00",
-    "last_price": 85945.5,
+    "last_seen": 1791200070,
+    "last_seen_iso": "2026-10-05T11:34:30+00:00",
+    "last_price": 86102.1,
     "status": "DETECTED",
-    "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
     "block_count": 0
   },
   {
@@ -2989,6 +2989,22 @@
     "last_price": 85945.5,
     "status": "DETECTED",
     "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "block_count": 0
+  },
+  {
+    "setup_key": "CONT:L:1791198000",
+    "side": "LONG",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 86076.4,
+    "defense": 85874.8,
+    "first_seen": 1791200069,
+    "first_seen_iso": "2026-10-05T11:34:29+00:00",
+    "last_seen": 1791200069,
+    "last_seen_iso": "2026-10-05T11:34:29+00:00",
+    "last_price": 86102.1,
+    "status": "FORMAL",
+    "last_note": "建立模擬單 #26｜🟡 混合｜Trigger 仍有效｜幾何平衡",
     "block_count": 0
   }
 ]

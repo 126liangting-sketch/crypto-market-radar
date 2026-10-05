@@ -1,7 +1,54 @@
 {
   "version": "BTC_RADAR_CLEAN_V1_QUALITY_ENGINE_2_1",
-  "next_trade_id": 26,
-  "trades": [],
+  "next_trade_id": 27,
+  "trades": [
+    {
+      "id": 26,
+      "setup_key": "CONT:L:1791198000",
+      "side": "LONG",
+      "trigger_type": "回踩再啟動",
+      "engine_version": "BTC_RADAR_CLEAN_V1_QUALITY_ENGINE_2_1",
+      "opened_at": 1791200069,
+      "opened_iso": "2026-10-05T11:34:29+00:00",
+      "status": "OPEN",
+      "entry": 86102.1,
+      "sl": 85845.67857142858,
+      "tp1": 86358.52142857143,
+      "tp2": null,
+      "risk": 256.4214285714261,
+      "risk_atr": 1.32078734363502,
+      "trigger": 86076.4,
+      "extension_atr": 0.13237674760859636,
+      "trend_1h": "BULL",
+      "ema_position": "位置佳",
+      "ema_distance_atr": 0.24105463947663755,
+      "volume_ratio": 0.9818602381650575,
+      "regime": "RANGE",
+      "space_r": 1.4152483356082253,
+      "space_strength": "STRONG",
+      "oi_dir": "UP",
+      "cvd_dir": "FLAT",
+      "flow_quality": "普通",
+      "context_class": "MIXED",
+      "context_reason": "震盪環境＋成交量偏弱＋Trigger仍有效",
+      "quality_state": "STANDARD",
+      "trigger_freshness": "AGING",
+      "trigger_age_min": 7.483333333333333,
+      "trigger_hold_atr": 0.13237674760859636,
+      "geometry_class": "BALANCED",
+      "geometry_reason": "Entry/SL/空間協調",
+      "exit_profile": "1R保守型",
+      "tp1_r": 1.0,
+      "tp2_r": null,
+      "mfe_r": 0.0,
+      "mae_r": 0.0,
+      "tp1_hit": false,
+      "tp2_hit": false,
+      "best_price": 86102.1,
+      "worst_price": 86102.1,
+      "duration_min": 0
+    }
+  ],
   "history": [
     {
       "id": 1,
@@ -3955,13 +4002,10 @@
     "BO:L:1791002700",
     "CONT:L:1791083700",
     "CONT:L:1791153000",
-    "BO:L:1791178200"
+    "BO:L:1791178200",
+    "CONT:L:1791198000"
   ],
   "oi_history": [
-    {
-      "time": 1790594630,
-      "value": 29234.798900000096
-    },
     {
       "time": 1790595445,
       "value": 29249.9032000001
@@ -6461,6 +6505,10 @@
     {
       "time": 1791199052,
       "value": 28987.714100000107
+    },
+    {
+      "time": 1791200068,
+      "value": 28980.3176000001
     }
   ],
   "news": {
@@ -6588,14 +6636,14 @@
       "formal_delay_min": null,
       "status": "WATCHING",
       "best_price": 85875.0,
-      "worst_price": 86177.0,
+      "worst_price": 86249.9,
       "mfe_atr": 0.82074299129956,
-      "mae_atr": 0.6390001381024593,
-      "mfe_atr_30": null,
-      "mae_atr_30": null,
+      "mae_atr": 0.9913685954978192,
+      "mfe_atr_30": 0.8207,
+      "mae_atr_30": 0.9914,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 24
+      "duration_min": 41
     }
   ],
   "prepare_history": [
@@ -8538,7 +8586,7 @@
       "closed_iso": "2026-10-05T00:02:36+00:00"
     }
   ],
-  "last_event_scan": 1791199020,
+  "last_event_scan": 1791200040,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11509,11 +11557,11 @@
       "defense": 86134.5,
       "first_seen": 1791197560,
       "first_seen_iso": "2026-10-05T10:52:40+00:00",
-      "last_seen": 1791199053,
-      "last_seen_iso": "2026-10-05T11:17:33+00:00",
-      "last_price": 85945.5,
+      "last_seen": 1791200070,
+      "last_seen_iso": "2026-10-05T11:34:30+00:00",
+      "last_price": 86102.1,
       "status": "DETECTED",
-      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
       "block_count": 0
     },
     {
@@ -11531,14 +11579,30 @@
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
+    },
+    {
+      "setup_key": "CONT:L:1791198000",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 86076.4,
+      "defense": 85874.8,
+      "first_seen": 1791200069,
+      "first_seen_iso": "2026-10-05T11:34:29+00:00",
+      "last_seen": 1791200069,
+      "last_seen_iso": "2026-10-05T11:34:29+00:00",
+      "last_price": 86102.1,
+      "status": "FORMAL",
+      "last_note": "建立模擬單 #26｜🟡 混合｜Trigger 仍有效｜幾何平衡",
+      "block_count": 0
     }
   ],
   "active_thesis": {
-    "side": "SHORT",
-    "setup_key": "CONT:S:1791195300",
-    "source": "PREPARE",
+    "side": "LONG",
+    "setup_key": "CONT:L:1791198000",
+    "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791197560,
-    "updated_iso": "2026-10-05T10:52:40+00:00"
+    "updated_at": 1791200069,
+    "updated_iso": "2026-10-05T11:34:29+00:00"
   }
 }
