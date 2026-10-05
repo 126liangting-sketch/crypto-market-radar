@@ -26,11 +26,11 @@
       "worst_price": 85202.0,
       "mfe_atr": 0.7178691874061587,
       "mae_atr": 0.239519484036137,
-      "mfe_atr_30": null,
-      "mae_atr_30": null,
+      "mfe_atr_30": 0.7179,
+      "mae_atr_30": 0.2395,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 23
+      "duration_min": 41
     }
   ],
   "history": [
