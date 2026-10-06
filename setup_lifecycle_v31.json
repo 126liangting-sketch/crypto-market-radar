@@ -174,5 +174,21 @@
     "status": "FORMAL",
     "last_note": "建立模擬單 #3｜🟡 混合｜Trigger 仍有效｜幾何可管理",
     "block_count": 0
+  },
+  {
+    "setup_key": "BO:L:1791294300",
+    "side": "LONG",
+    "type": "BREAKOUT",
+    "label": "有效突破",
+    "trigger": 86449.5,
+    "defense": 85924.1,
+    "first_seen": 1791296576,
+    "first_seen_iso": "2026-10-06T14:22:56+00:00",
+    "last_seen": 1791296576,
+    "last_seen_iso": "2026-10-06T14:22:56+00:00",
+    "last_price": 86145.2,
+    "status": "DETECTED",
+    "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "block_count": 0
   }
 ]
