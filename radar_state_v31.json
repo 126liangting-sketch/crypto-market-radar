@@ -46,13 +46,13 @@
       "exit_profile": "1R保守型",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mfe_r": 0.04356589695536223,
+      "mae_r": 0.26875066303617307,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 86304.9,
-      "worst_price": 86304.9,
-      "duration_min": 0
+      "best_price": 86320.3,
+      "worst_price": 86209.9,
+      "duration_min": 12
     }
   ],
   "history": [],
@@ -136,6 +136,10 @@
     {
       "time": 1791286875,
       "value": 29413.940400000127
+    },
+    {
+      "time": 1791287648,
+      "value": 29522.251500000126
     }
   ],
   "news": {
@@ -152,7 +156,7 @@
     ],
     "last_notify": 1791273208
   },
-  "last_event_scan": 1791286860,
+  "last_event_scan": 1791287640,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -243,11 +247,11 @@
       "defense": 86035.4,
       "first_seen": 1791286876,
       "first_seen_iso": "2026-10-06T11:41:16+00:00",
-      "last_seen": 1791286876,
-      "last_seen_iso": "2026-10-06T11:41:16+00:00",
-      "last_price": 86304.9,
-      "status": "FORMAL",
-      "last_note": "建立模擬單 #1｜🟡 混合｜Trigger 仍有效｜幾何可管理",
+      "last_seen": 1791287649,
+      "last_seen_iso": "2026-10-06T11:54:09+00:00",
+      "last_price": 86264.0,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #1 進行中，暫不新增外部訊號",
       "block_count": 0
     },
     {
@@ -259,11 +263,11 @@
       "defense": 86232.7,
       "first_seen": 1791286876,
       "first_seen_iso": "2026-10-06T11:41:16+00:00",
-      "last_seen": 1791286876,
-      "last_seen_iso": "2026-10-06T11:41:16+00:00",
-      "last_price": 86304.9,
+      "last_seen": 1791287649,
+      "last_seen_iso": "2026-10-06T11:54:09+00:00",
+      "last_price": 86264.0,
       "status": "DETECTED",
-      "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
+      "last_note": "已有正式單 #1 進行中，暫不新增外部訊號",
       "block_count": 0
     }
   ],
@@ -272,7 +276,7 @@
     "setup_key": "CONT:L:1791284400",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791286876,
-    "updated_iso": "2026-10-06T11:41:16+00:00"
+    "updated_at": 1791287649,
+    "updated_iso": "2026-10-06T11:54:09+00:00"
   }
 }
