@@ -1,1 +1,27 @@
-[]
+[
+  {
+    "key": "CONT:L:1791284400",
+    "setup_key": "CONT:L:1791284400",
+    "first_time": 1791288130,
+    "first_time_iso": "2026-10-06T12:02:10+00:00",
+    "time": 1791288130,
+    "time_iso": "2026-10-06T12:02:10+00:00",
+    "side": "LONG",
+    "type": "PULLBACK",
+    "engine_version": "LASER_SIGNAL_CORE_3_1_RISK_ENGINE",
+    "reason": "全局仲裁：已有同方向正式單 #1 進行中",
+    "trigger": 86170.0,
+    "price": 86249.9,
+    "block_count": 1,
+    "volume_ratio": 0.7736107784174012,
+    "space_r": 0.4132981712852923,
+    "extension_atr": 0.3746776084407735,
+    "context_class": "MIXED",
+    "context_reason": "同一時間只保留一個有效BTC正式交易 thesis",
+    "trigger_freshness": "AGING",
+    "trigger_age_min": 9.166666666666666,
+    "geometry_class": "MANAGE",
+    "quality_decision": "CAUTION",
+    "quality_reason": "情境混合且Trigger已進入老化區"
+  }
+]
