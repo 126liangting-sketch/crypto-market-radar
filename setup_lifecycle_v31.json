@@ -328,11 +328,11 @@
     "defense": 85463.8,
     "first_seen": 1791323207,
     "first_seen_iso": "2026-10-06T21:46:47+00:00",
-    "last_seen": 1791323724,
-    "last_seen_iso": "2026-10-06T21:55:24+00:00",
-    "last_price": 85520.2,
-    "status": "PREPARED",
-    "last_note": "進入準備距離",
+    "last_seen": 1791324156,
+    "last_seen_iso": "2026-10-06T22:02:36+00:00",
+    "last_price": 85561.2,
+    "status": "FORMAL",
+    "last_note": "建立模擬單 #4",
     "block_count": 0
   },
   {
@@ -344,11 +344,11 @@
     "defense": 85635.4,
     "first_seen": 1791323207,
     "first_seen_iso": "2026-10-06T21:46:47+00:00",
-    "last_seen": 1791323724,
-    "last_seen_iso": "2026-10-06T21:55:24+00:00",
-    "last_price": 85520.2,
+    "last_seen": 1791324156,
+    "last_seen_iso": "2026-10-06T22:02:36+00:00",
+    "last_price": 85561.2,
     "status": "DETECTED",
-    "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
     "block_count": 0
   }
 ]
