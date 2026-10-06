@@ -49,13 +49,13 @@
       "entry_timing_reason": "第一次再啟動附近，Trigger新鮮且沒有明顯追價",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mfe_r": 0.49476760629779354,
+      "mae_r": 0.2918827189591688,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 85561.2,
-      "worst_price": 85561.2,
-      "duration_min": 0
+      "best_price": 85626.8,
+      "worst_price": 85522.5,
+      "duration_min": 13
     }
   ],
   "history": [
@@ -283,15 +283,15 @@
       "formal_at": 1791324156,
       "formal_delay_min": 7.2,
       "status": "WATCHING",
-      "best_price": 85588.0,
+      "best_price": 85626.8,
       "worst_price": 85518.2,
-      "mfe_atr": 0.6356391883747665,
+      "mfe_atr": 0.999397307975677,
       "mae_atr": 0.018750418536128,
       "mfe_atr_30": null,
       "mae_atr_30": null,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 7
+      "duration_min": 20
     }
   ],
   "prepare_history": [
@@ -594,6 +594,10 @@
     {
       "time": 1791324155,
       "value": 29907.66040000011
+    },
+    {
+      "time": 1791324961,
+      "value": 29912.344900000113
     }
   ],
   "news": {
@@ -612,7 +616,7 @@
     ],
     "last_notify": 1791320863
   },
-  "last_event_scan": 1791324120,
+  "last_event_scan": 1791324900,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -959,11 +963,27 @@
       "defense": 85635.4,
       "first_seen": 1791323207,
       "first_seen_iso": "2026-10-06T21:46:47+00:00",
-      "last_seen": 1791324156,
-      "last_seen_iso": "2026-10-06T22:02:36+00:00",
-      "last_price": 85561.2,
+      "last_seen": 1791324962,
+      "last_seen_iso": "2026-10-06T22:16:02+00:00",
+      "last_price": 85522.5,
       "status": "DETECTED",
-      "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
+      "last_note": "已有正式單 #4 進行中，暫不新增外部訊號",
+      "block_count": 0
+    },
+    {
+      "setup_key": "CONT:L:1791323100",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 85588.0,
+      "defense": 85518.2,
+      "first_seen": 1791324962,
+      "first_seen_iso": "2026-10-06T22:16:02+00:00",
+      "last_seen": 1791324962,
+      "last_seen_iso": "2026-10-06T22:16:02+00:00",
+      "last_price": 85522.5,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #4 進行中，暫不新增外部訊號",
       "block_count": 0
     }
   ],
@@ -972,7 +992,7 @@
     "setup_key": "CONT:L:1791321300",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791324156,
-    "updated_iso": "2026-10-06T22:02:36+00:00"
+    "updated_at": 1791324962,
+    "updated_iso": "2026-10-06T22:16:02+00:00"
   }
 }
