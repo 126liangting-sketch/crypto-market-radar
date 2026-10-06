@@ -152,11 +152,27 @@
     "defense": 86288.0,
     "first_seen": 1791293243,
     "first_seen_iso": "2026-10-06T13:27:23+00:00",
-    "last_seen": 1791293243,
-    "last_seen_iso": "2026-10-06T13:27:23+00:00",
-    "last_price": 86028.6,
+    "last_seen": 1791294094,
+    "last_seen_iso": "2026-10-06T13:41:34+00:00",
+    "last_price": 86287.7,
+    "status": "DETECTED",
+    "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
+    "block_count": 0
+  },
+  {
+    "setup_key": "BO:L:1791290700",
+    "side": "LONG",
+    "type": "BREAKOUT",
+    "label": "有效突破",
+    "trigger": 86288.0,
+    "defense": 86073.9,
+    "first_seen": 1791294093,
+    "first_seen_iso": "2026-10-06T13:41:33+00:00",
+    "last_seen": 1791294093,
+    "last_seen_iso": "2026-10-06T13:41:33+00:00",
+    "last_price": 86287.7,
     "status": "FORMAL",
-    "last_note": "建立模擬單 #2｜🟡 混合｜Trigger 仍有效｜幾何可管理",
+    "last_note": "建立模擬單 #3｜🟡 混合｜Trigger 仍有效｜幾何可管理",
     "block_count": 0
   }
 ]
