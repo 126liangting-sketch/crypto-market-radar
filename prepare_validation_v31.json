@@ -1,5 +1,6 @@
 {
-  "active": [
+  "active": [],
+  "history": [
     {
       "id": 1,
       "setup_key": "CONT:L:1791288900",
@@ -21,17 +22,18 @@
       "formal_trade_id": null,
       "formal_at": null,
       "formal_delay_min": null,
-      "status": "WATCHING",
+      "status": "NO_FORMAL",
       "best_price": 86656.0,
-      "worst_price": 85962.1,
+      "worst_price": 85683.4,
       "mfe_atr": 1.156991476618285,
-      "mae_atr": 1.6403478461183743,
+      "mae_atr": 2.7638792904860727,
       "mfe_atr_30": 1.157,
       "mae_atr_30": 1.009,
-      "mfe_atr_60": null,
-      "mae_atr_60": null,
-      "duration_min": 57
+      "mfe_atr_60": 1.157,
+      "mae_atr_60": 2.7639,
+      "duration_min": 68,
+      "closed_at": 1791302395,
+      "closed_iso": "2026-10-06T15:59:55+00:00"
     }
-  ],
-  "history": []
+  ]
 }
