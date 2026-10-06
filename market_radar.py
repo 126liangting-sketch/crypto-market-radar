@@ -14,19 +14,19 @@ OKX_SYMBOL = "BTC-USDT-SWAP"
 WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
-VERSION = "LASER_SIGNAL_CORE_3_0"
-BUILD = "LASER_SIGNAL_CORE_3_0_INTEGRATED"
-STATE_FILE = "radar_state_v3.json"
-TRADES_JSON = "paper_trades_v3.json"
-TRADES_CSV = "paper_trades_v3.csv"
-BLOCKED_JSON = "blocked_setups_v3.json"
-BLOCKED_CSV = "blocked_setups_v3.csv"
-PREPARE_JSON = "prepare_validation_v3.json"
-PREPARE_CSV = "prepare_validation_v3.csv"
-SETUPS_JSON = "setup_lifecycle_v3.json"
-SETUPS_CSV = "setup_lifecycle_v3.csv"
+VERSION = "LASER_SIGNAL_CORE_3_1_RISK_ENGINE"
+BUILD = "LASER_SIGNAL_CORE_3_1_RISK_ENGINE"
+STATE_FILE = "radar_state_v31.json"
+TRADES_JSON = "paper_trades_v31.json"
+TRADES_CSV = "paper_trades_v31.csv"
+BLOCKED_JSON = "blocked_setups_v31.json"
+BLOCKED_CSV = "blocked_setups_v31.csv"
+PREPARE_JSON = "prepare_validation_v31.json"
+PREPARE_CSV = "prepare_validation_v31.csv"
+SETUPS_JSON = "setup_lifecycle_v31.json"
+SETUPS_CSV = "setup_lifecycle_v31.csv"
 
-# ---- 雷射訊號 Laser Signal 3.0 unified rules ----
+# ---- 雷射訊號 Laser Signal 3.1 unified rules ----
 EMA_FAST = 34
 EMA_SLOW = 50
 VOL_LOOKBACK = 20
@@ -40,11 +40,15 @@ EXT_WARN_ATR = 0.50
 EXT_WAIT_ATR = 0.75
 SPACE_MIN_R = 1.00
 SPACE_GOOD_R = 1.50
-STOP_BUFFER_ATR = 0.15
-MIN_STOP_ATR = 0.50
-RISK_WARN_ATR = 1.50
-RISK_HIGH_ATR = 2.00
-MAX_STOP_ATR = 2.50
+STOP_BUFFER_ATR = 0.30
+RANGE_EXTRA_BUFFER_ATR = 0.10
+MIN_STOP_ATR = 0.85
+RISK_WARN_ATR = 1.75
+RISK_HIGH_ATR = 2.50
+MAX_STOP_ATR = 3.25
+EMA_DEFENSE_MAX_GAP_ATR = 1.25
+PULLBACK_EMA_DEFENSE_MAX_GAP_ATR = 1.75
+POSITION_RISK_BASE_ATR = 1.50
 PREPARE_VALIDATE_MIN = 60
 TRIGGER_RETEST_ATR = 0.10
 EVENT_LOOKBACK_MIN = 12
@@ -81,7 +85,7 @@ def get_json(url, params=None, retries=3):
     for i in range(retries):
         try:
             r = requests.get(url, params=params, timeout=20,
-                             headers={"User-Agent": "BTC-Radar-Core-3.0/1.0"})
+                             headers={"User-Agent": "Laser-Signal-3.1/1.0"})
             r.raise_for_status()
             return r.json()
         except (requests.RequestException, ValueError) as e:
@@ -513,23 +517,74 @@ def risk_quality(risk_atr):
     return "過大"
 
 
-def risk_plan(setup, side, entry, a):
+def risk_plan(setup, side, entry, a, ema_pos=None, reg=None):
+    """Adaptive defensive stop for Laser Signal 3.1.
+
+    Structure decides where the trade thesis is invalid. EMA34/50 is used as a
+    secondary defensive reference only when it is reasonably close, and ATR adds
+    breathing room outside that invalidation area. The minimum distance prevents a
+    normal 15m candle from becoming an automatic stop. Position size is then scaled
+    down as the stop gets wider so wider breathing room does not imply wider money risk.
+    """
+    if a <= 0:
+        return None
+    ema_pos = ema_pos or {}
+    regime = (reg or {}).get("state", "TREND")
+    kind = setup.get("kind", "PULLBACK")
+    structure = float(setup["defense"])
+
+    # Pullbacks benefit more from the EMA34/50 zone as a thesis-defense reference.
+    # Breakouts primarily defend the breakout base; EMA is allowed to reinforce it
+    # only when the zone is not far behind price. This avoids enormous stale stops.
     if side == "LONG":
-        raw_sl = float(setup["defense"]) - STOP_BUFFER_ATR * a
+        ema_anchor = ema_pos.get("zone_low")
+        anchors = [("結構", structure)]
+        if ema_anchor is not None:
+            ema_anchor = float(ema_anchor)
+            gap = max(0.0, (entry - ema_anchor) / a)
+            ema_gap_cap = PULLBACK_EMA_DEFENSE_MAX_GAP_ATR if kind == "PULLBACK" else EMA_DEFENSE_MAX_GAP_ATR
+            if gap <= ema_gap_cap:
+                anchors.append(("EMA區域", ema_anchor))
+        anchor_label, anchor = min(anchors, key=lambda x: x[1])
+    else:
+        ema_anchor = ema_pos.get("zone_high")
+        anchors = [("結構", structure)]
+        if ema_anchor is not None:
+            ema_anchor = float(ema_anchor)
+            gap = max(0.0, (ema_anchor - entry) / a)
+            ema_gap_cap = PULLBACK_EMA_DEFENSE_MAX_GAP_ATR if kind == "PULLBACK" else EMA_DEFENSE_MAX_GAP_ATR
+            if gap <= ema_gap_cap:
+                anchors.append(("EMA區域", ema_anchor))
+        anchor_label, anchor = max(anchors, key=lambda x: x[1])
+
+    buffer_atr = STOP_BUFFER_ATR + (RANGE_EXTRA_BUFFER_ATR if regime == "RANGE" else 0.0)
+    # Pullback structures often need slightly more wick room than clean breakout bases.
+    if kind == "PULLBACK":
+        buffer_atr += 0.05
+
+    if side == "LONG":
+        raw_sl = anchor - buffer_atr * a
         min_sl = entry - MIN_STOP_ATR * a
         sl = min(raw_sl, min_sl)
         risk = entry - sl
         tp1, tp2 = entry + risk, entry + 2*risk
     else:
-        raw_sl = float(setup["defense"]) + STOP_BUFFER_ATR * a
+        raw_sl = anchor + buffer_atr * a
         min_sl = entry + MIN_STOP_ATR * a
         sl = max(raw_sl, min_sl)
         risk = sl - entry
         tp1, tp2 = entry - risk, entry - 2*risk
+
     if risk <= 0:
         return None
-    return {"entry": entry, "sl": sl, "risk": risk, "risk_atr": risk/a,
-            "tp1": tp1, "tp2": tp2, "side": side, "tp1_r": 1.0, "tp2_r": 2.0}
+    risk_atr = risk / a
+    size_factor = min(1.0, POSITION_RISK_BASE_ATR / risk_atr) if risk_atr > 0 else 1.0
+    return {
+        "entry": entry, "sl": sl, "risk": risk, "risk_atr": risk_atr,
+        "tp1": tp1, "tp2": tp2, "side": side, "tp1_r": 1.0, "tp2_r": 2.0,
+        "defense_anchor": anchor, "defense_source": anchor_label,
+        "stop_buffer_atr": buffer_atr, "position_size_factor": size_factor,
+    }
 
 
 def _pivot_reaction_atr(rows15, pivot, side, a):
@@ -1235,6 +1290,8 @@ def create_trade(state, side, setup, plan, ctx):
         "opened_at": now_utc(), "opened_iso": iso(now_utc()), "status": "OPEN",
         "entry": plan["entry"], "sl": plan["sl"], "tp1": plan["tp1"], "tp2": plan.get("tp2"),
         "risk": plan["risk"], "risk_atr": plan["risk_atr"], "trigger": setup["trigger"],
+        "defense_source": plan.get("defense_source"), "defense_anchor": plan.get("defense_anchor"),
+        "stop_buffer_atr": plan.get("stop_buffer_atr"), "position_size_factor": plan.get("position_size_factor"),
         "extension_atr": ctx["extension_atr"], "trend_1h": ctx["trend_1h"],
         "ema_position": ctx["ema_position"], "ema_distance_atr": ctx.get("ema_distance_atr"),
         "volume_ratio": ctx["volume_ratio"],
@@ -1310,7 +1367,7 @@ def export_data(state):
     save_json(TRADES_JSON, {"open": state["trades"], "history": state["history"]})
     rows = state["history"] + state["trades"]
     fields = ["id","setup_key","side","trigger_type","engine_version","opened_iso","closed_iso","status","entry","sl","tp1","tp2",
-              "risk_atr","trigger","extension_atr","trend_1h","ema_position","ema_distance_atr","volume_ratio","regime","space_r","space_strength",
+              "risk_atr","defense_source","defense_anchor","stop_buffer_atr","position_size_factor","trigger","extension_atr","trend_1h","ema_position","ema_distance_atr","volume_ratio","regime","space_r","space_strength",
               "oi_dir","cvd_dir","flow_quality","context_class","context_reason","quality_state","quality_decision","quality_reason",
               "trigger_freshness","trigger_age_min","trigger_hold_atr","geometry_class","geometry_reason",
               "exit_profile","tp1_r","tp2_r",
@@ -1394,7 +1451,7 @@ def translate_news_title_zh(title, category):
                 "q": title,
             },
             timeout=10,
-            headers={"User-Agent": "BTC-Radar-Core-3.0/1.0"},
+            headers={"User-Agent": "Laser-Signal-3.1/1.0"},
         )
         r.raise_for_status()
         data = r.json()
@@ -1411,7 +1468,7 @@ def translate_news_title_zh(title, category):
 
 
 def _rss_entries(url):
-    r = requests.get(url, timeout=20, headers={"User-Agent": "BTC-Radar-Core-3.0/1.0"})
+    r = requests.get(url, timeout=20, headers={"User-Agent": "Laser-Signal-3.1/1.0"})
     r.raise_for_status()
     root = ET.fromstring(r.content)
     out = []
@@ -1512,7 +1569,7 @@ def evaluate_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol
         return {"ready": False, "reason": "TRIGGER_RETEST_FAILED", "side": side, "setup": setup,
                 "ext": ext, "freshness": freshness}
 
-    plan = risk_plan(setup, side, price, a)
+    plan = risk_plan(setup, side, price, a, ema_pos, reg)
     if not plan:
         return {"ready": False, "reason": "NO_RISK_PLAN", "side": side, "setup": setup,
                 "ext": ext, "freshness": freshness}
@@ -1691,7 +1748,8 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
     send_discord(
         f"⚡ BTC 正式{zh_side(side)}訊號\n\n"
         f"進場：${plan['entry']:,.0f}\n停損：${plan['sl']:,.0f}\n{targets_text}\n"
-        f"風險距離：{plan['risk_atr']:.2f} ATR（{risk_quality(plan['risk_atr'])}）\n\n"
+        f"風險距離：{plan['risk_atr']:.2f} ATR（{risk_quality(plan['risk_atr'])}）\n"
+        f"防守：{plan.get('defense_source','結構')}外＋{plan.get('stop_buffer_atr',0):.2f} ATR 緩衝｜倉位係數 {plan.get('position_size_factor',1.0):.2f}×\n\n"
         f"交易品質：{context['label']}｜Trigger {freshness['label']} {age_txt}｜幾何{geometry['label']}\n"
         f"1H背景：{zh_dir(trend['state'])}{bg_note}\n"
         f"15M觸發：{setup['label']}\n"
@@ -1712,7 +1770,7 @@ def preview_prepare_candidate(side, setup, price, rows15, a, trend, ema_pos, vol
     dist = ((float(setup["trigger"]) - price) / a) if side == "LONG" else ((price - float(setup["trigger"])) / a)
     if not (0 <= dist <= PREPARE_DISTANCE_ATR):
         return {"ready": False, "side": side, "setup": setup, "dist": dist}
-    plan = risk_plan(setup, side, price, a)
+    plan = risk_plan(setup, side, price, a, ema_pos, reg)
     if not plan:
         return {"ready": False, "side": side, "setup": setup, "dist": dist}
     space = space_context(rows15, side, price, plan["risk"], setup["trigger_time"], a)
@@ -1773,10 +1831,10 @@ def manual_summary(state, price, trend, reg, oi, cvd):
                 f"📈 平均 MFE：+{avg_mfe:.2f}R｜平均 MAE：-{avg_mae:.2f}R\n"
                 f"⚠️ 快速SL（≤30分）：{quick_sl}")
     else:
-        perf = "🎯 雷射訊號 3.0 尚無完成樣本"
+        perf = "🎯 雷射訊號 3.1 尚無完成樣本"
 
     msg = (
-        f"📡 雷射訊號｜Laser Signal 3.0｜手動查詢\nBTC：${price:,.0f}\n"
+        f"📡 雷射訊號｜Laser Signal 3.1 Risk Engine｜手動查詢\nBTC：${price:,.0f}\n"
         f"1H背景：{zh_dir(trend['state'])}\n市場狀態：{'趨勢' if reg['state']=='TREND' else '震盪'}\n"
         f"OI：{zh_dir(oi['dir'])}｜CVD Proxy：{zh_dir(cvd['dir'])}\n"
         f"👀 Prepare：完成 {p_done}｜追蹤中 {p_open}\n"
