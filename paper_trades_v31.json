@@ -47,13 +47,13 @@
       "entry_timing_reason": "第一次再啟動附近，Trigger新鮮且沒有明顯追價",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mfe_r": 0.15809742584966935,
+      "mae_r": 0.17566380649956706,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 85555.9,
-      "worst_price": 85555.9,
-      "duration_min": 0
+      "best_price": 85579.3,
+      "worst_price": 85529.9,
+      "duration_min": 9
     }
   ],
   "history": [

@@ -49,13 +49,13 @@
       "entry_timing_reason": "第一次再啟動附近，Trigger新鮮且沒有明顯追價",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mfe_r": 0.15809742584966935,
+      "mae_r": 0.17566380649956706,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 85555.9,
-      "worst_price": 85555.9,
-      "duration_min": 0
+      "best_price": 85579.3,
+      "worst_price": 85529.9,
+      "duration_min": 9
     }
   ],
   "history": [
@@ -304,6 +304,33 @@
       "geometry_class": "MANAGE",
       "quality_decision": "CAUTION",
       "quality_reason": "可交易，但情境或交易幾何尚未完全共振"
+    },
+    {
+      "key": "BO:L:1791326700",
+      "setup_key": "BO:L:1791326700",
+      "first_time": 1791330982,
+      "first_time_iso": "2026-10-06T23:56:22+00:00",
+      "time": 1791330982,
+      "time_iso": "2026-10-06T23:56:22+00:00",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "engine_version": "LASER_SIGNAL_CORE_3_1_RISK_ENGINE",
+      "reason": "全局仲裁：已有同方向正式單 #5 進行中",
+      "trigger": 85545.8,
+      "price": 85542.5,
+      "block_count": 1,
+      "volume_ratio": 3.149087775950501,
+      "space_r": 0.2414382289577287,
+      "extension_atr": -0.036789297658894805,
+      "context_class": "MIXED",
+      "context_reason": "同一時間只保留一個有效BTC正式交易 thesis",
+      "trigger_freshness": "AGING",
+      "trigger_age_min": 10.366666666666667,
+      "geometry_class": "MANAGE",
+      "quality_decision": "CAUTION",
+      "quality_reason": "情境混合且Trigger已進入老化區",
+      "entry_timing": "NORMAL",
+      "entry_timing_reason": "仍在可接受進場區，尚未明顯延伸"
     }
   ],
   "prepare_seen": [
@@ -689,6 +716,10 @@
     {
       "time": 1791330418,
       "value": 30402.13640000013
+    },
+    {
+      "time": 1791330981,
+      "value": 30356.508100000126
     }
   ],
   "news": {
@@ -707,7 +738,7 @@
     ],
     "last_notify": 1791320863
   },
-  "last_event_scan": 1791330360,
+  "last_event_scan": 1791330960,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -1118,12 +1149,12 @@
       "defense": 85434.8,
       "first_seen": 1791329032,
       "first_seen_iso": "2026-10-06T23:23:52+00:00",
-      "last_seen": 1791330419,
-      "last_seen_iso": "2026-10-06T23:46:59+00:00",
-      "last_price": 85555.9,
-      "status": "FORMAL",
-      "last_note": "建立模擬單 #5｜🟡 混合｜Trigger 新鮮｜幾何可管理",
-      "block_count": 0
+      "last_seen": 1791330982,
+      "last_seen_iso": "2026-10-06T23:56:22+00:00",
+      "last_price": 85542.5,
+      "status": "BLOCKED",
+      "last_note": "全局仲裁：已有同方向正式單 #5 進行中",
+      "block_count": 1
     },
     {
       "setup_key": "CONT:S:1791326700",
@@ -1134,11 +1165,11 @@
       "defense": 85545.8,
       "first_seen": 1791329032,
       "first_seen_iso": "2026-10-06T23:23:52+00:00",
-      "last_seen": 1791330419,
-      "last_seen_iso": "2026-10-06T23:46:59+00:00",
-      "last_price": 85555.9,
+      "last_seen": 1791330982,
+      "last_seen_iso": "2026-10-06T23:56:22+00:00",
+      "last_price": 85542.5,
       "status": "DETECTED",
-      "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
+      "last_note": "已有正式單 #5 進行中，暫不新增外部訊號",
       "block_count": 0
     }
   ],
@@ -1147,7 +1178,7 @@
     "setup_key": "BO:L:1791326700",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791330419,
-    "updated_iso": "2026-10-06T23:46:59+00:00"
+    "updated_at": 1791330982,
+    "updated_iso": "2026-10-06T23:56:22+00:00"
   }
 }

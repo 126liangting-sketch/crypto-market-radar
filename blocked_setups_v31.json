@@ -23,5 +23,32 @@
     "geometry_class": "MANAGE",
     "quality_decision": "CAUTION",
     "quality_reason": "可交易，但情境或交易幾何尚未完全共振"
+  },
+  {
+    "key": "BO:L:1791326700",
+    "setup_key": "BO:L:1791326700",
+    "first_time": 1791330982,
+    "first_time_iso": "2026-10-06T23:56:22+00:00",
+    "time": 1791330982,
+    "time_iso": "2026-10-06T23:56:22+00:00",
+    "side": "LONG",
+    "type": "BREAKOUT",
+    "engine_version": "LASER_SIGNAL_CORE_3_1_RISK_ENGINE",
+    "reason": "全局仲裁：已有同方向正式單 #5 進行中",
+    "trigger": 85545.8,
+    "price": 85542.5,
+    "block_count": 1,
+    "volume_ratio": 3.149087775950501,
+    "space_r": 0.2414382289577287,
+    "extension_atr": -0.036789297658894805,
+    "context_class": "MIXED",
+    "context_reason": "同一時間只保留一個有效BTC正式交易 thesis",
+    "trigger_freshness": "AGING",
+    "trigger_age_min": 10.366666666666667,
+    "geometry_class": "MANAGE",
+    "quality_decision": "CAUTION",
+    "quality_reason": "情境混合且Trigger已進入老化區",
+    "entry_timing": "NORMAL",
+    "entry_timing_reason": "仍在可接受進場區，尚未明顯延伸"
   }
 ]
