@@ -1,0 +1,27 @@
+{
+  "version": "LASER_SIGNAL_CORE_3_1_RISK_ENGINE",
+  "next_trade_id": 1,
+  "trades": [],
+  "history": [],
+  "blocked": [],
+  "prepare_seen": [],
+  "formal_seen": [],
+  "next_prepare_id": 1,
+  "prepare_active": [],
+  "prepare_history": [],
+  "oi_history": [
+    {
+      "time": 1791273207,
+      "value": 29157.361300000106
+    }
+  ],
+  "news": {
+    "seen": [
+      "8c697f3b056a4e8c"
+    ],
+    "last_notify": 1791273208
+  },
+  "last_event_scan": 1791273180,
+  "setup_lifecycle": [],
+  "active_thesis": null
+}
