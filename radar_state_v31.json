@@ -1,7 +1,63 @@
 {
   "version": "LASER_SIGNAL_CORE_3_1_RISK_ENGINE",
-  "next_trade_id": 5,
-  "trades": [],
+  "next_trade_id": 6,
+  "trades": [
+    {
+      "id": 5,
+      "setup_key": "BO:L:1791326700",
+      "side": "LONG",
+      "trigger_type": "有效突破",
+      "engine_version": "LASER_SIGNAL_CORE_3_1_RISK_ENGINE",
+      "opened_at": 1791330419,
+      "opened_iso": "2026-10-06T23:46:59+00:00",
+      "status": "OPEN",
+      "entry": 85555.9,
+      "sl": 85407.89,
+      "tp1": 85703.90999999999,
+      "tp2": null,
+      "risk": 148.00999999999476,
+      "risk_atr": 1.6500557413600077,
+      "trigger": 85545.8,
+      "defense_source": "結構",
+      "defense_anchor": 85434.8,
+      "stop_buffer_atr": 0.3,
+      "position_size_factor": 0.9090601986352723,
+      "extension_atr": 0.11259754738005716,
+      "trend_1h": "BULL",
+      "ema_position": "偏離",
+      "ema_distance_atr": 0.7472947774091584,
+      "volume_ratio": 3.149087775950501,
+      "regime": "TREND",
+      "space_r": 0.12904533477472127,
+      "space_strength": "STRONG",
+      "oi_dir": "UP",
+      "cvd_dir": "DOWN",
+      "flow_quality": "分歧",
+      "context_class": "MIXED",
+      "context_reason": "幾何可管理＋資金流分歧＋前方強結構較近",
+      "quality_state": "CAUTION",
+      "quality_decision": "CAUTION",
+      "quality_reason": "可交易，但情境或交易幾何尚未完全共振",
+      "trigger_freshness": "FRESH",
+      "trigger_age_min": 0.9833333333333333,
+      "trigger_hold_atr": 0.11259754738005716,
+      "geometry_class": "MANAGE",
+      "geometry_reason": "前方強結構較近",
+      "exit_profile": "1R保守型",
+      "entry_timing": "IDEAL",
+      "entry_timing_label": "理想",
+      "entry_timing_reason": "第一次再啟動附近，Trigger新鮮且沒有明顯追價",
+      "tp1_r": 1.0,
+      "tp2_r": null,
+      "mfe_r": 0.0,
+      "mae_r": 0.0,
+      "tp1_hit": false,
+      "tp2_hit": false,
+      "best_price": 85555.9,
+      "worst_price": 85555.9,
+      "duration_min": 0
+    }
+  ],
   "history": [
     {
       "id": 1,
@@ -258,7 +314,8 @@
     "CONT:L:1791284400",
     "CONT:S:1791290700",
     "BO:L:1791290700",
-    "CONT:L:1791321300"
+    "CONT:L:1791321300",
+    "BO:L:1791326700"
   ],
   "next_prepare_id": 3,
   "prepare_active": [],
@@ -628,6 +685,10 @@
     {
       "time": 1791329737,
       "value": 30399.29840000013
+    },
+    {
+      "time": 1791330418,
+      "value": 30402.13640000013
     }
   ],
   "news": {
@@ -646,7 +707,7 @@
     ],
     "last_notify": 1791320863
   },
-  "last_event_scan": 1791329700,
+  "last_event_scan": 1791330360,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -1057,11 +1118,11 @@
       "defense": 85434.8,
       "first_seen": 1791329032,
       "first_seen_iso": "2026-10-06T23:23:52+00:00",
-      "last_seen": 1791329738,
-      "last_seen_iso": "2026-10-06T23:35:38+00:00",
-      "last_price": 85381.2,
-      "status": "DETECTED",
-      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "last_seen": 1791330419,
+      "last_seen_iso": "2026-10-06T23:46:59+00:00",
+      "last_price": 85555.9,
+      "status": "FORMAL",
+      "last_note": "建立模擬單 #5｜🟡 混合｜Trigger 新鮮｜幾何可管理",
       "block_count": 0
     },
     {
@@ -1073,20 +1134,20 @@
       "defense": 85545.8,
       "first_seen": 1791329032,
       "first_seen_iso": "2026-10-06T23:23:52+00:00",
-      "last_seen": 1791329032,
-      "last_seen_iso": "2026-10-06T23:23:52+00:00",
-      "last_price": 85490.0,
+      "last_seen": 1791330419,
+      "last_seen_iso": "2026-10-06T23:46:59+00:00",
+      "last_price": 85555.9,
       "status": "DETECTED",
-      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
       "block_count": 0
     }
   ],
   "active_thesis": {
     "side": "LONG",
-    "setup_key": "CONT:L:1791321300",
+    "setup_key": "BO:L:1791326700",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791328241,
-    "updated_iso": "2026-10-06T23:10:41+00:00"
+    "updated_at": 1791330419,
+    "updated_iso": "2026-10-06T23:46:59+00:00"
   }
 }
