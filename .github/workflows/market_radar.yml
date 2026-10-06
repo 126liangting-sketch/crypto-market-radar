@@ -1,7 +1,7 @@
-name: 雷射訊號｜Laser Signal 3.0
+name: 雷射訊號｜Laser Signal 3.1 Risk Engine
 
 concurrency:
-  group: laser-signal-3-0
+  group: laser-signal-3-1
   cancel-in-progress: false
 
 on:
@@ -27,19 +27,19 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      - name: Run Laser Signal 3.0
+      - name: Run Laser Signal 3.1
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
         run: python market_radar.py
 
-      - name: Save Laser Signal 3.0 state and datasets
+      - name: Save Laser Signal 3.1 state and datasets
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add radar_state_v3.json paper_trades_v3.json paper_trades_v3.csv blocked_setups_v3.json blocked_setups_v3.csv prepare_validation_v3.json prepare_validation_v3.csv setup_lifecycle_v3.json setup_lifecycle_v3.csv 2>/dev/null || true
+          git add radar_state_v31.json paper_trades_v31.json paper_trades_v31.csv blocked_setups_v31.json blocked_setups_v31.csv prepare_validation_v31.json prepare_validation_v31.csv setup_lifecycle_v31.json setup_lifecycle_v31.csv 2>/dev/null || true
           if ! git diff --cached --quiet; then
-            git commit -m "Update Laser Signal 3.0 state"
+            git commit -m "Update Laser Signal 3.1 state"
             git pull --rebase origin main
 
             pushed=0
