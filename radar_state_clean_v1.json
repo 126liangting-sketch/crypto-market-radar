@@ -46,7 +46,7 @@
       "tp2_hit": false,
       "best_price": 85698.6,
       "worst_price": 85530.0,
-      "duration_min": 67
+      "duration_min": 81
     }
   ],
   "history": [
@@ -4228,10 +4228,6 @@
   ],
   "oi_history": [
     {
-      "time": 1790660060,
-      "value": 28513.174100000087
-    },
-    {
       "time": 1790660806,
       "value": 28501.434800000083
     },
@@ -6622,6 +6618,10 @@
     {
       "time": 1791264229,
       "value": 28931.79720000008
+    },
+    {
+      "time": 1791265017,
+      "value": 28921.008800000083
     }
   ],
   "news": {
@@ -8772,7 +8772,7 @@
       "closed_iso": "2026-10-06T02:47:48+00:00"
     }
   ],
-  "last_event_scan": 1791264180,
+  "last_event_scan": 1791264960,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -12127,9 +12127,9 @@
       "defense": 85610.6,
       "first_seen": 1791262017,
       "first_seen_iso": "2026-10-06T04:46:57+00:00",
-      "last_seen": 1791264231,
-      "last_seen_iso": "2026-10-06T05:23:51+00:00",
-      "last_price": 85639.2,
+      "last_seen": 1791265018,
+      "last_seen_iso": "2026-10-06T05:36:58+00:00",
+      "last_price": 85634.9,
       "status": "DETECTED",
       "last_note": "已有正式單 #30 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -12143,11 +12143,11 @@
       "defense": 85530.0,
       "first_seen": 1791263292,
       "first_seen_iso": "2026-10-06T05:08:12+00:00",
-      "last_seen": 1791264231,
-      "last_seen_iso": "2026-10-06T05:23:51+00:00",
-      "last_price": 85639.2,
-      "status": "BLOCKED",
-      "last_note": "全局仲裁：已有同方向正式單 #30 進行中",
+      "last_seen": 1791265018,
+      "last_seen_iso": "2026-10-06T05:36:58+00:00",
+      "last_price": 85634.9,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #30 進行中，暫不新增外部訊號",
       "block_count": 1
     }
   ],
@@ -12156,7 +12156,7 @@
     "setup_key": "BO:L:1791256500",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791264231,
-    "updated_iso": "2026-10-06T05:23:51+00:00"
+    "updated_at": 1791265018,
+    "updated_iso": "2026-10-06T05:36:58+00:00"
   }
 }
