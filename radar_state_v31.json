@@ -193,14 +193,49 @@
       "quality_reason": "可交易，但情境或交易幾何尚未完全共振"
     }
   ],
-  "prepare_seen": [],
+  "prepare_seen": [
+    "CONT:L:1791288900"
+  ],
   "formal_seen": [
     "CONT:L:1791284400",
     "CONT:S:1791290700",
     "BO:L:1791290700"
   ],
-  "next_prepare_id": 1,
-  "prepare_active": [],
+  "next_prepare_id": 2,
+  "prepare_active": [
+    {
+      "id": 1,
+      "setup_key": "CONT:L:1791288900",
+      "side": "LONG",
+      "trigger_type": "回踩再啟動",
+      "opened_at": 1791298308,
+      "opened_iso": "2026-10-06T14:51:48+00:00",
+      "prepare_price": 86369.0,
+      "trigger": 86370.9,
+      "atr_open": 248.0571428571441,
+      "trend_1h": "BULL",
+      "ema_position": "偏離",
+      "ema_distance_atr": 1.4597662391362034,
+      "volume_ratio": 1.7541938256966594,
+      "regime": "TREND",
+      "oi_dir": "UP",
+      "cvd_dir": "FLAT",
+      "formal_promoted": false,
+      "formal_trade_id": null,
+      "formal_at": null,
+      "formal_delay_min": null,
+      "status": "WATCHING",
+      "best_price": 86369.0,
+      "worst_price": 86369.0,
+      "mfe_atr": 0.0,
+      "mae_atr": 0.0,
+      "mfe_atr_30": null,
+      "mae_atr_30": null,
+      "mfe_atr_60": null,
+      "mae_atr_60": null,
+      "duration_min": 0
+    }
+  ],
   "prepare_history": [],
   "oi_history": [
     {
@@ -326,6 +361,10 @@
     {
       "time": 1791297432,
       "value": 29819.696900000108
+    },
+    {
+      "time": 1791298307,
+      "value": 29795.476900000107
     }
   ],
   "news": {
@@ -342,7 +381,7 @@
     ],
     "last_notify": 1791273208
   },
-  "last_event_scan": 1791297420,
+  "last_event_scan": 1791298260,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -465,11 +504,11 @@
       "defense": 86073.9,
       "first_seen": 1791291477,
       "first_seen_iso": "2026-10-06T12:57:57+00:00",
-      "last_seen": 1791295517,
-      "last_seen_iso": "2026-10-06T14:05:17+00:00",
-      "last_price": 86215.4,
-      "status": "DETECTED",
-      "last_note": "已有正式單 #3 進行中，暫不新增外部訊號",
+      "last_seen": 1791298308,
+      "last_seen_iso": "2026-10-06T14:51:48+00:00",
+      "last_price": 86369.0,
+      "status": "PREPARED",
+      "last_note": "進入準備距離",
       "block_count": 0
     },
     {
@@ -535,14 +574,30 @@
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
+    },
+    {
+      "setup_key": "BO:S:1791296100",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 85912.9,
+      "defense": 86449.5,
+      "first_seen": 1791298309,
+      "first_seen_iso": "2026-10-06T14:51:49+00:00",
+      "last_seen": 1791298309,
+      "last_seen_iso": "2026-10-06T14:51:49+00:00",
+      "last_price": 86369.0,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
     }
   ],
   "active_thesis": {
-    "side": "SHORT",
-    "setup_key": "CONT:S:1791290700",
+    "side": "LONG",
+    "setup_key": "CONT:L:1791288900",
     "source": "PREPARE",
     "context_class": "MIXED",
-    "updated_at": 1791297433,
-    "updated_iso": "2026-10-06T14:37:13+00:00"
+    "updated_at": 1791298308,
+    "updated_iso": "2026-10-06T14:51:48+00:00"
   }
 }
