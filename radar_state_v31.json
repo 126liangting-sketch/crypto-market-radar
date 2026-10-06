@@ -55,7 +55,7 @@
       "tp2_hit": false,
       "best_price": 85626.8,
       "worst_price": 85434.8,
-      "duration_min": 50
+      "duration_min": 57
     }
   ],
   "history": [
@@ -260,40 +260,7 @@
     "CONT:L:1791321300"
   ],
   "next_prepare_id": 3,
-  "prepare_active": [
-    {
-      "id": 2,
-      "setup_key": "CONT:L:1791321300",
-      "side": "LONG",
-      "trigger_type": "回踩再啟動",
-      "opened_at": 1791323724,
-      "opened_iso": "2026-10-06T21:55:24+00:00",
-      "prepare_price": 85520.2,
-      "trigger": 85546.5,
-      "atr_open": 106.66428571428592,
-      "trend_1h": "BULL",
-      "ema_position": "偏離",
-      "ema_distance_atr": 1.644122677461056,
-      "volume_ratio": 0.44658255097892974,
-      "regime": "TREND",
-      "oi_dir": "FLAT",
-      "cvd_dir": "FLAT",
-      "formal_promoted": true,
-      "formal_trade_id": 4,
-      "formal_at": 1791324156,
-      "formal_delay_min": 7.2,
-      "status": "WATCHING",
-      "best_price": 85626.8,
-      "worst_price": 85434.8,
-      "mfe_atr": 0.999397307975677,
-      "mae_atr": 0.8006428714926112,
-      "mfe_atr_30": 0.9994,
-      "mae_atr_30": 0.8006,
-      "mfe_atr_60": null,
-      "mae_atr_60": null,
-      "duration_min": 57
-    }
-  ],
+  "prepare_active": [],
   "prepare_history": [
     {
       "id": 1,
@@ -328,6 +295,40 @@
       "duration_min": 68,
       "closed_at": 1791302395,
       "closed_iso": "2026-10-06T15:59:55+00:00"
+    },
+    {
+      "id": 2,
+      "setup_key": "CONT:L:1791321300",
+      "side": "LONG",
+      "trigger_type": "回踩再啟動",
+      "opened_at": 1791323724,
+      "opened_iso": "2026-10-06T21:55:24+00:00",
+      "prepare_price": 85520.2,
+      "trigger": 85546.5,
+      "atr_open": 106.66428571428592,
+      "trend_1h": "BULL",
+      "ema_position": "偏離",
+      "ema_distance_atr": 1.644122677461056,
+      "volume_ratio": 0.44658255097892974,
+      "regime": "TREND",
+      "oi_dir": "FLAT",
+      "cvd_dir": "FLAT",
+      "formal_promoted": true,
+      "formal_trade_id": 4,
+      "formal_at": 1791324156,
+      "formal_delay_min": 7.2,
+      "status": "PROMOTED",
+      "best_price": 85626.8,
+      "worst_price": 85434.8,
+      "mfe_atr": 0.999397307975677,
+      "mae_atr": 0.8006428714926112,
+      "mfe_atr_30": 0.9994,
+      "mae_atr_30": 0.8006,
+      "mfe_atr_60": 0.9994,
+      "mae_atr_60": 0.8006,
+      "duration_min": 64,
+      "closed_at": 1791327602,
+      "closed_iso": "2026-10-06T23:00:02+00:00"
     }
   ],
   "oi_history": [
@@ -610,6 +611,10 @@
     {
       "time": 1791327176,
       "value": 29917.317000000116
+    },
+    {
+      "time": 1791327601,
+      "value": 29922.110700000114
     }
   ],
   "news": {
@@ -628,7 +633,7 @@
     ],
     "last_notify": 1791320863
   },
-  "last_event_scan": 1791327120,
+  "last_event_scan": 1791327600,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -975,9 +980,9 @@
       "defense": 85635.4,
       "first_seen": 1791323207,
       "first_seen_iso": "2026-10-06T21:46:47+00:00",
-      "last_seen": 1791327177,
-      "last_seen_iso": "2026-10-06T22:52:57+00:00",
-      "last_price": 85535.2,
+      "last_seen": 1791327602,
+      "last_seen_iso": "2026-10-06T23:00:02+00:00",
+      "last_price": 85494.1,
       "status": "DETECTED",
       "last_note": "已有正式單 #4 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -1007,9 +1012,9 @@
       "defense": 85518.2,
       "first_seen": 1791325815,
       "first_seen_iso": "2026-10-06T22:30:15+00:00",
-      "last_seen": 1791327177,
-      "last_seen_iso": "2026-10-06T22:52:57+00:00",
-      "last_price": 85535.2,
+      "last_seen": 1791327602,
+      "last_seen_iso": "2026-10-06T23:00:02+00:00",
+      "last_price": 85494.1,
       "status": "DETECTED",
       "last_note": "已有正式單 #4 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -1020,7 +1025,7 @@
     "setup_key": "CONT:L:1791321300",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791327177,
-    "updated_iso": "2026-10-06T22:52:57+00:00"
+    "updated_at": 1791327602,
+    "updated_iso": "2026-10-06T23:00:02+00:00"
   }
 }
