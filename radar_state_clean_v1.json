@@ -4157,10 +4157,6 @@
   ],
   "oi_history": [
     {
-      "time": 1790654298,
-      "value": 28612.793800000087
-    },
-    {
       "time": 1790654881,
       "value": 28636.5190000001
     },
@@ -6555,6 +6551,10 @@
     {
       "time": 1791258708,
       "value": 28823.312700000097
+    },
+    {
+      "time": 1791259268,
+      "value": 28856.839700000102
     }
   ],
   "news": {
@@ -8704,7 +8704,7 @@
       "closed_iso": "2026-10-06T02:47:48+00:00"
     }
   ],
-  "last_event_scan": 1791258660,
+  "last_event_scan": 1791259260,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -12011,9 +12011,25 @@
       "defense": 85575.0,
       "first_seen": 1791258709,
       "first_seen_iso": "2026-10-06T03:51:49+00:00",
-      "last_seen": 1791258709,
-      "last_seen_iso": "2026-10-06T03:51:49+00:00",
-      "last_price": 85511.1,
+      "last_seen": 1791259269,
+      "last_seen_iso": "2026-10-06T04:01:09+00:00",
+      "last_price": 85515.6,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BO:L:1791256500",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 85575.0,
+      "defense": 85416.0,
+      "first_seen": 1791259269,
+      "first_seen_iso": "2026-10-06T04:01:09+00:00",
+      "last_seen": 1791259269,
+      "last_seen_iso": "2026-10-06T04:01:09+00:00",
+      "last_price": 85515.6,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
