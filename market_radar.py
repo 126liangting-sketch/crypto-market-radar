@@ -15,7 +15,7 @@ WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
 VERSION = "LASER_SIGNAL_CORE_3_1_RISK_ENGINE"
-BUILD = "LASER_SIGNAL_CORE_3_1_RISK_ENGINE"
+BUILD = "LASER_SIGNAL_CORE_3_1_RISK_ENGINE_ENTRY_TIMING"
 STATE_FILE = "radar_state_v31.json"
 TRADES_JSON = "paper_trades_v31.json"
 TRADES_CSV = "paper_trades_v31.csv"
@@ -55,6 +55,12 @@ EVENT_LOOKBACK_MIN = 12
 TRIGGER_FRESH_MIN = 6
 TRIGGER_AGING_MIN = 12
 THESIS_HOLD_MIN = 20
+ENTRY_IDEAL_MAX_ATR = 0.30
+ENTRY_NORMAL_MAX_ATR = 0.50
+ENTRY_EXTENDED_MAX_ATR = EXT_WAIT_ATR
+DUPLICATE_THESIS_MIN = 90
+DUPLICATE_TRIGGER_NEAR_ATR = 0.75
+NEW_STRUCTURE_MIN = 15
 OI_FLAT_PCT = 0.0010
 CVD_FLAT_REL = 0.05
 NEWS_NOTIFY_COOLDOWN = 3 * 3600
@@ -480,7 +486,6 @@ def choose_setup(rows15, a, side, live_price):
     for s in (detect_pullback_setup(rows15, a, side), detect_breakout_setup(rows15, a, side)):
         if not s:
             continue
-        # Don't reuse stale structures far behind price unless price is still near/through trigger.
         if side == "LONG":
             d = (live_price - s["trigger"]) / a
         else:
@@ -490,10 +495,24 @@ def choose_setup(rows15, a, side, live_price):
         candidates.append(s)
     if not candidates:
         return None
-    # Prefer pullback continuation when it is actionable; otherwise freshest trigger.
+
+    # Entry timing is more important than blindly preferring one setup family.
+    # A fresh setup close to its trigger should beat an older setup that is already
+    # stretched, regardless of whether it is a pullback or breakout.
     actionable = [x for x in candidates if x["extension_atr"] >= -PREPARE_DISTANCE_ATR]
     pool = actionable or candidates
-    pool.sort(key=lambda x: (x["kind"] == "PULLBACK", x["trigger_time"]), reverse=True)
+
+    def timing_band(x):
+        ext = float(x.get("extension_atr") or 0.0)
+        if -PREPARE_DISTANCE_ATR <= ext <= ENTRY_IDEAL_MAX_ATR:
+            return 3
+        if ext <= ENTRY_NORMAL_MAX_ATR:
+            return 2
+        if ext <= ENTRY_EXTENDED_MAX_ATR:
+            return 1
+        return 0
+
+    pool.sort(key=lambda x: (timing_band(x), int(x.get("trigger_time", 0)), 1 if x["kind"] == "PULLBACK" else 0), reverse=True)
     return pool[0]
 
 
@@ -505,6 +524,99 @@ def extension_quality(ext):
     if ext <= EXT_WAIT_ATR:
         return "偏追價"
     return "過度延伸"
+
+
+def entry_timing_profile(side, setup, ext, freshness, context, geometry, trend, reg, vol, oi, cvd):
+    """Classify timing without turning it into a universal hard filter.
+
+    IDEAL means the first re-launch is being caught close to its trigger. NORMAL is
+    still fully tradable. EXTENDED stays available only when the move has enough
+    force to justify chasing. This preserves signal frequency while preferring the
+    earliest clean entry.
+    """
+    ext = float(ext or 0.0)
+    fresh = (freshness or {}).get("state", "AGING")
+    geom = (geometry or {}).get("class", "MANAGE")
+    cls = (context or {}).get("class", "MIXED")
+    vr = float((vol or {}).get("ratio") or 0.0)
+    trend_state = (trend or {}).get("state", "NEUTRAL")
+    regime = (reg or {}).get("state", "RANGE")
+    flow, _ = flow_quality(side, oi, cvd)
+    aligned = ((side == "LONG" and trend_state == "BULL") or
+               (side == "SHORT" and trend_state == "BEAR"))
+
+    if fresh == "FRESH" and ext <= ENTRY_IDEAL_MAX_ATR:
+        level, label, priority = "IDEAL", "理想", 3
+        reason = "第一次再啟動附近，Trigger新鮮且沒有明顯追價"
+    elif ext <= ENTRY_NORMAL_MAX_ATR and fresh in ("FRESH", "AGING"):
+        level, label, priority = "NORMAL", "正常", 2
+        reason = "仍在可接受進場區，尚未明顯延伸"
+    else:
+        level, label, priority = "EXTENDED", "延伸", 1
+        reason = "已離理想Trigger較遠，僅在行情動能足夠時追隨"
+
+    strong = (
+        aligned and regime == "TREND" and vr >= 1.30 and
+        fresh != "STALE" and geom != "POOR" and
+        (cls == "CONSISTENT" or (vr >= 1.80 and flow in ("支持", "偏支持")))
+    )
+    allow = level != "EXTENDED" or strong
+    if level == "EXTENDED" and strong:
+        reason = "進場延伸，但順1H趨勢且量能/資金流足以支持追隨"
+    elif level == "EXTENDED" and not strong:
+        reason = "進場已延伸，且尚未形成足夠強的趨勢/量能/資金流共振"
+
+    size_mult = 1.0 if level == "IDEAL" else (0.90 if level == "NORMAL" else 0.70)
+    return {
+        "class": level, "label": label, "priority": priority, "reason": reason,
+        "allow": allow, "strong_override": bool(strong), "size_mult": size_mult,
+    }
+
+
+def duplicate_thesis_guard(state, ev, a):
+    """Suppress repeated same-wave entries while allowing genuinely new structure.
+
+    A candidate is treated as a duplicate only when it appears soon after the last
+    same-direction Formal, its trigger remains near the prior trigger, and it has not
+    formed at least one new 15m structure after that trade opened. A very strong
+    FRESH setup may override the suppression.
+    """
+    if not ev or not ev.get("ready") or a <= 0:
+        return {"allow": True, "reason": None}
+    side = ev.get("side")
+    setup = ev.get("setup") or {}
+    now = now_utc()
+    prior = [x for x in (state.get("history", []) + state.get("trades", []))
+             if x.get("side") == side and not x.get("excluded_from_stats") and x.get("opened_at")]
+    if not prior:
+        return {"allow": True, "reason": None}
+    last = max(prior, key=lambda x: int(x.get("opened_at", 0)))
+    age_min = (now - int(last.get("opened_at", 0))) / 60.0
+    if age_min > DUPLICATE_THESIS_MIN:
+        return {"allow": True, "reason": None}
+
+    new_structure = int(setup.get("trigger_time", 0)) >= int(last.get("opened_at", 0)) + NEW_STRUCTURE_MIN * 60
+    trigger_gap = abs(float(setup.get("trigger", 0.0)) - float(last.get("trigger", 0.0))) / a
+    same_wave = (not new_structure) and trigger_gap <= DUPLICATE_TRIGGER_NEAR_ATR
+    if not same_wave:
+        return {"allow": True, "reason": None}
+
+    timing = ev.get("entry_timing") or {}
+    ctx = ev.get("context") or {}
+    fresh = ev.get("freshness") or {}
+    geom = ev.get("geometry") or {}
+    vr = float((ev.get("volume") or {}).get("ratio") or 0.0)
+    strong_reentry = (
+        timing.get("class") == "IDEAL" and fresh.get("state") == "FRESH" and
+        ctx.get("class") == "CONSISTENT" and geom.get("class") != "POOR" and vr >= 1.50
+    )
+    if strong_reentry:
+        return {"allow": True, "reason": "同波段但出現新的高品質理想再啟動", "override": True}
+    return {
+        "allow": False,
+        "reason": f"同方向重複 thesis：距前一張 #{last.get('id')} 僅 {age_min:.0f} 分，尚未形成新的獨立結構",
+        "prior_trade_id": last.get("id"),
+    }
 
 
 def risk_quality(risk_atr):
@@ -1304,7 +1416,10 @@ def create_trade(state, side, setup, plan, ctx):
         "trigger_freshness": ctx.get("trigger_freshness"), "trigger_age_min": ctx.get("trigger_age_min"),
         "trigger_hold_atr": ctx.get("trigger_hold_atr"),
         "geometry_class": ctx.get("geometry_class"), "geometry_reason": ctx.get("geometry_reason"),
-        "exit_profile": ctx.get("exit_profile"), "tp1_r": plan.get("tp1_r", 1.0), "tp2_r": plan.get("tp2_r"),
+        "exit_profile": ctx.get("exit_profile"),
+        "entry_timing": ctx.get("entry_timing"), "entry_timing_label": ctx.get("entry_timing_label"),
+        "entry_timing_reason": ctx.get("entry_timing_reason"),
+        "tp1_r": plan.get("tp1_r", 1.0), "tp2_r": plan.get("tp2_r"),
         "mfe_r": 0.0, "mae_r": 0.0, "tp1_hit": False, "tp2_hit": False,
         "best_price": plan["entry"], "worst_price": plan["entry"], "duration_min": 0,
     }
@@ -1370,13 +1485,14 @@ def export_data(state):
               "risk_atr","defense_source","defense_anchor","stop_buffer_atr","position_size_factor","trigger","extension_atr","trend_1h","ema_position","ema_distance_atr","volume_ratio","regime","space_r","space_strength",
               "oi_dir","cvd_dir","flow_quality","context_class","context_reason","quality_state","quality_decision","quality_reason",
               "trigger_freshness","trigger_age_min","trigger_hold_atr","geometry_class","geometry_reason",
+              "entry_timing","entry_timing_label","entry_timing_reason",
               "exit_profile","tp1_r","tp2_r",
               "mfe_r","mae_r","duration_min","excluded_from_stats","legacy_rule_mismatch","intrabar_ambiguous"]
     with open(TRADES_CSV, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
         w.writeheader(); w.writerows(rows)
     save_json(BLOCKED_JSON, state["blocked"])
-    bfields = ["first_time_iso","time_iso","setup_key","side","type","engine_version","reason","trigger","price","block_count","volume_ratio","space_r","extension_atr","context_class","context_reason","trigger_freshness","trigger_age_min","geometry_class","quality_decision","quality_reason"]
+    bfields = ["first_time_iso","time_iso","setup_key","side","type","engine_version","reason","trigger","price","block_count","volume_ratio","space_r","extension_atr","context_class","context_reason","trigger_freshness","trigger_age_min","geometry_class","quality_decision","quality_reason","entry_timing","entry_timing_reason"]
     with open(BLOCKED_CSV, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.DictWriter(f, fieldnames=bfields, extrasaction="ignore")
         w.writeheader(); w.writerows(state["blocked"])
@@ -1601,12 +1717,20 @@ def evaluate_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol
                 "context": context, "plan": plan, "space": space, "ext": ext,
                 "freshness": freshness, "geometry": geometry, "calibration": calibration}
 
+    entry_timing = entry_timing_profile(side, setup, ext, freshness, context, geometry, trend, reg, vol, oi, cvd)
+    if not entry_timing["allow"]:
+        return {"ready": False, "reason": "ENTRY_TIMING_WEAK", "side": side, "setup": setup,
+                "context": context, "plan": plan, "space": space, "ext": ext,
+                "freshness": freshness, "geometry": geometry, "calibration": calibration,
+                "entry_timing": entry_timing}
+
+    plan["position_size_factor"] = min(float(plan.get("position_size_factor") or 1.0), float(entry_timing.get("size_mult") or 1.0))
     exit_info = apply_exit_profile(plan, context, space, reg, vol, freshness, geometry)
     quality_state = "HIGH" if (context["class"] == "CONSISTENT" and freshness["state"] == "FRESH" and geometry["class"] == "BALANCED") else ("CAUTION" if calibration["decision"] == "CAUTION" else "STANDARD")
     return {"ready": True, "side": side, "setup": setup, "context": context,
             "plan": plan, "space": space, "ext": ext, "freshness": freshness,
             "geometry": geometry, "exit_info": exit_info, "quality_state": quality_state,
-            "calibration": calibration}
+            "calibration": calibration, "entry_timing": entry_timing, "volume": vol}
 
 
 def preview_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd, event_rows=None):
@@ -1632,10 +1756,12 @@ def choose_arbitration_winner(candidates, trend):
     cls_rank = {"CONSISTENT": 2, "MIXED": 1}
     fresh_rank = {"FRESH": 2, "AGING": 1, "STALE": 0}
     geom_rank = {"BALANCED": 2, "MANAGE": 1, "POOR": 0}
+    timing_rank = {"IDEAL": 3, "NORMAL": 2, "EXTENDED": 1}
     trend_state = trend.get("state", "NEUTRAL")
     def key(c):
         return (
             cls_rank.get(c["context"]["class"], 0),
+            timing_rank.get(c.get("entry_timing", {}).get("class"), 0),
             fresh_rank.get(c.get("freshness", {}).get("state"), 0),
             geom_rank.get(c.get("geometry", {}).get("class"), 0),
             _trend_alignment(c["side"], trend_state),
@@ -1671,6 +1797,8 @@ def _blocked_extra(ev, vol):
         "geometry_class": (ev.get("geometry") or {}).get("class"),
         "quality_decision": calibration.get("decision"),
         "quality_reason": calibration.get("reason"),
+        "entry_timing": (ev.get("entry_timing") or {}).get("class"),
+        "entry_timing_reason": (ev.get("entry_timing") or {}).get("reason"),
     }
 
 
@@ -1691,6 +1819,7 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
             "CHASE_WAIT": "偏追價，等待較好位置",
             "CONTEXT_CONFLICT": f"情境衝突：{(ev.get('context') or {}).get('reason','整體條件不一致')}",
             "QUALITY_CALIBRATION": f"品質校準：{(ev.get('calibration') or {}).get('reason','多個普通弱點同時疊加')}",
+            "ENTRY_TIMING_WEAK": f"進場時機：{(ev.get('entry_timing') or {}).get('reason','延伸進場缺乏足夠動能')}",
         }
         reason = reason_map.get(ev.get("reason"))
         if reason:
@@ -1699,6 +1828,7 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
 
     plan = ev["plan"]; space = ev["space"]; context = ev["context"]
     freshness = ev["freshness"]; geometry = ev["geometry"]; exit_info = ev["exit_info"]
+    entry_timing = ev.get("entry_timing") or {"class": "NORMAL", "label": "正常", "reason": ""}
     flow, icon = flow_quality(side, oi, cvd)
     ctx = {
         "extension_atr": ev["ext"], "trend_1h": trend["state"],
@@ -1714,6 +1844,8 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
         "trigger_hold_atr": freshness.get("hold_atr"),
         "geometry_class": geometry.get("class"), "geometry_reason": geometry.get("reason"),
         "exit_profile": exit_info.get("profile"),
+        "entry_timing": entry_timing.get("class"), "entry_timing_label": entry_timing.get("label"),
+        "entry_timing_reason": entry_timing.get("reason"),
     }
     t = create_trade(state, side, setup, plan, ctx)
     touch_setup_lifecycle(state, side, setup, price, "FORMAL",
@@ -1758,7 +1890,7 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
         f"前方空間：{space_text}\n"
         f"市場狀態：{'趨勢' if reg['state']=='TREND' else '震盪'}\n"
         f"資金流：{icon} {flow}｜OI {zh_dir(oi['dir'])} / CVD Proxy {zh_dir(cvd['dir'])}\n"
-        f"進場位置：{extension_quality(ev['ext'])}（{ev['ext']:.2f} ATR）\n"
+        f"進場時機：{entry_timing.get('label','正常')}｜{extension_quality(ev['ext'])}（{ev['ext']:.2f} ATR）\n"
         f"判斷：{context['reason']}\n"
         f"出場策略：{exit_info['profile']}\n\n"
         f"🧾 已建立模擬單 #{t['id']}"
@@ -1894,7 +2026,21 @@ def main():
             )
 
         active = active_valid_trade(state)
-        ready = [x for x in previews.values() if x.get("ready")]
+        ready = []
+        for ev in previews.values():
+            if not ev.get("ready"):
+                continue
+            # While a Formal is open, the existing global arbitration already owns
+            # duplicate suppression. The thesis guard is for re-entry after a trade closes.
+            guard = {"allow": True, "reason": None} if active else duplicate_thesis_guard(state, ev, a)
+            ev["duplicate_guard"] = guard
+            if guard.get("allow"):
+                ready.append(ev)
+            else:
+                record_blocked(
+                    state, ev["side"], ev["setup"], guard.get("reason") or "同方向重複 thesis", live,
+                    {**_blocked_extra(ev, vol), "context_reason": guard.get("reason")}
+                )
         winner = None if active else choose_arbitration_winner(ready, trend)
         unresolved_tie = (not active and len(ready) >= 2 and winner is None)
         prepare_winner = None if (active or winner or unresolved_tie) else choose_prepare_winner(prepare_previews.values(), trend, state)
