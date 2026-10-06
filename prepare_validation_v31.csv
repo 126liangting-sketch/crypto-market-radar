@@ -1,2 +1,2 @@
 ﻿id,setup_key,side,trigger_type,opened_iso,closed_iso,status,prepare_price,trigger,atr_open,trend_1h,ema_position,ema_distance_atr,volume_ratio,regime,oi_dir,cvd_dir,formal_promoted,formal_trade_id,formal_delay_min,mfe_atr,mae_atr,mfe_atr_30,mae_atr_30,mfe_atr_60,mae_atr_60,duration_min
-1,CONT:L:1791288900,LONG,回踩再啟動,2026-10-06T14:51:48+00:00,,WATCHING,86369.0,86370.9,248.0571428571441,BULL,偏離,1.4597662391362034,1.7541938256966594,TREND,UP,FLAT,False,,,1.156991476618285,0.35878829762727305,,,,,27
+1,CONT:L:1791288900,LONG,回踩再啟動,2026-10-06T14:51:48+00:00,,WATCHING,86369.0,86370.9,248.0571428571441,BULL,偏離,1.4597662391362034,1.7541938256966594,TREND,UP,FLAT,False,,,1.156991476618285,1.0090416954618817,1.157,1.009,,,42
