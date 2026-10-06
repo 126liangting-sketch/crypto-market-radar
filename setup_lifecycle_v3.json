@@ -40,11 +40,27 @@
     "defense": 85346.1,
     "first_seen": 1791271318,
     "first_seen_iso": "2026-10-06T07:21:58+00:00",
-    "last_seen": 1791271318,
-    "last_seen_iso": "2026-10-06T07:21:58+00:00",
-    "last_price": 85256.1,
-    "status": "FORMAL",
-    "last_note": "建立模擬單 #1｜🟡 混合｜Trigger 仍有效｜幾何可管理",
+    "last_seen": 1791272211,
+    "last_seen_iso": "2026-10-06T07:36:51+00:00",
+    "last_price": 85397.3,
+    "status": "DETECTED",
+    "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "block_count": 0
+  },
+  {
+    "setup_key": "CONT:L:1791270000",
+    "side": "LONG",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 85337.0,
+    "defense": 85230.0,
+    "first_seen": 1791272211,
+    "first_seen_iso": "2026-10-06T07:36:51+00:00",
+    "last_seen": 1791272211,
+    "last_seen_iso": "2026-10-06T07:36:51+00:00",
+    "last_price": 85397.3,
+    "status": "DETECTED",
+    "last_note": "非本輪主要 thesis，僅內部追蹤",
     "block_count": 0
   }
 ]

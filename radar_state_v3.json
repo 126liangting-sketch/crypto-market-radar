@@ -1,7 +1,8 @@
 {
   "version": "LASER_SIGNAL_CORE_3_0",
   "next_trade_id": 2,
-  "trades": [
+  "trades": [],
+  "history": [
     {
       "id": 1,
       "setup_key": "CONT:S:1791269100",
@@ -10,7 +11,7 @@
       "engine_version": "LASER_SIGNAL_CORE_3_0",
       "opened_at": 1791271318,
       "opened_iso": "2026-10-06T07:21:58+00:00",
-      "status": "OPEN",
+      "status": "SL",
       "entry": 85256.1,
       "sl": 85364.7075,
       "tp1": 85147.49250000001,
@@ -43,15 +44,16 @@
       "tp1_r": 1.0,
       "tp2_r": null,
       "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mae_r": 1.254977786985158,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 85256.1,
-      "worst_price": 85256.1,
-      "duration_min": 0
+      "worst_price": 85392.4,
+      "duration_min": 14,
+      "closed_at": 1791272040,
+      "closed_iso": "2026-10-06T07:34:00+00:00"
     }
   ],
-  "history": [],
   "blocked": [],
   "prepare_seen": [],
   "formal_seen": [
@@ -76,18 +78,23 @@
     {
       "time": 1791271317,
       "value": 29135.324700000117
+    },
+    {
+      "time": 1791272210,
+      "value": 29147.995600000115
     }
   ],
   "news": {
     "seen": [
-      "e26341045b283657",
+      "8c697f3b056a4e8c",
       "7e42885c2d3007d3",
-      "9032a59f50c65c28",
-      "8c697f3b056a4e8c"
+      "a0a389ee4b775ac4",
+      "e26341045b283657",
+      "9032a59f50c65c28"
     ],
     "last_notify": 1791269227
   },
-  "last_event_scan": 1791271260,
+  "last_event_scan": 1791272160,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791261000",
@@ -130,11 +137,27 @@
       "defense": 85346.1,
       "first_seen": 1791271318,
       "first_seen_iso": "2026-10-06T07:21:58+00:00",
-      "last_seen": 1791271318,
-      "last_seen_iso": "2026-10-06T07:21:58+00:00",
-      "last_price": 85256.1,
-      "status": "FORMAL",
-      "last_note": "建立模擬單 #1｜🟡 混合｜Trigger 仍有效｜幾何可管理",
+      "last_seen": 1791272211,
+      "last_seen_iso": "2026-10-06T07:36:51+00:00",
+      "last_price": 85397.3,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "CONT:L:1791270000",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 85337.0,
+      "defense": 85230.0,
+      "first_seen": 1791272211,
+      "first_seen_iso": "2026-10-06T07:36:51+00:00",
+      "last_seen": 1791272211,
+      "last_seen_iso": "2026-10-06T07:36:51+00:00",
+      "last_price": 85397.3,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
     }
   ],

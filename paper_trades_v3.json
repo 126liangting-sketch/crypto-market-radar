@@ -1,5 +1,6 @@
 {
-  "open": [
+  "open": [],
+  "history": [
     {
       "id": 1,
       "setup_key": "CONT:S:1791269100",
@@ -8,7 +9,7 @@
       "engine_version": "LASER_SIGNAL_CORE_3_0",
       "opened_at": 1791271318,
       "opened_iso": "2026-10-06T07:21:58+00:00",
-      "status": "OPEN",
+      "status": "SL",
       "entry": 85256.1,
       "sl": 85364.7075,
       "tp1": 85147.49250000001,
@@ -41,13 +42,14 @@
       "tp1_r": 1.0,
       "tp2_r": null,
       "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mae_r": 1.254977786985158,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 85256.1,
-      "worst_price": 85256.1,
-      "duration_min": 0
+      "worst_price": 85392.4,
+      "duration_min": 14,
+      "closed_at": 1791272040,
+      "closed_iso": "2026-10-06T07:34:00+00:00"
     }
-  ],
-  "history": []
+  ]
 }
