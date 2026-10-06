@@ -47,12 +47,12 @@
       "tp1_r": 1.0,
       "tp2_r": null,
       "mfe_r": 0.6032795267936346,
-      "mae_r": 0.2833698642541125,
+      "mae_r": 0.8862765359631805,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 86449.5,
-      "worst_price": 86211.7,
-      "duration_min": 23
+      "worst_price": 86050.0,
+      "duration_min": 29
     }
   ],
   "history": [
@@ -313,6 +313,10 @@
     {
       "time": 1791295516,
       "value": 29945.37650000014
+    },
+    {
+      "time": 1791295859,
+      "value": 29941.91090000013
     }
   ],
   "news": {
@@ -329,7 +333,7 @@
     ],
     "last_notify": 1791273208
   },
-  "last_event_scan": 1791295500,
+  "last_event_scan": 1791295800,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
