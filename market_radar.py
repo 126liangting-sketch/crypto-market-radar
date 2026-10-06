@@ -14,19 +14,19 @@ OKX_SYMBOL = "BTC-USDT-SWAP"
 WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
-VERSION = "BTC_RADAR_CLEAN_V1_QUALITY_ENGINE_2_1"
-BUILD = "BTC_RADAR_CLEAN_V1_QUALITY_ENGINE_2_1_INTEGRATED"
-STATE_FILE = "radar_state_clean_v1.json"
-TRADES_JSON = "paper_trades_clean_v1.json"
-TRADES_CSV = "paper_trades_clean_v1.csv"
-BLOCKED_JSON = "blocked_setups_clean_v1.json"
-BLOCKED_CSV = "blocked_setups_clean_v1.csv"
-PREPARE_JSON = "prepare_validation_clean_v1.json"
-PREPARE_CSV = "prepare_validation_clean_v1.csv"
-SETUPS_JSON = "setup_lifecycle_clean_v1.json"
-SETUPS_CSV = "setup_lifecycle_clean_v1.csv"
+VERSION = "LASER_SIGNAL_CORE_3_0"
+BUILD = "LASER_SIGNAL_CORE_3_0_INTEGRATED"
+STATE_FILE = "radar_state_v3.json"
+TRADES_JSON = "paper_trades_v3.json"
+TRADES_CSV = "paper_trades_v3.csv"
+BLOCKED_JSON = "blocked_setups_v3.json"
+BLOCKED_CSV = "blocked_setups_v3.csv"
+PREPARE_JSON = "prepare_validation_v3.json"
+PREPARE_CSV = "prepare_validation_v3.csv"
+SETUPS_JSON = "setup_lifecycle_v3.json"
+SETUPS_CSV = "setup_lifecycle_v3.csv"
 
-# ---- Clean V1 rules agreed in chat ----
+# ---- 雷射訊號 Laser Signal 3.0 unified rules ----
 EMA_FAST = 34
 EMA_SLOW = 50
 VOL_LOOKBACK = 20
@@ -81,7 +81,7 @@ def get_json(url, params=None, retries=3):
     for i in range(retries):
         try:
             r = requests.get(url, params=params, timeout=20,
-                             headers={"User-Agent": "BTC-Radar-Clean-V1/1.0"})
+                             headers={"User-Agent": "BTC-Radar-Core-3.0/1.0"})
             r.raise_for_status()
             return r.json()
         except (requests.RequestException, ValueError) as e:
@@ -909,6 +909,62 @@ def formal_context(side, setup, trend, reg, ema_pos, vol, oi, cvd, ext, space, f
             "reason": "＋".join(notes[:4]), "flow": flow}
 
 
+def quality_calibration(context, freshness, geometry, reg, ema_pos, vol, plan, ext):
+    """Calibrate Formal quality from combinations, not a numeric score.
+
+    The goal is to stop several individually tolerable weaknesses from stacking into
+    a low-quality Formal. No single soft metric is promoted into a universal hard
+    filter. Fresh triggers can still rescue imperfect geometry, while stale/aged
+    triggers need cleaner location and risk.
+    """
+    cls = context.get("class")
+    fresh = freshness.get("state", "AGING")
+    geom = geometry.get("class", "MANAGE")
+    regime = reg.get("state", "RANGE")
+    ema_d = float(ema_pos.get("distance_atr") or 0.0)
+    vr = float(vol.get("ratio") or 0.0)
+    risk_atr = float(plan.get("risk_atr") or 99.0)
+    hold_atr = float(freshness.get("hold_atr") or 0.0)
+    hold_ratio = float(freshness.get("hold_ratio") or 0.0)
+
+    # A stale trigger is no longer an actionable entry. This is about timeliness,
+    # not direction; a new setup can still be detected immediately afterwards.
+    if fresh == "STALE":
+        return {"decision": "REJECT", "label": "過期",
+                "reason": "Trigger已偏舊或承接不足，等待新的發動結構"}
+
+    # Poor geometry can be tolerated only while the trigger is genuinely fresh.
+    # Once the trigger has aged, wide risk / stretched entry / nearby structure
+    # becomes a compounded weakness rather than a single soft warning.
+    if geom == "POOR" and fresh != "FRESH":
+        return {"decision": "REJECT", "label": "品質不足",
+                "reason": "Trigger非新鮮＋交易幾何偏差"}
+
+    # In a range, an aged mixed setup must still have clean geometry/location.
+    # This keeps examples like a tidy 1R scalp available, while filtering cases
+    # where aging, wide risk and stretched location all accumulate together.
+    if cls == "MIXED" and regime == "RANGE" and fresh == "AGING":
+        compounded = (ema_d > 1.0 or risk_atr > RISK_WARN_ATR or
+                      ext > EXT_NORMAL_ATR or hold_atr < -0.02 or hold_ratio < 0.5)
+        if geom != "BALANCED" and compounded:
+            return {"decision": "REJECT", "label": "品質不足",
+                    "reason": "震盪＋Trigger已老化＋位置/風險未保持乾淨"}
+
+    # Aged mixed setups are allowed, but marked cautious so exit stays conservative.
+    if cls == "MIXED" and fresh == "AGING":
+        return {"decision": "CAUTION", "label": "保守",
+                "reason": "情境混合且Trigger已進入老化區"}
+
+    # Fresh-but-imperfect geometry is still tradable; this preserves fast breakout
+    # and reversal opportunities that historically can work despite a wider stop.
+    if geom == "POOR" or cls == "MIXED":
+        return {"decision": "CAUTION", "label": "保守",
+                "reason": "可交易，但情境或交易幾何尚未完全共振"}
+
+    return {"decision": "ACCEPT", "label": "正常",
+            "reason": "Trigger、情境與交易幾何協調"}
+
+
 def apply_exit_profile(plan, context, space, reg, vol, freshness=None, geometry=None):
     """Quality Engine 2.1 dynamic exit.
 
@@ -996,12 +1052,6 @@ def load_state():
     s.setdefault("last_event_scan", 0)
     s.setdefault("setup_lifecycle", [])
     s.setdefault("active_thesis", None)
-    # Historical trades created before the risk guard remain visible, but they must not
-    # contaminate performance statistics for the current ruleset.
-    for t in s.get("trades", []) + s.get("history", []):
-        if float(t.get("risk_atr") or 0.0) > MAX_STOP_ATR:
-            t["excluded_from_stats"] = True
-            t["legacy_rule_mismatch"] = True
     return s
 
 
@@ -1193,6 +1243,7 @@ def create_trade(state, side, setup, plan, ctx):
         "oi_dir": ctx["oi_dir"], "cvd_dir": ctx["cvd_dir"], "flow_quality": ctx["flow_quality"],
         "context_class": ctx.get("context_class"), "context_reason": ctx.get("context_reason"),
         "quality_state": ctx.get("quality_state"),
+        "quality_decision": ctx.get("quality_decision"), "quality_reason": ctx.get("quality_reason"),
         "trigger_freshness": ctx.get("trigger_freshness"), "trigger_age_min": ctx.get("trigger_age_min"),
         "trigger_hold_atr": ctx.get("trigger_hold_atr"),
         "geometry_class": ctx.get("geometry_class"), "geometry_reason": ctx.get("geometry_reason"),
@@ -1260,7 +1311,7 @@ def export_data(state):
     rows = state["history"] + state["trades"]
     fields = ["id","setup_key","side","trigger_type","engine_version","opened_iso","closed_iso","status","entry","sl","tp1","tp2",
               "risk_atr","trigger","extension_atr","trend_1h","ema_position","ema_distance_atr","volume_ratio","regime","space_r","space_strength",
-              "oi_dir","cvd_dir","flow_quality","context_class","context_reason","quality_state",
+              "oi_dir","cvd_dir","flow_quality","context_class","context_reason","quality_state","quality_decision","quality_reason",
               "trigger_freshness","trigger_age_min","trigger_hold_atr","geometry_class","geometry_reason",
               "exit_profile","tp1_r","tp2_r",
               "mfe_r","mae_r","duration_min","excluded_from_stats","legacy_rule_mismatch","intrabar_ambiguous"]
@@ -1268,7 +1319,7 @@ def export_data(state):
         w = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
         w.writeheader(); w.writerows(rows)
     save_json(BLOCKED_JSON, state["blocked"])
-    bfields = ["first_time_iso","time_iso","setup_key","side","type","engine_version","reason","trigger","price","block_count","volume_ratio","space_r","extension_atr","context_class","context_reason","trigger_freshness","trigger_age_min","geometry_class"]
+    bfields = ["first_time_iso","time_iso","setup_key","side","type","engine_version","reason","trigger","price","block_count","volume_ratio","space_r","extension_atr","context_class","context_reason","trigger_freshness","trigger_age_min","geometry_class","quality_decision","quality_reason"]
     with open(BLOCKED_CSV, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.DictWriter(f, fieldnames=bfields, extrasaction="ignore")
         w.writeheader(); w.writerows(state["blocked"])
@@ -1343,7 +1394,7 @@ def translate_news_title_zh(title, category):
                 "q": title,
             },
             timeout=10,
-            headers={"User-Agent": "BTC-Radar-Clean-V1/1.0"},
+            headers={"User-Agent": "BTC-Radar-Core-3.0/1.0"},
         )
         r.raise_for_status()
         data = r.json()
@@ -1360,7 +1411,7 @@ def translate_news_title_zh(title, category):
 
 
 def _rss_entries(url):
-    r = requests.get(url, timeout=20, headers={"User-Agent": "BTC-Radar-Clean-V1/1.0"})
+    r = requests.get(url, timeout=20, headers={"User-Agent": "BTC-Radar-Core-3.0/1.0"})
     r.raise_for_status()
     root = ET.fromstring(r.content)
     out = []
@@ -1487,11 +1538,18 @@ def evaluate_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol
                 "context": context, "plan": plan, "space": space, "ext": ext,
                 "freshness": freshness, "geometry": geometry}
 
+    calibration = quality_calibration(context, freshness, geometry, reg, ema_pos, vol, plan, ext)
+    if calibration["decision"] == "REJECT":
+        return {"ready": False, "reason": "QUALITY_CALIBRATION", "side": side, "setup": setup,
+                "context": context, "plan": plan, "space": space, "ext": ext,
+                "freshness": freshness, "geometry": geometry, "calibration": calibration}
+
     exit_info = apply_exit_profile(plan, context, space, reg, vol, freshness, geometry)
-    quality_state = "HIGH" if (context["class"] == "CONSISTENT" and freshness["state"] == "FRESH" and geometry["class"] == "BALANCED") else "STANDARD"
+    quality_state = "HIGH" if (context["class"] == "CONSISTENT" and freshness["state"] == "FRESH" and geometry["class"] == "BALANCED") else ("CAUTION" if calibration["decision"] == "CAUTION" else "STANDARD")
     return {"ready": True, "side": side, "setup": setup, "context": context,
             "plan": plan, "space": space, "ext": ext, "freshness": freshness,
-            "geometry": geometry, "exit_info": exit_info, "quality_state": quality_state}
+            "geometry": geometry, "exit_info": exit_info, "quality_state": quality_state,
+            "calibration": calibration}
 
 
 def preview_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd, event_rows=None):
@@ -1544,15 +1602,18 @@ def active_valid_trade(state):
 
 
 def _blocked_extra(ev, vol):
+    calibration = ev.get("calibration") or {}
     return {
         "volume_ratio": vol.get("ratio"),
         "space_r": (ev.get("space") or {}).get("space_r"),
         "extension_atr": ev.get("ext"),
         "context_class": (ev.get("context") or {}).get("class", "UNASSESSED"),
-        "context_reason": (ev.get("context") or {}).get("reason", ev.get("reason")),
+        "context_reason": calibration.get("reason") or (ev.get("context") or {}).get("reason", ev.get("reason")),
         "trigger_freshness": (ev.get("freshness") or {}).get("state"),
         "trigger_age_min": (ev.get("freshness") or {}).get("age_min"),
         "geometry_class": (ev.get("geometry") or {}).get("class"),
+        "quality_decision": calibration.get("decision"),
+        "quality_reason": calibration.get("reason"),
     }
 
 
@@ -1572,6 +1633,7 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
             "OVEREXTENDED": "價格過度延伸",
             "CHASE_WAIT": "偏追價，等待較好位置",
             "CONTEXT_CONFLICT": f"情境衝突：{(ev.get('context') or {}).get('reason','整體條件不一致')}",
+            "QUALITY_CALIBRATION": f"品質校準：{(ev.get('calibration') or {}).get('reason','多個普通弱點同時疊加')}",
         }
         reason = reason_map.get(ev.get("reason"))
         if reason:
@@ -1589,6 +1651,8 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
         "oi_dir": oi["dir"], "cvd_dir": cvd["dir"], "flow_quality": flow,
         "context_class": context["class"], "context_reason": context["reason"],
         "quality_state": ev.get("quality_state"),
+        "quality_decision": (ev.get("calibration") or {}).get("decision"),
+        "quality_reason": (ev.get("calibration") or {}).get("reason"),
         "trigger_freshness": freshness.get("state"), "trigger_age_min": freshness.get("age_min"),
         "trigger_hold_atr": freshness.get("hold_atr"),
         "geometry_class": geometry.get("class"), "geometry_reason": geometry.get("reason"),
@@ -1691,32 +1755,35 @@ atr15_global = 1.0
 
 
 def manual_summary(state, price, trend, reg, oi, cvd):
-    valid_history = [x for x in state.get("history", []) if not x.get("excluded_from_stats")]
-    valid_open = [x for x in state.get("trades", []) if not x.get("excluded_from_stats")]
-    completed = len(valid_history)
-    open_n = len(valid_open)
+    """Laser Signal 3.0 reports only its own V3 data. Legacy files are intentionally ignored."""
+    history = list(state.get("history", []))
+    open_trades = list(state.get("trades", []))
+    completed = len(history)
+    open_n = len(open_trades)
     p_done = len(state.get("prepare_history", []))
     p_open = len(state.get("prepare_active", []))
-    last = valid_history[-20:]
-    wins = sum(1 for x in last if x.get("status") in ("TP1", "TP2", "TP1_THEN_SL") and x.get("tp1_hit"))
-    excluded = len(state.get("history", [])) + len(state.get("trades", [])) - completed - open_n
-    base = (
-        f"📊 BTC Radar Clean V1｜手動查詢\nBTC：${price:,.0f}\n"
+
+    tp1_hits = sum(1 for x in history if x.get("tp1_hit"))
+    sl_count = sum(1 for x in history if x.get("status") == "SL")
+    quick_sl = sum(1 for x in history if x.get("status") == "SL" and int(x.get("duration_min") or 0) <= 30)
+    if history:
+        avg_mfe = sum(float(x.get("mfe_r") or 0.0) for x in history) / len(history)
+        avg_mae = sum(float(x.get("mae_r") or 0.0) for x in history) / len(history)
+        perf = (f"🎯 TP1達成：{tp1_hits}/{completed}｜SL：{sl_count}\n"
+                f"📈 平均 MFE：+{avg_mfe:.2f}R｜平均 MAE：-{avg_mae:.2f}R\n"
+                f"⚠️ 快速SL（≤30分）：{quick_sl}")
+    else:
+        perf = "🎯 雷射訊號 3.0 尚無完成樣本"
+
+    msg = (
+        f"📡 雷射訊號｜Laser Signal 3.0｜手動查詢\nBTC：${price:,.0f}\n"
         f"1H背景：{zh_dir(trend['state'])}\n市場狀態：{'趨勢' if reg['state']=='TREND' else '震盪'}\n"
         f"OI：{zh_dir(oi['dir'])}｜CVD Proxy：{zh_dir(cvd['dir'])}\n"
-        f"👀 準備驗證 完成：{p_done}｜追蹤中：{p_open}\n"
-        f"⚡ 正式單 完成：{completed}｜進行中：{open_n}\n"
+        f"👀 Prepare：完成 {p_done}｜追蹤中 {p_open}\n"
+        f"⚡ 雷射訊號正式單：完成 {completed}｜進行中 {open_n}\n"
+        f"{perf}"
     )
-    engine2_done = sum(1 for x in valid_history if x.get("engine_version") == VERSION)
-    engine2_open = sum(1 for x in valid_open if x.get("engine_version") == VERSION)
-    base += f"🧠 Quality 2.1 樣本 完成：{engine2_done}｜進行中：{engine2_open}\n"
-    if excluded:
-        base += f"舊規則排除樣本：{excluded}\n"
-    if last:
-        base += f"最近20筆曾到TP1：{wins}/{len(last)}"
-    else:
-        base += "目前尚無完成樣本"
-    send_discord(base)
+    send_discord(msg)
 
 
 def main():
