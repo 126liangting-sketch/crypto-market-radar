@@ -46,7 +46,7 @@
       "tp2_hit": false,
       "best_price": 85604.8,
       "worst_price": 85530.0,
-      "duration_min": 31
+      "duration_min": 42
     }
   ],
   "history": [
@@ -4205,14 +4205,6 @@
   ],
   "oi_history": [
     {
-      "time": 1790657275,
-      "value": 28699.1044000001
-    },
-    {
-      "time": 1790657843,
-      "value": 28709.474100000098
-    },
-    {
       "time": 1790658394,
       "value": 28741.143500000093
     },
@@ -6603,6 +6595,10 @@
     {
       "time": 1791262015,
       "value": 28911.384400000064
+    },
+    {
+      "time": 1791262706,
+      "value": 28925.89650000007
     }
   ],
   "news": {
@@ -8753,7 +8749,7 @@
       "closed_iso": "2026-10-06T02:47:48+00:00"
     }
   ],
-  "last_event_scan": 1791261960,
+  "last_event_scan": 1791262680,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -12092,9 +12088,9 @@
       "defense": 85281.2,
       "first_seen": 1791262017,
       "first_seen_iso": "2026-10-06T04:46:57+00:00",
-      "last_seen": 1791262017,
-      "last_seen_iso": "2026-10-06T04:46:57+00:00",
-      "last_price": 85566.0,
+      "last_seen": 1791262707,
+      "last_seen_iso": "2026-10-06T04:58:27+00:00",
+      "last_price": 85558.0,
       "status": "DETECTED",
       "last_note": "已有正式單 #30 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -12108,9 +12104,9 @@
       "defense": 85610.6,
       "first_seen": 1791262017,
       "first_seen_iso": "2026-10-06T04:46:57+00:00",
-      "last_seen": 1791262017,
-      "last_seen_iso": "2026-10-06T04:46:57+00:00",
-      "last_price": 85566.0,
+      "last_seen": 1791262707,
+      "last_seen_iso": "2026-10-06T04:58:27+00:00",
+      "last_price": 85558.0,
       "status": "DETECTED",
       "last_note": "已有正式單 #30 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -12121,7 +12117,7 @@
     "setup_key": "BO:L:1791256500",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791262017,
-    "updated_iso": "2026-10-06T04:46:57+00:00"
+    "updated_at": 1791262707,
+    "updated_iso": "2026-10-06T04:58:27+00:00"
   }
 }
