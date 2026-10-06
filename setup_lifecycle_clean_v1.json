@@ -3352,12 +3352,12 @@
     "defense": 85610.6,
     "first_seen": 1791262017,
     "first_seen_iso": "2026-10-06T04:46:57+00:00",
-    "last_seen": 1791265018,
-    "last_seen_iso": "2026-10-06T05:36:58+00:00",
-    "last_price": 85634.9,
-    "status": "DETECTED",
-    "last_note": "已有正式單 #30 進行中，暫不新增外部訊號",
-    "block_count": 0
+    "last_seen": 1791265765,
+    "last_seen_iso": "2026-10-06T05:49:25+00:00",
+    "last_price": 85522.5,
+    "status": "BLOCKED",
+    "last_note": "全局仲裁：已有反向正式單 #30 進行中",
+    "block_count": 1
   },
   {
     "setup_key": "CONT:L:1791261000",
@@ -3368,9 +3368,9 @@
     "defense": 85530.0,
     "first_seen": 1791263292,
     "first_seen_iso": "2026-10-06T05:08:12+00:00",
-    "last_seen": 1791265018,
-    "last_seen_iso": "2026-10-06T05:36:58+00:00",
-    "last_price": 85634.9,
+    "last_seen": 1791265765,
+    "last_seen_iso": "2026-10-06T05:49:25+00:00",
+    "last_price": 85522.5,
     "status": "DETECTED",
     "last_note": "已有正式單 #30 進行中，暫不新增外部訊號",
     "block_count": 1

@@ -2916,5 +2916,28 @@
     "trigger_freshness": "AGING",
     "trigger_age_min": 11.85,
     "geometry_class": "MANAGE"
+  },
+  {
+    "key": "CONT:S:1791260100",
+    "setup_key": "CONT:S:1791260100",
+    "first_time": 1791265765,
+    "first_time_iso": "2026-10-06T05:49:25+00:00",
+    "time": 1791265765,
+    "time_iso": "2026-10-06T05:49:25+00:00",
+    "side": "SHORT",
+    "type": "PULLBACK",
+    "engine_version": "BTC_RADAR_CLEAN_V1_QUALITY_ENGINE_2_1",
+    "reason": "全局仲裁：已有反向正式單 #30 進行中",
+    "trigger": 85556.5,
+    "price": 85522.5,
+    "block_count": 1,
+    "volume_ratio": 2.7094830849581704,
+    "space_r": 0.7016021940917518,
+    "extension_atr": 0.26926122864577395,
+    "context_class": "MIXED",
+    "context_reason": "同一時間只保留一個有效BTC正式交易 thesis",
+    "trigger_freshness": "AGING",
+    "trigger_age_min": 7.416666666666667,
+    "geometry_class": "MANAGE"
   }
 ]
