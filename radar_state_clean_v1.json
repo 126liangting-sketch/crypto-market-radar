@@ -41,12 +41,12 @@
       "tp1_r": 1.0,
       "tp2_r": null,
       "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mae_r": 0.8174675352021953,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 86076.3,
-      "worst_price": 86076.3,
-      "duration_min": 0
+      "worst_price": 85819.8,
+      "duration_min": 15
     }
   ],
   "history": [
@@ -4155,10 +4155,6 @@
   ],
   "oi_history": [
     {
-      "time": 1790644390,
-      "value": 28209.936800000098
-    },
-    {
       "time": 1790645122,
       "value": 28135.916700000103
     },
@@ -6561,6 +6557,10 @@
     {
       "time": 1791248740,
       "value": 28590.480600000094
+    },
+    {
+      "time": 1791249671,
+      "value": 28576.7455000001
     }
   ],
   "news": {
@@ -8676,7 +8676,7 @@
       "closed_iso": "2026-10-05T18:42:01+00:00"
     }
   ],
-  "last_event_scan": 1791248700,
+  "last_event_scan": 1791249660,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1790686800",
@@ -11935,11 +11935,27 @@
       "defense": 85933.2,
       "first_seen": 1791248133,
       "first_seen_iso": "2026-10-06T00:55:33+00:00",
-      "last_seen": 1791248742,
-      "last_seen_iso": "2026-10-06T01:05:42+00:00",
-      "last_price": 86076.3,
+      "last_seen": 1791249672,
+      "last_seen_iso": "2026-10-06T01:21:12+00:00",
+      "last_price": 85830.1,
       "status": "DETECTED",
-      "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
+      "last_note": "已有正式單 #29 進行中，暫不新增外部訊號",
+      "block_count": 0
+    },
+    {
+      "setup_key": "CONT:L:1791247500",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 85875.9,
+      "defense": 85728.1,
+      "first_seen": 1791249672,
+      "first_seen_iso": "2026-10-06T01:21:12+00:00",
+      "last_seen": 1791249672,
+      "last_seen_iso": "2026-10-06T01:21:12+00:00",
+      "last_price": 85830.1,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #29 進行中，暫不新增外部訊號",
       "block_count": 0
     }
   ],
@@ -11948,7 +11964,7 @@
     "setup_key": "CONT:L:1791241200",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791248741,
-    "updated_iso": "2026-10-06T01:05:41+00:00"
+    "updated_at": 1791249672,
+    "updated_iso": "2026-10-06T01:21:12+00:00"
   }
 }
