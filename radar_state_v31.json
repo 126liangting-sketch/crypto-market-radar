@@ -53,13 +53,13 @@
       "feasibility_reason": "前方強結構約 0.78R，仍有可管理發展空間",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mfe_r": 0.3881160913618247,
+      "mae_r": 0.03091190108193834,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 83223.7,
-      "worst_price": 83223.7,
-      "duration_min": 0
+      "best_price": 83122.0,
+      "worst_price": 83231.8,
+      "duration_min": 12
     }
   ],
   "history": [
@@ -1584,6 +1584,10 @@
     {
       "time": 1791409234,
       "value": 30279.29310000012
+    },
+    {
+      "time": 1791410005,
+      "value": 30526.454100000115
     }
   ],
   "news": {
@@ -1605,7 +1609,7 @@
     ],
     "last_notify": 1791381291
   },
-  "last_event_scan": 1791409200,
+  "last_event_scan": 1791409980,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -2672,11 +2676,11 @@
       "defense": 83291.5,
       "first_seen": 1791409235,
       "first_seen_iso": "2026-10-07T21:40:35+00:00",
-      "last_seen": 1791409235,
-      "last_seen_iso": "2026-10-07T21:40:35+00:00",
-      "last_price": 83223.7,
+      "last_seen": 1791410006,
+      "last_seen_iso": "2026-10-07T21:53:26+00:00",
+      "last_price": 83122.1,
       "status": "DETECTED",
-      "last_note": "本輪由 SHORT 正式候選主導，反向訊號僅內部追蹤",
+      "last_note": "已有正式單 #9 進行中，暫不新增外部訊號",
       "block_count": 0
     },
     {
@@ -2688,11 +2692,11 @@
       "defense": 83433.1,
       "first_seen": 1791409235,
       "first_seen_iso": "2026-10-07T21:40:35+00:00",
-      "last_seen": 1791409235,
-      "last_seen_iso": "2026-10-07T21:40:35+00:00",
-      "last_price": 83223.7,
-      "status": "FORMAL",
-      "last_note": "建立模擬單 #9｜🟡 混合｜Trigger 仍有效｜幾何可管理",
+      "last_seen": 1791410006,
+      "last_seen_iso": "2026-10-07T21:53:26+00:00",
+      "last_price": 83122.1,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #9 進行中，暫不新增外部訊號",
       "block_count": 0
     }
   ],
@@ -2701,7 +2705,7 @@
     "setup_key": "CONT:S:1791406800",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791409235,
-    "updated_iso": "2026-10-07T21:40:35+00:00"
+    "updated_at": 1791410006,
+    "updated_iso": "2026-10-07T21:53:26+00:00"
   }
 }
