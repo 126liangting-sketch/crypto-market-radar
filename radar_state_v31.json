@@ -53,13 +53,13 @@
       "feasibility_reason": "前方強結構約 0.93R，仍有可管理發展空間",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.6754658385093254,
+      "mfe_r": 0.7984635501797698,
       "mae_r": 0.2995259888852671,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 83561.4,
+      "best_price": 83531.3,
       "worst_price": 83800.0,
-      "duration_min": 39
+      "duration_min": 53
     }
   ],
   "history": [
@@ -1170,6 +1170,10 @@
     {
       "time": 1791372595,
       "value": 30868.903900000172
+    },
+    {
+      "time": 1791373442,
+      "value": 30875.265000000174
     }
   ],
   "news": {
@@ -1190,7 +1194,7 @@
     ],
     "last_notify": 1791364722
   },
-  "last_event_scan": 1791372540,
+  "last_event_scan": 1791373440,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -1953,9 +1957,25 @@
       "defense": 83604.4,
       "first_seen": 1791370859,
       "first_seen_iso": "2026-10-07T11:00:59+00:00",
-      "last_seen": 1791372596,
-      "last_seen_iso": "2026-10-07T11:29:56+00:00",
-      "last_price": 83689.0,
+      "last_seen": 1791373443,
+      "last_seen_iso": "2026-10-07T11:44:03+00:00",
+      "last_price": 83603.9,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #7 進行中，暫不新增外部訊號",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BO:S:1791369000",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 83604.4,
+      "defense": 83906.8,
+      "first_seen": 1791373443,
+      "first_seen_iso": "2026-10-07T11:44:03+00:00",
+      "last_seen": 1791373443,
+      "last_seen_iso": "2026-10-07T11:44:03+00:00",
+      "last_price": 83603.9,
       "status": "DETECTED",
       "last_note": "已有正式單 #7 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -1966,7 +1986,7 @@
     "setup_key": "CONT:S:1791368100",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791372596,
-    "updated_iso": "2026-10-07T11:29:56+00:00"
+    "updated_at": 1791373443,
+    "updated_iso": "2026-10-07T11:44:03+00:00"
   }
 }

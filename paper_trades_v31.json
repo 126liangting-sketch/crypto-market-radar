@@ -51,13 +51,13 @@
       "feasibility_reason": "前方強結構約 0.93R，仍有可管理發展空間",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.6754658385093254,
+      "mfe_r": 0.7984635501797698,
       "mae_r": 0.2995259888852671,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 83561.4,
+      "best_price": 83531.3,
       "worst_price": 83800.0,
-      "duration_min": 39
+      "duration_min": 53
     }
   ],
   "history": [
