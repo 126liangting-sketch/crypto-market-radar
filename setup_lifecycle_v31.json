@@ -840,9 +840,9 @@
     "defense": 83391.0,
     "first_seen": 1791378453,
     "first_seen_iso": "2026-10-07T13:07:33+00:00",
-    "last_seen": 1791381291,
-    "last_seen_iso": "2026-10-07T13:54:51+00:00",
-    "last_price": 83318.5,
+    "last_seen": 1791381803,
+    "last_seen_iso": "2026-10-07T14:03:23+00:00",
+    "last_price": 83130.7,
     "status": "DETECTED",
     "last_note": "已有正式單 #8 進行中，暫不新增外部訊號",
     "block_count": 0
@@ -888,11 +888,11 @@
     "defense": 83518.0,
     "first_seen": 1791380452,
     "first_seen_iso": "2026-10-07T13:40:52+00:00",
-    "last_seen": 1791380452,
-    "last_seen_iso": "2026-10-07T13:40:52+00:00",
-    "last_price": 83124.9,
-    "status": "FORMAL",
-    "last_note": "建立模擬單 #8｜🟡 混合｜Trigger 新鮮｜幾何偏差",
-    "block_count": 0
+    "last_seen": 1791381803,
+    "last_seen_iso": "2026-10-07T14:03:23+00:00",
+    "last_price": 83130.7,
+    "status": "BLOCKED",
+    "last_note": "全局仲裁：已有同方向正式單 #8 進行中",
+    "block_count": 1
   }
 ]
