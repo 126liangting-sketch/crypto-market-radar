@@ -1086,5 +1086,37 @@
     "status": "BLOCKED",
     "last_note": "全局仲裁：已有同方向正式單 #9 進行中",
     "block_count": 3
+  },
+  {
+    "setup_key": "BO:L:1791411300",
+    "side": "LONG",
+    "type": "BREAKOUT",
+    "label": "有效突破",
+    "trigger": 83294.5,
+    "defense": 83076.0,
+    "first_seen": 1791413408,
+    "first_seen_iso": "2026-10-07T22:50:08+00:00",
+    "last_seen": 1791413408,
+    "last_seen_iso": "2026-10-07T22:50:08+00:00",
+    "last_price": 83228.6,
+    "status": "DETECTED",
+    "last_note": "已有正式單 #9 進行中，暫不新增外部訊號",
+    "block_count": 0
+  },
+  {
+    "setup_key": "CONT:S:1791411300",
+    "side": "SHORT",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 83155.7,
+    "defense": 83294.5,
+    "first_seen": 1791413408,
+    "first_seen_iso": "2026-10-07T22:50:08+00:00",
+    "last_seen": 1791413408,
+    "last_seen_iso": "2026-10-07T22:50:08+00:00",
+    "last_price": 83228.6,
+    "status": "DETECTED",
+    "last_note": "已有正式單 #9 進行中，暫不新增外部訊號",
+    "block_count": 0
   }
 ]
