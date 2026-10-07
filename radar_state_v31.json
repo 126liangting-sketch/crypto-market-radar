@@ -50,12 +50,12 @@
       "tp1_r": 1.0,
       "tp2_r": null,
       "mfe_r": 0.15809742584966935,
-      "mae_r": 0.17566380649956706,
+      "mae_r": 0.7371123572731243,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 85579.3,
-      "worst_price": 85529.9,
-      "duration_min": 9
+      "worst_price": 85446.8,
+      "duration_min": 19
     }
   ],
   "history": [
@@ -720,6 +720,10 @@
     {
       "time": 1791330981,
       "value": 30356.508100000126
+    },
+    {
+      "time": 1791331561,
+      "value": 30382.56000000013
     }
   ],
   "news": {
@@ -738,7 +742,7 @@
     ],
     "last_notify": 1791320863
   },
-  "last_event_scan": 1791330960,
+  "last_event_scan": 1791331500,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -1149,11 +1153,11 @@
       "defense": 85434.8,
       "first_seen": 1791329032,
       "first_seen_iso": "2026-10-06T23:23:52+00:00",
-      "last_seen": 1791330982,
-      "last_seen_iso": "2026-10-06T23:56:22+00:00",
-      "last_price": 85542.5,
-      "status": "BLOCKED",
-      "last_note": "全局仲裁：已有同方向正式單 #5 進行中",
+      "last_seen": 1791331562,
+      "last_seen_iso": "2026-10-07T00:06:02+00:00",
+      "last_price": 85446.8,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #5 進行中，暫不新增外部訊號",
       "block_count": 1
     },
     {
@@ -1165,9 +1169,9 @@
       "defense": 85545.8,
       "first_seen": 1791329032,
       "first_seen_iso": "2026-10-06T23:23:52+00:00",
-      "last_seen": 1791330982,
-      "last_seen_iso": "2026-10-06T23:56:22+00:00",
-      "last_price": 85542.5,
+      "last_seen": 1791331562,
+      "last_seen_iso": "2026-10-07T00:06:02+00:00",
+      "last_price": 85446.8,
       "status": "DETECTED",
       "last_note": "已有正式單 #5 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -1178,7 +1182,7 @@
     "setup_key": "BO:L:1791326700",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791330982,
-    "updated_iso": "2026-10-06T23:56:22+00:00"
+    "updated_at": 1791331562,
+    "updated_iso": "2026-10-07T00:06:02+00:00"
   }
 }
