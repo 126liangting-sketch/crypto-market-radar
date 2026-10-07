@@ -840,11 +840,11 @@
     "defense": 83391.0,
     "first_seen": 1791378453,
     "first_seen_iso": "2026-10-07T13:07:33+00:00",
-    "last_seen": 1791379580,
-    "last_seen_iso": "2026-10-07T13:26:20+00:00",
-    "last_price": 83220.3,
+    "last_seen": 1791380452,
+    "last_seen_iso": "2026-10-07T13:40:52+00:00",
+    "last_price": 83124.9,
     "status": "DETECTED",
-    "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "last_note": "本輪由 SHORT 正式候選主導，反向訊號僅內部追蹤",
     "block_count": 0
   },
   {
@@ -877,6 +877,22 @@
     "last_price": 83220.3,
     "status": "DETECTED",
     "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "block_count": 0
+  },
+  {
+    "setup_key": "CONT:S:1791378000",
+    "side": "SHORT",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 83236.6,
+    "defense": 83518.0,
+    "first_seen": 1791380452,
+    "first_seen_iso": "2026-10-07T13:40:52+00:00",
+    "last_seen": 1791380452,
+    "last_seen_iso": "2026-10-07T13:40:52+00:00",
+    "last_price": 83124.9,
+    "status": "FORMAL",
+    "last_note": "建立模擬單 #8｜🟡 混合｜Trigger 新鮮｜幾何偏差",
     "block_count": 0
   }
 ]

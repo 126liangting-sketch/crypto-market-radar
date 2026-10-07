@@ -1,7 +1,67 @@
 {
   "version": "LASER_SIGNAL_CORE_3_1_RISK_ENGINE",
-  "next_trade_id": 8,
-  "trades": [],
+  "next_trade_id": 9,
+  "trades": [
+    {
+      "id": 8,
+      "setup_key": "CONT:S:1791378000",
+      "side": "SHORT",
+      "trigger_type": "回踩再啟動",
+      "engine_version": "LASER_SIGNAL_CORE_3_1_RISK_ENGINE",
+      "engine_build": "LASER_SIGNAL_CORE_3_1_MULTI_THESIS_FEASIBILITY",
+      "opened_at": 1791380452,
+      "opened_iso": "2026-10-07T13:40:52+00:00",
+      "status": "OPEN",
+      "entry": 83124.9,
+      "sl": 83599.835,
+      "tp1": 82649.96499999998,
+      "tp2": null,
+      "risk": 474.9350000000122,
+      "risk_atr": 2.0312488544021976,
+      "trigger": 83236.6,
+      "defense_source": "結構",
+      "defense_anchor": 83518.0,
+      "stop_buffer_atr": 0.35,
+      "position_size_factor": 0.7384619549441933,
+      "extension_atr": 0.47772957780905445,
+      "trend_1h": "BEAR",
+      "ema_position": "偏離",
+      "ema_distance_atr": 3.151430745091892,
+      "volume_ratio": 2.8173764004098745,
+      "regime": "TREND",
+      "space_r": null,
+      "space_strength": "OPEN",
+      "oi_dir": "DOWN",
+      "cvd_dir": "FLAT",
+      "flow_quality": "普通",
+      "context_class": "MIXED",
+      "context_reason": "EMA偏離較大＋幾何偏差",
+      "quality_state": "CAUTION",
+      "quality_decision": "CAUTION",
+      "quality_reason": "可交易，但情境或交易幾何尚未完全共振",
+      "trigger_freshness": "FRESH",
+      "trigger_age_min": 5.866666666666666,
+      "trigger_hold_atr": 0.47772957780905445,
+      "geometry_class": "POOR",
+      "geometry_reason": "停損較寬＋進場有延伸",
+      "exit_profile": "1R保守型",
+      "entry_timing": "NORMAL",
+      "entry_timing_label": "正常時機",
+      "entry_timing_reason": "仍在可接受進場區，尚未明顯延伸",
+      "feasibility_class": "OPEN",
+      "feasibility_label": "開放",
+      "feasibility_reason": "前方沒有近距離強結構壓縮發展空間",
+      "tp1_r": 1.0,
+      "tp2_r": null,
+      "mfe_r": 0.0,
+      "mae_r": 0.0,
+      "tp1_hit": false,
+      "tp2_hit": false,
+      "best_price": 83124.9,
+      "worst_price": 83124.9,
+      "duration_min": 0
+    }
+  ],
   "history": [
     {
       "id": 1,
@@ -501,7 +561,8 @@
     "CONT:L:1791321300",
     "BO:L:1791326700",
     "CONT:S:1791361800",
-    "CONT:S:1791368100"
+    "CONT:S:1791368100",
+    "CONT:S:1791378000"
   ],
   "next_prepare_id": 8,
   "prepare_active": [
@@ -527,15 +588,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 83200.3,
+      "best_price": 83044.8,
       "worst_price": 83518.0,
-      "mfe_atr": 0.9147528706939286,
+      "mfe_atr": 1.5940464303544342,
       "mae_atr": 0.47310284573141304,
       "mfe_atr_30": 0.9148,
       "mae_atr_30": 0.4731,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 32
+      "duration_min": 47
     }
   ],
   "prepare_history": [
@@ -1268,6 +1329,10 @@
     {
       "time": 1791379579,
       "value": 30581.008700000115
+    },
+    {
+      "time": 1791380451,
+      "value": 30592.977700000123
     }
   ],
   "news": {
@@ -1288,7 +1353,7 @@
     ],
     "last_notify": 1791364722
   },
-  "last_event_scan": 1791379560,
+  "last_event_scan": 1791380400,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -2131,11 +2196,11 @@
       "defense": 83391.0,
       "first_seen": 1791378453,
       "first_seen_iso": "2026-10-07T13:07:33+00:00",
-      "last_seen": 1791379580,
-      "last_seen_iso": "2026-10-07T13:26:20+00:00",
-      "last_price": 83220.3,
+      "last_seen": 1791380452,
+      "last_seen_iso": "2026-10-07T13:40:52+00:00",
+      "last_price": 83124.9,
       "status": "DETECTED",
-      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "last_note": "本輪由 SHORT 正式候選主導，反向訊號僅內部追蹤",
       "block_count": 0
     },
     {
@@ -2169,14 +2234,30 @@
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
+    },
+    {
+      "setup_key": "CONT:S:1791378000",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 83236.6,
+      "defense": 83518.0,
+      "first_seen": 1791380452,
+      "first_seen_iso": "2026-10-07T13:40:52+00:00",
+      "last_seen": 1791380452,
+      "last_seen_iso": "2026-10-07T13:40:52+00:00",
+      "last_price": 83124.9,
+      "status": "FORMAL",
+      "last_note": "建立模擬單 #8｜🟡 混合｜Trigger 新鮮｜幾何偏差",
+      "block_count": 0
     }
   ],
   "active_thesis": {
     "side": "SHORT",
-    "setup_key": "BO:S:1791375300",
-    "source": "PREPARE",
+    "setup_key": "CONT:S:1791378000",
+    "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791377614,
-    "updated_iso": "2026-10-07T12:53:34+00:00"
+    "updated_at": 1791380452,
+    "updated_iso": "2026-10-07T13:40:52+00:00"
   }
 }
