@@ -53,13 +53,13 @@
       "feasibility_reason": "前方沒有近距離強結構壓縮發展空間",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mfe_r": 0.48395924755861036,
+      "mae_r": 0.045323167628460066,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 83926.1,
-      "worst_price": 83926.1,
-      "duration_min": 0
+      "best_price": 83800.1,
+      "worst_price": 83937.9,
+      "duration_min": 16
     }
   ],
   "history": [
@@ -433,15 +433,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 83900.4,
+      "best_price": 83800.1,
       "worst_price": 83995.8,
-      "mfe_atr": 0.16790579041628154,
+      "mfe_atr": 0.9299397623052701,
       "mae_atr": 0.5569002007923386,
       "mfe_atr_30": null,
       "mae_atr_30": null,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 9
+      "duration_min": 26
     }
   ],
   "prepare_history": [
@@ -1038,26 +1038,31 @@
     {
       "time": 1791363734,
       "value": 30583.25510000012
+    },
+    {
+      "time": 1791364720,
+      "value": 30628.75510000012
     }
   ],
   "news": {
     "seen": [
-      "7e42885c2d3007d3",
-      "085c0892bd873f9a",
-      "b7cc26b025b13571",
-      "bd874f4e9c33fa11",
-      "e9506e9061fa31eb",
-      "918c2ff23a2739cb",
-      "e26341045b283657",
-      "9032a59f50c65c28",
-      "8c697f3b056a4e8c",
       "4f71137ba5fd21cc",
+      "e26341045b283657",
+      "bd874f4e9c33fa11",
+      "060002070394507a",
+      "c483a9eed0bd7ac4",
+      "9032a59f50c65c28",
+      "e9506e9061fa31eb",
+      "8c697f3b056a4e8c",
       "a0a389ee4b775ac4",
-      "c483a9eed0bd7ac4"
+      "918c2ff23a2739cb",
+      "085c0892bd873f9a",
+      "7e42885c2d3007d3",
+      "b7cc26b025b13571"
     ],
-    "last_notify": 1791347561
+    "last_notify": 1791364722
   },
-  "last_event_scan": 1791363720,
+  "last_event_scan": 1791364680,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -1756,11 +1761,11 @@
       "defense": 83914.7,
       "first_seen": 1791363735,
       "first_seen_iso": "2026-10-07T09:02:15+00:00",
-      "last_seen": 1791363735,
-      "last_seen_iso": "2026-10-07T09:02:15+00:00",
-      "last_price": 83926.1,
+      "last_seen": 1791364723,
+      "last_seen_iso": "2026-10-07T09:18:43+00:00",
+      "last_price": 83809.0,
       "status": "DETECTED",
-      "last_note": "本輪由 SHORT 正式候選主導，反向訊號僅內部追蹤",
+      "last_note": "已有正式單 #6 進行中，暫不新增外部訊號",
       "block_count": 0
     },
     {
@@ -1772,11 +1777,11 @@
       "defense": 84140.0,
       "first_seen": 1791363735,
       "first_seen_iso": "2026-10-07T09:02:15+00:00",
-      "last_seen": 1791363735,
-      "last_seen_iso": "2026-10-07T09:02:15+00:00",
-      "last_price": 83926.1,
-      "status": "FORMAL",
-      "last_note": "建立模擬單 #6｜🟡 混合｜Trigger 仍有效｜幾何可管理",
+      "last_seen": 1791364723,
+      "last_seen_iso": "2026-10-07T09:18:43+00:00",
+      "last_price": 83809.0,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #6 進行中，暫不新增外部訊號",
       "block_count": 0
     }
   ],
@@ -1785,7 +1790,7 @@
     "setup_key": "CONT:S:1791361800",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791363735,
-    "updated_iso": "2026-10-07T09:02:15+00:00"
+    "updated_at": 1791364723,
+    "updated_iso": "2026-10-07T09:18:43+00:00"
   }
 }
