@@ -1054,5 +1054,37 @@
     "status": "DETECTED",
     "last_note": "非本輪主要 thesis，僅內部追蹤",
     "block_count": 0
+  },
+  {
+    "setup_key": "BO:L:1791406800",
+    "side": "LONG",
+    "type": "BREAKOUT",
+    "label": "有效突破",
+    "trigger": 83433.1,
+    "defense": 83291.5,
+    "first_seen": 1791409235,
+    "first_seen_iso": "2026-10-07T21:40:35+00:00",
+    "last_seen": 1791409235,
+    "last_seen_iso": "2026-10-07T21:40:35+00:00",
+    "last_price": 83223.7,
+    "status": "DETECTED",
+    "last_note": "本輪由 SHORT 正式候選主導，反向訊號僅內部追蹤",
+    "block_count": 0
+  },
+  {
+    "setup_key": "CONT:S:1791406800",
+    "side": "SHORT",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 83293.8,
+    "defense": 83433.1,
+    "first_seen": 1791409235,
+    "first_seen_iso": "2026-10-07T21:40:35+00:00",
+    "last_seen": 1791409235,
+    "last_seen_iso": "2026-10-07T21:40:35+00:00",
+    "last_price": 83223.7,
+    "status": "FORMAL",
+    "last_note": "建立模擬單 #9｜🟡 混合｜Trigger 仍有效｜幾何可管理",
+    "block_count": 0
   }
 ]
