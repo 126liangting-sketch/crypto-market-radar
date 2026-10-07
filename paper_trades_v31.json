@@ -52,12 +52,12 @@
       "tp1_r": 1.0,
       "tp2_r": null,
       "mfe_r": 0.5636651592344348,
-      "mae_r": 0.03091190108193834,
+      "mae_r": 0.09617035892150573,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 83076.0,
-      "worst_price": 83231.8,
-      "duration_min": 20
+      "worst_price": 83248.9,
+      "duration_min": 32
     }
   ],
   "history": [
