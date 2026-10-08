@@ -51,13 +51,13 @@
       "feasibility_reason": "前方沒有近距離強結構壓縮發展空間",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.6606391713799591,
+      "mfe_r": 0.833849386011993,
       "mae_r": 0.0,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 80910.4,
+      "best_price": 80721.6,
       "worst_price": 81630.5,
-      "duration_min": 31
+      "duration_min": 43
     }
   ],
   "history": [
