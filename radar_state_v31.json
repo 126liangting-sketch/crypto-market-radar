@@ -713,14 +713,14 @@
       "formal_delay_min": null,
       "status": "WATCHING",
       "best_price": 83363.3,
-      "worst_price": 83130.1,
+      "worst_price": 83060.6,
       "mfe_atr": 0.0957943925233884,
-      "mae_atr": 1.720404984423653,
+      "mae_atr": 2.2616822429906382,
       "mfe_atr_30": 0.0958,
       "mae_atr_30": 1.7204,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 31
+      "duration_min": 43
     },
     {
       "id": 10,
@@ -744,15 +744,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 83169.4,
+      "best_price": 83060.6,
       "worst_price": 83363.3,
-      "mfe_atr": 0.32076919142845045,
+      "mfe_atr": 1.0997800848974104,
       "mae_atr": 1.067559965222784,
       "mfe_atr_30": null,
       "mae_atr_30": null,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 15
+      "duration_min": 27
     }
   ],
   "prepare_history": [
@@ -1757,6 +1757,10 @@
     {
       "time": 1791424040,
       "value": 30808.57610000016
+    },
+    {
+      "time": 1791424756,
+      "value": 30892.708900000158
     }
   ],
   "news": {
@@ -1779,7 +1783,7 @@
     ],
     "last_notify": 1791418531
   },
-  "last_event_scan": 1791424020,
+  "last_event_scan": 1791424740,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -3006,9 +3010,9 @@
       "defense": 83192.8,
       "first_seen": 1791423120,
       "first_seen_iso": "2026-10-08T01:32:00+00:00",
-      "last_seen": 1791424041,
-      "last_seen_iso": "2026-10-08T01:47:21+00:00",
-      "last_price": 83200.1,
+      "last_seen": 1791424757,
+      "last_seen_iso": "2026-10-08T01:59:17+00:00",
+      "last_price": 83066.0,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
@@ -3025,6 +3029,22 @@
       "last_seen": 1791424041,
       "last_seen_iso": "2026-10-08T01:47:21+00:00",
       "last_price": 83200.1,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "REV:S:1791409500:1791411300",
+      "side": "SHORT",
+      "type": "REVERSAL",
+      "label": "結構反轉",
+      "trigger": 83076.0,
+      "defense": 83433.1,
+      "first_seen": 1791424757,
+      "first_seen_iso": "2026-10-08T01:59:17+00:00",
+      "last_seen": 1791424757,
+      "last_seen_iso": "2026-10-08T01:59:17+00:00",
+      "last_price": 83066.0,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
