@@ -54,12 +54,12 @@
       "tp1_r": 1.0,
       "tp2_r": null,
       "mfe_r": 0.5636651592344348,
-      "mae_r": 0.5712977274028092,
+      "mae_r": 0.704104413532534,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 83076.0,
-      "worst_price": 83373.4,
-      "duration_min": 180
+      "worst_price": 83408.2,
+      "duration_min": 200
     }
   ],
   "history": [
@@ -1673,6 +1673,10 @@
     {
       "time": 1791420068,
       "value": 30726.852400000123
+    },
+    {
+      "time": 1791421254,
+      "value": 30687.005300000124
     }
   ],
   "news": {
@@ -1695,7 +1699,7 @@
     ],
     "last_notify": 1791418531
   },
-  "last_event_scan": 1791420060,
+  "last_event_scan": 1791421200,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -2880,6 +2884,38 @@
       "status": "DETECTED",
       "last_note": "已有正式單 #9 進行中，暫不新增外部訊號",
       "block_count": 0
+    },
+    {
+      "setup_key": "BO:L:1791418500",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 83370.0,
+      "defense": 83181.3,
+      "first_seen": 1791421256,
+      "first_seen_iso": "2026-10-08T01:00:56+00:00",
+      "last_seen": 1791421256,
+      "last_seen_iso": "2026-10-08T01:00:56+00:00",
+      "last_price": 83390.0,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #9 進行中，暫不新增外部訊號",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BO:S:1791419400",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 83192.8,
+      "defense": 83370.0,
+      "first_seen": 1791421256,
+      "first_seen_iso": "2026-10-08T01:00:56+00:00",
+      "last_seen": 1791421256,
+      "last_seen_iso": "2026-10-08T01:00:56+00:00",
+      "last_price": 83390.0,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #9 進行中，暫不新增外部訊號",
+      "block_count": 0
     }
   ],
   "active_thesis": {
@@ -2887,7 +2923,7 @@
     "setup_key": "CONT:S:1791406800",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791420069,
-    "updated_iso": "2026-10-08T00:41:09+00:00"
+    "updated_at": 1791421256,
+    "updated_iso": "2026-10-08T01:00:56+00:00"
   }
 }
