@@ -1832,9 +1832,9 @@
     "defense": 81413.9,
     "first_seen": 1791484081,
     "first_seen_iso": "2026-10-08T18:28:01+00:00",
-    "last_seen": 1791486091,
-    "last_seen_iso": "2026-10-08T19:01:31+00:00",
-    "last_price": 81492.8,
+    "last_seen": 1791486976,
+    "last_seen_iso": "2026-10-08T19:16:16+00:00",
+    "last_price": 81466.9,
     "status": "DETECTED",
     "last_note": "非本輪主要 thesis，僅內部追蹤",
     "block_count": 0
