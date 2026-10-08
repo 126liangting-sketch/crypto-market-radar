@@ -1784,11 +1784,27 @@
     "defense": 80721.6,
     "first_seen": 1791478843,
     "first_seen_iso": "2026-10-08T17:00:43+00:00",
-    "last_seen": 1791478843,
-    "last_seen_iso": "2026-10-08T17:00:43+00:00",
-    "last_price": 80761.2,
+    "last_seen": 1791479676,
+    "last_seen_iso": "2026-10-08T17:14:36+00:00",
+    "last_price": 80931.3,
     "status": "DETECTED",
     "last_note": "已有正式單 #11 進行中，暫不新增外部訊號",
     "block_count": 0
+  },
+  {
+    "setup_key": "CONT:S:1791477000",
+    "side": "SHORT",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 81058.2,
+    "defense": 81413.9,
+    "first_seen": 1791479676,
+    "first_seen_iso": "2026-10-08T17:14:36+00:00",
+    "last_seen": 1791479676,
+    "last_seen_iso": "2026-10-08T17:14:36+00:00",
+    "last_price": 80931.3,
+    "status": "BLOCKED",
+    "last_note": "全局仲裁：已有同方向正式單 #11 進行中",
+    "block_count": 1
   }
 ]
