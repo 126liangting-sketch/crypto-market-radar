@@ -867,15 +867,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 80766.5,
-      "worst_price": 80766.5,
-      "mfe_atr": 0.0,
-      "mae_atr": 0.0,
+      "best_price": 80730.6,
+      "worst_price": 80903.9,
+      "mfe_atr": 0.07460958375392214,
+      "mae_atr": 0.2855531144231234,
       "mfe_atr_30": null,
       "mae_atr_30": null,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 0
+      "duration_min": 14
     }
   ],
   "prepare_history": [
@@ -2230,6 +2230,10 @@
     {
       "time": 1791480642,
       "value": 30636.759200000135
+    },
+    {
+      "time": 1791481527,
+      "value": 30549.075800000137
     }
   ],
   "news": {
@@ -2257,7 +2261,7 @@
     ],
     "last_notify": 1791473130
   },
-  "last_event_scan": 1791480600,
+  "last_event_scan": 1791481500,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -4044,9 +4048,9 @@
       "defense": 80721.6,
       "first_seen": 1791478843,
       "first_seen_iso": "2026-10-08T17:00:43+00:00",
-      "last_seen": 1791480643,
-      "last_seen_iso": "2026-10-08T17:30:43+00:00",
-      "last_price": 80766.5,
+      "last_seen": 1791481529,
+      "last_seen_iso": "2026-10-08T17:45:29+00:00",
+      "last_price": 80800.8,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
@@ -4066,6 +4070,22 @@
       "status": "BLOCKED",
       "last_note": "全局仲裁：已有同方向正式單 #11 進行中",
       "block_count": 1
+    },
+    {
+      "setup_key": "REV:S:1791473400:1791477000",
+      "side": "SHORT",
+      "type": "REVERSAL",
+      "label": "結構反轉",
+      "trigger": 80910.4,
+      "defense": 82748.1,
+      "first_seen": 1791481529,
+      "first_seen_iso": "2026-10-08T17:45:29+00:00",
+      "last_seen": 1791481529,
+      "last_seen_iso": "2026-10-08T17:45:29+00:00",
+      "last_price": 80800.8,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
     }
   ],
   "active_thesis": {
