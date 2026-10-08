@@ -53,13 +53,13 @@
       "feasibility_reason": "前方沒有近距離強結構壓縮發展空間",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.0,
+      "mfe_r": 0.6606391713799591,
       "mae_r": 0.0,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 81630.5,
+      "best_price": 80910.4,
       "worst_price": 81630.5,
-      "duration_min": 0
+      "duration_min": 16
     }
   ],
   "history": [
@@ -2134,6 +2134,10 @@
     {
       "time": 1791473128,
       "value": 30916.246100000128
+    },
+    {
+      "time": 1791474124,
+      "value": 30749.95850000012
     }
   ],
   "news": {
@@ -2160,7 +2164,7 @@
     ],
     "last_notify": 1791473130
   },
-  "last_event_scan": 1791473100,
+  "last_event_scan": 1791474120,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -3883,11 +3887,11 @@
       "defense": 82610.9,
       "first_seen": 1791469438,
       "first_seen_iso": "2026-10-08T14:23:58+00:00",
-      "last_seen": 1791473133,
-      "last_seen_iso": "2026-10-08T15:25:33+00:00",
-      "last_price": 81630.5,
-      "status": "FORMAL",
-      "last_note": "建立模擬單 #11｜🟡 混合｜Trigger 新鮮｜幾何可管理",
+      "last_seen": 1791474126,
+      "last_seen_iso": "2026-10-08T15:42:06+00:00",
+      "last_price": 81120.8,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #11 進行中，暫不新增外部訊號",
       "block_count": 0
     },
     {
@@ -3899,11 +3903,11 @@
       "defense": 81711.0,
       "first_seen": 1791472037,
       "first_seen_iso": "2026-10-08T15:07:17+00:00",
-      "last_seen": 1791473133,
-      "last_seen_iso": "2026-10-08T15:25:33+00:00",
-      "last_price": 81630.5,
+      "last_seen": 1791474126,
+      "last_seen_iso": "2026-10-08T15:42:06+00:00",
+      "last_price": 81120.8,
       "status": "DETECTED",
-      "last_note": "本輪由 SHORT 正式候選主導，反向訊號僅內部追蹤",
+      "last_note": "已有正式單 #11 進行中，暫不新增外部訊號",
       "block_count": 0
     }
   ],
@@ -3912,7 +3916,7 @@
     "setup_key": "BO:S:1791466200",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791473133,
-    "updated_iso": "2026-10-08T15:25:33+00:00"
+    "updated_at": 1791474126,
+    "updated_iso": "2026-10-08T15:42:06+00:00"
   }
 }

@@ -1720,11 +1720,11 @@
     "defense": 82610.9,
     "first_seen": 1791469438,
     "first_seen_iso": "2026-10-08T14:23:58+00:00",
-    "last_seen": 1791473133,
-    "last_seen_iso": "2026-10-08T15:25:33+00:00",
-    "last_price": 81630.5,
-    "status": "FORMAL",
-    "last_note": "建立模擬單 #11｜🟡 混合｜Trigger 新鮮｜幾何可管理",
+    "last_seen": 1791474126,
+    "last_seen_iso": "2026-10-08T15:42:06+00:00",
+    "last_price": 81120.8,
+    "status": "DETECTED",
+    "last_note": "已有正式單 #11 進行中，暫不新增外部訊號",
     "block_count": 0
   },
   {
@@ -1736,11 +1736,11 @@
     "defense": 81711.0,
     "first_seen": 1791472037,
     "first_seen_iso": "2026-10-08T15:07:17+00:00",
-    "last_seen": 1791473133,
-    "last_seen_iso": "2026-10-08T15:25:33+00:00",
-    "last_price": 81630.5,
+    "last_seen": 1791474126,
+    "last_seen_iso": "2026-10-08T15:42:06+00:00",
+    "last_price": 81120.8,
     "status": "DETECTED",
-    "last_note": "本輪由 SHORT 正式候選主導，反向訊號僅內部追蹤",
+    "last_note": "已有正式單 #11 進行中，暫不新增外部訊號",
     "block_count": 0
   }
 ]
