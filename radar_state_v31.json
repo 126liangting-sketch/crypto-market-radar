@@ -59,7 +59,7 @@
       "tp2_hit": false,
       "best_price": 82144.8,
       "worst_price": 83248.6,
-      "duration_min": 384
+      "duration_min": 404
     }
   ],
   "history": [
@@ -2036,31 +2036,36 @@
     {
       "time": 1791464529,
       "value": 31056.615100000166
+    },
+    {
+      "time": 1791465691,
+      "value": 31072.961800000143
     }
   ],
   "news": {
     "seen": [
-      "7e42885c2d3007d3",
-      "9032a59f50c65c28",
+      "1c2050fa283ac439",
+      "b7cc26b025b13571",
+      "918c2ff23a2739cb",
       "bf363477b3b0aaba",
-      "c483a9eed0bd7ac4",
-      "085c0892bd873f9a",
       "e9506e9061fa31eb",
-      "af23dcf6e683c015",
-      "4f71137ba5fd21cc",
-      "37bdfc51dc7f413f",
       "8c697f3b056a4e8c",
+      "ece93c1ef267cbf3",
+      "9032a59f50c65c28",
+      "37bdfc51dc7f413f",
       "bd874f4e9c33fa11",
       "060002070394507a",
-      "b7cc26b025b13571",
+      "c483a9eed0bd7ac4",
+      "af23dcf6e683c015",
       "e26341045b283657",
-      "a0a389ee4b775ac4",
-      "1c2050fa283ac439",
-      "918c2ff23a2739cb"
+      "085c0892bd873f9a",
+      "7e42885c2d3007d3",
+      "4f71137ba5fd21cc",
+      "a0a389ee4b775ac4"
     ],
     "last_notify": 1791458262
   },
-  "last_event_scan": 1791464520,
+  "last_event_scan": 1791465660,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -3687,9 +3692,9 @@
       "defense": 82264.2,
       "first_seen": 1791460821,
       "first_seen_iso": "2026-10-08T12:00:21+00:00",
-      "last_seen": 1791464530,
-      "last_seen_iso": "2026-10-08T13:02:10+00:00",
-      "last_price": 82171.0,
+      "last_seen": 1791465693,
+      "last_seen_iso": "2026-10-08T13:21:33+00:00",
+      "last_price": 82558.3,
       "status": "DETECTED",
       "last_note": "已有正式單 #10 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -3725,6 +3730,22 @@
       "status": "DETECTED",
       "last_note": "已有正式單 #10 進行中，暫不新增外部訊號",
       "block_count": 0
+    },
+    {
+      "setup_key": "BO:S:1791463500",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 81818.6,
+      "defense": 82636.0,
+      "first_seen": 1791465693,
+      "first_seen_iso": "2026-10-08T13:21:33+00:00",
+      "last_seen": 1791465693,
+      "last_seen_iso": "2026-10-08T13:21:33+00:00",
+      "last_price": 82558.3,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #10 進行中，暫不新增外部訊號",
+      "block_count": 0
     }
   ],
   "active_thesis": {
@@ -3732,7 +3753,7 @@
     "setup_key": "REV:S:1791429300:1791433800",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791464530,
-    "updated_iso": "2026-10-08T13:02:10+00:00"
+    "updated_at": 1791465693,
+    "updated_iso": "2026-10-08T13:21:33+00:00"
   }
 }
