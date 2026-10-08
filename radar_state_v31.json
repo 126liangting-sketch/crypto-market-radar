@@ -712,15 +712,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 83351.0,
+      "best_price": 83363.3,
       "worst_price": 83130.1,
-      "mfe_atr": 0.0,
+      "mfe_atr": 0.0957943925233884,
       "mae_atr": 1.720404984423653,
-      "mfe_atr_30": null,
-      "mae_atr_30": null,
+      "mfe_atr_30": 0.0958,
+      "mae_atr_30": 1.7204,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 15
+      "duration_min": 31
     },
     {
       "id": 10,
@@ -744,15 +744,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 83214.2,
-      "worst_price": 83214.2,
-      "mfe_atr": 0.0,
-      "mae_atr": 0.0,
+      "best_price": 83169.4,
+      "worst_price": 83363.3,
+      "mfe_atr": 0.32076919142845045,
+      "mae_atr": 1.067559965222784,
       "mfe_atr_30": null,
       "mae_atr_30": null,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 0
+      "duration_min": 15
     }
   ],
   "prepare_history": [
@@ -1753,6 +1753,10 @@
     {
       "time": 1791423119,
       "value": 30783.77140000016
+    },
+    {
+      "time": 1791424040,
+      "value": 30808.57610000016
     }
   ],
   "news": {
@@ -1775,7 +1779,7 @@
     ],
     "last_notify": 1791418531
   },
-  "last_event_scan": 1791423060,
+  "last_event_scan": 1791424020,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -3002,9 +3006,25 @@
       "defense": 83192.8,
       "first_seen": 1791423120,
       "first_seen_iso": "2026-10-08T01:32:00+00:00",
-      "last_seen": 1791423120,
-      "last_seen_iso": "2026-10-08T01:32:00+00:00",
-      "last_price": 83214.2,
+      "last_seen": 1791424041,
+      "last_seen_iso": "2026-10-08T01:47:21+00:00",
+      "last_price": 83200.1,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BO:S:1791422100",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 83130.1,
+      "defense": 83488.0,
+      "first_seen": 1791424041,
+      "first_seen_iso": "2026-10-08T01:47:21+00:00",
+      "last_seen": 1791424041,
+      "last_seen_iso": "2026-10-08T01:47:21+00:00",
+      "last_price": 83200.1,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
