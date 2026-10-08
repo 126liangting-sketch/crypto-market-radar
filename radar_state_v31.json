@@ -829,7 +829,8 @@
     "BO:S:1791419400",
     "BO:S:1791429300",
     "BO:S:1791475200",
-    "BO:L:1791477000"
+    "BO:L:1791477000",
+    "BO:L:1791484200"
   ],
   "formal_seen": [
     "CONT:L:1791284400",
@@ -844,7 +845,7 @@
     "REV:S:1791429300:1791433800",
     "BO:S:1791466200"
   ],
-  "next_prepare_id": 14,
+  "next_prepare_id": 15,
   "prepare_active": [
     {
       "id": 13,
@@ -872,11 +873,43 @@
       "worst_price": 81296.5,
       "mfe_atr": 0.2913935747287142,
       "mae_atr": 0.18889008273341582,
+      "mfe_atr_30": 0.2914,
+      "mae_atr_30": 0.1889,
+      "mfe_atr_60": null,
+      "mae_atr_60": null,
+      "duration_min": 33
+    },
+    {
+      "id": 14,
+      "setup_key": "BO:L:1791484200",
+      "side": "LONG",
+      "trigger_type": "有效突破",
+      "opened_at": 1791486091,
+      "opened_iso": "2026-10-08T19:01:31+00:00",
+      "prepare_price": 81492.8,
+      "trigger": 81525.7,
+      "atr_open": 415.23571428571137,
+      "trend_1h": "BEAR",
+      "ema_position": "偏離",
+      "ema_distance_atr": 0.5209960155960653,
+      "volume_ratio": 0.1889169293226575,
+      "regime": "TREND",
+      "oi_dir": "DOWN",
+      "cvd_dir": "UP",
+      "formal_promoted": false,
+      "formal_trade_id": null,
+      "formal_at": null,
+      "formal_delay_min": null,
+      "status": "WATCHING",
+      "best_price": 81492.8,
+      "worst_price": 81492.8,
+      "mfe_atr": 0.0,
+      "mae_atr": 0.0,
       "mfe_atr_30": null,
       "mae_atr_30": null,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 18
+      "duration_min": 0
     }
   ],
   "prepare_history": [
@@ -2285,34 +2318,39 @@
     {
       "time": 1791485200,
       "value": 30310.97640000014
+    },
+    {
+      "time": 1791486088,
+      "value": 30316.447400000143
     }
   ],
   "news": {
     "seen": [
-      "f778db1ce3cfae41",
-      "085c0892bd873f9a",
-      "9032a59f50c65c28",
-      "c483a9eed0bd7ac4",
       "f10ac875927eb88a",
-      "e9506e9061fa31eb",
-      "060002070394507a",
-      "7e42885c2d3007d3",
-      "1c2050fa283ac439",
-      "918c2ff23a2739cb",
-      "b7cc26b025b13571",
-      "4f71137ba5fd21cc",
-      "e26341045b283657",
-      "ece93c1ef267cbf3",
-      "bf363477b3b0aaba",
-      "37bdfc51dc7f413f",
-      "af23dcf6e683c015",
       "bd874f4e9c33fa11",
+      "4f71137ba5fd21cc",
+      "7e42885c2d3007d3",
+      "ece93c1ef267cbf3",
+      "e26341045b283657",
+      "918c2ff23a2739cb",
+      "af23dcf6e683c015",
+      "cffb76353befc09e",
+      "37bdfc51dc7f413f",
+      "060002070394507a",
       "a0a389ee4b775ac4",
-      "8c697f3b056a4e8c"
+      "f778db1ce3cfae41",
+      "bf363477b3b0aaba",
+      "9032a59f50c65c28",
+      "8c697f3b056a4e8c",
+      "1c2050fa283ac439",
+      "c483a9eed0bd7ac4",
+      "085c0892bd873f9a",
+      "b7cc26b025b13571",
+      "e9506e9061fa31eb"
     ],
-    "last_notify": 1791473130
+    "last_notify": 1791486089
   },
-  "last_event_scan": 1791485160,
+  "last_event_scan": 1791486060,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -4147,20 +4185,36 @@
       "defense": 81413.9,
       "first_seen": 1791484081,
       "first_seen_iso": "2026-10-08T18:28:01+00:00",
-      "last_seen": 1791485202,
-      "last_seen_iso": "2026-10-08T18:46:42+00:00",
-      "last_price": 81442.3,
+      "last_seen": 1791486091,
+      "last_seen_iso": "2026-10-08T19:01:31+00:00",
+      "last_price": 81492.8,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BO:L:1791484200",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 81525.7,
+      "defense": 80500.0,
+      "first_seen": 1791486091,
+      "first_seen_iso": "2026-10-08T19:01:31+00:00",
+      "last_seen": 1791486091,
+      "last_seen_iso": "2026-10-08T19:01:31+00:00",
+      "last_price": 81492.8,
+      "status": "PREPARED",
+      "last_note": "進入準備距離",
       "block_count": 0
     }
   ],
   "active_thesis": {
     "side": "LONG",
-    "setup_key": "BO:L:1791477000",
+    "setup_key": "BO:L:1791484200",
     "source": "PREPARE",
     "context_class": "MIXED",
-    "updated_at": 1791484080,
-    "updated_iso": "2026-10-08T18:28:00+00:00"
+    "updated_at": 1791486091,
+    "updated_iso": "2026-10-08T19:01:31+00:00"
   }
 }
