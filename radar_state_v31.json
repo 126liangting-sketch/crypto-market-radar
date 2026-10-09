@@ -1,7 +1,67 @@
 {
   "version": "LASER_SIGNAL_CORE_3_1_RISK_ENGINE",
-  "next_trade_id": 13,
-  "trades": [],
+  "next_trade_id": 14,
+  "trades": [
+    {
+      "id": 13,
+      "setup_key": "BO:L:1791509400",
+      "side": "LONG",
+      "trigger_type": "有效突破",
+      "engine_version": "LASER_SIGNAL_CORE_3_1_RISK_ENGINE",
+      "engine_build": "LASER_SIGNAL_CORE_3_1_MULTI_THESIS_FEASIBILITY",
+      "opened_at": 1791511379,
+      "opened_iso": "2026-10-09T02:02:59+00:00",
+      "status": "OPEN",
+      "entry": 81967.4,
+      "sl": 81522.23714285714,
+      "tp1": 82412.56285714285,
+      "tp2": null,
+      "risk": 445.16285714285914,
+      "risk_atr": 2.843712356269397,
+      "trigger": 81964.9,
+      "defense_source": "結構",
+      "defense_anchor": 81569.2,
+      "stop_buffer_atr": 0.3,
+      "position_size_factor": 0.527479509906486,
+      "extension_atr": 0.015970067530571227,
+      "trend_1h": "BEAR",
+      "ema_position": "偏離",
+      "ema_distance_atr": 0.8297976549459795,
+      "volume_ratio": 4.0,
+      "regime": "TREND",
+      "space_r": 1.445538390444582,
+      "space_strength": "STRONG",
+      "oi_dir": "FLAT",
+      "cvd_dir": "UP",
+      "flow_quality": "偏支持",
+      "context_class": "MIXED",
+      "context_reason": "逆1H背景＋幾何可管理",
+      "quality_state": "CAUTION",
+      "quality_decision": "CAUTION",
+      "quality_reason": "可交易，但情境或交易幾何尚未完全共振",
+      "trigger_freshness": "FRESH",
+      "trigger_age_min": 0.9833333333333333,
+      "trigger_hold_atr": 0.015970067530571227,
+      "geometry_class": "MANAGE",
+      "geometry_reason": "停損較寬",
+      "exit_profile": "1R保守型",
+      "entry_timing": "IDEAL",
+      "entry_timing_label": "理想時機",
+      "entry_timing_reason": "Trigger新鮮且貼近啟動價，屬於較早的可執行時機",
+      "feasibility_class": "OPEN",
+      "feasibility_label": "開放",
+      "feasibility_reason": "前方沒有近距離強結構壓縮發展空間",
+      "tp1_r": 1.0,
+      "tp2_r": null,
+      "mfe_r": 0.0,
+      "mae_r": 0.0,
+      "tp1_hit": false,
+      "tp2_hit": false,
+      "best_price": 81967.4,
+      "worst_price": 81967.4,
+      "duration_min": 0
+    }
+  ],
   "history": [
     {
       "id": 1,
@@ -906,7 +966,8 @@
     "CONT:S:1791406800",
     "REV:S:1791429300:1791433800",
     "BO:S:1791466200",
-    "BO:S:1791498600"
+    "BO:S:1791498600",
+    "BO:L:1791509400"
   ],
   "next_prepare_id": 16,
   "prepare_active": [],
@@ -2534,6 +2595,10 @@
     {
       "time": 1791510820,
       "value": 29789.974900000107
+    },
+    {
+      "time": 1791511377,
+      "value": 29753.21880000011
     }
   ],
   "news": {
@@ -2563,7 +2628,7 @@
     ],
     "last_notify": 1791486089
   },
-  "last_event_scan": 1791510780,
+  "last_event_scan": 1791511320,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -4702,20 +4767,36 @@
       "defense": 81868.0,
       "first_seen": 1791510821,
       "first_seen_iso": "2026-10-09T01:53:41+00:00",
-      "last_seen": 1791510821,
-      "last_seen_iso": "2026-10-09T01:53:41+00:00",
-      "last_price": 81931.9,
+      "last_seen": 1791511379,
+      "last_seen_iso": "2026-10-09T02:02:59+00:00",
+      "last_price": 81967.4,
       "status": "DETECTED",
-      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "last_note": "本輪由 LONG 正式候選主導，反向訊號僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BO:L:1791509400",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 81964.9,
+      "defense": 81569.2,
+      "first_seen": 1791511379,
+      "first_seen_iso": "2026-10-09T02:02:59+00:00",
+      "last_seen": 1791511379,
+      "last_seen_iso": "2026-10-09T02:02:59+00:00",
+      "last_price": 81967.4,
+      "status": "FORMAL",
+      "last_note": "建立模擬單 #13｜🟡 混合｜Trigger 新鮮｜幾何可管理",
       "block_count": 0
     }
   ],
   "active_thesis": {
-    "side": "SHORT",
-    "setup_key": "BO:S:1791498600",
+    "side": "LONG",
+    "setup_key": "BO:L:1791509400",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791509979,
-    "updated_iso": "2026-10-09T01:39:39+00:00"
+    "updated_at": 1791511379,
+    "updated_iso": "2026-10-09T02:02:59+00:00"
   }
 }
