@@ -53,13 +53,13 @@
       "feasibility_reason": "前方強結構約 0.64R，仍有可管理發展空間",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mfe_r": 0.1513079202089905,
+      "mae_r": 0.578779247232843,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 81708.6,
-      "worst_price": 81708.6,
-      "duration_min": 0
+      "best_price": 81680.0,
+      "worst_price": 81818.0,
+      "duration_min": 20
     }
   ],
   "history": [
@@ -2509,6 +2509,10 @@
     {
       "time": 1791504024,
       "value": 29821.318700000153
+    },
+    {
+      "time": 1791505239,
+      "value": 29810.16100000016
     }
   ],
   "news": {
@@ -2538,7 +2542,7 @@
     ],
     "last_notify": 1791486089
   },
-  "last_event_scan": 1791504000,
+  "last_event_scan": 1791505200,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -4587,6 +4591,38 @@
       "status": "DETECTED",
       "last_note": "本輪由 SHORT 正式候選主導，反向訊號僅內部追蹤",
       "block_count": 0
+    },
+    {
+      "setup_key": "CONT:L:1791503100",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 81762.5,
+      "defense": 81656.6,
+      "first_seen": 1791505240,
+      "first_seen_iso": "2026-10-09T00:20:40+00:00",
+      "last_seen": 1791505240,
+      "last_seen_iso": "2026-10-09T00:20:40+00:00",
+      "last_price": 81700.0,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #12 進行中，暫不新增外部訊號",
+      "block_count": 0
+    },
+    {
+      "setup_key": "CONT:S:1791502200",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 81752.7,
+      "defense": 81880.0,
+      "first_seen": 1791505240,
+      "first_seen_iso": "2026-10-09T00:20:40+00:00",
+      "last_seen": 1791505240,
+      "last_seen_iso": "2026-10-09T00:20:40+00:00",
+      "last_price": 81700.0,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #12 進行中，暫不新增外部訊號",
+      "block_count": 0
     }
   ],
   "active_thesis": {
@@ -4594,7 +4630,7 @@
     "setup_key": "BO:S:1791498600",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791504025,
-    "updated_iso": "2026-10-09T00:00:25+00:00"
+    "updated_at": 1791505240,
+    "updated_iso": "2026-10-09T00:20:40+00:00"
   }
 }
