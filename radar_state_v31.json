@@ -53,13 +53,13 @@
       "feasibility_reason": "前方沒有近距離強結構壓縮發展空間",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.8390187860622399,
+      "mfe_r": 0.9686342718876777,
       "mae_r": 0.21654996245353425,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 82340.9,
+      "best_price": 82398.6,
       "worst_price": 81871.0,
-      "duration_min": 98
+      "duration_min": 112
     }
   ],
   "history": [
@@ -2656,6 +2656,10 @@
     {
       "time": 1791517314,
       "value": 29556.96920000012
+    },
+    {
+      "time": 1791518138,
+      "value": 29537.37990000012
     }
   ],
   "news": {
@@ -2685,7 +2689,7 @@
     ],
     "last_notify": 1791486089
   },
-  "last_event_scan": 1791517260,
+  "last_event_scan": 1791518100,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -4872,9 +4876,9 @@
       "defense": 82111.0,
       "first_seen": 1791515379,
       "first_seen_iso": "2026-10-09T03:09:39+00:00",
-      "last_seen": 1791517316,
-      "last_seen_iso": "2026-10-09T03:41:56+00:00",
-      "last_price": 82297.9,
+      "last_seen": 1791518139,
+      "last_seen_iso": "2026-10-09T03:55:39+00:00",
+      "last_price": 82355.7,
       "status": "DETECTED",
       "last_note": "已有正式單 #13 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -4904,9 +4908,9 @@
       "defense": 81871.0,
       "first_seen": 1791517316,
       "first_seen_iso": "2026-10-09T03:41:56+00:00",
-      "last_seen": 1791517316,
-      "last_seen_iso": "2026-10-09T03:41:56+00:00",
-      "last_price": 82297.9,
+      "last_seen": 1791518139,
+      "last_seen_iso": "2026-10-09T03:55:39+00:00",
+      "last_price": 82355.7,
       "status": "DETECTED",
       "last_note": "已有正式單 #13 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -4917,7 +4921,7 @@
     "setup_key": "BO:L:1791509400",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791517316,
-    "updated_iso": "2026-10-09T03:41:56+00:00"
+    "updated_at": 1791518139,
+    "updated_iso": "2026-10-09T03:55:39+00:00"
   }
 }
