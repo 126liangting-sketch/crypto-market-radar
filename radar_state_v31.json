@@ -1096,14 +1096,14 @@
       "formal_delay_min": null,
       "status": "WATCHING",
       "best_price": 82276.2,
-      "worst_price": 82428.9,
+      "worst_price": 82456.0,
       "mfe_atr": 0.06312277379503191,
-      "mae_atr": 0.900761982055087,
+      "mae_atr": 1.0718246990396603,
       "mfe_atr_30": 0.0631,
       "mae_atr_30": 0.9008,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 38
+      "duration_min": 53
     }
   ],
   "prepare_history": [
@@ -3340,6 +3340,10 @@
     {
       "time": 1791578074,
       "value": 30093.286900000134
+    },
+    {
+      "time": 1791578986,
+      "value": 30000.798400000138
     }
   ],
   "news": {
@@ -3374,7 +3378,7 @@
     ],
     "last_notify": 1791557997
   },
-  "last_event_scan": 1791578040,
+  "last_event_scan": 1791578940,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -6268,6 +6272,38 @@
       "last_seen": 1791576245,
       "last_seen_iso": "2026-10-09T20:04:05+00:00",
       "last_price": 82292.6,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BO:L:1791576900",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 82450.0,
+      "defense": 82234.8,
+      "first_seen": 1791578987,
+      "first_seen_iso": "2026-10-09T20:49:47+00:00",
+      "last_seen": 1791578987,
+      "last_seen_iso": "2026-10-09T20:49:47+00:00",
+      "last_price": 82455.9,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "CONT:S:1791576900",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 82344.3,
+      "defense": 82450.0,
+      "first_seen": 1791578987,
+      "first_seen_iso": "2026-10-09T20:49:47+00:00",
+      "last_seen": 1791578987,
+      "last_seen_iso": "2026-10-09T20:49:47+00:00",
+      "last_price": 82455.9,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
