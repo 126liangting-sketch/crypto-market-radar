@@ -54,12 +54,12 @@
       "tp1_r": 1.0,
       "tp2_r": null,
       "mfe_r": 0.3225785747752143,
-      "mae_r": 0.1284923013728452,
+      "mae_r": 0.21654996245353425,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 82111.0,
-      "worst_price": 81910.2,
-      "duration_min": 15
+      "worst_price": 81871.0,
+      "duration_min": 30
     }
   ],
   "history": [
@@ -2632,6 +2632,10 @@
     {
       "time": 1791512287,
       "value": 29776.56690000012
+    },
+    {
+      "time": 1791513180,
+      "value": 29751.513600000115
     }
   ],
   "news": {
@@ -2661,7 +2665,7 @@
     ],
     "last_notify": 1791486089
   },
-  "last_event_scan": 1791512280,
+  "last_event_scan": 1791513120,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -4688,11 +4692,11 @@
       "defense": 81560.8,
       "first_seen": 1791502060,
       "first_seen_iso": "2026-10-08T23:27:40+00:00",
-      "last_seen": 1791502830,
-      "last_seen_iso": "2026-10-08T23:40:30+00:00",
-      "last_price": 81810.6,
+      "last_seen": 1791513181,
+      "last_seen_iso": "2026-10-09T02:33:01+00:00",
+      "last_price": 81914.2,
       "status": "DETECTED",
-      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "last_note": "已有正式單 #13 進行中，暫不新增外部訊號",
       "block_count": 0
     },
     {
@@ -4800,9 +4804,9 @@
       "defense": 81868.0,
       "first_seen": 1791510821,
       "first_seen_iso": "2026-10-09T01:53:41+00:00",
-      "last_seen": 1791512288,
-      "last_seen_iso": "2026-10-09T02:18:08+00:00",
-      "last_price": 82004.6,
+      "last_seen": 1791513181,
+      "last_seen_iso": "2026-10-09T02:33:01+00:00",
+      "last_price": 81914.2,
       "status": "DETECTED",
       "last_note": "已有正式單 #13 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -4829,7 +4833,7 @@
     "setup_key": "BO:L:1791509400",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791512288,
-    "updated_iso": "2026-10-09T02:18:08+00:00"
+    "updated_at": 1791513181,
+    "updated_iso": "2026-10-09T02:33:01+00:00"
   }
 }
