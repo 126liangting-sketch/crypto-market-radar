@@ -2552,11 +2552,11 @@
     "defense": 82353.1,
     "first_seen": 1791552308,
     "first_seen_iso": "2026-10-09T13:25:08+00:00",
-    "last_seen": 1791557091,
-    "last_seen_iso": "2026-10-09T14:44:51+00:00",
-    "last_price": 83015.9,
+    "last_seen": 1791557999,
+    "last_seen_iso": "2026-10-09T14:59:59+00:00",
+    "last_price": 83008.3,
     "status": "DETECTED",
-    "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "last_note": "本輪由 SHORT 正式候選主導，反向訊號僅內部追蹤",
     "block_count": 0
   },
   {
@@ -2600,11 +2600,11 @@
     "defense": 83142.7,
     "first_seen": 1791553267,
     "first_seen_iso": "2026-10-09T13:41:07+00:00",
-    "last_seen": 1791557091,
-    "last_seen_iso": "2026-10-09T14:44:51+00:00",
-    "last_price": 83015.9,
-    "status": "PREPARED",
-    "last_note": "進入準備距離",
+    "last_seen": 1791557999,
+    "last_seen_iso": "2026-10-09T14:59:59+00:00",
+    "last_price": 83008.3,
+    "status": "FORMAL",
+    "last_note": "建立模擬單 #14",
     "block_count": 0
   },
   {
