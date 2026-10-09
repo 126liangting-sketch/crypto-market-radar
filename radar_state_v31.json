@@ -1096,14 +1096,14 @@
       "formal_delay_min": null,
       "status": "WATCHING",
       "best_price": 82276.2,
-      "worst_price": 82405.4,
+      "worst_price": 82428.9,
       "mfe_atr": 0.06312277379503191,
-      "mae_atr": 0.752423463636762,
-      "mfe_atr_30": null,
-      "mae_atr_30": null,
+      "mae_atr": 0.900761982055087,
+      "mfe_atr_30": 0.0631,
+      "mae_atr_30": 0.9008,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 22
+      "duration_min": 38
     }
   ],
   "prepare_history": [
@@ -3336,6 +3336,10 @@
     {
       "time": 1791577150,
       "value": 30113.708300000137
+    },
+    {
+      "time": 1791578074,
+      "value": 30093.286900000134
     }
   ],
   "news": {
@@ -3370,7 +3374,7 @@
     ],
     "last_notify": 1791557997
   },
-  "last_event_scan": 1791577140,
+  "last_event_scan": 1791578040,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -6229,9 +6233,9 @@
       "defense": 82263.6,
       "first_seen": 1791573463,
       "first_seen_iso": "2026-10-09T19:17:43+00:00",
-      "last_seen": 1791577151,
-      "last_seen_iso": "2026-10-09T20:19:11+00:00",
-      "last_price": 82362.3,
+      "last_seen": 1791578075,
+      "last_seen_iso": "2026-10-09T20:34:35+00:00",
+      "last_price": 82348.9,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
@@ -6245,9 +6249,9 @@
       "defense": 82614.0,
       "first_seen": 1791573463,
       "first_seen_iso": "2026-10-09T19:17:43+00:00",
-      "last_seen": 1791577151,
-      "last_seen_iso": "2026-10-09T20:19:11+00:00",
-      "last_price": 82362.3,
+      "last_seen": 1791578075,
+      "last_seen_iso": "2026-10-09T20:34:35+00:00",
+      "last_price": 82348.9,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
