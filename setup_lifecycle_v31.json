@@ -2792,9 +2792,9 @@
     "defense": 82482.9,
     "first_seen": 1791569850,
     "first_seen_iso": "2026-10-09T18:17:30+00:00",
-    "last_seen": 1791572062,
-    "last_seen_iso": "2026-10-09T18:54:22+00:00",
-    "last_price": 82490.8,
+    "last_seen": 1791572588,
+    "last_seen_iso": "2026-10-09T19:03:08+00:00",
+    "last_price": 82449.9,
     "status": "DETECTED",
     "last_note": "非本輪主要 thesis，僅內部追蹤",
     "block_count": 0
@@ -2829,6 +2829,22 @@
     "last_price": 82490.8,
     "status": "PREPARED",
     "last_note": "進入準備距離",
+    "block_count": 0
+  },
+  {
+    "setup_key": "REV:S:1791566100:1791567900",
+    "side": "SHORT",
+    "type": "REVERSAL",
+    "label": "結構反轉",
+    "trigger": 82482.9,
+    "defense": 82820.0,
+    "first_seen": 1791572588,
+    "first_seen_iso": "2026-10-09T19:03:08+00:00",
+    "last_seen": 1791572588,
+    "last_seen_iso": "2026-10-09T19:03:08+00:00",
+    "last_price": 82449.9,
+    "status": "DETECTED",
+    "last_note": "非本輪主要 thesis，僅內部追蹤",
     "block_count": 0
   }
 ]
