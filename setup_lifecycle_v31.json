@@ -2008,11 +2008,11 @@
     "defense": 81821.7,
     "first_seen": 1791500454,
     "first_seen_iso": "2026-10-08T23:00:54+00:00",
-    "last_seen": 1791503525,
-    "last_seen_iso": "2026-10-08T23:52:05+00:00",
-    "last_price": 81727.0,
-    "status": "DETECTED",
-    "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "last_seen": 1791504025,
+    "last_seen_iso": "2026-10-09T00:00:25+00:00",
+    "last_price": 81708.6,
+    "status": "FORMAL",
+    "last_note": "建立模擬單 #12｜🟡 混合｜Trigger 仍有效｜幾何可管理",
     "block_count": 0
   },
   {
@@ -2040,11 +2040,11 @@
     "defense": 81731.1,
     "first_seen": 1791503525,
     "first_seen_iso": "2026-10-08T23:52:05+00:00",
-    "last_seen": 1791503525,
-    "last_seen_iso": "2026-10-08T23:52:05+00:00",
-    "last_price": 81727.0,
+    "last_seen": 1791504025,
+    "last_seen_iso": "2026-10-09T00:00:25+00:00",
+    "last_price": 81708.6,
     "status": "DETECTED",
-    "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "last_note": "本輪由 SHORT 正式候選主導，反向訊號僅內部追蹤",
     "block_count": 0
   }
 ]

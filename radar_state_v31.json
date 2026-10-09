@@ -1,7 +1,67 @@
 {
   "version": "LASER_SIGNAL_CORE_3_1_RISK_ENGINE",
-  "next_trade_id": 12,
-  "trades": [],
+  "next_trade_id": 13,
+  "trades": [
+    {
+      "id": 12,
+      "setup_key": "BO:S:1791498600",
+      "side": "SHORT",
+      "trigger_type": "有效突破",
+      "engine_version": "LASER_SIGNAL_CORE_3_1_RISK_ENGINE",
+      "engine_build": "LASER_SIGNAL_CORE_3_1_MULTI_THESIS_FEASIBILITY",
+      "opened_at": 1791504025,
+      "opened_iso": "2026-10-09T00:00:25+00:00",
+      "status": "OPEN",
+      "entry": 81708.6,
+      "sl": 81897.6185256694,
+      "tp1": 81519.58147433061,
+      "tp2": null,
+      "risk": 189.01852566939488,
+      "risk_atr": 1.4973458718788928,
+      "trigger": 81731.1,
+      "defense_source": "EMA區域",
+      "defense_anchor": 81847.12423995511,
+      "stop_buffer_atr": 0.4,
+      "position_size_factor": 0.9,
+      "extension_atr": 0.17823799015447556,
+      "trend_1h": "BEAR",
+      "ema_position": "位置佳",
+      "ema_distance_atr": 0.23312143153675197,
+      "volume_ratio": 1.1316475345450823,
+      "regime": "RANGE",
+      "space_r": 0.6380326985035462,
+      "space_strength": "STRONG",
+      "oi_dir": "UP",
+      "cvd_dir": "FLAT",
+      "flow_quality": "普通",
+      "context_class": "MIXED",
+      "context_reason": "震盪環境＋Trigger仍有效＋幾何可管理＋前方強結構較近",
+      "quality_state": "CAUTION",
+      "quality_decision": "CAUTION",
+      "quality_reason": "情境混合且Trigger已進入老化區",
+      "trigger_freshness": "AGING",
+      "trigger_age_min": 9.416666666666666,
+      "trigger_hold_atr": 0.17823799015447556,
+      "geometry_class": "MANAGE",
+      "geometry_reason": "前方強結構較近",
+      "exit_profile": "1R保守型",
+      "entry_timing": "NORMAL",
+      "entry_timing_label": "正常時機",
+      "entry_timing_reason": "仍在可接受進場區，尚未明顯延伸",
+      "feasibility_class": "WORKABLE",
+      "feasibility_label": "可發展",
+      "feasibility_reason": "前方強結構約 0.64R，仍有可管理發展空間",
+      "tp1_r": 1.0,
+      "tp2_r": null,
+      "mfe_r": 0.0,
+      "mae_r": 0.0,
+      "tp1_hit": false,
+      "tp2_hit": false,
+      "best_price": 81708.6,
+      "worst_price": 81708.6,
+      "duration_min": 0
+    }
+  ],
   "history": [
     {
       "id": 1,
@@ -844,7 +904,8 @@
     "CONT:S:1791378000",
     "CONT:S:1791406800",
     "REV:S:1791429300:1791433800",
-    "BO:S:1791466200"
+    "BO:S:1791466200",
+    "BO:S:1791498600"
   ],
   "next_prepare_id": 16,
   "prepare_active": [],
@@ -2444,6 +2505,10 @@
     {
       "time": 1791503524,
       "value": 29791.16010000015
+    },
+    {
+      "time": 1791504024,
+      "value": 29821.318700000153
     }
   ],
   "news": {
@@ -2473,7 +2538,7 @@
     ],
     "last_notify": 1791486089
   },
-  "last_event_scan": 1791503520,
+  "last_event_scan": 1791504000,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -4484,11 +4549,11 @@
       "defense": 81821.7,
       "first_seen": 1791500454,
       "first_seen_iso": "2026-10-08T23:00:54+00:00",
-      "last_seen": 1791503525,
-      "last_seen_iso": "2026-10-08T23:52:05+00:00",
-      "last_price": 81727.0,
-      "status": "DETECTED",
-      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "last_seen": 1791504025,
+      "last_seen_iso": "2026-10-09T00:00:25+00:00",
+      "last_price": 81708.6,
+      "status": "FORMAL",
+      "last_note": "建立模擬單 #12｜🟡 混合｜Trigger 仍有效｜幾何可管理",
       "block_count": 0
     },
     {
@@ -4516,20 +4581,20 @@
       "defense": 81731.1,
       "first_seen": 1791503525,
       "first_seen_iso": "2026-10-08T23:52:05+00:00",
-      "last_seen": 1791503525,
-      "last_seen_iso": "2026-10-08T23:52:05+00:00",
-      "last_price": 81727.0,
+      "last_seen": 1791504025,
+      "last_seen_iso": "2026-10-09T00:00:25+00:00",
+      "last_price": 81708.6,
       "status": "DETECTED",
-      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "last_note": "本輪由 SHORT 正式候選主導，反向訊號僅內部追蹤",
       "block_count": 0
     }
   ],
   "active_thesis": {
     "side": "SHORT",
-    "setup_key": "BO:S:1791491400",
-    "source": "PREPARE",
+    "setup_key": "BO:S:1791498600",
+    "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791493992,
-    "updated_iso": "2026-10-08T21:13:12+00:00"
+    "updated_at": 1791504025,
+    "updated_iso": "2026-10-09T00:00:25+00:00"
   }
 }
