@@ -2600,11 +2600,11 @@
     "defense": 83142.7,
     "first_seen": 1791553267,
     "first_seen_iso": "2026-10-09T13:41:07+00:00",
-    "last_seen": 1791557999,
-    "last_seen_iso": "2026-10-09T14:59:59+00:00",
-    "last_price": 83008.3,
-    "status": "FORMAL",
-    "last_note": "建立模擬單 #14",
+    "last_seen": 1791560764,
+    "last_seen_iso": "2026-10-09T15:46:04+00:00",
+    "last_price": 82955.9,
+    "status": "DETECTED",
+    "last_note": "已有正式單 #14 進行中，暫不新增外部訊號",
     "block_count": 0
   },
   {
@@ -2637,6 +2637,22 @@
     "last_price": 83084.4,
     "status": "DETECTED",
     "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "block_count": 0
+  },
+  {
+    "setup_key": "CONT:L:1791558000",
+    "side": "LONG",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 83044.8,
+    "defense": 82771.0,
+    "first_seen": 1791560764,
+    "first_seen_iso": "2026-10-09T15:46:04+00:00",
+    "last_seen": 1791560764,
+    "last_seen_iso": "2026-10-09T15:46:04+00:00",
+    "last_price": 82955.9,
+    "status": "DETECTED",
+    "last_note": "已有正式單 #14 進行中，暫不新增外部訊號",
     "block_count": 0
   }
 ]

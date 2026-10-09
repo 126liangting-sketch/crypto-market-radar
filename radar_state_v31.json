@@ -59,7 +59,7 @@
       "tp2_hit": false,
       "best_price": 82771.0,
       "worst_price": 83024.8,
-      "duration_min": 29
+      "duration_min": 46
     }
   ],
   "history": [
@@ -1066,40 +1066,7 @@
     "CONT:S:1791550800"
   ],
   "next_prepare_id": 21,
-  "prepare_active": [
-    {
-      "id": 20,
-      "setup_key": "CONT:S:1791550800",
-      "side": "SHORT",
-      "trigger_type": "回踩再啟動",
-      "opened_at": 1791557091,
-      "opened_iso": "2026-10-09T14:44:51+00:00",
-      "prepare_price": 83015.9,
-      "trigger": 82995.6,
-      "atr_open": 307.00714285714326,
-      "trend_1h": "BEAR",
-      "ema_position": "偏離",
-      "ema_distance_atr": 1.0864099214537333,
-      "volume_ratio": 1.543729409302341,
-      "regime": "TREND",
-      "oi_dir": "UP",
-      "cvd_dir": "UP",
-      "formal_promoted": true,
-      "formal_trade_id": 14,
-      "formal_at": 1791557999,
-      "formal_delay_min": 15.1,
-      "status": "WATCHING",
-      "best_price": 82771.0,
-      "worst_price": 83129.0,
-      "mfe_atr": 0.7977013098810902,
-      "mae_atr": 0.3683953374747166,
-      "mfe_atr_30": 0.7977,
-      "mae_atr_30": 0.3684,
-      "mfe_atr_60": null,
-      "mae_atr_60": null,
-      "duration_min": 44
-    }
-  ],
+  "prepare_active": [],
   "prepare_history": [
     {
       "id": 1,
@@ -1746,6 +1713,40 @@
       "duration_min": 62,
       "closed_at": 1791559776,
       "closed_iso": "2026-10-09T15:29:36+00:00"
+    },
+    {
+      "id": 20,
+      "setup_key": "CONT:S:1791550800",
+      "side": "SHORT",
+      "trigger_type": "回踩再啟動",
+      "opened_at": 1791557091,
+      "opened_iso": "2026-10-09T14:44:51+00:00",
+      "prepare_price": 83015.9,
+      "trigger": 82995.6,
+      "atr_open": 307.00714285714326,
+      "trend_1h": "BEAR",
+      "ema_position": "偏離",
+      "ema_distance_atr": 1.0864099214537333,
+      "volume_ratio": 1.543729409302341,
+      "regime": "TREND",
+      "oi_dir": "UP",
+      "cvd_dir": "UP",
+      "formal_promoted": true,
+      "formal_trade_id": 14,
+      "formal_at": 1791557999,
+      "formal_delay_min": 15.1,
+      "status": "PROMOTED",
+      "best_price": 82771.0,
+      "worst_price": 83129.0,
+      "mfe_atr": 0.7977013098810902,
+      "mae_atr": 0.3683953374747166,
+      "mfe_atr_30": 0.7977,
+      "mae_atr_30": 0.3684,
+      "mfe_atr_60": 0.7977,
+      "mae_atr_60": 0.3684,
+      "duration_min": 61,
+      "closed_at": 1791560763,
+      "closed_iso": "2026-10-09T15:46:03+00:00"
     }
   ],
   "oi_history": [
@@ -3076,6 +3077,10 @@
     {
       "time": 1791559775,
       "value": 30137.99280000011
+    },
+    {
+      "time": 1791560763,
+      "value": 30081.690600000107
     }
   ],
   "news": {
@@ -3109,7 +3114,7 @@
     ],
     "last_notify": 1791557997
   },
-  "last_event_scan": 1791559740,
+  "last_event_scan": 1791560760,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -5712,11 +5717,11 @@
       "defense": 83142.7,
       "first_seen": 1791553267,
       "first_seen_iso": "2026-10-09T13:41:07+00:00",
-      "last_seen": 1791557999,
-      "last_seen_iso": "2026-10-09T14:59:59+00:00",
-      "last_price": 83008.3,
-      "status": "FORMAL",
-      "last_note": "建立模擬單 #14",
+      "last_seen": 1791560764,
+      "last_seen_iso": "2026-10-09T15:46:04+00:00",
+      "last_price": 82955.9,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #14 進行中，暫不新增外部訊號",
       "block_count": 0
     },
     {
@@ -5750,6 +5755,22 @@
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
+    },
+    {
+      "setup_key": "CONT:L:1791558000",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 83044.8,
+      "defense": 82771.0,
+      "first_seen": 1791560764,
+      "first_seen_iso": "2026-10-09T15:46:04+00:00",
+      "last_seen": 1791560764,
+      "last_seen_iso": "2026-10-09T15:46:04+00:00",
+      "last_price": 82955.9,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #14 進行中，暫不新增外部訊號",
+      "block_count": 0
     }
   ],
   "active_thesis": {
@@ -5757,7 +5778,7 @@
     "setup_key": "CONT:S:1791550800",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791559776,
-    "updated_iso": "2026-10-09T15:29:36+00:00"
+    "updated_at": 1791560764,
+    "updated_iso": "2026-10-09T15:46:04+00:00"
   }
 }
