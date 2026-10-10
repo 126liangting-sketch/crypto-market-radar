@@ -54,12 +54,12 @@
       "tp1_r": 1.0,
       "tp2_r": null,
       "mfe_r": 0.21534320323021722,
-      "mae_r": 0.42334516089558044,
+      "mae_r": 0.6933398588849398,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 82691.7,
-      "worst_price": 82770.0,
-      "duration_min": 16
+      "worst_price": 82803.1,
+      "duration_min": 30
     }
   ],
   "history": [
@@ -3711,6 +3711,10 @@
     {
       "time": 1791619286,
       "value": 30059.835900000122
+    },
+    {
+      "time": 1791620086,
+      "value": 30023.758500000124
     }
   ],
   "news": {
@@ -3746,7 +3750,7 @@
     ],
     "last_notify": 1791581277
   },
-  "last_event_scan": 1791619260,
+  "last_event_scan": 1791620040,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -7133,11 +7137,11 @@
       "defense": 82724.1,
       "first_seen": 1791613820,
       "first_seen_iso": "2026-10-10T06:30:20+00:00",
-      "last_seen": 1791615722,
-      "last_seen_iso": "2026-10-10T07:02:02+00:00",
-      "last_price": 82705.2,
+      "last_seen": 1791620087,
+      "last_seen_iso": "2026-10-10T08:14:47+00:00",
+      "last_price": 82795.0,
       "status": "DETECTED",
-      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "last_note": "已有正式單 #15 進行中，暫不新增外部訊號",
       "block_count": 0
     },
     {
@@ -7181,9 +7185,9 @@
       "defense": 82866.0,
       "first_seen": 1791618869,
       "first_seen_iso": "2026-10-10T07:54:29+00:00",
-      "last_seen": 1791619287,
-      "last_seen_iso": "2026-10-10T08:01:27+00:00",
-      "last_price": 82759.7,
+      "last_seen": 1791620087,
+      "last_seen_iso": "2026-10-10T08:14:47+00:00",
+      "last_price": 82795.0,
       "status": "DETECTED",
       "last_note": "已有正式單 #15 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -7194,7 +7198,7 @@
     "setup_key": "BO:S:1791612000",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791619287,
-    "updated_iso": "2026-10-10T08:01:27+00:00"
+    "updated_at": 1791620087,
+    "updated_iso": "2026-10-10T08:14:47+00:00"
   }
 }
