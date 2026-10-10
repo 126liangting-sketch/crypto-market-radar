@@ -3144,11 +3144,27 @@
     "defense": 82643.3,
     "first_seen": 1791594672,
     "first_seen_iso": "2026-10-10T01:11:12+00:00",
-    "last_seen": 1791594672,
-    "last_seen_iso": "2026-10-10T01:11:12+00:00",
-    "last_price": 82603.4,
+    "last_seen": 1791595596,
+    "last_seen_iso": "2026-10-10T01:26:36+00:00",
+    "last_price": 82638.6,
     "status": "DETECTED",
     "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "block_count": 0
+  },
+  {
+    "setup_key": "BO:L:1791589500",
+    "side": "LONG",
+    "type": "BREAKOUT",
+    "label": "有效突破",
+    "trigger": 82643.3,
+    "defense": 82537.1,
+    "first_seen": 1791595596,
+    "first_seen_iso": "2026-10-10T01:26:36+00:00",
+    "last_seen": 1791595596,
+    "last_seen_iso": "2026-10-10T01:26:36+00:00",
+    "last_price": 82638.6,
+    "status": "PREPARED",
+    "last_note": "進入準備距離",
     "block_count": 0
   }
 ]
