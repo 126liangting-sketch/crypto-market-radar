@@ -53,13 +53,13 @@
       "feasibility_reason": "前方強結構約 0.59R，需保守出場",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mfe_r": 0.0018124502386371404,
+      "mae_r": 0.2156815783851599,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 82735.1,
-      "worst_price": 82735.1,
-      "duration_min": 0
+      "best_price": 82734.9,
+      "worst_price": 82758.9,
+      "duration_min": 14
     }
   ],
   "history": [
@@ -1227,11 +1227,11 @@
       "worst_price": 82799.7,
       "mfe_atr": 1.0791841631675216,
       "mae_atr": 0.2918416316735354,
-      "mfe_atr_30": null,
-      "mae_atr_30": null,
+      "mfe_atr_30": 1.0792,
+      "mae_atr_30": 0.2918,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 17
+      "duration_min": 31
     }
   ],
   "prepare_history": [
@@ -3962,6 +3962,10 @@
     {
       "time": 1791641142,
       "value": 30033.349700000126
+    },
+    {
+      "time": 1791641983,
+      "value": 30013.797700000123
     }
   ],
   "news": {
@@ -3997,7 +4001,7 @@
     ],
     "last_notify": 1791581277
   },
-  "last_event_scan": 1791641100,
+  "last_event_scan": 1791641940,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -7624,11 +7628,11 @@
       "defense": 82773.4,
       "first_seen": 1791640117,
       "first_seen_iso": "2026-10-10T13:48:37+00:00",
-      "last_seen": 1791641143,
-      "last_seen_iso": "2026-10-10T14:05:43+00:00",
-      "last_price": 82735.1,
+      "last_seen": 1791641985,
+      "last_seen_iso": "2026-10-10T14:19:45+00:00",
+      "last_price": 82774.9,
       "status": "DETECTED",
-      "last_note": "本輪由 SHORT 正式候選主導，反向訊號僅內部追蹤",
+      "last_note": "已有正式單 #16 進行中，暫不新增外部訊號",
       "block_count": 0
     },
     {
@@ -7640,11 +7644,11 @@
       "defense": 82830.9,
       "first_seen": 1791640117,
       "first_seen_iso": "2026-10-10T13:48:37+00:00",
-      "last_seen": 1791640641,
-      "last_seen_iso": "2026-10-10T13:57:21+00:00",
-      "last_price": 82778.0,
+      "last_seen": 1791641985,
+      "last_seen_iso": "2026-10-10T14:19:45+00:00",
+      "last_price": 82774.9,
       "status": "DETECTED",
-      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "last_note": "已有正式單 #16 進行中，暫不新增外部訊號",
       "block_count": 0
     },
     {
@@ -7669,7 +7673,7 @@
     "setup_key": "BO:S:1791639000",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791641143,
-    "updated_iso": "2026-10-10T14:05:43+00:00"
+    "updated_at": 1791641985,
+    "updated_iso": "2026-10-10T14:19:45+00:00"
   }
 }

@@ -51,13 +51,13 @@
       "feasibility_reason": "前方強結構約 0.59R，需保守出場",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mfe_r": 0.0018124502386371404,
+      "mae_r": 0.2156815783851599,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 82735.1,
-      "worst_price": 82735.1,
-      "duration_min": 0
+      "best_price": 82734.9,
+      "worst_price": 82758.9,
+      "duration_min": 14
     }
   ],
   "history": [
