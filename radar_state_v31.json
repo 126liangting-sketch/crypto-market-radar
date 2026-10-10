@@ -59,7 +59,7 @@
       "tp2_hit": false,
       "best_price": 82691.7,
       "worst_price": 82830.0,
-      "duration_min": 45
+      "duration_min": 59
     }
   ],
   "history": [
@@ -3719,6 +3719,10 @@
     {
       "time": 1791620975,
       "value": 30054.894700000124
+    },
+    {
+      "time": 1791621819,
+      "value": 30087.713200000122
     }
   ],
   "news": {
@@ -3754,7 +3758,7 @@
     ],
     "last_notify": 1791581277
   },
-  "last_event_scan": 1791620940,
+  "last_event_scan": 1791621780,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -7173,9 +7177,9 @@
       "defense": 82724.1,
       "first_seen": 1791616575,
       "first_seen_iso": "2026-10-10T07:16:15+00:00",
-      "last_seen": 1791620976,
-      "last_seen_iso": "2026-10-10T08:29:36+00:00",
-      "last_price": 82785.0,
+      "last_seen": 1791621820,
+      "last_seen_iso": "2026-10-10T08:43:40+00:00",
+      "last_price": 82783.2,
       "status": "DETECTED",
       "last_note": "已有正式單 #15 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -7189,9 +7193,9 @@
       "defense": 82866.0,
       "first_seen": 1791618869,
       "first_seen_iso": "2026-10-10T07:54:29+00:00",
-      "last_seen": 1791620976,
-      "last_seen_iso": "2026-10-10T08:29:36+00:00",
-      "last_price": 82785.0,
+      "last_seen": 1791621820,
+      "last_seen_iso": "2026-10-10T08:43:40+00:00",
+      "last_price": 82783.2,
       "status": "DETECTED",
       "last_note": "已有正式單 #15 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -7202,7 +7206,7 @@
     "setup_key": "BO:S:1791612000",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791620976,
-    "updated_iso": "2026-10-10T08:29:36+00:00"
+    "updated_at": 1791621820,
+    "updated_iso": "2026-10-10T08:43:40+00:00"
   }
 }
