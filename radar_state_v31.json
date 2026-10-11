@@ -5046,6 +5046,10 @@
     {
       "time": 1791733264,
       "value": 29820.43540000012
+    },
+    {
+      "time": 1791733706,
+      "value": 29967.12190000011
     }
   ],
   "news": {
@@ -5082,7 +5086,7 @@
     ],
     "last_notify": 1791705515
   },
-  "last_event_scan": 1791733260,
+  "last_event_scan": 1791733680,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
