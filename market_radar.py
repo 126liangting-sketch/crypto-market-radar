@@ -15,7 +15,7 @@ WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
 VERSION = "LASER_SIGNAL_CORE_3_1_RISK_ENGINE"
-BUILD = "LASER_SIGNAL_CORE_3_1_MULTI_THESIS_FEASIBILITY"
+BUILD = "LASER_SIGNAL_CORE_3_1_ARBITRATION_PENETRATION"
 STATE_FILE = "radar_state_v31.json"
 TRADES_JSON = "paper_trades_v31.json"
 TRADES_CSV = "paper_trades_v31.csv"
@@ -565,26 +565,33 @@ def detect_reversal_setup(rows15, a, side):
             })
     return candidates[-1] if candidates else None
 
-def choose_setup(rows15, a, side, live_price):
+def collect_setups(rows15, a, side, live_price):
+    """Return every live thesis family for one side.
+
+    All thesis families now reach the common decision engine before arbitration.
+    This prevents a merely well-timed pullback from hiding a stronger breakout or
+    reversal on the same side.
+    """
     candidates = []
     detectors = (
         detect_pullback_setup(rows15, a, side),
         detect_breakout_setup(rows15, a, side),
         detect_reversal_setup(rows15, a, side),
     )
-    for s in detectors:
-        if not s:
+    for setup in detectors:
+        if not setup:
             continue
-        d = ((live_price - s["trigger"]) / a) if side == "LONG" else ((s["trigger"] - live_price) / a)
-        s = dict(s)
-        s["extension_atr"] = d
-        candidates.append(s)
+        item = dict(setup)
+        item["extension_atr"] = ((live_price - item["trigger"]) / a) if side == "LONG" else ((item["trigger"] - live_price) / a)
+        candidates.append(item)
+    return candidates
+
+
+def choose_setup(rows15, a, side, live_price):
+    """Compatibility helper. Main arbitration evaluates all setups, not just one."""
+    candidates = collect_setups(rows15, a, side, live_price)
     if not candidates:
         return None
-
-    # Prefer the setup whose trigger is most actionable now. Thesis family itself
-    # has no directional privilege: continuation, breakout and reversal compete on
-    # timing/recency, not on whether they agree with 1H.
     actionable = [x for x in candidates if x["extension_atr"] >= -PREPARE_DISTANCE_ATR]
     pool = actionable or candidates
 
@@ -1216,49 +1223,89 @@ def quality_calibration(context, freshness, geometry, reg, ema_pos, vol, plan, e
             "reason": "Trigger、情境與交易幾何協調"}
 
 
-def forward_feasibility(side, setup, space, context, vol, oi, cvd, freshness, geometry, reg):
-    """Can this thesis realistically develop before hitting nearby structure?
-
-    Space alone never vetoes a trade. A nearby strong zone is judged together with
-    participation, flow, trigger freshness and geometry. This lets a powerful
-    breakout/reversal attack a nearby barrier while rejecting a weak 'ideal timing'
-    entry that has virtually no room to breathe.
-    """
-    strong_r = space.get("space_r")
-    strong_r = float(strong_r) if strong_r is not None else None
+def _penetration_quality(side, setup, context, vol, oi, cvd, freshness, geometry, trend, plan, ext):
+    """Judge whether a thesis has evidence to push through nearby strong structure."""
+    kind = setup.get("kind")
     vr = float((vol or {}).get("ratio") or 0.0)
     flow, _ = flow_quality(side, oi, cvd)
-    cls = (context or {}).get("class", "MIXED")
     fresh = (freshness or {}).get("state", "AGING")
     geom = (geometry or {}).get("class", "MANAGE")
-    kind = setup.get("kind")
+    cls = (context or {}).get("class", "MIXED")
+    risk_atr = float((plan or {}).get("risk_atr") or 99.0)
+    ext = float(ext or 0.0)
+    trend_state = (trend or {}).get("state", "NEUTRAL")
+    aligned = ((side == "LONG" and trend_state == "BULL") or (side == "SHORT" and trend_state == "BEAR"))
+
+    if geom == "POOR" or fresh == "STALE":
+        return {"grade": "WEAK", "reason": "Trigger/幾何不足以攻擊近端強結構"}
+
+    if kind == "BREAKOUT":
+        strong = (fresh == "FRESH" and ext <= 0.25 and vr >= 1.40 and
+                  flow in ("支持", "偏支持") and risk_atr <= 2.25)
+        adequate = (fresh == "FRESH" and ext <= 0.30 and vr >= 1.20 and
+                    flow != "分歧" and risk_atr <= 2.00 and cls != "CONFLICT")
+        if strong:
+            return {"grade": "STRONG", "reason": "突破新鮮＋放量＋資金流支持"}
+        if adequate:
+            return {"grade": "ADEQUATE", "reason": "突破新鮮且參與度足以測試近端結構"}
+        return {"grade": "WEAK", "reason": "突破缺少新鮮度/量能/資金流其中一項關鍵穿透證據"}
+
+    if kind == "REVERSAL":
+        strong = (fresh in ("FRESH", "AGING") and ext <= 0.25 and vr >= 0.85 and
+                  flow in ("支持", "偏支持") and risk_atr <= 3.00)
+        adequate = (fresh == "FRESH" and ext <= 0.20 and vr >= 1.10 and
+                    flow != "分歧" and risk_atr <= 2.50)
+        if strong:
+            return {"grade": "STRONG", "reason": "反轉結構＋方向資金流支持"}
+        if adequate:
+            return {"grade": "ADEQUATE", "reason": "反轉Trigger新鮮且參與度足夠"}
+        return {"grade": "WEAK", "reason": "反轉尚未證明有足夠力量穿越近端結構"}
+
+    # Continuation / pullback: nearby structure can still be attacked with a compact,
+    # aligned entry even without explosive flow.
+    strong = (aligned and fresh in ("FRESH", "AGING") and ext <= 0.12 and
+              risk_atr <= 1.25 and vr >= 0.90)
+    adequate = (aligned and fresh == "FRESH" and ext <= 0.20 and
+                risk_atr <= 1.50 and vr >= 1.00 and flow != "可能偏回補/平倉推動")
+    if strong:
+        return {"grade": "STRONG", "reason": "順背景延續＋進場貼近＋防守結構緊湊"}
+    if adequate:
+        return {"grade": "ADEQUATE", "reason": "延續結構新鮮且風險/位置可支持近端穿透"}
+    return {"grade": "WEAK", "reason": "延續單在近端強結構前缺乏足夠穿透優勢"}
+
+
+def forward_feasibility(side, setup, space, context, vol, oi, cvd, freshness, geometry, reg, trend, plan, ext):
+    """Judge forward room together with thesis-specific penetration evidence."""
+    strong_r = space.get("space_r")
+    strong_r = float(strong_r) if strong_r is not None else None
+    pen = _penetration_quality(side, setup, context, vol, oi, cvd, freshness, geometry, trend, plan, ext)
 
     if strong_r is None or strong_r >= 1.0:
-        return {"decision": "ACCEPT", "class": "OPEN", "label": "開放", "reason": "前方沒有近距離強結構壓縮發展空間", "space_r": strong_r}
+        return {"decision": "ACCEPT", "class": "OPEN", "label": "開放",
+                "reason": "前方沒有近距離強結構壓縮發展空間", "space_r": strong_r,
+                "penetration": pen["grade"], "penetration_reason": pen["reason"]}
 
-    breakout_power = (
-        fresh == "FRESH" and geom != "POOR" and vr >= 1.50 and
-        flow in ("支持", "偏支持") and cls == "CONSISTENT"
-    )
-    usable_power = (
-        fresh != "STALE" and geom != "POOR" and vr >= 1.15 and
-        flow != "分歧" and cls in ("CONSISTENT", "MIXED")
-    )
-
-    # Extremely compressed space needs exceptional power. This is not a generic
-    # Space<1R block: strong evidence can still pass, including reversal theses.
-    if strong_r < FEAS_CRITICAL_R and not breakout_power:
-        return {"decision": "REJECT", "class": "BLOCKED", "label": "發展空間不足", "reason": f"前方強結構僅 {strong_r:.2f}R，且突破/反轉力量不足", "space_r": strong_r}
-    if strong_r < FEAS_TIGHT_R and not usable_power:
-        return {"decision": "REJECT", "class": "BLOCKED", "label": "發展空間不足", "reason": f"前方強結構僅 {strong_r:.2f}R，量能/資金流/Trigger未形成足夠共振", "space_r": strong_r}
+    if strong_r < FEAS_CRITICAL_R and pen["grade"] != "STRONG":
+        return {"decision": "REJECT", "class": "BLOCKED", "label": "發展空間不足",
+                "reason": f"前方強結構僅 {strong_r:.2f}R；{pen['reason']}", "space_r": strong_r,
+                "penetration": pen["grade"], "penetration_reason": pen["reason"]}
 
     if strong_r < 0.60:
-        if breakout_power:
-            reason = f"前方強結構近（{strong_r:.2f}R），但市場參與與Trigger足以嘗試突破"
-            return {"decision": "ACCEPT", "class": "POWER_THROUGH", "label": "可攻擊結構", "reason": reason, "space_r": strong_r}
-        return {"decision": "CAUTION", "class": "TIGHT", "label": "空間偏緊", "reason": f"前方強結構約 {strong_r:.2f}R，需保守出場", "space_r": strong_r}
+        if pen["grade"] == "STRONG":
+            return {"decision": "ACCEPT", "class": "POWER_THROUGH", "label": "具穿透力",
+                    "reason": f"前方強結構 {strong_r:.2f}R，但{pen['reason']}", "space_r": strong_r,
+                    "penetration": pen["grade"], "penetration_reason": pen["reason"]}
+        if pen["grade"] == "ADEQUATE" and strong_r >= FEAS_TIGHT_R:
+            return {"decision": "CAUTION", "class": "TIGHT", "label": "空間偏緊",
+                    "reason": f"前方強結構 {strong_r:.2f}R；穿透證據尚可，保守處理", "space_r": strong_r,
+                    "penetration": pen["grade"], "penetration_reason": pen["reason"]}
+        return {"decision": "REJECT", "class": "BLOCKED", "label": "發展空間不足",
+                "reason": f"前方強結構 {strong_r:.2f}R；{pen['reason']}", "space_r": strong_r,
+                "penetration": pen["grade"], "penetration_reason": pen["reason"]}
 
-    return {"decision": "ACCEPT", "class": "WORKABLE", "label": "可發展", "reason": f"前方強結構約 {strong_r:.2f}R，仍有可管理發展空間", "space_r": strong_r}
+    return {"decision": "ACCEPT", "class": "WORKABLE", "label": "可發展",
+            "reason": f"前方強結構約 {strong_r:.2f}R，仍有可管理發展空間", "space_r": strong_r,
+            "penetration": pen["grade"], "penetration_reason": pen["reason"]}
 
 def apply_exit_profile(plan, context, space, reg, vol, freshness=None, geometry=None):
     """Quality Engine 2.1 dynamic exit.
@@ -1549,6 +1596,7 @@ def create_trade(state, side, setup, plan, ctx):
         "entry_timing_reason": ctx.get("entry_timing_reason"),
         "feasibility_class": ctx.get("feasibility_class"), "feasibility_label": ctx.get("feasibility_label"),
         "feasibility_reason": ctx.get("feasibility_reason"),
+        "penetration_quality": ctx.get("penetration_quality"), "penetration_reason": ctx.get("penetration_reason"),
         "tp1_r": plan.get("tp1_r", 1.0), "tp2_r": plan.get("tp2_r"),
         "mfe_r": 0.0, "mae_r": 0.0, "tp1_hit": False, "tp2_hit": False,
         "best_price": plan["entry"], "worst_price": plan["entry"], "duration_min": 0,
@@ -1616,13 +1664,13 @@ def export_data(state):
               "oi_dir","cvd_dir","flow_quality","context_class","context_reason","quality_state","quality_decision","quality_reason",
               "trigger_freshness","trigger_age_min","trigger_hold_atr","geometry_class","geometry_reason",
               "entry_timing","entry_timing_label","entry_timing_reason","feasibility_class","feasibility_label","feasibility_reason",
-              "exit_profile","tp1_r","tp2_r",
+              "penetration_quality","penetration_reason","exit_profile","tp1_r","tp2_r",
               "mfe_r","mae_r","duration_min","excluded_from_stats","legacy_rule_mismatch","intrabar_ambiguous"]
     with open(TRADES_CSV, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
         w.writeheader(); w.writerows(rows)
     save_json(BLOCKED_JSON, state["blocked"])
-    bfields = ["first_time_iso","time_iso","setup_key","side","type","engine_version","reason","trigger","price","block_count","volume_ratio","space_r","extension_atr","context_class","context_reason","trigger_freshness","trigger_age_min","geometry_class","quality_decision","quality_reason","entry_timing","entry_timing_reason","feasibility_class","feasibility_reason"]
+    bfields = ["first_time_iso","time_iso","setup_key","side","type","engine_version","reason","trigger","price","block_count","volume_ratio","space_r","extension_atr","context_class","context_reason","trigger_freshness","trigger_age_min","geometry_class","quality_decision","quality_reason","entry_timing","entry_timing_reason","feasibility_class","feasibility_reason","penetration_quality","penetration_reason"]
     with open(BLOCKED_CSV, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.DictWriter(f, fieldnames=bfields, extrasaction="ignore")
         w.writeheader(); w.writerows(state["blocked"])
@@ -1854,7 +1902,7 @@ def evaluate_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol
                 "freshness": freshness, "geometry": geometry, "calibration": calibration,
                 "entry_timing": entry_timing}
 
-    feasibility = forward_feasibility(side, setup, space, context, vol, oi, cvd, freshness, geometry, reg)
+    feasibility = forward_feasibility(side, setup, space, context, vol, oi, cvd, freshness, geometry, reg, trend, plan, ext)
     if feasibility["decision"] == "REJECT":
         return {"ready": False, "reason": "FEASIBILITY_WEAK", "side": side, "setup": setup,
                 "context": context, "plan": plan, "space": space, "ext": ext,
@@ -1885,31 +1933,40 @@ def _trend_alignment(side, trend_state):
 
 
 def choose_arbitration_winner(candidates, trend):
-    """Pick the best live thesis without forcing alignment to the old 1H direction."""
+    """Pick the strongest thesis after common quality/feasibility evaluation."""
     ready = [c for c in candidates if c and c.get("ready")]
-    if not ready: return None
-    if len(ready) == 1: return ready[0]
+    if not ready:
+        return None
+    if len(ready) == 1:
+        return ready[0]
     cls_rank = {"CONSISTENT": 2, "MIXED": 1}
     fresh_rank = {"FRESH": 2, "AGING": 1, "STALE": 0}
     geom_rank = {"BALANCED": 2, "MANAGE": 1, "POOR": 0}
     timing_rank = {"IDEAL": 3, "NORMAL": 2, "EXTENDED": 1}
-    feas_rank = {"OPEN": 4, "POWER_THROUGH": 3, "WORKABLE": 3, "TIGHT": 2, "BLOCKED": 0}
+    feas_rank = {"OPEN": 5, "POWER_THROUGH": 4, "WORKABLE": 4, "TIGHT": 2, "BLOCKED": 0}
+    pen_rank = {"STRONG": 3, "ADEQUATE": 2, "WEAK": 1, None: 0}
     trend_state = trend.get("state", "NEUTRAL")
+
     def key(c):
+        feas = c.get("feasibility", {})
         is_rev = c.get("setup", {}).get("kind") == "REVERSAL"
-        weak_bg_tie = 0 if is_rev else _trend_alignment(c["side"], trend_state)
+        bg_tie = 0 if is_rev else _trend_alignment(c["side"], trend_state)
         return (
-            cls_rank.get(c["context"]["class"], 0),
-            feas_rank.get(c.get("feasibility", {}).get("class"), 0),
-            timing_rank.get(c.get("entry_timing", {}).get("class"), 0),
+            feas_rank.get(feas.get("class"), 0),
+            pen_rank.get(feas.get("penetration"), 0),
+            cls_rank.get(c.get("context", {}).get("class"), 0),
             fresh_rank.get(c.get("freshness", {}).get("state"), 0),
+            timing_rank.get(c.get("entry_timing", {}).get("class"), 0),
             geom_rank.get(c.get("geometry", {}).get("class"), 0),
             -abs(float(c.get("ext") or 0.0)),
-            -float(c["plan"].get("risk_atr") or 99.0),
-            weak_bg_tie,
+            -float(c.get("plan", {}).get("risk_atr") or 99.0),
+            bg_tie,
+            int(c.get("setup", {}).get("trigger_time", 0)),
         )
+
     ordered = sorted(ready, key=key, reverse=True)
-    if key(ordered[0]) == key(ordered[1]): return None
+    if len(ordered) >= 2 and key(ordered[0]) == key(ordered[1]):
+        return None
     return ordered[0]
 
 def active_valid_trade(state):
@@ -1937,6 +1994,8 @@ def _blocked_extra(ev, vol):
         "entry_timing_reason": (ev.get("entry_timing") or {}).get("reason"),
         "feasibility_class": (ev.get("feasibility") or {}).get("class"),
         "feasibility_reason": (ev.get("feasibility") or {}).get("reason"),
+        "penetration_quality": (ev.get("feasibility") or {}).get("penetration"),
+        "penetration_reason": (ev.get("feasibility") or {}).get("penetration_reason"),
     }
 
 
@@ -1988,6 +2047,7 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
         "entry_timing_reason": entry_timing.get("reason"),
         "feasibility_class": feasibility.get("class"), "feasibility_label": feasibility.get("label"),
         "feasibility_reason": feasibility.get("reason"),
+        "penetration_quality": feasibility.get("penetration"), "penetration_reason": feasibility.get("penetration_reason"),
     }
     t = create_trade(state, side, setup, plan, ctx)
     touch_setup_lifecycle(state, side, setup, price, "FORMAL",
@@ -2054,7 +2114,9 @@ def preview_prepare_candidate(side, setup, price, rows15, a, trend, ema_pos, vol
     context = formal_context(side, setup, trend, reg, ema_pos, vol, oi, cvd, max(0.0, -dist), space, pre_fresh, geometry)
     if context["class"] == "CONFLICT":
         return {"ready": False, "side": side, "setup": setup, "dist": dist, "context": context}
-    return {"ready": True, "side": side, "setup": setup, "dist": dist, "context": context, "geometry": geometry}
+    pre_feas = forward_feasibility(side, setup, space, context, vol, oi, cvd, pre_fresh, geometry, reg, trend, plan, max(0.0, -dist))
+    return {"ready": True, "side": side, "setup": setup, "dist": dist, "context": context,
+            "geometry": geometry, "feasibility": pre_feas}
 
 
 def choose_prepare_winner(candidates, trend, state):
@@ -2062,8 +2124,13 @@ def choose_prepare_winner(candidates, trend, state):
     if not ready: return None
     cls_rank = {"CONSISTENT": 2, "MIXED": 1}
     geom_rank = {"BALANCED": 2, "MANAGE": 1, "POOR": 0}
+    feas_rank = {"OPEN": 5, "POWER_THROUGH": 4, "WORKABLE": 4, "TIGHT": 2, "BLOCKED": 1}
+    pen_rank = {"STRONG": 3, "ADEQUATE": 2, "WEAK": 1, None: 0}
     def key(c):
+        feas = c.get("feasibility", {})
         return (
+            feas_rank.get(feas.get("class"), 0),
+            pen_rank.get(feas.get("penetration"), 0),
             cls_rank.get(c.get("context", {}).get("class"), 0),
             geom_rank.get(c.get("geometry", {}).get("class"), 0),
             -abs(float(c.get("dist") or 0.0)),
@@ -2101,7 +2168,7 @@ def manual_summary(state, price, trend, reg, oi, cvd):
         perf = "🎯 雷射訊號 3.1 尚無完成樣本"
 
     msg = (
-        f"📡 雷射訊號｜Laser Signal 3.1 Risk Engine｜手動查詢\nBTC：${price:,.0f}\n"
+        f"📡 雷射訊號｜Laser Signal 3.1 Decision Calibration｜手動查詢\nBTC：${price:,.0f}\n"
         f"1H背景：{zh_dir(trend['state'])}\n市場狀態：{'趨勢' if reg['state']=='TREND' else '震盪'}\n"
         f"OI：{zh_dir(oi['dir'])}｜CVD Proxy：{zh_dir(cvd['dir'])}\n"
         f"👀 Prepare：完成 {p_done}｜追蹤中 {p_open}\n"
@@ -2145,20 +2212,21 @@ def main():
     if MANUAL_RUN:
         manual_summary(state, live, trend, reg, oi, cvd)
     else:
-        setups = {}
+        setup_items = []
         previews = {}
         prepare_previews = {}
         for side in ("LONG", "SHORT"):
-            setup = choose_setup(rows15, a, side, live)
-            if not setup:
-                continue
-            setups[side] = setup
-            previews[side] = preview_formal_candidate(
-                side, setup, live, rows15, a, trend, ema_pos, vol, reg, oi, cvd, events
-            )
-            prepare_previews[side] = preview_prepare_candidate(
-                side, setup, live, rows15, a, trend, ema_pos, vol, reg, oi, cvd
-            )
+            for setup in collect_setups(rows15, a, side, live):
+                skey = setup.get("setup_key")
+                if not skey:
+                    continue
+                setup_items.append((side, setup))
+                previews[skey] = preview_formal_candidate(
+                    side, setup, live, rows15, a, trend, ema_pos, vol, reg, oi, cvd, events
+                )
+                prepare_previews[skey] = preview_prepare_candidate(
+                    side, setup, live, rows15, a, trend, ema_pos, vol, reg, oi, cvd
+                )
 
         active = active_valid_trade(state)
         ready = []
@@ -2196,11 +2264,9 @@ def main():
                 "context_class": prepare_winner.get("context", {}).get("class"), "updated_at": now_utc(), "updated_iso": iso(now_utc())
             }
 
-        for side in ("LONG", "SHORT"):
-            setup = setups.get(side)
-            if not setup:
-                continue
-            preview = previews.get(side, {})
+        for side, setup in setup_items:
+            skey = setup.get("setup_key")
+            preview = previews.get(skey, {})
 
             if active:
                 if preview.get("ready"):
@@ -2217,33 +2283,34 @@ def main():
 
             if unresolved_tie and preview.get("ready"):
                 record_blocked(
-                    state, side, setup, "全局仲裁：多空同時成立且無明確優先方向", live,
+                    state, side, setup, "全局仲裁：候選品質完全相同，等待市場自行選邊", live,
                     {**_blocked_extra(preview, vol),
-                     "context_reason": "多空候選品質接近，等待市場自行選邊"}
+                     "context_reason": "多個候選品質完全相同，暫不強行選擇"}
                 )
                 continue
 
             if winner is not None:
-                if side != winner["side"]:
+                winner_key = winner.get("setup", {}).get("setup_key")
+                if skey != winner_key:
                     if preview.get("ready"):
                         record_blocked(
-                            state, side, setup, f"全局仲裁：{winner['side']} 品質優先", live,
+                            state, side, setup, f"全局仲裁：{winner.get('setup',{}).get('label', winner['side'])} thesis 品質優先", live,
                             {**_blocked_extra(preview, vol),
-                             "context_reason": "同輪多空同時可交易，只採用較完整的主要方向"}
+                             "context_reason": "同輪所有多空/型態候選共同競爭，只採用發展能力較完整的 thesis"}
                         )
                     else:
                         touch_setup_lifecycle(state, side, setup, live, "DETECTED",
-                                              f"本輪由 {winner['side']} 正式候選主導，反向訊號僅內部追蹤")
+                                              "本輪由更完整 thesis 主導，此候選僅內部追蹤")
                     continue
                 became_formal = formal_check(
                     state, side, setup, live, rows15, a, trend, ema_pos, vol, reg, oi, cvd, events
                 )
-                if not became_formal and prepare_winner and side == prepare_winner["side"]:
+                if not became_formal and prepare_winner and skey == prepare_winner.get("setup", {}).get("setup_key"):
                     maybe_prepare(state, side, setup, live, trend, ema_pos, vol, reg, oi, cvd)
                 continue
 
-            # No Formal candidate: only the current internal thesis may notify Prepare.
-            if prepare_winner is not None and side == prepare_winner["side"]:
+            # No Formal candidate: only the best current internal thesis may notify Prepare.
+            if prepare_winner is not None and skey == prepare_winner.get("setup", {}).get("setup_key"):
                 maybe_prepare(state, side, setup, live, trend, ema_pos, vol, reg, oi, cvd)
             else:
                 touch_setup_lifecycle(state, side, setup, live, "DETECTED", "非本輪主要 thesis，僅內部追蹤")
