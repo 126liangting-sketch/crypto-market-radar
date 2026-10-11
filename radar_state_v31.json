@@ -54,12 +54,12 @@
       "tp1_r": 1.0,
       "tp2_r": null,
       "mfe_r": 0.9273646565544498,
-      "mae_r": 0.09125662843765014,
+      "mae_r": 0.23924035022825954,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 82890.0,
-      "worst_price": 82972.6,
-      "duration_min": 62
+      "worst_price": 82984.6,
+      "duration_min": 76
     }
   ],
   "history": [
@@ -4375,6 +4375,10 @@
     {
       "time": 1791680722,
       "value": 30011.605700000106
+    },
+    {
+      "time": 1791681612,
+      "value": 30005.181400000107
     }
   ],
   "news": {
@@ -4410,7 +4414,7 @@
     ],
     "last_notify": 1791581277
   },
-  "last_event_scan": 1791680700,
+  "last_event_scan": 1791681600,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -8533,11 +8537,11 @@
       "defense": 83026.0,
       "first_seen": 1791677001,
       "first_seen_iso": "2026-10-11T00:03:21+00:00",
-      "last_seen": 1791677001,
-      "last_seen_iso": "2026-10-11T00:03:21+00:00",
-      "last_price": 82965.2,
-      "status": "FORMAL",
-      "last_note": "建立模擬單 #18｜🟡 混合｜Trigger 仍有效｜幾何可管理",
+      "last_seen": 1791681613,
+      "last_seen_iso": "2026-10-11T01:20:13+00:00",
+      "last_price": 82984.6,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #18 進行中，暫不新增外部訊號",
       "block_count": 0
     },
     {
@@ -8549,9 +8553,9 @@
       "defense": 82940.0,
       "first_seen": 1791678523,
       "first_seen_iso": "2026-10-11T00:28:43+00:00",
-      "last_seen": 1791680723,
-      "last_seen_iso": "2026-10-11T01:05:23+00:00",
-      "last_price": 82927.4,
+      "last_seen": 1791681613,
+      "last_seen_iso": "2026-10-11T01:20:13+00:00",
+      "last_price": 82984.6,
       "status": "DETECTED",
       "last_note": "已有正式單 #18 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -8578,7 +8582,7 @@
     "setup_key": "CONT:S:1791675000",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791680723,
-    "updated_iso": "2026-10-11T01:05:23+00:00"
+    "updated_at": 1791681613,
+    "updated_iso": "2026-10-11T01:20:13+00:00"
   }
 }
