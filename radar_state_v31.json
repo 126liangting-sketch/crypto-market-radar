@@ -1384,14 +1384,14 @@
       "formal_delay_min": null,
       "status": "WATCHING",
       "best_price": 83013.1,
-      "worst_price": 82962.3,
+      "worst_price": 82955.9,
       "mfe_atr": 0.0,
-      "mae_atr": 0.841059602649049,
+      "mae_atr": 0.947019867549855,
       "mfe_atr_30": null,
       "mae_atr_30": null,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 13
+      "duration_min": 23
     }
   ],
   "prepare_history": [
@@ -4666,42 +4666,47 @@
     {
       "time": 1791704918,
       "value": 30074.568400000135
+    },
+    {
+      "time": 1791705514,
+      "value": 30042.781100000135
     }
   ],
   "news": {
     "seen": [
-      "cffb76353befc09e",
-      "bd874f4e9c33fa11",
-      "a0a389ee4b775ac4",
-      "e9506e9061fa31eb",
-      "9b8040a9b72498d5",
-      "b7cc26b025b13571",
-      "f778db1ce3cfae41",
-      "0f173d59d2d695e3",
-      "8c697f3b056a4e8c",
-      "9032a59f50c65c28",
-      "49c51faef6c17046",
-      "e26341045b283657",
-      "1c2050fa283ac439",
-      "e05a1fd08e4fbc8a",
-      "c483a9eed0bd7ac4",
-      "4f71137ba5fd21cc",
-      "f8f73fcff845d11f",
       "9182865d6bd9251a",
-      "af23dcf6e683c015",
       "918c2ff23a2739cb",
-      "bd2cd8655cdbec6b",
+      "1c2050fa283ac439",
+      "bf363477b3b0aaba",
+      "b7cc26b025b13571",
       "37bdfc51dc7f413f",
       "060002070394507a",
+      "af23dcf6e683c015",
       "085c0892bd873f9a",
-      "bf363477b3b0aaba",
-      "7e42885c2d3007d3",
+      "e9506e9061fa31eb",
+      "f8f73fcff845d11f",
+      "9b8040a9b72498d5",
+      "0f173d59d2d695e3",
+      "f778db1ce3cfae41",
       "f10ac875927eb88a",
-      "ece93c1ef267cbf3"
+      "4f71137ba5fd21cc",
+      "4f5cddd813f61448",
+      "9032a59f50c65c28",
+      "c483a9eed0bd7ac4",
+      "7e42885c2d3007d3",
+      "cffb76353befc09e",
+      "8c697f3b056a4e8c",
+      "49c51faef6c17046",
+      "e05a1fd08e4fbc8a",
+      "bd874f4e9c33fa11",
+      "e26341045b283657",
+      "ece93c1ef267cbf3",
+      "a0a389ee4b775ac4",
+      "bd2cd8655cdbec6b"
     ],
-    "last_notify": 1791581277
+    "last_notify": 1791705515
   },
-  "last_event_scan": 1791704880,
+  "last_event_scan": 1791705480,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -9112,9 +9117,9 @@
       "defense": 83053.0,
       "first_seen": 1791701433,
       "first_seen_iso": "2026-10-11T06:50:33+00:00",
-      "last_seen": 1791704919,
-      "last_seen_iso": "2026-10-11T07:48:39+00:00",
-      "last_price": 82964.1,
+      "last_seen": 1791705516,
+      "last_seen_iso": "2026-10-11T07:58:36+00:00",
+      "last_price": 82960.7,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
@@ -9128,9 +9133,9 @@
       "defense": 82990.5,
       "first_seen": 1791704919,
       "first_seen_iso": "2026-10-11T07:48:39+00:00",
-      "last_seen": 1791704919,
-      "last_seen_iso": "2026-10-11T07:48:39+00:00",
-      "last_price": 82964.1,
+      "last_seen": 1791705516,
+      "last_seen_iso": "2026-10-11T07:58:36+00:00",
+      "last_price": 82960.7,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
