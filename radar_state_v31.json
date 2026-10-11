@@ -1431,7 +1431,8 @@
     "CONT:S:1791709200",
     "BO:S:1791710100",
     "CONT:L:1791710100",
-    "CONT:L:1791723600"
+    "CONT:L:1791723600",
+    "CONT:L:1791738000"
   ],
   "formal_seen": [
     "CONT:L:1791284400",
@@ -1454,8 +1455,41 @@
     "CONT:S:1791675000",
     "CONT:S:1791724500"
   ],
-  "next_prepare_id": 41,
-  "prepare_active": [],
+  "next_prepare_id": 42,
+  "prepare_active": [
+    {
+      "id": 41,
+      "setup_key": "CONT:L:1791738000",
+      "side": "LONG",
+      "trigger_type": "回踩再啟動",
+      "opened_at": 1791743491,
+      "opened_iso": "2026-10-11T18:31:31+00:00",
+      "prepare_price": 83837.1,
+      "trigger": 83860.3,
+      "atr_open": 202.22857142857225,
+      "trend_1h": "BULL",
+      "ema_position": "偏離",
+      "ema_distance_atr": 1.9712947807131236,
+      "volume_ratio": 0.21706764057043265,
+      "regime": "TREND",
+      "oi_dir": "DOWN",
+      "cvd_dir": "FLAT",
+      "formal_promoted": false,
+      "formal_trade_id": null,
+      "formal_at": null,
+      "formal_delay_min": null,
+      "status": "WATCHING",
+      "best_price": 83837.1,
+      "worst_price": 83837.1,
+      "mfe_atr": 0.0,
+      "mae_atr": 0.0,
+      "mfe_atr_30": null,
+      "mae_atr_30": null,
+      "mfe_atr_60": null,
+      "mae_atr_60": null,
+      "duration_min": 0
+    }
+  ],
   "prepare_history": [
     {
       "id": 1,
@@ -5102,6 +5136,10 @@
     {
       "time": 1791742419,
       "value": 29354.190800000095
+    },
+    {
+      "time": 1791743490,
+      "value": 29343.45800000009
     }
   ],
   "news": {
@@ -5138,7 +5176,7 @@
     ],
     "last_notify": 1791705515
   },
-  "last_event_scan": 1791742380,
+  "last_event_scan": 1791743460,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -9997,9 +10035,9 @@
       "defense": 82982.6,
       "first_seen": 1791733997,
       "first_seen_iso": "2026-10-11T15:53:17+00:00",
-      "last_seen": 1791742420,
-      "last_seen_iso": "2026-10-11T18:13:40+00:00",
-      "last_price": 83797.8,
+      "last_seen": 1791743492,
+      "last_seen_iso": "2026-10-11T18:31:32+00:00",
+      "last_price": 83837.1,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
@@ -10077,11 +10115,11 @@
       "defense": 83715.0,
       "first_seen": 1791740507,
       "first_seen_iso": "2026-10-11T17:41:47+00:00",
-      "last_seen": 1791742420,
-      "last_seen_iso": "2026-10-11T18:13:40+00:00",
-      "last_price": 83797.8,
-      "status": "DETECTED",
-      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "last_seen": 1791743491,
+      "last_seen_iso": "2026-10-11T18:31:31+00:00",
+      "last_price": 83837.1,
+      "status": "PREPARED",
+      "last_note": "進入準備距離",
       "block_count": 0
     },
     {
@@ -10109,20 +10147,36 @@
       "defense": 83715.0,
       "first_seen": 1791741622,
       "first_seen_iso": "2026-10-11T18:00:22+00:00",
-      "last_seen": 1791742420,
-      "last_seen_iso": "2026-10-11T18:13:40+00:00",
-      "last_price": 83797.8,
+      "last_seen": 1791743492,
+      "last_seen_iso": "2026-10-11T18:31:32+00:00",
+      "last_price": 83837.1,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BO:S:1791741600",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "label": "有效突破",
+      "trigger": 83741.7,
+      "defense": 84177.5,
+      "first_seen": 1791743492,
+      "first_seen_iso": "2026-10-11T18:31:32+00:00",
+      "last_seen": 1791743492,
+      "last_seen_iso": "2026-10-11T18:31:32+00:00",
+      "last_price": 83837.1,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
     }
   ],
   "active_thesis": {
-    "side": "SHORT",
-    "setup_key": "CONT:S:1791724500",
-    "source": "FORMAL",
+    "side": "LONG",
+    "setup_key": "CONT:L:1791738000",
+    "source": "PREPARE",
     "context_class": "MIXED",
-    "updated_at": 1791728915,
-    "updated_iso": "2026-10-11T14:28:35+00:00"
+    "updated_at": 1791743491,
+    "updated_iso": "2026-10-11T18:31:31+00:00"
   }
 }
