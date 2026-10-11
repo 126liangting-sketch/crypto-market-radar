@@ -5165,6 +5165,10 @@
     {
       "time": 1791748201,
       "value": 29359.669400000104
+    },
+    {
+      "time": 1791748711,
+      "value": 29355.930900000105
     }
   ],
   "news": {
@@ -5201,7 +5205,7 @@
     ],
     "last_notify": 1791705515
   },
-  "last_event_scan": 1791748140,
+  "last_event_scan": 1791748680,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -10140,9 +10144,9 @@
       "defense": 83715.0,
       "first_seen": 1791740507,
       "first_seen_iso": "2026-10-11T17:41:47+00:00",
-      "last_seen": 1791748202,
-      "last_seen_iso": "2026-10-11T19:50:02+00:00",
-      "last_price": 83688.7,
+      "last_seen": 1791748712,
+      "last_seen_iso": "2026-10-11T19:58:32+00:00",
+      "last_price": 83625.2,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
@@ -10204,9 +10208,9 @@
       "defense": 83741.7,
       "first_seen": 1791744562,
       "first_seen_iso": "2026-10-11T18:49:22+00:00",
-      "last_seen": 1791748202,
-      "last_seen_iso": "2026-10-11T19:50:02+00:00",
-      "last_price": 83688.7,
+      "last_seen": 1791748712,
+      "last_seen_iso": "2026-10-11T19:58:32+00:00",
+      "last_price": 83625.2,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
@@ -10220,9 +10224,9 @@
       "defense": 83872.8,
       "first_seen": 1791744562,
       "first_seen_iso": "2026-10-11T18:49:22+00:00",
-      "last_seen": 1791748202,
-      "last_seen_iso": "2026-10-11T19:50:02+00:00",
-      "last_price": 83688.7,
+      "last_seen": 1791748712,
+      "last_seen_iso": "2026-10-11T19:58:32+00:00",
+      "last_price": 83625.2,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
@@ -10236,9 +10240,9 @@
       "defense": 84177.5,
       "first_seen": 1791744562,
       "first_seen_iso": "2026-10-11T18:49:22+00:00",
-      "last_seen": 1791748202,
-      "last_seen_iso": "2026-10-11T19:50:02+00:00",
-      "last_price": 83688.7,
+      "last_seen": 1791748712,
+      "last_seen_iso": "2026-10-11T19:58:32+00:00",
+      "last_price": 83625.2,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
@@ -10252,9 +10256,9 @@
       "defense": 83872.8,
       "first_seen": 1791746804,
       "first_seen_iso": "2026-10-11T19:26:44+00:00",
-      "last_seen": 1791748202,
-      "last_seen_iso": "2026-10-11T19:50:02+00:00",
-      "last_price": 83688.7,
+      "last_seen": 1791748712,
+      "last_seen_iso": "2026-10-11T19:58:32+00:00",
+      "last_price": 83625.2,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
