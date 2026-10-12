@@ -214,6 +214,19 @@ def event_window(state):
     return use or rows[-2:]
 
 
+def post_entry_event_bars(event_rows, opened_at):
+    """Only use 1m bars whose entire interval begins at/after entry.
+
+    A 1m OHLC bar that contains the entry timestamp includes pre-entry
+    highs/lows. Without tick data we cannot safely resolve its sequence.
+    This conservatively omits that partial bar, including possible exits.
+    """
+    opened_at = int(opened_at)
+    first_safe_minute = ((opened_at + 59) // 60) * 60
+    return [r for r in (event_rows or [])
+            if int(r.get("time", 0)) >= first_safe_minute]
+
+
 def window_high_low(rows, fallback):
     if not rows:
         return float(fallback), float(fallback)
@@ -1664,7 +1677,7 @@ def update_prepare_validations(state, live_price, event_rows=None):
         if a <= 0:
             remain.append(p)
             continue
-        p_events = [r for r in (event_rows or []) if int(r.get("time", 0)) >= int(p.get("opened_at", 0)) - 60]
+        p_events = post_entry_event_bars(event_rows, p.get("opened_at", 0))
         wh, wl = window_high_low(p_events, live_price)
         if p["side"] == "LONG":
             p["best_price"] = max(float(p.get("best_price", entry)), wh)
@@ -1736,7 +1749,7 @@ def update_trades(state, live_price, event_rows=None):
     for t in state["trades"]:
         entry, risk = float(t["entry"]), float(t["risk"])
         closed = False
-        trade_bars = [r for r in bars if int(r.get("time", 0)) >= int(t.get("opened_at", 0)) - 60] or [{"time": now_utc(), "high": live_price, "low": live_price, "close": live_price}]
+        trade_bars = post_entry_event_bars(bars, t.get("opened_at", 0)) or [{"time": now_utc(), "high": live_price, "low": live_price, "close": live_price}]
         for bar in trade_bars:
             hi, lo = float(bar["high"]), float(bar["low"])
             if t["side"] == "LONG":
