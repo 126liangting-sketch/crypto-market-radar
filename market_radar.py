@@ -15,7 +15,7 @@ WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
 VERSION = "LASER_SIGNAL_CORE_3_1_RISK_ENGINE"
-BUILD = "LASER_SIGNAL_CORE_3_1_ARBITRATION_PENETRATION"
+BUILD = "LASER_SIGNAL_CORE_3_1_STRUCTURE_CLEANUP_BREAKOUT"
 STATE_FILE = "radar_state_v31.json"
 TRADES_JSON = "paper_trades_v31.json"
 TRADES_CSV = "paper_trades_v31.csv"
@@ -34,6 +34,14 @@ VOL_HARD_MIN = 0.70
 PULLBACK_MIN_ATR = 0.25
 IMPULSE_MIN_ATR = 0.60
 BREAK_BUFFER_ATR = 0.05
+BREAKOUT_BREAK_BUFFER_ATR = 0.01
+BREAKOUT_ACCEPT_ATR = 0.02
+BREAKOUT_ZONE_MERGE_ATR = 0.18
+BREAKOUT_ZONE_LOOKBACK = 48
+BREAKOUT_ZONE_MAX_AHEAD_ATR = 1.10
+BREAKOUT_ZONE_MAX_BEHIND_ATR = 0.65
+BREAKOUT_ZONE_RETIRE_BARS = 3
+PREPARE_NOTIFY_VOL_MIN = 0.55
 PREPARE_DISTANCE_ATR = 0.25
 EXT_NORMAL_ATR = 0.30
 EXT_WARN_ATR = 0.50
@@ -458,31 +466,148 @@ def detect_pullback_setup(rows15, a, side):
     return candidates[-1] if candidates else None
 
 
-def detect_breakout_setup(rows15, a, side):
-    # Trigger uses the cleaned/significant pivot, but the stop-defense point should use
-    # the nearest local pivot before that trigger. Using the previous significant pivot
-    # can be several ATR away and creates unrealistic stops.
-    highs, lows = significant_pivots(rows15, a, 0.35)
+def _breakout_zone_candidates(rows15, a, side):
+    """Build recent support/resistance zones from repeated 15M swing reactions.
+
+    Breakout is a zone problem, not a single last-pivot problem.  Nearby pivots are
+    clustered; repeated touches and meaningful reactions increase importance, while
+    zones already accepted several bars ago are retired so old triggers do not linger.
+    """
+    if len(rows15) < 12 or not a or a <= 0:
+        return []
+    highs, lows = local_pivots(rows15, 1, 1)
+    pivots = highs if side == "LONG" else lows
+    start_i = max(0, len(rows15) - BREAKOUT_ZONE_LOOKBACK)
+    pivots = [x for x in pivots if x[2] >= start_i]
+    if not pivots:
+        return []
+
+    groups = []
+    for pt in sorted(pivots, key=lambda x: float(x[1])):
+        price = float(pt[1])
+        if not groups or abs(price - groups[-1]["center"]) > BREAKOUT_ZONE_MERGE_ATR * a:
+            groups.append({"pivots": [pt], "center": price})
+        else:
+            groups[-1]["pivots"].append(pt)
+            groups[-1]["center"] = sum(float(x[1]) for x in groups[-1]["pivots"]) / len(groups[-1]["pivots"])
+
+    out = []
+    closes = [float(r["close"]) for r in rows15]
+    for g in groups:
+        pts = g["pivots"]
+        prices = [float(x[1]) for x in pts]
+        last_pt = max(pts, key=lambda x: x[2])
+        last_i = int(last_pt[2])
+        # Resistance breaks at the upper edge; support breaks at the lower edge.
+        trigger = max(prices) if side == "LONG" else min(prices)
+        zone_low, zone_high = min(prices), max(prices)
+
+        # Reaction after each touch: a useful boundary must have pushed price away.
+        reactions = []
+        for _, pp, ii in pts:
+            future = rows15[ii+1:min(len(rows15), ii+6)]
+            if not future:
+                continue
+            if side == "LONG":
+                reactions.append((float(pp) - min(float(r["low"]) for r in future)) / a)
+            else:
+                reactions.append((max(float(r["high"]) for r in future) - float(pp)) / a)
+        reaction = max(reactions) if reactions else 0.0
+        if reaction < 0.25 and len(pts) < 2:
+            continue
+
+        # Retire a boundary only after multiple confirmed 15M closes have accepted
+        # the other side. This keeps a fresh break actionable but removes stale levels.
+        recent = closes[-BREAKOUT_ZONE_RETIRE_BARS:]
+        if len(recent) >= BREAKOUT_ZONE_RETIRE_BARS:
+            if side == "LONG" and all(c > trigger + BREAKOUT_ACCEPT_ATR*a for c in recent):
+                continue
+            if side == "SHORT" and all(c < trigger - BREAKOUT_ACCEPT_ATR*a for c in recent):
+                continue
+
+        recency = max(0.0, 1.0 - (len(rows15)-1-last_i)/BREAKOUT_ZONE_LOOKBACK)
+        score = min(3, len(pts)) * 1.0 + min(2.0, reaction) + recency
+        out.append({
+            "trigger": float(trigger), "zone_low": float(zone_low), "zone_high": float(zone_high),
+            "touches": len(pts), "reaction_atr": float(reaction), "score": float(score),
+            "anchor_time": int(min(x[0] for x in pts)), "last_touch_time": int(last_pt[0]),
+            "last_touch_index": last_i,
+        })
+    return out
+
+
+def detect_breakout_setup(rows15, a, side, live_price=None):
+    """Dynamic structure breakout using the currently relevant boundary zone.
+
+    The old implementation always used the last significant pivot. That could leave
+    an obsolete trigger active or miss a newer range edge. Here repeated swing zones
+    compete by relevance, recency and reaction strength, and accepted old zones retire.
+    """
+    live_price = float(live_price if live_price is not None else rows15[-1]["close"])
+    zones = _breakout_zone_candidates(rows15, a, side)
+    if not zones:
+        return None
+
+    eligible = []
+    for z in zones:
+        rel = (float(z["trigger"]) - live_price) / a if side == "LONG" else (live_price - float(z["trigger"])) / a
+        # Allow an approaching boundary and a freshly crossed boundary, but do not
+        # resurrect a level far behind current price or target a remote level.
+        if -BREAKOUT_ZONE_MAX_BEHIND_ATR <= rel <= BREAKOUT_ZONE_MAX_AHEAD_ATR:
+            zz = dict(z); zz["relative_atr"] = rel
+            eligible.append(zz)
+    if not eligible:
+        return None
+
+    # Prefer the boundary that is actually in play now. Inside the active band,
+    # stronger/repeated zones win; remote zones cannot hijack a nearer valid break.
+    def _zone_key(z):
+        rel = float(z["relative_atr"])
+        active_band = 2 if -0.35 <= rel <= 0.55 else 1
+        return (active_band, z["score"], -abs(rel), z["last_touch_time"])
+    eligible.sort(key=_zone_key, reverse=True)
+    z = eligible[0]
+    trigger = float(z["trigger"])
+
     local_highs, local_lows = local_pivots(rows15, 1, 1)
-    if side == "LONG" and highs:
-        h = highs[-1]
-        prior_sig_lows = [l for l in lows if l[0] < h[0]]
-        if prior_sig_lows and h[1] - prior_sig_lows[-1][1] >= IMPULSE_MIN_ATR * a:
-            prior_local_lows = [l for l in local_lows if l[0] < h[0]]
-            defense = prior_local_lows[-1] if prior_local_lows else prior_sig_lows[-1]
-            return {"side": side, "kind": "BREAKOUT", "label": "有效突破",
-                    "trigger": h[1], "trigger_time": h[0], "defense": defense[1],
-                    "defense_time": defense[0], "setup_key": f"BO:L:{h[0]}"}
-    if side == "SHORT" and lows:
-        l = lows[-1]
-        prior_sig_highs = [h for h in highs if h[0] < l[0]]
-        if prior_sig_highs and prior_sig_highs[-1][1] - l[1] >= IMPULSE_MIN_ATR * a:
-            prior_local_highs = [h for h in local_highs if h[0] < l[0]]
-            defense = prior_local_highs[-1] if prior_local_highs else prior_sig_highs[-1]
-            return {"side": side, "kind": "BREAKOUT", "label": "有效突破",
-                    "trigger": l[1], "trigger_time": l[0], "defense": defense[1],
-                    "defense_time": defense[0], "setup_key": f"BO:S:{l[0]}"}
-    return None
+    if side == "LONG":
+        prior = [x for x in local_lows if x[0] <= z["last_touch_time"]]
+        if not prior:
+            return None
+        defense = prior[-1]
+        key = f"BOZ:L:{z['anchor_time']}:{z['last_touch_time']}:{round(trigger)}"
+    else:
+        prior = [x for x in local_highs if x[0] <= z["last_touch_time"]]
+        if not prior:
+            return None
+        defense = prior[-1]
+        key = f"BOZ:S:{z['anchor_time']}:{z['last_touch_time']}:{round(trigger)}"
+
+    return {
+        "side": side, "kind": "BREAKOUT", "label": "結構突破",
+        "trigger": trigger, "trigger_time": int(z["last_touch_time"]),
+        "defense": float(defense[1]), "defense_time": int(defense[0]),
+        "zone_low": z["zone_low"], "zone_high": z["zone_high"],
+        "zone_touches": int(z["touches"]), "zone_reaction_atr": float(z["reaction_atr"]),
+        "breakout_stage": "APPROACH" if z["relative_atr"] >= 0 else "BREAK",
+        "setup_key": key,
+    }
+
+
+def breakout_acceptance(side, setup, price, a, event_rows=None):
+    """Separate a real structure break from a wick-only probe."""
+    trigger = float(setup["trigger"])
+    rows = event_rows or []
+    if side == "LONG":
+        wick_break = any(float(r["high"]) >= trigger + BREAKOUT_BREAK_BUFFER_ATR*a for r in rows) or price >= trigger + BREAKOUT_BREAK_BUFFER_ATR*a
+        accepted = any(float(r["close"]) >= trigger + BREAKOUT_ACCEPT_ATR*a for r in rows) or price >= trigger + BREAKOUT_ACCEPT_ATR*a
+        failed = price < trigger - TRIGGER_RETEST_ATR*a
+    else:
+        wick_break = any(float(r["low"]) <= trigger - BREAKOUT_BREAK_BUFFER_ATR*a for r in rows) or price <= trigger - BREAKOUT_BREAK_BUFFER_ATR*a
+        accepted = any(float(r["close"]) <= trigger - BREAKOUT_ACCEPT_ATR*a for r in rows) or price <= trigger - BREAKOUT_ACCEPT_ATR*a
+        failed = price > trigger + TRIGGER_RETEST_ATR*a
+    return {"wick_break": wick_break, "accepted": accepted, "failed": failed,
+            "stage": "ACCEPTANCE" if accepted else ("BREAK" if wick_break else "APPROACH")}
 
 
 def detect_reversal_setup(rows15, a, side):
@@ -575,7 +700,7 @@ def collect_setups(rows15, a, side, live_price):
     candidates = []
     detectors = (
         detect_pullback_setup(rows15, a, side),
-        detect_breakout_setup(rows15, a, side),
+        detect_breakout_setup(rows15, a, side, live_price),
         detect_reversal_setup(rows15, a, side),
     )
     for setup in detectors:
@@ -1005,7 +1130,8 @@ def trigger_freshness(side, setup, price, a, event_rows=None):
     is context, not a standalone veto: only a deep failed retest remains a hard reject.
     """
     rows = sorted(event_rows or [], key=lambda r: int(r.get("time", 0)))
-    level = float(setup["trigger"]) + (BREAK_BUFFER_ATR * a if side == "LONG" else -BREAK_BUFFER_ATR * a)
+    buffer_atr = BREAKOUT_BREAK_BUFFER_ATR if setup.get("kind") == "BREAKOUT" else BREAK_BUFFER_ATR
+    level = float(setup["trigger"]) + (buffer_atr * a if side == "LONG" else -buffer_atr * a)
     crossed_rows = []
     for r in rows:
         if side == "LONG" and float(r.get("high", price)) >= level:
@@ -1847,13 +1973,22 @@ def maybe_prepare(state, side, setup, price, trend, ema_pos, vol, reg, oi, cvd):
 
 
 def evaluate_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd, event_rows=None):
-    """Single source of truth for Quality Engine 2.1 Formal eligibility."""
+    """Single source of truth for Laser Signal 3.1 Formal eligibility."""
     ext = (price - setup["trigger"])/a if side == "LONG" else (setup["trigger"] - price)/a
     wh, wl = window_high_low(event_rows or [], price)
-    trigger_level = setup["trigger"] + BREAK_BUFFER_ATR*a if side == "LONG" else setup["trigger"] - BREAK_BUFFER_ATR*a
-    crossed = wh >= trigger_level if side == "LONG" else wl <= trigger_level
-    if not crossed:
-        return {"ready": False, "reason": "TRIGGER_NOT_CROSSED", "side": side, "setup": setup, "ext": ext}
+    if setup.get("kind") == "BREAKOUT":
+        br = breakout_acceptance(side, setup, price, a, event_rows)
+        setup["breakout_stage"] = br["stage"]
+        if not br["wick_break"]:
+            return {"ready": False, "reason": "TRIGGER_NOT_CROSSED", "side": side, "setup": setup, "ext": ext}
+        if not br["accepted"]:
+            return {"ready": False, "reason": "BREAKOUT_NOT_ACCEPTED", "side": side, "setup": setup, "ext": ext,
+                    "breakout": br}
+    else:
+        trigger_level = setup["trigger"] + BREAK_BUFFER_ATR*a if side == "LONG" else setup["trigger"] - BREAK_BUFFER_ATR*a
+        crossed = wh >= trigger_level if side == "LONG" else wl <= trigger_level
+        if not crossed:
+            return {"ready": False, "reason": "TRIGGER_NOT_CROSSED", "side": side, "setup": setup, "ext": ext}
 
     freshness = trigger_freshness(side, setup, price, a, event_rows)
     if side == "LONG" and price < setup["trigger"] - TRIGGER_RETEST_ATR*a:
@@ -2008,6 +2143,7 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
     if not ev.get("ready"):
         reason_map = {
             "TRIGGER_NOT_CROSSED": None,
+            "BREAKOUT_NOT_ACCEPTED": None,
             "TRIGGER_RETEST_FAILED": "Trigger穿越後未能守住",
             "NO_RISK_PLAN": "無法建立有效風控",
             "LOW_VOLUME": "成交量過低",
@@ -2105,6 +2241,10 @@ def preview_prepare_candidate(side, setup, price, rows15, a, trend, ema_pos, vol
     dist = ((float(setup["trigger"]) - price) / a) if side == "LONG" else ((price - float(setup["trigger"])) / a)
     if not (0 <= dist <= PREPARE_DISTANCE_ATR):
         return {"ready": False, "side": side, "setup": setup, "dist": dist}
+    # Keep weak candidates internally, but do not make them the Discord main thesis.
+    # A very-close structure can still prepare slightly below the normal volume floor.
+    if float(vol.get("ratio") or 0.0) < PREPARE_NOTIFY_VOL_MIN and dist > 0.08:
+        return {"ready": False, "side": side, "setup": setup, "dist": dist, "reason": "PREPARE_LOW_PARTICIPATION"}
     plan = risk_plan(setup, side, price, a, ema_pos, reg)
     if not plan:
         return {"ready": False, "side": side, "setup": setup, "dist": dist}
@@ -2147,7 +2287,7 @@ def choose_prepare_winner(candidates, trend, state):
     return winner
 
 def manual_summary(state, price, trend, reg, oi, cvd):
-    """Laser Signal 3.0 reports only its own V3 data. Legacy files are intentionally ignored."""
+    """Report the current v31 lineage only; legacy engines are intentionally ignored."""
     history = list(state.get("history", []))
     open_trades = list(state.get("trades", []))
     completed = len(history)
@@ -2168,7 +2308,7 @@ def manual_summary(state, price, trend, reg, oi, cvd):
         perf = "🎯 雷射訊號 3.1 尚無完成樣本"
 
     msg = (
-        f"📡 雷射訊號｜Laser Signal 3.1 Decision Calibration｜手動查詢\nBTC：${price:,.0f}\n"
+        f"📡 雷射訊號｜Laser Signal 3.1｜手動查詢\nBTC：${price:,.0f}\n"
         f"1H背景：{zh_dir(trend['state'])}\n市場狀態：{'趨勢' if reg['state']=='TREND' else '震盪'}\n"
         f"OI：{zh_dir(oi['dir'])}｜CVD Proxy：{zh_dir(cvd['dir'])}\n"
         f"👀 Prepare：完成 {p_done}｜追蹤中 {p_open}\n"
