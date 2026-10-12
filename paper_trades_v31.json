@@ -53,13 +53,13 @@
       "penetration_reason": "突破新鮮且參與度足以測試近端結構",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.6783364400607418,
+      "mfe_r": 0.7249990741541048,
       "mae_r": 0.6498203858925581,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 82430.6,
+      "best_price": 82419.8,
       "worst_price": 82738.0,
-      "duration_min": 41
+      "duration_min": 54
     }
   ],
   "history": [

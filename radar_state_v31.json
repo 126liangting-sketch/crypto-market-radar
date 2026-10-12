@@ -55,13 +55,13 @@
       "penetration_reason": "突破新鮮且參與度足以測試近端結構",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.6783364400607418,
+      "mfe_r": 0.7249990741541048,
       "mae_r": 0.6498203858925581,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 82430.6,
+      "best_price": 82419.8,
       "worst_price": 82738.0,
-      "duration_min": 41
+      "duration_min": 54
     }
   ],
   "history": [
@@ -5980,6 +5980,10 @@
     {
       "time": 1791844910,
       "value": 30051.50300000011
+    },
+    {
+      "time": 1791845731,
+      "value": 30057.98790000011
     }
   ],
   "news": {
@@ -6019,7 +6023,7 @@
     ],
     "last_notify": 1791815240
   },
-  "last_event_scan": 1791844860,
+  "last_event_scan": 1791845700,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -12110,9 +12114,9 @@
       "defense": 82610.1,
       "first_seen": 1791827623,
       "first_seen_iso": "2026-10-12T17:53:43+00:00",
-      "last_seen": 1791844911,
-      "last_seen_iso": "2026-10-12T22:41:51+00:00",
-      "last_price": 82519.0,
+      "last_seen": 1791845732,
+      "last_seen_iso": "2026-10-12T22:55:32+00:00",
+      "last_price": 82420.2,
       "status": "DETECTED",
       "last_note": "已有正式單 #21 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -12254,9 +12258,9 @@
       "defense": 82811.5,
       "first_seen": 1791841038,
       "first_seen_iso": "2026-10-12T21:37:18+00:00",
-      "last_seen": 1791844911,
-      "last_seen_iso": "2026-10-12T22:41:51+00:00",
-      "last_price": 82519.0,
+      "last_seen": 1791845732,
+      "last_seen_iso": "2026-10-12T22:55:32+00:00",
+      "last_price": 82420.2,
       "status": "DETECTED",
       "last_note": "已有正式單 #21 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -12270,9 +12274,9 @@
       "defense": 82307.7,
       "first_seen": 1791841038,
       "first_seen_iso": "2026-10-12T21:37:18+00:00",
-      "last_seen": 1791844911,
-      "last_seen_iso": "2026-10-12T22:41:51+00:00",
-      "last_price": 82519.0,
+      "last_seen": 1791845732,
+      "last_seen_iso": "2026-10-12T22:55:32+00:00",
+      "last_price": 82420.2,
       "status": "DETECTED",
       "last_note": "已有正式單 #21 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -12302,9 +12306,9 @@
       "defense": 82738.0,
       "first_seen": 1791844911,
       "first_seen_iso": "2026-10-12T22:41:51+00:00",
-      "last_seen": 1791844911,
-      "last_seen_iso": "2026-10-12T22:41:51+00:00",
-      "last_price": 82519.0,
+      "last_seen": 1791845732,
+      "last_seen_iso": "2026-10-12T22:55:32+00:00",
+      "last_price": 82420.2,
       "status": "DETECTED",
       "last_note": "已有正式單 #21 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -12334,9 +12338,25 @@
       "defense": 83119.7,
       "first_seen": 1791844911,
       "first_seen_iso": "2026-10-12T22:41:51+00:00",
-      "last_seen": 1791844911,
-      "last_seen_iso": "2026-10-12T22:41:51+00:00",
-      "last_price": 82519.0,
+      "last_seen": 1791845732,
+      "last_seen_iso": "2026-10-12T22:55:32+00:00",
+      "last_price": 82420.2,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #21 進行中，暫不新增外部訊號",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BOZ:S:1791810900:1791841500:82400",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "label": "結構突破",
+      "trigger": 82400.4,
+      "defense": 83119.7,
+      "first_seen": 1791845732,
+      "first_seen_iso": "2026-10-12T22:55:32+00:00",
+      "last_seen": 1791845732,
+      "last_seen_iso": "2026-10-12T22:55:32+00:00",
+      "last_price": 82420.2,
       "status": "DETECTED",
       "last_note": "已有正式單 #21 進行中，暫不新增外部訊號",
       "block_count": 0
@@ -12347,7 +12367,7 @@
     "setup_key": "BOZ:S:1791808200:1791819000:82601",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791844911,
-    "updated_iso": "2026-10-12T22:41:51+00:00"
+    "updated_at": 1791845732,
+    "updated_iso": "2026-10-12T22:55:32+00:00"
   }
 }
