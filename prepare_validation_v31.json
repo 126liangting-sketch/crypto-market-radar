@@ -1,38 +1,6 @@
 {
   "active": [
     {
-      "id": 44,
-      "setup_key": "CONT:L:1791756000",
-      "side": "LONG",
-      "trigger_type": "回踩再啟動",
-      "opened_at": 1791759614,
-      "opened_iso": "2026-10-11T23:00:14+00:00",
-      "prepare_price": 83599.7,
-      "trigger": 83608.9,
-      "atr_open": 114.11428571428613,
-      "trend_1h": "BULL",
-      "ema_position": "偏離",
-      "ema_distance_atr": 0.5449986305585203,
-      "volume_ratio": 0.470953481438869,
-      "regime": "TREND",
-      "oi_dir": "FLAT",
-      "cvd_dir": "FLAT",
-      "formal_promoted": false,
-      "formal_trade_id": null,
-      "formal_at": null,
-      "formal_delay_min": null,
-      "status": "WATCHING",
-      "best_price": 83738.9,
-      "worst_price": 83597.2,
-      "mfe_atr": 1.2198297446168955,
-      "mae_atr": 0.021907861792688953,
-      "mfe_atr_30": 1.0542,
-      "mae_atr_30": 0.0219,
-      "mfe_atr_60": null,
-      "mae_atr_60": null,
-      "duration_min": 57
-    },
-    {
       "id": 45,
       "setup_key": "BO:L:1791757800",
       "side": "LONG",
@@ -62,7 +30,7 @@
       "mae_atr_30": 0.1321,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 33
+      "duration_min": 47
     }
   ],
   "history": [
@@ -1527,6 +1495,40 @@
       "duration_min": 60,
       "closed_at": 1791760273,
       "closed_iso": "2026-10-11T23:11:13+00:00"
+    },
+    {
+      "id": 44,
+      "setup_key": "CONT:L:1791756000",
+      "side": "LONG",
+      "trigger_type": "回踩再啟動",
+      "opened_at": 1791759614,
+      "opened_iso": "2026-10-11T23:00:14+00:00",
+      "prepare_price": 83599.7,
+      "trigger": 83608.9,
+      "atr_open": 114.11428571428613,
+      "trend_1h": "BULL",
+      "ema_position": "偏離",
+      "ema_distance_atr": 0.5449986305585203,
+      "volume_ratio": 0.470953481438869,
+      "regime": "TREND",
+      "oi_dir": "FLAT",
+      "cvd_dir": "FLAT",
+      "formal_promoted": false,
+      "formal_trade_id": null,
+      "formal_at": null,
+      "formal_delay_min": null,
+      "status": "NO_FORMAL",
+      "best_price": 83738.9,
+      "worst_price": 83597.2,
+      "mfe_atr": 1.2198297446168955,
+      "mae_atr": 0.021907861792688953,
+      "mfe_atr_30": 1.0542,
+      "mae_atr_30": 0.0219,
+      "mfe_atr_60": 1.2198,
+      "mae_atr_60": 0.0219,
+      "duration_min": 72,
+      "closed_at": 1791763954,
+      "closed_iso": "2026-10-12T00:12:34+00:00"
     }
   ]
 }
