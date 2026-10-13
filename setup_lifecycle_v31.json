@@ -6408,11 +6408,11 @@
     "defense": 82738.0,
     "first_seen": 1791852687,
     "first_seen_iso": "2026-10-13T00:51:27+00:00",
-    "last_seen": 1791857471,
-    "last_seen_iso": "2026-10-13T02:11:11+00:00",
-    "last_price": 82547.6,
+    "last_seen": 1791858500,
+    "last_seen_iso": "2026-10-13T02:28:20+00:00",
+    "last_price": 82705.3,
     "status": "DETECTED",
-    "last_note": "已有正式單 #23 進行中，暫不新增外部訊號",
+    "last_note": "非本輪主要 thesis，僅內部追蹤",
     "block_count": 0
   },
   {
@@ -6440,11 +6440,11 @@
     "defense": 81597.6,
     "first_seen": 1791853799,
     "first_seen_iso": "2026-10-13T01:09:59+00:00",
-    "last_seen": 1791857471,
-    "last_seen_iso": "2026-10-13T02:11:11+00:00",
-    "last_price": 82547.6,
+    "last_seen": 1791858500,
+    "last_seen_iso": "2026-10-13T02:28:20+00:00",
+    "last_price": 82705.3,
     "status": "DETECTED",
-    "last_note": "已有正式單 #23 進行中，暫不新增外部訊號",
+    "last_note": "非本輪主要 thesis，僅內部追蹤",
     "block_count": 0
   },
   {
@@ -6509,6 +6509,38 @@
     "last_price": 82547.6,
     "status": "DETECTED",
     "last_note": "已有正式單 #23 進行中，暫不新增外部訊號",
+    "block_count": 0
+  },
+  {
+    "setup_key": "BOZ:L:1791818100:1791842400:82764",
+    "side": "LONG",
+    "type": "BREAKOUT",
+    "label": "結構突破",
+    "trigger": 82763.6,
+    "defense": 82400.4,
+    "first_seen": 1791858500,
+    "first_seen_iso": "2026-10-13T02:28:20+00:00",
+    "last_seen": 1791858500,
+    "last_seen_iso": "2026-10-13T02:28:20+00:00",
+    "last_price": 82705.3,
+    "status": "PREPARED",
+    "last_note": "進入準備距離",
+    "block_count": 0
+  },
+  {
+    "setup_key": "BOZ:S:1791819000:1791819000:82610",
+    "side": "SHORT",
+    "type": "BREAKOUT",
+    "label": "結構突破",
+    "trigger": 82610.1,
+    "defense": 82763.6,
+    "first_seen": 1791858500,
+    "first_seen_iso": "2026-10-13T02:28:20+00:00",
+    "last_seen": 1791858500,
+    "last_seen_iso": "2026-10-13T02:28:20+00:00",
+    "last_price": 82705.3,
+    "status": "DETECTED",
+    "last_note": "非本輪主要 thesis，僅內部追蹤",
     "block_count": 0
   }
 ]
