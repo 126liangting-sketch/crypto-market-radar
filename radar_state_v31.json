@@ -1785,40 +1785,7 @@
     "BOZ:L:1791849600:1791849600:81915"
   ],
   "next_prepare_id": 53,
-  "prepare_active": [
-    {
-      "id": 52,
-      "setup_key": "BOZ:S:1791838800:1791838800:82812",
-      "side": "SHORT",
-      "trigger_type": "結構突破",
-      "opened_at": 1791859533,
-      "opened_iso": "2026-10-13T02:45:33+00:00",
-      "prepare_price": 82816.8,
-      "trigger": 82811.5,
-      "atr_open": 331.2928571428555,
-      "trend_1h": "BEAR",
-      "ema_position": "偏離",
-      "ema_distance_atr": 0.979627320045972,
-      "volume_ratio": 0.5875580154197901,
-      "regime": "TREND",
-      "oi_dir": "DOWN",
-      "cvd_dir": "FLAT",
-      "formal_promoted": false,
-      "formal_trade_id": null,
-      "formal_at": null,
-      "formal_delay_min": null,
-      "status": "WATCHING",
-      "best_price": 82747.8,
-      "worst_price": 83075.0,
-      "mfe_atr": 0.208274940169467,
-      "mae_atr": 0.7793708630689242,
-      "mfe_atr_30": 0.2083,
-      "mae_atr_30": 0.7794,
-      "mfe_atr_60": null,
-      "mae_atr_60": null,
-      "duration_min": 44
-    }
-  ],
+  "prepare_active": [],
   "prepare_history": [
     {
       "id": 1,
@@ -3553,6 +3520,40 @@
       "duration_min": 62,
       "closed_at": 1791862223,
       "closed_iso": "2026-10-13T03:30:23+00:00"
+    },
+    {
+      "id": 52,
+      "setup_key": "BOZ:S:1791838800:1791838800:82812",
+      "side": "SHORT",
+      "trigger_type": "結構突破",
+      "opened_at": 1791859533,
+      "opened_iso": "2026-10-13T02:45:33+00:00",
+      "prepare_price": 82816.8,
+      "trigger": 82811.5,
+      "atr_open": 331.2928571428555,
+      "trend_1h": "BEAR",
+      "ema_position": "偏離",
+      "ema_distance_atr": 0.979627320045972,
+      "volume_ratio": 0.5875580154197901,
+      "regime": "TREND",
+      "oi_dir": "DOWN",
+      "cvd_dir": "FLAT",
+      "formal_promoted": false,
+      "formal_trade_id": null,
+      "formal_at": null,
+      "formal_delay_min": null,
+      "status": "NO_FORMAL",
+      "best_price": 82747.8,
+      "worst_price": 83349.9,
+      "mfe_atr": 0.208274940169467,
+      "mae_atr": 1.6091502986136381,
+      "mfe_atr_30": 0.2083,
+      "mae_atr_30": 0.7794,
+      "mfe_atr_60": 0.2083,
+      "mae_atr_60": 1.6092,
+      "duration_min": 64,
+      "closed_at": 1791863393,
+      "closed_iso": "2026-10-13T03:49:53+00:00"
     }
   ],
   "oi_history": [
@@ -6347,6 +6348,10 @@
     {
       "time": 1791862222,
       "value": 29632.57580000007
+    },
+    {
+      "time": 1791863393,
+      "value": 29232.247300000072
     }
   ],
   "news": {
@@ -6386,7 +6391,7 @@
     ],
     "last_notify": 1791815240
   },
-  "last_event_scan": 1791862200,
+  "last_event_scan": 1791863340,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -12944,6 +12949,22 @@
       "last_seen": 1791862223,
       "last_seen_iso": "2026-10-13T03:30:23+00:00",
       "last_price": 82921.5,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "CONT:L:1791861300",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 82938.2,
+      "defense": 82747.8,
+      "first_seen": 1791863394,
+      "first_seen_iso": "2026-10-13T03:49:54+00:00",
+      "last_seen": 1791863394,
+      "last_seen_iso": "2026-10-13T03:49:54+00:00",
+      "last_price": 83335.1,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
