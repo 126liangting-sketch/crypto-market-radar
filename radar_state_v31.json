@@ -56,12 +56,12 @@
       "tp1_r": 1.0,
       "tp2_r": null,
       "mfe_r": 0.0,
-      "mae_r": 0.0,
+      "mae_r": 0.6164229085957161,
       "tp1_hit": false,
       "tp2_hit": false,
       "best_price": 81147.4,
-      "worst_price": 81147.4,
-      "duration_min": 0
+      "worst_price": 81687.2,
+      "duration_min": 18
     }
   ],
   "history": [
@@ -1577,6 +1577,37 @@
       "entry_timing_reason": "仍在可接受進場區，尚未明顯延伸",
       "feasibility_class": "TIGHT",
       "feasibility_reason": "前方強結構約 0.38R，需保守出場"
+    },
+    {
+      "key": "BOZ:L:1791851400:1791851400:81598",
+      "setup_key": "BOZ:L:1791851400:1791851400:81598",
+      "first_time": 1791853799,
+      "first_time_iso": "2026-10-13T01:09:59+00:00",
+      "time": 1791853799,
+      "time_iso": "2026-10-13T01:09:59+00:00",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "engine_version": "LASER_SIGNAL_CORE_3_1_RISK_ENGINE",
+      "reason": "全局仲裁：已有反向正式單 #22 進行中",
+      "trigger": 81597.6,
+      "price": 81679.6,
+      "block_count": 1,
+      "volume_ratio": 2.7901793156750863,
+      "space_r": 1.5736548137063209,
+      "extension_atr": 0.24245496209001424,
+      "context_class": "MIXED",
+      "context_reason": "同一時間只保留一個有效BTC正式交易 thesis",
+      "trigger_freshness": "AGING",
+      "trigger_age_min": 6.983333333333333,
+      "geometry_class": "BALANCED",
+      "quality_decision": "CAUTION",
+      "quality_reason": "情境混合且Trigger已進入老化區",
+      "entry_timing": "NORMAL",
+      "entry_timing_reason": "仍在可接受進場區，尚未明顯延伸",
+      "feasibility_class": "OPEN",
+      "feasibility_reason": "前方沒有近距離強結構壓縮發展空間",
+      "penetration_quality": "WEAK",
+      "penetration_reason": "突破缺少新鮮度/量能/資金流其中一項關鍵穿透證據"
     }
   ],
   "prepare_seen": [
@@ -1656,40 +1687,7 @@
     "CONT:S:1791849600"
   ],
   "next_prepare_id": 51,
-  "prepare_active": [
-    {
-      "id": 50,
-      "setup_key": "BOZ:S:1791846000:1791846000:81750",
-      "side": "SHORT",
-      "trigger_type": "結構突破",
-      "opened_at": 1791849600,
-      "opened_iso": "2026-10-13T00:00:00+00:00",
-      "prepare_price": 81808.0,
-      "trigger": 81750.0,
-      "atr_open": 241.97142857142586,
-      "trend_1h": "NEUTRAL",
-      "ema_position": "偏離",
-      "ema_distance_atr": 3.3020484607458758,
-      "volume_ratio": 1.2923906818734738,
-      "regime": "TREND",
-      "oi_dir": "DOWN",
-      "cvd_dir": "FLAT",
-      "formal_promoted": false,
-      "formal_trade_id": null,
-      "formal_at": null,
-      "formal_delay_min": null,
-      "status": "WATCHING",
-      "best_price": 81088.0,
-      "worst_price": 81808.0,
-      "mfe_atr": 2.9755579171094912,
-      "mae_atr": 0.0,
-      "mfe_atr_30": 2.9756,
-      "mae_atr_30": 0.0,
-      "mfe_atr_60": null,
-      "mae_atr_60": null,
-      "duration_min": 51
-    }
-  ],
+  "prepare_active": [],
   "prepare_history": [
     {
       "id": 1,
@@ -3356,6 +3354,40 @@
       "duration_min": 68,
       "closed_at": 1791820690,
       "closed_iso": "2026-10-12T15:58:10+00:00"
+    },
+    {
+      "id": 50,
+      "setup_key": "BOZ:S:1791846000:1791846000:81750",
+      "side": "SHORT",
+      "trigger_type": "結構突破",
+      "opened_at": 1791849600,
+      "opened_iso": "2026-10-13T00:00:00+00:00",
+      "prepare_price": 81808.0,
+      "trigger": 81750.0,
+      "atr_open": 241.97142857142586,
+      "trend_1h": "NEUTRAL",
+      "ema_position": "偏離",
+      "ema_distance_atr": 3.3020484607458758,
+      "volume_ratio": 1.2923906818734738,
+      "regime": "TREND",
+      "oi_dir": "DOWN",
+      "cvd_dir": "FLAT",
+      "formal_promoted": false,
+      "formal_trade_id": null,
+      "formal_at": null,
+      "formal_delay_min": null,
+      "status": "NO_FORMAL",
+      "best_price": 81088.0,
+      "worst_price": 81808.0,
+      "mfe_atr": 2.9755579171094912,
+      "mae_atr": 0.0,
+      "mfe_atr_30": 2.9756,
+      "mae_atr_30": 0.0,
+      "mfe_atr_60": 2.9756,
+      "mae_atr_60": 0.0,
+      "duration_min": 69,
+      "closed_at": 1791853799,
+      "closed_iso": "2026-10-13T01:09:59+00:00"
     }
   ],
   "oi_history": [
@@ -6110,6 +6142,10 @@
     {
       "time": 1791852685,
       "value": 29602.2552000001
+    },
+    {
+      "time": 1791853798,
+      "value": 29753.18340000009
     }
   ],
   "news": {
@@ -6149,7 +6185,7 @@
     ],
     "last_notify": 1791815240
   },
-  "last_event_scan": 1791852660,
+  "last_event_scan": 1791853740,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -12560,11 +12596,43 @@
       "defense": 82738.0,
       "first_seen": 1791852687,
       "first_seen_iso": "2026-10-13T00:51:27+00:00",
-      "last_seen": 1791852687,
-      "last_seen_iso": "2026-10-13T00:51:27+00:00",
-      "last_price": 81147.4,
+      "last_seen": 1791853799,
+      "last_seen_iso": "2026-10-13T01:09:59+00:00",
+      "last_price": 81679.6,
       "status": "DETECTED",
-      "last_note": "本輪由更完整 thesis 主導，此候選僅內部追蹤",
+      "last_note": "已有正式單 #22 進行中，暫不新增外部訊號",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BOZ:L:1791851400:1791851400:81598",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "label": "結構突破",
+      "trigger": 81597.6,
+      "defense": 81247.4,
+      "first_seen": 1791853799,
+      "first_seen_iso": "2026-10-13T01:09:59+00:00",
+      "last_seen": 1791853799,
+      "last_seen_iso": "2026-10-13T01:09:59+00:00",
+      "last_price": 81679.6,
+      "status": "BLOCKED",
+      "last_note": "全局仲裁：已有反向正式單 #22 進行中",
+      "block_count": 1
+    },
+    {
+      "setup_key": "CONT:S:1791851400",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 81211.3,
+      "defense": 81597.6,
+      "first_seen": 1791853799,
+      "first_seen_iso": "2026-10-13T01:09:59+00:00",
+      "last_seen": 1791853799,
+      "last_seen_iso": "2026-10-13T01:09:59+00:00",
+      "last_price": 81679.6,
+      "status": "DETECTED",
+      "last_note": "已有正式單 #22 進行中，暫不新增外部訊號",
       "block_count": 0
     }
   ],
@@ -12573,7 +12641,7 @@
     "setup_key": "CONT:S:1791849600",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791852687,
-    "updated_iso": "2026-10-13T00:51:27+00:00"
+    "updated_at": 1791853799,
+    "updated_iso": "2026-10-13T01:09:59+00:00"
   }
 }
