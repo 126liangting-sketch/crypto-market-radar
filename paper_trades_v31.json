@@ -53,13 +53,13 @@
       "penetration_reason": "突破缺少新鮮度/量能/資金流其中一項關鍵穿透證據",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.0,
+      "mfe_r": 0.5040032397578786,
       "mae_r": 0.0,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 81957.4,
+      "best_price": 82368.1,
       "worst_price": 81957.4,
-      "duration_min": 0
+      "duration_min": 17
     }
   ],
   "history": [

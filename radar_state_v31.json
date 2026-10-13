@@ -55,13 +55,13 @@
       "penetration_reason": "突破缺少新鮮度/量能/資金流其中一項關鍵穿透證據",
       "tp1_r": 1.0,
       "tp2_r": null,
-      "mfe_r": 0.0,
+      "mfe_r": 0.5040032397578786,
       "mae_r": 0.0,
       "tp1_hit": false,
       "tp2_hit": false,
-      "best_price": 81957.4,
+      "best_price": 82368.1,
       "worst_price": 81957.4,
-      "duration_min": 0
+      "duration_min": 17
     }
   ],
   "history": [
@@ -6214,6 +6214,10 @@
     {
       "time": 1791854852,
       "value": 29729.595800000097
+    },
+    {
+      "time": 1791855894,
+      "value": 29955.66630000008
     }
   ],
   "news": {
@@ -6253,7 +6257,7 @@
     ],
     "last_notify": 1791815240
   },
-  "last_event_scan": 1791854820,
+  "last_event_scan": 1791855840,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -12392,11 +12396,11 @@
       "defense": 82330.1,
       "first_seen": 1791830489,
       "first_seen_iso": "2026-10-12T18:41:29+00:00",
-      "last_seen": 1791832333,
-      "last_seen_iso": "2026-10-12T19:12:13+00:00",
-      "last_price": 82393.3,
+      "last_seen": 1791855895,
+      "last_seen_iso": "2026-10-13T01:44:55+00:00",
+      "last_price": 82332.9,
       "status": "DETECTED",
-      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "last_note": "已有正式單 #23 進行中，暫不新增外部訊號",
       "block_count": 0
     },
     {
@@ -12664,11 +12668,11 @@
       "defense": 82738.0,
       "first_seen": 1791852687,
       "first_seen_iso": "2026-10-13T00:51:27+00:00",
-      "last_seen": 1791854853,
-      "last_seen_iso": "2026-10-13T01:27:33+00:00",
-      "last_price": 81957.4,
+      "last_seen": 1791855895,
+      "last_seen_iso": "2026-10-13T01:44:55+00:00",
+      "last_price": 82332.9,
       "status": "DETECTED",
-      "last_note": "本輪由更完整 thesis 主導，此候選僅內部追蹤",
+      "last_note": "已有正式單 #23 進行中，暫不新增外部訊號",
       "block_count": 0
     },
     {
@@ -12696,11 +12700,11 @@
       "defense": 81597.6,
       "first_seen": 1791853799,
       "first_seen_iso": "2026-10-13T01:09:59+00:00",
-      "last_seen": 1791854853,
-      "last_seen_iso": "2026-10-13T01:27:33+00:00",
-      "last_price": 81957.4,
+      "last_seen": 1791855895,
+      "last_seen_iso": "2026-10-13T01:44:55+00:00",
+      "last_price": 82332.9,
       "status": "DETECTED",
-      "last_note": "本輪由更完整 thesis 主導，此候選僅內部追蹤",
+      "last_note": "已有正式單 #23 進行中，暫不新增外部訊號",
       "block_count": 0
     },
     {
@@ -12741,7 +12745,7 @@
     "setup_key": "BOZ:L:1791849600:1791849600:81915",
     "source": "FORMAL",
     "context_class": "MIXED",
-    "updated_at": 1791854853,
-    "updated_iso": "2026-10-13T01:27:33+00:00"
+    "updated_at": 1791855895,
+    "updated_iso": "2026-10-13T01:44:55+00:00"
   }
 }
