@@ -22,15 +22,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 82867.8,
+      "best_price": 83075.0,
       "worst_price": 82648.0,
-      "mfe_atr": 0.4338539580830356,
+      "mfe_atr": 0.9870511280202892,
       "mae_atr": 0.15298358029636433,
-      "mfe_atr_30": null,
-      "mae_atr_30": null,
+      "mfe_atr_30": 0.9871,
+      "mae_atr_30": 0.153,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 17
+      "duration_min": 31
     },
     {
       "id": 52,
@@ -54,15 +54,15 @@
       "formal_at": null,
       "formal_delay_min": null,
       "status": "WATCHING",
-      "best_price": 82816.8,
-      "worst_price": 82816.8,
-      "mfe_atr": 0.0,
-      "mae_atr": 0.0,
+      "best_price": 82777.2,
+      "worst_price": 83075.0,
+      "mfe_atr": 0.11953170479292906,
+      "mae_atr": 0.7793708630689242,
       "mfe_atr_30": null,
       "mae_atr_30": null,
       "mfe_atr_60": null,
       "mae_atr_60": null,
-      "duration_min": 0
+      "duration_min": 13
     }
   ],
   "history": [
