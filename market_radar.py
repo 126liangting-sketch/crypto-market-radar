@@ -1543,18 +1543,98 @@ def save_json(path, obj):
     os.replace(tmp, path)
 
 
+def discord_card(msg):
+    """Presentation-only adapter: keep signal generation and saved data unchanged."""
+    import re
+
+    lines = [line.strip() for line in str(msg).splitlines() if line.strip()]
+    title_line = lines[0] if lines else "BTC 市場雷達"
+    raw = str(msg)
+
+    def value(prefixes, default="—"):
+        for line in lines:
+            for prefix in prefixes:
+                if line.startswith(prefix):
+                    return line[len(prefix):].strip()
+        return default
+
+    def price_in(label):
+        match = re.search(re.escape(label) + r"\s*\$([\d,]+)", raw)
+        return "$" + match.group(1) if match else "—"
+
+    def embed(title, description, color, fields=None, footer=None):
+        result = {"title": title[:256], "description": description[:4096],
+                  "color": color, "fields": (fields or [])[:25],
+                  "footer": {"text": footer or "LASER SIGNAL 3.1 · 模擬訊號"}}
+        return {"embeds": [result], "allowed_mentions": {"parse": []}}
+
+    green, red, blue, amber = 0x22C55E, 0xEF4444, 0x6485AE, 0xEAB85C
+    if "手動查詢" in title_line:
+        market = value(["市場狀態："])
+        side = value(["1H背景："])
+        oi_line = value(["OI："])
+        oi, _, cvd = oi_line.partition("｜")
+        cvd = cvd.replace("CVD Proxy：", "").strip() or "—"
+        open_trade = value(["⚡ 雷射訊號正式單："])
+        status = "正式交易追蹤中" if not open_trade.endswith("進行中 0") and "進行中" in open_trade else "等待交易機會"
+        return embed("📡 BTC 市場雷達", f"# {price_in('BTC：')}\n**{side}** · {market}\n\n**{status}**",
+                     green if "多" in side else red if "空" in side else blue,
+                     [{"name": "OI（未平倉量）", "value": oi, "inline": True},
+                      {"name": "CVD（累積量差）", "value": cvd, "inline": True}],
+                     "LASER SIGNAL 3.1 · 手動查詢 · 詳細績效保留在執行日誌")
+
+    if "正式" in title_line and "訊號" in title_line:
+        short = "做空" in title_line
+        tp = value(["止盈：", "TP1："])
+        tp2 = value(["TP2："], "")
+        quality = value(["交易品質："]).split("｜")[0]
+        setup = value(["15M觸發："])
+        fields = [{"name": "進場", "value": value(["進場："]), "inline": True},
+                  {"name": "SL（止損）", "value": value(["停損："]), "inline": True},
+                  {"name": "TP1（第一止盈）", "value": tp, "inline": True}]
+        if tp2:
+            fields.append({"name": "TP2（第二止盈）", "value": tp2, "inline": True})
+        fields += [{"name": "訊號品質", "value": quality, "inline": True},
+                   {"name": "1H（一小時）趨勢", "value": value(["1H背景："]), "inline": True}]
+        ident = value(["🧾 已建立模擬單 "])
+        return embed("⚡ BTC 正式訊號 · " + ("▼ 做空" if short else "▲ 做多"),
+                     f"**{setup}**\n{ident} · 模擬交易", red if short else green, fields)
+
+    if "準備" in title_line and "BTC" in title_line:
+        short = "做空" in title_line
+        fields = [{"name": "觸發價格", "value": price_in("觸發價："), "inline": True},
+                  {"name": "目前價格", "value": price_in("目前："), "inline": True},
+                  {"name": "1H（一小時）趨勢", "value": value(["1H背景："]), "inline": True}]
+        return embed("👀 BTC 準備訊號 · " + ("做空" if short else "做多"),
+                     f"**{value(['15M結構：'])}**\n等待條件確認，尚未建立正式單", amber, fields)
+
+    if "模擬單 #" in title_line:
+        is_sl = "停損" in title_line
+        outcome = "SL（止損）" if is_sl else "TP2（第二止盈）" if "TP2" in title_line else "TP1（第一止盈）"
+        stats = next((line for line in lines if "MFE：" in line), "")
+        return embed(title_line.replace("模擬單", "模擬交易"),
+                     f"**{outcome}**\n{stats.replace('MFE：', 'MFE（最大有利波動）：').replace('MAE：', 'MAE（最大不利波動）：')}",
+                     red if is_sl else green)
+
+    if "重大新聞" in title_line:
+        return embed("📰 BTC 重大新聞", f"**{value(['類型：'])}**\n{value(['中文：', '中文摘要：'])}\n\n僅作風險提醒，不改變多空訊號", amber,
+                     [{"name": "原文", "value": value(["原文："])[:1024], "inline": False}])
+
+    # Unknown future notifications still display, without dropping information.
+    return embed("📡 BTC 雷射雷達", raw, blue)
+
+
 def send_discord(msg):
     msg = str(msg).strip()
-    print(msg)
+    print(msg)  # Preserve the full original notification in GitHub execution logs.
     if not WEBHOOK:
         print("缺少 DISCORD_WEBHOOK，僅輸出到 log")
         return
-    sep = "━━━━━━━━━━━━━━━━━━"
-    body = f"{sep}\n{msg}\n{sep}"
+    payload = discord_card(msg)
     last = None
     for i in range(3):
         try:
-            r = requests.post(WEBHOOK, json={"content": body}, timeout=20)
+            r = requests.post(WEBHOOK, json=payload, timeout=20)
             print("Discord HTTP:", r.status_code)
             r.raise_for_status()
             return
