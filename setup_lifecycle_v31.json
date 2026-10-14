@@ -8296,9 +8296,9 @@
     "defense": 83079.9,
     "first_seen": 1791988968,
     "first_seen_iso": "2026-10-14T14:42:48+00:00",
-    "last_seen": 1791990679,
-    "last_seen_iso": "2026-10-14T15:11:19+00:00",
-    "last_price": 81673.5,
+    "last_seen": 1791992653,
+    "last_seen_iso": "2026-10-14T15:44:13+00:00",
+    "last_price": 81663.6,
     "status": "DETECTED",
     "last_note": "非本輪主要 thesis，僅內部追蹤",
     "block_count": 0
@@ -8312,11 +8312,27 @@
     "defense": 83910.0,
     "first_seen": 1791988968,
     "first_seen_iso": "2026-10-14T14:42:48+00:00",
-    "last_seen": 1791990679,
-    "last_seen_iso": "2026-10-14T15:11:19+00:00",
-    "last_price": 81673.5,
+    "last_seen": 1791992653,
+    "last_seen_iso": "2026-10-14T15:44:13+00:00",
+    "last_price": 81663.6,
     "status": "DETECTED",
     "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "block_count": 0
+  },
+  {
+    "setup_key": "BOZ:S:1791990000:1791990000:81629",
+    "side": "SHORT",
+    "type": "BREAKOUT",
+    "label": "結構突破",
+    "trigger": 81629.3,
+    "defense": 83079.9,
+    "first_seen": 1791992653,
+    "first_seen_iso": "2026-10-14T15:44:13+00:00",
+    "last_seen": 1791992653,
+    "last_seen_iso": "2026-10-14T15:44:13+00:00",
+    "last_price": 81663.6,
+    "status": "PREPARED",
+    "last_note": "進入準備距離",
     "block_count": 0
   }
 ]
