@@ -3943,66 +3943,6 @@
   ],
   "oi_history": [
     {
-      "time": 1791471391,
-      "value": 31458.855600000137
-    },
-    {
-      "time": 1791472036,
-      "value": 31401.63690000014
-    },
-    {
-      "time": 1791473128,
-      "value": 30916.246100000128
-    },
-    {
-      "time": 1791474124,
-      "value": 30749.95850000012
-    },
-    {
-      "time": 1791475010,
-      "value": 30745.60790000013
-    },
-    {
-      "time": 1791475744,
-      "value": 30761.48940000017
-    },
-    {
-      "time": 1791476960,
-      "value": 30786.59220000016
-    },
-    {
-      "time": 1791478015,
-      "value": 30821.279000000162
-    },
-    {
-      "time": 1791478842,
-      "value": 30789.441400000145
-    },
-    {
-      "time": 1791479675,
-      "value": 30856.96910000014
-    },
-    {
-      "time": 1791480642,
-      "value": 30636.759200000135
-    },
-    {
-      "time": 1791481527,
-      "value": 30549.075800000137
-    },
-    {
-      "time": 1791482263,
-      "value": 30559.71780000013
-    },
-    {
-      "time": 1791482917,
-      "value": 30557.64990000013
-    },
-    {
-      "time": 1791484079,
-      "value": 30283.119000000144
-    },
-    {
       "time": 1791485200,
       "value": 30310.97640000014
     },
@@ -6213,64 +6153,69 @@
     {
       "time": 1792075411,
       "value": 30556.223000000115
+    },
+    {
+      "time": 1792089578,
+      "value": 30085.363600000095
     }
   ],
   "news": {
     "seen": [
-      "49c51faef6c17046",
-      "7e42885c2d3007d3",
+      "3e8d57cad01b234e",
       "b7cc26b025b13571",
-      "c4b7842f463475e1",
-      "4d49ba30776f14d0",
-      "cffb76353befc09e",
-      "b5e07ea6185e0af0",
-      "59544771b17bc9e9",
-      "e34779b87b12d191",
-      "c252da6186201065",
-      "4f5cddd813f61448",
-      "bf363477b3b0aaba",
-      "fac5e030f9e2976b",
-      "918c2ff23a2739cb",
-      "bb81bc3b1e28b9a2",
-      "f8f73fcff845d11f",
-      "ece93c1ef267cbf3",
-      "66e75075c7f90599",
-      "f16fd59a606b930e",
-      "9032a59f50c65c28",
-      "cc57273ad60fcea9",
-      "e05a1fd08e4fbc8a",
-      "085c0892bd873f9a",
-      "4f71137ba5fd21cc",
-      "9182865d6bd9251a",
-      "e9506e9061fa31eb",
-      "e26341045b283657",
-      "a0a389ee4b775ac4",
-      "1c2050fa283ac439",
-      "9b8040a9b72498d5",
-      "0f173d59d2d695e3",
-      "649a1b3c454d16ec",
-      "ffc8fde67a12f45d",
-      "8c697f3b056a4e8c",
-      "2101c851632ef456",
-      "e12179a3a5e932d0",
-      "b99134bfdf1b2653",
-      "f4ffe30cf8536f20",
-      "2771716ac70f850e",
-      "a3249689889d4f92",
-      "f2961a83ac9859ef",
-      "060002070394507a",
-      "b1495d8984900fb7",
-      "bd874f4e9c33fa11",
-      "c483a9eed0bd7ac4",
-      "af23dcf6e683c015",
       "bd2cd8655cdbec6b",
+      "c252da6186201065",
+      "4f71137ba5fd21cc",
+      "37bdfc51dc7f413f",
+      "bf363477b3b0aaba",
+      "ece93c1ef267cbf3",
+      "f16fd59a606b930e",
+      "af23dcf6e683c015",
+      "649a1b3c454d16ec",
+      "f4ffe30cf8536f20",
+      "2101c851632ef456",
+      "2771716ac70f850e",
+      "cc57273ad60fcea9",
+      "b99134bfdf1b2653",
+      "060002070394507a",
+      "918c2ff23a2739cb",
+      "e9506e9061fa31eb",
+      "bb81bc3b1e28b9a2",
+      "0f173d59d2d695e3",
+      "66e75075c7f90599",
+      "8c697f3b056a4e8c",
+      "c4b7842f463475e1",
+      "e26341045b283657",
       "f10ac875927eb88a",
+      "f8f73fcff845d11f",
+      "b5e07ea6185e0af0",
+      "b1495d8984900fb7",
+      "4f5cddd813f61448",
+      "49c51faef6c17046",
+      "9182865d6bd9251a",
+      "4d49ba30776f14d0",
+      "9032a59f50c65c28",
+      "1c2050fa283ac439",
+      "a0a389ee4b775ac4",
+      "e12179a3a5e932d0",
+      "a3249689889d4f92",
       "f778db1ce3cfae41",
-      "37bdfc51dc7f413f"
+      "fac5e030f9e2976b",
+      "7e42885c2d3007d3",
+      "ffc8fde67a12f45d",
+      "f2961a83ac9859ef",
+      "085c0892bd873f9a",
+      "e34779b87b12d191",
+      "bd874f4e9c33fa11",
+      "e05a1fd08e4fbc8a",
+      "9b8040a9b72498d5",
+      "c483a9eed0bd7ac4",
+      "cffb76353befc09e",
+      "59544771b17bc9e9"
     ],
-    "last_notify": 1792075413
+    "last_notify": 1792089579
   },
-  "last_event_scan": 1792075380,
+  "last_event_scan": 1792089540,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -14924,6 +14869,70 @@
       "last_seen": 1792075413,
       "last_seen_iso": "2026-10-15T14:43:33+00:00",
       "last_price": 81500.1,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "CONT:L:1792081800",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 82139.2,
+      "defense": 81914.7,
+      "first_seen": 1792089580,
+      "first_seen_iso": "2026-10-15T18:39:40+00:00",
+      "last_seen": 1792089580,
+      "last_seen_iso": "2026-10-15T18:39:40+00:00",
+      "last_price": 82223.6,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BOZ:L:1792080000:1792080000:82520",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "label": "結構突破",
+      "trigger": 82520.0,
+      "defense": 79725.3,
+      "first_seen": 1792089580,
+      "first_seen_iso": "2026-10-15T18:39:40+00:00",
+      "last_seen": 1792089580,
+      "last_seen_iso": "2026-10-15T18:39:40+00:00",
+      "last_price": 82223.6,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "CONT:S:1792080000",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 82271.5,
+      "defense": 82520.0,
+      "first_seen": 1792089580,
+      "first_seen_iso": "2026-10-15T18:39:40+00:00",
+      "last_seen": 1792089580,
+      "last_seen_iso": "2026-10-15T18:39:40+00:00",
+      "last_price": 82223.6,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BOZ:S:1792081800:1792081800:81915",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "label": "結構突破",
+      "trigger": 81914.7,
+      "defense": 82520.0,
+      "first_seen": 1792089580,
+      "first_seen_iso": "2026-10-15T18:39:40+00:00",
+      "last_seen": 1792089580,
+      "last_seen_iso": "2026-10-15T18:39:40+00:00",
+      "last_price": 82223.6,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
