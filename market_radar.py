@@ -31,6 +31,11 @@ EMA_FAST = 34
 EMA_SLOW = 50
 VOL_LOOKBACK = 20
 VOL_HARD_MIN = 0.70
+# Experimental pullback volume pathway (paper trades only).
+# Keep the original 0.70x rule for every other formal setup.
+VOL_PULLBACK_EXPERIMENT_MIN = 0.55
+VOL_PULLBACK_CONTRACTION_MAX = 0.80
+VOL_PULLBACK_REBOUND_MIN = 1.15
 PULLBACK_MIN_ATR = 0.25
 IMPULSE_MIN_ATR = 0.60
 BREAK_BUFFER_ATR = 0.05
@@ -1695,6 +1700,42 @@ def record_blocked(state, side, setup, reason, price, extra=None):
     life["block_count"] = int(life.get("block_count", 0)) + 1
 
 
+# These are candidate-evaluation outcomes, not changes to the trading rules.
+FORMAL_REJECTION_LABELS = {
+    "BREAKOUT_NOT_ACCEPTED": "突破尚未確認",
+    "TRIGGER_RETEST_FAILED": "穿越觸發價後未能守住",
+    "NO_RISK_PLAN": "無法建立有效風控",
+    "LOW_VOLUME": "成交量不足",
+    "RISK_TOO_LARGE": "止損距離過大",
+    "OVEREXTENDED": "價格過度延伸",
+    "CHASE_WAIT": "追價風險偏高，等待位置",
+    "CONTEXT_CONFLICT": "市場情境衝突",
+    "QUALITY_CALIBRATION": "訊號品質不符合要求",
+    "ENTRY_TIMING_WEAK": "進場時機不足",
+    "FEASIBILITY_WEAK": "預期發展空間不足",
+}
+
+
+def record_candidate_rejection(state, ev, price, vol):
+    """Audit evaluated, triggered candidates without changing signal eligibility.
+
+    A candidate that has not crossed its trigger is merely waiting, not blocked.
+    Keep one rolling record per setup; record_blocked updates existing entries.
+    """
+    if ev.get("ready") or ev.get("reason") == "TRIGGER_NOT_CROSSED":
+        return
+    code = ev.get("reason")
+    if code not in FORMAL_REJECTION_LABELS:
+        return
+    setup = ev["setup"]
+    # Previously issued formal setups are not fresh rejection candidates.
+    if setup["setup_key"] in state.get("formal_seen", []):
+        return
+    extra = _blocked_extra(ev, vol)
+    extra["reason_code"] = code
+    record_blocked(state, ev["side"], setup, FORMAL_REJECTION_LABELS[code], price, extra)
+
+
 def create_prepare_validation(state, side, setup, price, a, trend, ema_pos, vol, reg, oi, cvd):
     pid = int(state["next_prepare_id"])
     state["next_prepare_id"] += 1
@@ -1889,7 +1930,7 @@ def export_data(state):
         w = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
         w.writeheader(); w.writerows(rows)
     save_json(BLOCKED_JSON, state["blocked"])
-    bfields = ["first_time_iso","time_iso","setup_key","side","type","engine_version","reason","trigger","price","block_count","volume_ratio","space_r","extension_atr","context_class","context_reason","trigger_freshness","trigger_age_min","geometry_class","quality_decision","quality_reason","entry_timing","entry_timing_reason","feasibility_class","feasibility_reason","penetration_quality","penetration_reason"]
+    bfields = ["first_time_iso","time_iso","setup_key","side","type","engine_version","reason","reason_code","trigger","price","block_count","volume_ratio","space_r","extension_atr","context_class","context_reason","trigger_freshness","trigger_age_min","geometry_class","quality_decision","quality_reason","entry_timing","entry_timing_reason","feasibility_class","feasibility_reason","penetration_quality","penetration_reason"]
     with open(BLOCKED_CSV, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.DictWriter(f, fieldnames=bfields, extrasaction="ignore")
         w.writeheader(); w.writerows(state["blocked"])
@@ -2065,6 +2106,35 @@ def maybe_prepare(state, side, setup, price, trend, ema_pos, vol, reg, oi, cvd):
 
 
 
+
+def pullback_volume_experiment(setup, rows15, vol):
+    """Closed 15m candles only: low-volume correction followed by volume recovery.
+
+    Returns True only for a pullback whose correction-bar neighborhood had lower
+    participation than its preceding baseline, and whose last CLOSED candle is
+    recovering. This never relies on the unfinished candle or future candles.
+    """
+    if setup.get("kind") != "PULLBACK" or len(rows15) < 18:
+        return False
+    ratio = float(vol.get("ratio") or 0.0)
+    if not (VOL_PULLBACK_EXPERIMENT_MIN <= ratio < VOL_HARD_MIN):
+        return False
+    trigger_time = int(setup.get("trigger_time") or 0)
+    turn_idx = next((i for i in range(len(rows15)-1, -1, -1)
+                     if int(rows15[i]["time"]) == trigger_time), None)
+    if turn_idx is None or turn_idx < 9 or turn_idx >= len(rows15)-1:
+        return False
+    prior = [float(r.get("volume") or 0) for r in rows15[turn_idx-8:turn_idx-2]]
+    correction = [float(r.get("volume") or 0) for r in rows15[turn_idx-2:turn_idx+1]]
+    baseline = sum(prior) / len(prior)
+    if baseline <= 0 or sum(correction)/len(correction) > VOL_PULLBACK_CONTRACTION_MAX * baseline:
+        return False
+    last = float(rows15[-1].get("volume") or 0)
+    earlier = [float(r.get("volume") or 0) for r in rows15[-3:-1]]
+    recent_base = sum(earlier) / len(earlier)
+    return recent_base > 0 and last >= VOL_PULLBACK_REBOUND_MIN * recent_base
+
+
 def evaluate_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd, event_rows=None):
     """Single source of truth for Laser Signal 3.1 Formal eligibility."""
     ext = (price - setup["trigger"])/a if side == "LONG" else (setup["trigger"] - price)/a
@@ -2098,9 +2168,13 @@ def evaluate_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol
     space = space_context(rows15, side, price, plan["risk"], setup["trigger_time"], a)
     geometry = trade_geometry(plan, space, ext)
 
-    if vol["ratio"] < VOL_HARD_MIN:
+    volume_experiment = pullback_volume_experiment(setup, rows15, vol)
+    if vol["ratio"] < VOL_HARD_MIN and not volume_experiment:
         return {"ready": False, "reason": "LOW_VOLUME", "side": side, "setup": setup,
                 "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
+    if volume_experiment:
+        # Tag, do not change setup_key or original setup detection.
+        setup = {**setup, "label": setup["label"] + "｜縮量回升試驗"}
     if plan["risk_atr"] > MAX_STOP_ATR:
         return {"ready": False, "reason": "RISK_TOO_LARGE", "side": side, "setup": setup,
                 "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
@@ -2462,6 +2536,11 @@ def main():
                 )
 
         active = active_valid_trade(state)
+        # Audit rejections from ALL formal previews, not only the arbitration winner.
+        # This is logging-only: it neither promotes nor suppresses a trade.
+        if not active:
+            for ev in previews.values():
+                record_candidate_rejection(state, ev, live, vol)
         ready = []
         for ev in previews.values():
             if not ev.get("ready"):
