@@ -1771,7 +1771,8 @@
     "BOZ:S:1791999900:1792020600:81440",
     "BOZ:S:1792094400:1792094400:82223",
     "BOZ:S:1792100700:1792100700:82180",
-    "BOZ:S:1792106100:1792106100:82102"
+    "BOZ:S:1792106100:1792106100:82102",
+    "CONT:S:1792242000"
   ],
   "formal_seen": [
     "CONT:L:1791284400",
@@ -1798,8 +1799,41 @@
     "CONT:S:1791849600",
     "BOZ:L:1791849600:1791849600:81915"
   ],
-  "next_prepare_id": 67,
-  "prepare_active": [],
+  "next_prepare_id": 68,
+  "prepare_active": [
+    {
+      "id": 67,
+      "setup_key": "CONT:S:1792242000",
+      "side": "SHORT",
+      "trigger_type": "回踩再啟動",
+      "opened_at": 1792246341,
+      "opened_iso": "2026-10-17T14:12:21+00:00",
+      "prepare_price": 81458.7,
+      "trigger": 81444.6,
+      "atr_open": 63.84285714285735,
+      "trend_1h": "BEAR",
+      "ema_position": "偏離",
+      "ema_distance_atr": 1.5372506482103632,
+      "volume_ratio": 0.6308214129917945,
+      "regime": "TREND",
+      "oi_dir": "FLAT",
+      "cvd_dir": "UP",
+      "formal_promoted": false,
+      "formal_trade_id": null,
+      "formal_at": null,
+      "formal_delay_min": null,
+      "status": "WATCHING",
+      "best_price": 81458.7,
+      "worst_price": 81458.7,
+      "mfe_atr": 0.0,
+      "mae_atr": 0.0,
+      "mfe_atr_30": null,
+      "mae_atr_30": null,
+      "mfe_atr_60": null,
+      "mae_atr_60": null,
+      "duration_min": 0
+    }
+  ],
   "prepare_history": [
     {
       "id": 1,
@@ -4048,62 +4082,6 @@
   ],
   "oi_history": [
     {
-      "time": 1791631331,
-      "value": 30133.66320000012
-    },
-    {
-      "time": 1791632092,
-      "value": 30107.85880000012
-    },
-    {
-      "time": 1791632835,
-      "value": 30089.741000000122
-    },
-    {
-      "time": 1791633406,
-      "value": 30094.236500000115
-    },
-    {
-      "time": 1791633948,
-      "value": 30080.645900000116
-    },
-    {
-      "time": 1791635099,
-      "value": 30061.73110000011
-    },
-    {
-      "time": 1791636229,
-      "value": 30077.134900000117
-    },
-    {
-      "time": 1791637090,
-      "value": 30062.244400000116
-    },
-    {
-      "time": 1791637736,
-      "value": 30070.137500000124
-    },
-    {
-      "time": 1791638622,
-      "value": 30089.553900000123
-    },
-    {
-      "time": 1791639382,
-      "value": 30054.33350000012
-    },
-    {
-      "time": 1791640115,
-      "value": 30062.345200000123
-    },
-    {
-      "time": 1791640640,
-      "value": 30035.547900000125
-    },
-    {
-      "time": 1791641142,
-      "value": 30033.349700000126
-    },
-    {
       "time": 1791641983,
       "value": 30013.797700000123
     },
@@ -5618,69 +5596,74 @@
     {
       "time": 1792235590,
       "value": 30542.87860000009
+    },
+    {
+      "time": 1792246340,
+      "value": 30552.93220000008
     }
   ],
   "news": {
     "seen": [
-      "4d49ba30776f14d0",
       "e26341045b283657",
-      "f4ffe30cf8536f20",
-      "b5e07ea6185e0af0",
-      "c483a9eed0bd7ac4",
-      "e05a1fd08e4fbc8a",
-      "c252da6186201065",
+      "bd2cd8655cdbec6b",
+      "f8f73fcff845d11f",
+      "49c51faef6c17046",
       "085c0892bd873f9a",
-      "cffb76353befc09e",
-      "b7cc26b025b13571",
+      "ffc8fde67a12f45d",
+      "102068b725a55fe9",
+      "9182865d6bd9251a",
+      "f4ffe30cf8536f20",
+      "59544771b17bc9e9",
+      "fac5e030f9e2976b",
+      "1c2050fa283ac439",
+      "13ab7eb2d7f48ba6",
+      "c252da6186201065",
+      "af23dcf6e683c015",
+      "0f173d59d2d695e3",
+      "ece93c1ef267cbf3",
+      "b5e07ea6185e0af0",
+      "cc57273ad60fcea9",
+      "bf363477b3b0aaba",
+      "5b2c49cc947ae478",
+      "f778db1ce3cfae41",
+      "e34779b87b12d191",
+      "37bdfc51dc7f413f",
+      "c483a9eed0bd7ac4",
+      "bd874f4e9c33fa11",
+      "b1495d8984900fb7",
+      "060002070394507a",
+      "ea22f1feb58432fe",
       "f10ac875927eb88a",
+      "649a1b3c454d16ec",
+      "2101c851632ef456",
+      "9032a59f50c65c28",
+      "9b8040a9b72498d5",
+      "cffb76353befc09e",
       "c4b7842f463475e1",
       "a0a389ee4b775ac4",
-      "ffc8fde67a12f45d",
-      "e9506e9061fa31eb",
-      "66e75075c7f90599",
-      "bd2cd8655cdbec6b",
-      "9032a59f50c65c28",
-      "9182865d6bd9251a",
-      "918c2ff23a2739cb",
-      "a3249689889d4f92",
-      "649a1b3c454d16ec",
-      "bd874f4e9c33fa11",
-      "f8f73fcff845d11f",
-      "13ab7eb2d7f48ba6",
-      "1c2050fa283ac439",
-      "bb81bc3b1e28b9a2",
-      "e34779b87b12d191",
-      "59544771b17bc9e9",
-      "37bdfc51dc7f413f",
-      "49c51faef6c17046",
+      "e05a1fd08e4fbc8a",
       "a918c9f5e88bd4ea",
+      "66e75075c7f90599",
+      "918c2ff23a2739cb",
       "8c697f3b056a4e8c",
-      "4f71137ba5fd21cc",
-      "e12179a3a5e932d0",
-      "f16fd59a606b930e",
-      "f778db1ce3cfae41",
-      "2101c851632ef456",
-      "0f173d59d2d695e3",
-      "fac5e030f9e2976b",
-      "bf363477b3b0aaba",
-      "b1495d8984900fb7",
-      "cc57273ad60fcea9",
-      "7e42885c2d3007d3",
-      "5b2c49cc947ae478",
-      "9b8040a9b72498d5",
-      "ece93c1ef267cbf3",
-      "102068b725a55fe9",
-      "b99134bfdf1b2653",
       "f2961a83ac9859ef",
-      "4f5cddd813f61448",
+      "a3249689889d4f92",
+      "f16fd59a606b930e",
       "3e8d57cad01b234e",
+      "e9506e9061fa31eb",
+      "4f5cddd813f61448",
+      "e12179a3a5e932d0",
       "2771716ac70f850e",
-      "af23dcf6e683c015",
-      "060002070394507a"
+      "bb81bc3b1e28b9a2",
+      "7e42885c2d3007d3",
+      "4d49ba30776f14d0",
+      "4f71137ba5fd21cc",
+      "b7cc26b025b13571",
+      "b99134bfdf1b2653"
     ],
-    "last_notify": 1792176947
+    "last_notify": 1792246341
   },
-  "last_event_scan": 1792235580,
+  "last_event_scan": 1792246320,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -15201,14 +15184,78 @@
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
+    },
+    {
+      "setup_key": "BOZ:L:1792205100:1792205100:81474",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "label": "結構突破",
+      "trigger": 81473.8,
+      "defense": 81368.0,
+      "first_seen": 1792246341,
+      "first_seen_iso": "2026-10-17T14:12:21+00:00",
+      "last_seen": 1792246341,
+      "last_seen_iso": "2026-10-17T14:12:21+00:00",
+      "last_price": 81458.7,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "CONT:S:1792242000",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 81444.6,
+      "defense": 81545.3,
+      "first_seen": 1792246341,
+      "first_seen_iso": "2026-10-17T14:12:21+00:00",
+      "last_seen": 1792246341,
+      "last_seen_iso": "2026-10-17T14:12:21+00:00",
+      "last_price": 81458.7,
+      "status": "PREPARED",
+      "last_note": "進入準備距離",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BOZ:S:1792241100:1792242900:81436",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "label": "結構突破",
+      "trigger": 81435.9,
+      "defense": 81545.3,
+      "first_seen": 1792246342,
+      "first_seen_iso": "2026-10-17T14:12:22+00:00",
+      "last_seen": 1792246342,
+      "last_seen_iso": "2026-10-17T14:12:22+00:00",
+      "last_price": 81458.7,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "REV:S:1792241100:1792242000",
+      "side": "SHORT",
+      "type": "REVERSAL",
+      "label": "結構反轉",
+      "trigger": 81444.0,
+      "defense": 81594.4,
+      "first_seen": 1792246342,
+      "first_seen_iso": "2026-10-17T14:12:22+00:00",
+      "last_seen": 1792246342,
+      "last_seen_iso": "2026-10-17T14:12:22+00:00",
+      "last_price": 81458.7,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
     }
   ],
   "active_thesis": {
     "side": "SHORT",
-    "setup_key": "BOZ:S:1792106100:1792106100:82102",
+    "setup_key": "CONT:S:1792242000",
     "source": "PREPARE",
     "context_class": "MIXED",
-    "updated_at": 1792115054,
-    "updated_iso": "2026-10-16T01:44:14+00:00"
+    "updated_at": 1792246341,
+    "updated_iso": "2026-10-17T14:12:21+00:00"
   }
 }
