@@ -2023,6 +2023,70 @@
       "penetration_quality": null,
       "penetration_reason": null,
       "reason_code": "RISK_TOO_LARGE"
+    },
+    {
+      "key": "CONT:S:1792324800",
+      "setup_key": "CONT:S:1792324800",
+      "first_time": 1792330746,
+      "first_time_iso": "2026-10-18T13:39:06+00:00",
+      "time": 1792330746,
+      "time_iso": "2026-10-18T13:39:06+00:00",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "engine_version": "LASER_SIGNAL_CORE_3_1_RISK_ENGINE",
+      "reason": "止損距離過大",
+      "trigger": 81991.1,
+      "price": 81449.9,
+      "block_count": 1,
+      "volume_ratio": 4.0,
+      "space_r": 0.02074896347811916,
+      "extension_atr": 4.6503406370836675,
+      "context_class": "UNASSESSED",
+      "context_reason": "RISK_TOO_LARGE",
+      "trigger_freshness": "AGING",
+      "trigger_age_min": 11.1,
+      "geometry_class": "POOR",
+      "quality_decision": null,
+      "quality_reason": null,
+      "entry_timing": null,
+      "entry_timing_reason": null,
+      "feasibility_class": null,
+      "feasibility_reason": null,
+      "penetration_quality": null,
+      "penetration_reason": null,
+      "reason_code": "RISK_TOO_LARGE"
+    },
+    {
+      "key": "REV:S:1792321200:1792322100",
+      "setup_key": "REV:S:1792321200:1792322100",
+      "first_time": 1792330746,
+      "first_time_iso": "2026-10-18T13:39:06+00:00",
+      "time": 1792330746,
+      "time_iso": "2026-10-18T13:39:06+00:00",
+      "side": "SHORT",
+      "type": "REVERSAL",
+      "engine_version": "LASER_SIGNAL_CORE_3_1_RISK_ENGINE",
+      "reason": "止損距離過大",
+      "trigger": 81991.6,
+      "price": 81449.9,
+      "block_count": 1,
+      "volume_ratio": 4.0,
+      "space_r": 0.017066250575223985,
+      "extension_atr": 4.654636960658209,
+      "context_class": "UNASSESSED",
+      "context_reason": "RISK_TOO_LARGE",
+      "trigger_freshness": "AGING",
+      "trigger_age_min": 11.1,
+      "geometry_class": "POOR",
+      "quality_decision": null,
+      "quality_reason": null,
+      "entry_timing": null,
+      "entry_timing_reason": null,
+      "feasibility_class": null,
+      "feasibility_reason": null,
+      "penetration_quality": null,
+      "penetration_reason": null,
+      "reason_code": "RISK_TOO_LARGE"
     }
   ],
   "prepare_seen": [
@@ -4403,70 +4467,6 @@
   ],
   "oi_history": [
     {
-      "time": 1791712981,
-      "value": 30011.469500000127
-    },
-    {
-      "time": 1791713870,
-      "value": 30027.25670000013
-    },
-    {
-      "time": 1791714740,
-      "value": 30038.638000000126
-    },
-    {
-      "time": 1791715583,
-      "value": 30050.157600000133
-    },
-    {
-      "time": 1791716199,
-      "value": 30025.28670000013
-    },
-    {
-      "time": 1791716691,
-      "value": 30032.19840000013
-    },
-    {
-      "time": 1791717527,
-      "value": 30048.010300000133
-    },
-    {
-      "time": 1791718337,
-      "value": 30045.82310000013
-    },
-    {
-      "time": 1791719147,
-      "value": 30039.85020000013
-    },
-    {
-      "time": 1791719767,
-      "value": 29999.92260000013
-    },
-    {
-      "time": 1791720302,
-      "value": 30009.73400000014
-    },
-    {
-      "time": 1791721507,
-      "value": 30058.353000000137
-    },
-    {
-      "time": 1791722711,
-      "value": 30047.719700000143
-    },
-    {
-      "time": 1791723624,
-      "value": 30052.131000000136
-    },
-    {
-      "time": 1791724415,
-      "value": 30045.00870000014
-    },
-    {
-      "time": 1791725330,
-      "value": 30044.920100000138
-    },
-    {
       "time": 1791726131,
       "value": 30017.05210000014
     },
@@ -5573,70 +5573,75 @@
     {
       "time": 1792317334,
       "value": 30107.87680000011
+    },
+    {
+      "time": 1792330743,
+      "value": 30021.906300000104
     }
   ],
   "news": {
     "seen": [
-      "e26341045b283657",
+      "9182865d6bd9251a",
+      "f16fd59a606b930e",
+      "13ab7eb2d7f48ba6",
+      "a3249689889d4f92",
+      "e05a1fd08e4fbc8a",
+      "59544771b17bc9e9",
+      "060002070394507a",
+      "0f173d59d2d695e3",
+      "085c0892bd873f9a",
+      "37bdfc51dc7f413f",
+      "a0a389ee4b775ac4",
+      "66e75075c7f90599",
+      "e12179a3a5e932d0",
+      "1c2050fa283ac439",
+      "e34779b87b12d191",
+      "4d49ba30776f14d0",
+      "c252da6186201065",
+      "4f71137ba5fd21cc",
+      "4f5cddd813f61448",
+      "af23dcf6e683c015",
+      "bd874f4e9c33fa11",
+      "ea22f1feb58432fe",
+      "f2961a83ac9859ef",
+      "8c697f3b056a4e8c",
+      "ece93c1ef267cbf3",
+      "b1495d8984900fb7",
+      "c483a9eed0bd7ac4",
+      "649a1b3c454d16ec",
+      "2771716ac70f850e",
+      "f4ffe30cf8536f20",
+      "9b8040a9b72498d5",
+      "bf363477b3b0aaba",
+      "cc57273ad60fcea9",
+      "7e42885c2d3007d3",
+      "b7cc26b025b13571",
+      "102068b725a55fe9",
+      "c4b7842f463475e1",
+      "b5e07ea6185e0af0",
+      "f778db1ce3cfae41",
+      "e9506e9061fa31eb",
+      "2101c851632ef456",
       "bd2cd8655cdbec6b",
       "f8f73fcff845d11f",
       "49c51faef6c17046",
-      "085c0892bd873f9a",
-      "ffc8fde67a12f45d",
-      "102068b725a55fe9",
-      "9182865d6bd9251a",
-      "f4ffe30cf8536f20",
-      "59544771b17bc9e9",
-      "fac5e030f9e2976b",
-      "1c2050fa283ac439",
-      "13ab7eb2d7f48ba6",
-      "c252da6186201065",
-      "af23dcf6e683c015",
-      "0f173d59d2d695e3",
-      "ece93c1ef267cbf3",
-      "b5e07ea6185e0af0",
-      "cc57273ad60fcea9",
-      "bf363477b3b0aaba",
-      "5b2c49cc947ae478",
-      "f778db1ce3cfae41",
-      "e34779b87b12d191",
-      "37bdfc51dc7f413f",
-      "c483a9eed0bd7ac4",
-      "bd874f4e9c33fa11",
-      "b1495d8984900fb7",
-      "060002070394507a",
-      "ea22f1feb58432fe",
-      "f10ac875927eb88a",
-      "649a1b3c454d16ec",
-      "2101c851632ef456",
-      "9032a59f50c65c28",
-      "9b8040a9b72498d5",
-      "cffb76353befc09e",
-      "c4b7842f463475e1",
-      "a0a389ee4b775ac4",
-      "e05a1fd08e4fbc8a",
-      "a918c9f5e88bd4ea",
-      "66e75075c7f90599",
-      "918c2ff23a2739cb",
-      "8c697f3b056a4e8c",
-      "f2961a83ac9859ef",
-      "a3249689889d4f92",
-      "f16fd59a606b930e",
+      "e26341045b283657",
       "3e8d57cad01b234e",
-      "e9506e9061fa31eb",
-      "4f5cddd813f61448",
-      "e12179a3a5e932d0",
-      "2771716ac70f850e",
+      "b99134bfdf1b2653",
+      "f10ac875927eb88a",
+      "9032a59f50c65c28",
+      "fac5e030f9e2976b",
+      "5b2c49cc947ae478",
       "bb81bc3b1e28b9a2",
-      "7e42885c2d3007d3",
-      "4d49ba30776f14d0",
-      "4f71137ba5fd21cc",
-      "b7cc26b025b13571",
-      "b99134bfdf1b2653"
+      "ecd78d0120b51230",
+      "cffb76353befc09e",
+      "918c2ff23a2739cb",
+      "ffc8fde67a12f45d",
+      "a918c9f5e88bd4ea"
     ],
-    "last_notify": 1792246341
+    "last_notify": 1792330744
   },
-  "last_event_scan": 1792317300,
+  "last_event_scan": 1792330740,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -15618,6 +15623,70 @@
       "last_seen": 1792317335,
       "last_seen_iso": "2026-10-18T09:55:35+00:00",
       "last_price": 82200.0,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "CONT:S:1792324800",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 81991.1,
+      "defense": 82083.9,
+      "first_seen": 1792330746,
+      "first_seen_iso": "2026-10-18T13:39:06+00:00",
+      "last_seen": 1792330746,
+      "last_seen_iso": "2026-10-18T13:39:06+00:00",
+      "last_price": 81449.9,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 1
+    },
+    {
+      "setup_key": "REV:S:1792321200:1792322100",
+      "side": "SHORT",
+      "type": "REVERSAL",
+      "label": "結構反轉",
+      "trigger": 81991.6,
+      "defense": 82229.5,
+      "first_seen": 1792330746,
+      "first_seen_iso": "2026-10-18T13:39:06+00:00",
+      "last_seen": 1792330746,
+      "last_seen_iso": "2026-10-18T13:39:06+00:00",
+      "last_price": 81449.9,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 1
+    },
+    {
+      "setup_key": "CONT:L:1792321200",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 82098.5,
+      "defense": 81991.6,
+      "first_seen": 1792330746,
+      "first_seen_iso": "2026-10-18T13:39:06+00:00",
+      "last_seen": 1792330746,
+      "last_seen_iso": "2026-10-18T13:39:06+00:00",
+      "last_price": 81449.9,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "REV:L:1792314000:1792317600",
+      "side": "LONG",
+      "type": "REVERSAL",
+      "label": "結構反轉",
+      "trigger": 81999.0,
+      "defense": 81645.0,
+      "first_seen": 1792330746,
+      "first_seen_iso": "2026-10-18T13:39:06+00:00",
+      "last_seen": 1792330746,
+      "last_seen_iso": "2026-10-18T13:39:06+00:00",
+      "last_price": 81449.9,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
