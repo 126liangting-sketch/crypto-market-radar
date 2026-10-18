@@ -1,5 +1,38 @@
 {
-  "active": [],
+  "active": [
+    {
+      "id": 68,
+      "setup_key": "CONT:S:1792340100",
+      "side": "SHORT",
+      "trigger_type": "回踩再啟動",
+      "opened_at": 1792342309,
+      "opened_iso": "2026-10-18T16:51:49+00:00",
+      "prepare_price": 81048.0,
+      "trigger": 81010.5,
+      "atr_open": 205.43571428571263,
+      "trend_1h": "BEAR",
+      "ema_position": "偏離",
+      "ema_distance_atr": 2.1419253965195377,
+      "volume_ratio": 1.2838982506612666,
+      "regime": "TREND",
+      "oi_dir": "UP",
+      "cvd_dir": "DOWN",
+      "formal_promoted": false,
+      "formal_trade_id": null,
+      "formal_at": null,
+      "formal_delay_min": null,
+      "status": "WATCHING",
+      "best_price": 81048.0,
+      "worst_price": 81048.0,
+      "mfe_atr": 0.0,
+      "mae_atr": 0.0,
+      "mfe_atr_30": null,
+      "mae_atr_30": null,
+      "mfe_atr_60": null,
+      "mae_atr_60": null,
+      "duration_min": 0
+    }
+  ],
   "history": [
     {
       "id": 1,
