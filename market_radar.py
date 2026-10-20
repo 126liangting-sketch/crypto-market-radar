@@ -14,8 +14,8 @@ OKX_SYMBOL = "BTC-USDT-SWAP"
 WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
-VERSION = "LASER_SIGNAL_CORE_3_1_RISK_ENGINE"
-BUILD = "LASER_SIGNAL_CORE_3_1_STRUCTURE_CLEANUP_BREAKOUT"
+VERSION = "LASER_SIGNAL_CORE_4_0_ORIGINAL_PLAN"
+BUILD = "LASER_SIGNAL_CORE_4_0_TREND_PULLBACK_BREAKOUT"
 STATE_FILE = "radar_state_v31.json"
 TRADES_JSON = "paper_trades_v31.json"
 TRADES_CSV = "paper_trades_v31.csv"
@@ -26,16 +26,16 @@ PREPARE_CSV = "prepare_validation_v31.csv"
 SETUPS_JSON = "setup_lifecycle_v31.json"
 SETUPS_CSV = "setup_lifecycle_v31.csv"
 
-# ---- 雷射訊號 Laser Signal 3.1 unified rules ----
+# ---- 雷射訊號 Laser Signal 4.0 original-plan rules ----
 EMA_FAST = 34
 EMA_SLOW = 50
 VOL_LOOKBACK = 20
 VOL_HARD_MIN = 0.70
-# Experimental pullback volume pathway (paper trades only).
-# Keep the original 0.70x rule for every other formal setup.
-VOL_PULLBACK_EXPERIMENT_MIN = 0.55
-VOL_PULLBACK_CONTRACTION_MAX = 0.80
-VOL_PULLBACK_REBOUND_MIN = 1.15
+# Version 4.0: participation depends on the entry structure, not on a
+# separate low-volume/rebound experiment. These are *research* thresholds.
+VOL_PULLBACK_MIN = 0.45
+VOL_BREAKOUT_MIN = 0.85
+PULLBACK_EMA_DISTANCE_MAX_ATR = 1.00
 PULLBACK_MIN_ATR = 0.25
 IMPULSE_MIN_ATR = 0.60
 BREAK_BUFFER_ATR = 0.05
@@ -1570,7 +1570,7 @@ def discord_card(msg):
     def embed(title, description, color, fields=None, footer=None):
         result = {"title": title[:256], "description": description[:4096],
                   "color": color, "fields": (fields or [])[:25],
-                  "footer": {"text": footer or "LASER SIGNAL 3.1 · 模擬訊號"}}
+                  "footer": {"text": footer or "LASER SIGNAL 4.0 · 模擬訊號"}}
         return {"embeds": [result], "allowed_mentions": {"parse": []}}
 
     green, red, blue, amber = 0x22C55E, 0xEF4444, 0x6485AE, 0xEAB85C
@@ -1586,7 +1586,7 @@ def discord_card(msg):
                      green if "多" in side else red if "空" in side else blue,
                      [{"name": "OI（未平倉量）", "value": oi, "inline": True},
                       {"name": "CVD（累積量差）", "value": cvd, "inline": True}],
-                     "LASER SIGNAL 3.1 · 手動查詢 · 詳細績效保留在執行日誌")
+                     "LASER SIGNAL 4.0 · 手動查詢 · 詳細績效保留在執行日誌")
 
     if "正式" in title_line and "訊號" in title_line:
         short = "做空" in title_line
@@ -2107,36 +2107,70 @@ def maybe_prepare(state, side, setup, price, trend, ema_pos, vol, reg, oi, cvd):
 
 
 
-def pullback_volume_experiment(setup, rows15, vol):
-    """Closed 15m candles only: low-volume correction followed by volume recovery.
+def entry_volume_floor(setup):
+    """Lower participation is acceptable on a trend pullback; a breakout needs confirmation."""
+    return VOL_PULLBACK_MIN if setup.get("kind") == "PULLBACK" else VOL_BREAKOUT_MIN
 
-    Returns True only for a pullback whose correction-bar neighborhood had lower
-    participation than its preceding baseline, and whose last CLOSED candle is
-    recovering. This never relies on the unfinished candle or future candles.
+
+def original_plan_formal(side, setup, price, a, trend, ema_pos, vol, reg, oi, cvd,
+                         ext, freshness, geometry, plan, space):
+    """4.0 formal rule set: 1H trend + 15M structure + location + risk.
+
+    Context, flow, and sophistication scores are informative, not cumulative vetoes.
+    No trade is allowed purely because of low volume; price trigger is validated first.
     """
-    if setup.get("kind") != "PULLBACK" or len(rows15) < 18:
-        return False
-    ratio = float(vol.get("ratio") or 0.0)
-    if not (VOL_PULLBACK_EXPERIMENT_MIN <= ratio < VOL_HARD_MIN):
-        return False
-    trigger_time = int(setup.get("trigger_time") or 0)
-    turn_idx = next((i for i in range(len(rows15)-1, -1, -1)
-                     if int(rows15[i]["time"]) == trigger_time), None)
-    if turn_idx is None or turn_idx < 9 or turn_idx >= len(rows15)-1:
-        return False
-    prior = [float(r.get("volume") or 0) for r in rows15[turn_idx-8:turn_idx-2]]
-    correction = [float(r.get("volume") or 0) for r in rows15[turn_idx-2:turn_idx+1]]
-    baseline = sum(prior) / len(prior)
-    if baseline <= 0 or sum(correction)/len(correction) > VOL_PULLBACK_CONTRACTION_MAX * baseline:
-        return False
-    last = float(rows15[-1].get("volume") or 0)
-    earlier = [float(r.get("volume") or 0) for r in rows15[-3:-1]]
-    recent_base = sum(earlier) / len(earlier)
-    return recent_base > 0 and last >= VOL_PULLBACK_REBOUND_MIN * recent_base
+    kind = setup.get("kind")
+    trend_needed = "BULL" if side == "LONG" else "BEAR"
+    if kind not in ("PULLBACK", "BREAKOUT") or trend.get("state") != trend_needed:
+        return {"ready": False, "reason": "TREND_MISMATCH", "side": side, "setup": setup,
+                "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
+    vr = float(vol.get("ratio") or 0)
+    if vr < entry_volume_floor(setup):
+        return {"ready": False, "reason": "LOW_VOLUME", "side": side, "setup": setup,
+                "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
+    if kind == "PULLBACK" and float(ema_pos.get("distance_atr") or 999) > PULLBACK_EMA_DISTANCE_MAX_ATR:
+        return {"ready": False, "reason": "PULLBACK_FAR_FROM_EMA", "side": side, "setup": setup,
+                "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
+    if freshness.get("state") == "STALE":
+        return {"ready": False, "reason": "STALE_TRIGGER", "side": side, "setup": setup,
+                "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
+    if float(plan.get("risk_atr") or 999) > MAX_STOP_ATR:
+        return {"ready": False, "reason": "RISK_TOO_LARGE", "side": side, "setup": setup,
+                "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
+    if ext > EXT_WAIT_ATR:
+        return {"ready": False, "reason": "OVEREXTENDED", "side": side, "setup": setup,
+                "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
+    if EXT_WARN_ATR < ext <= EXT_WAIT_ATR and vr < 1.30:
+        return {"ready": False, "reason": "CHASE_WAIT", "side": side, "setup": setup,
+                "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
+
+    context = formal_context(side, setup, trend, reg, ema_pos, vol, oi, cvd,
+                             ext, space, freshness, geometry)
+    # Context is supplementary in the original trend-following plan.
+    if context.get("class") == "CONFLICT":
+        context = {**context, "class": "MIXED", "label": "🟡 混合",
+                   "reason": "順勢主條件已滿足；輔助資訊提醒：" + context.get("reason", "")}
+    calibration = {"decision": "CAUTION" if context["class"] == "MIXED" else "ACCEPT",
+                   "label": "保守" if context["class"] == "MIXED" else "正常",
+                   "reason": "4.0 核心條件通過，其他資訊只作評分"}
+    timing = {"allow": True, "class": "CORE", "label": "核心進場", "reason": "15M 結構觸發且未過度追價", "size_mult": 1.0}
+    feasibility = {"decision": "CAUTION" if context["class"] == "MIXED" else "ACCEPT",
+                   "class": "CORE", "label": "核心結構", "reason": "前方結構保留為止盈管理參考",
+                   "penetration": None, "penetration_reason": None}
+    if context["class"] == "MIXED":
+        plan["position_size_factor"] = min(float(plan.get("position_size_factor") or 1.0), 0.85)
+    exit_info = apply_exit_profile(plan, context, space, reg, vol, freshness, geometry)
+    quality = "HIGH" if (context["class"] == "CONSISTENT" and freshness.get("state") == "FRESH"
+                         and geometry.get("class") == "BALANCED") else (
+                         "CAUTION" if context["class"] == "MIXED" else "STANDARD")
+    return {"ready": True, "side": side, "setup": setup, "context": context, "plan": plan,
+            "space": space, "ext": ext, "freshness": freshness, "geometry": geometry,
+            "exit_info": exit_info, "quality_state": quality, "calibration": calibration,
+            "entry_timing": timing, "feasibility": feasibility, "volume": vol}
 
 
 def evaluate_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd, event_rows=None):
-    """Single source of truth for Laser Signal 3.1 Formal eligibility."""
+    """Single source of truth for Laser Signal 4.0 formal eligibility."""
     ext = (price - setup["trigger"])/a if side == "LONG" else (setup["trigger"] - price)/a
     wh, wl = window_high_low(event_rows or [], price)
     if setup.get("kind") == "BREAKOUT":
@@ -2168,58 +2202,8 @@ def evaluate_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol
     space = space_context(rows15, side, price, plan["risk"], setup["trigger_time"], a)
     geometry = trade_geometry(plan, space, ext)
 
-    volume_experiment = pullback_volume_experiment(setup, rows15, vol)
-    if vol["ratio"] < VOL_HARD_MIN and not volume_experiment:
-        return {"ready": False, "reason": "LOW_VOLUME", "side": side, "setup": setup,
-                "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
-    if volume_experiment:
-        # Tag, do not change setup_key or original setup detection.
-        setup = {**setup, "label": setup["label"] + "｜縮量回升試驗"}
-    if plan["risk_atr"] > MAX_STOP_ATR:
-        return {"ready": False, "reason": "RISK_TOO_LARGE", "side": side, "setup": setup,
-                "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
-    if ext > EXT_WAIT_ATR:
-        return {"ready": False, "reason": "OVEREXTENDED", "side": side, "setup": setup,
-                "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
-    if EXT_WARN_ATR < ext <= EXT_WAIT_ATR and vol["ratio"] < 1.30:
-        return {"ready": False, "reason": "CHASE_WAIT", "side": side, "setup": setup,
-                "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
-
-    context = formal_context(side, setup, trend, reg, ema_pos, vol, oi, cvd, ext, space, freshness, geometry)
-    if context["class"] == "CONFLICT":
-        return {"ready": False, "reason": "CONTEXT_CONFLICT", "side": side, "setup": setup,
-                "context": context, "plan": plan, "space": space, "ext": ext,
-                "freshness": freshness, "geometry": geometry}
-
-    calibration = quality_calibration(context, freshness, geometry, reg, ema_pos, vol, plan, ext)
-    if calibration["decision"] == "REJECT":
-        return {"ready": False, "reason": "QUALITY_CALIBRATION", "side": side, "setup": setup,
-                "context": context, "plan": plan, "space": space, "ext": ext,
-                "freshness": freshness, "geometry": geometry, "calibration": calibration}
-
-    entry_timing = entry_timing_profile(side, setup, ext, freshness, context, geometry, trend, reg, vol, oi, cvd)
-    if not entry_timing["allow"]:
-        return {"ready": False, "reason": "ENTRY_TIMING_WEAK", "side": side, "setup": setup,
-                "context": context, "plan": plan, "space": space, "ext": ext,
-                "freshness": freshness, "geometry": geometry, "calibration": calibration,
-                "entry_timing": entry_timing}
-
-    feasibility = forward_feasibility(side, setup, space, context, vol, oi, cvd, freshness, geometry, reg, trend, plan, ext)
-    if feasibility["decision"] == "REJECT":
-        return {"ready": False, "reason": "FEASIBILITY_WEAK", "side": side, "setup": setup,
-                "context": context, "plan": plan, "space": space, "ext": ext,
-                "freshness": freshness, "geometry": geometry, "calibration": calibration,
-                "entry_timing": entry_timing, "feasibility": feasibility}
-
-    plan["position_size_factor"] = min(float(plan.get("position_size_factor") or 1.0), float(entry_timing.get("size_mult") or 1.0))
-    if feasibility["decision"] == "CAUTION":
-        plan["position_size_factor"] = min(float(plan.get("position_size_factor") or 1.0), 0.85)
-    exit_info = apply_exit_profile(plan, context, space, reg, vol, freshness, geometry)
-    quality_state = "HIGH" if (context["class"] == "CONSISTENT" and freshness["state"] == "FRESH" and geometry["class"] == "BALANCED") else ("CAUTION" if calibration["decision"] == "CAUTION" else "STANDARD")
-    return {"ready": True, "side": side, "setup": setup, "context": context,
-            "plan": plan, "space": space, "ext": ext, "freshness": freshness,
-            "geometry": geometry, "exit_info": exit_info, "quality_state": quality_state,
-            "calibration": calibration, "entry_timing": entry_timing, "feasibility": feasibility, "volume": vol}
+    return original_plan_formal(side, setup, price, a, trend, ema_pos, vol, reg, oi, cvd,
+                                ext, freshness, geometry, plan, space)
 
 
 def preview_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd, event_rows=None):
@@ -2313,7 +2297,10 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
             "BREAKOUT_NOT_ACCEPTED": None,
             "TRIGGER_RETEST_FAILED": "Trigger穿越後未能守住",
             "NO_RISK_PLAN": "無法建立有效風控",
-            "LOW_VOLUME": "成交量過低",
+            "LOW_VOLUME": "成交量低於該型態門檻",
+            "TREND_MISMATCH": "不符合1H趨勢方向或不是核心進場型態",
+            "PULLBACK_FAR_FROM_EMA": "回踩位置距離EMA區域太遠",
+            "STALE_TRIGGER": "進場觸發已過期",
             "RISK_TOO_LARGE": f"停損距離過大（{float((ev.get('plan') or {}).get('risk_atr') or 0):.2f} ATR）",
             "OVEREXTENDED": "價格過度延伸",
             "CHASE_WAIT": "偏追價，等待較好位置",
@@ -2472,10 +2459,10 @@ def manual_summary(state, price, trend, reg, oi, cvd):
                 f"📈 平均 MFE：+{avg_mfe:.2f}R｜平均 MAE：-{avg_mae:.2f}R\n"
                 f"⚠️ 快速SL（≤30分）：{quick_sl}")
     else:
-        perf = "🎯 雷射訊號 3.1 尚無完成樣本"
+        perf = "🎯 雷射訊號 4.0 尚無完成樣本"
 
     msg = (
-        f"📡 雷射訊號｜Laser Signal 3.1｜手動查詢\nBTC：${price:,.0f}\n"
+        f"📡 雷射訊號｜Laser Signal 4.0｜手動查詢\nBTC：${price:,.0f}\n"
         f"1H背景：{zh_dir(trend['state'])}\n市場狀態：{'趨勢' if reg['state']=='TREND' else '震盪'}\n"
         f"OI：{zh_dir(oi['dir'])}｜CVD Proxy：{zh_dir(cvd['dir'])}\n"
         f"👀 Prepare：完成 {p_done}｜追蹤中 {p_open}\n"
