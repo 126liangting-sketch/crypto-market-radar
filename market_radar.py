@@ -14,8 +14,8 @@ OKX_SYMBOL = "BTC-USDT-SWAP"
 WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
-VERSION = "LASER_SIGNAL_CORE_4_0_ORIGINAL_PLAN"
-BUILD = "LASER_SIGNAL_CORE_4_0_TREND_PULLBACK_BREAKOUT"
+VERSION = "LASER_SIGNAL_4_1_STRUCTURE_FIRST"
+BUILD = "LASER_SIGNAL_4_1_STRUCTURE_FIRST_CLEAN"
 STATE_FILE = "radar_state_v31.json"
 TRADES_JSON = "paper_trades_v31.json"
 TRADES_CSV = "paper_trades_v31.csv"
@@ -26,14 +26,13 @@ PREPARE_CSV = "prepare_validation_v31.csv"
 SETUPS_JSON = "setup_lifecycle_v31.json"
 SETUPS_CSV = "setup_lifecycle_v31.csv"
 
-# ---- 雷射訊號 Laser Signal 4.0 original-plan rules ----
+# ---- Laser Signal 4.1: structure-first formal entries ----
 EMA_FAST = 34
 EMA_SLOW = 50
 VOL_LOOKBACK = 20
-VOL_HARD_MIN = 0.70
 # Version 4.0: participation depends on the entry structure, not on a
 # separate low-volume/rebound experiment. These are *research* thresholds.
-VOL_PULLBACK_MIN = 0.45
+VOL_PULLBACK_MIN = 0.55
 VOL_BREAKOUT_MIN = 0.85
 PULLBACK_EMA_DISTANCE_MAX_ATR = 1.00
 PULLBACK_MIN_ATR = 0.25
@@ -287,30 +286,6 @@ def local_pivots(rows, left=1, right=1):
     return highs, lows
 
 
-def significant_pivots(rows, a, min_move_atr=0.35):
-    """1-1 pivots internally, then remove tiny alternating noise. No Major/Micro product concept."""
-    highs, lows = local_pivots(rows, 1, 1)
-    pts = [(t, p, i, "H") for t, p, i in highs] + [(t, p, i, "L") for t, p, i in lows]
-    pts.sort(key=lambda x: x[0])
-    if not pts:
-        return [], []
-
-    compressed = []
-    for pt in pts:
-        if not compressed:
-            compressed.append(pt)
-            continue
-        prev = compressed[-1]
-        if pt[3] == prev[3]:
-            better = (pt[1] > prev[1]) if pt[3] == "H" else (pt[1] < prev[1])
-            if better:
-                compressed[-1] = pt
-            continue
-        if abs(pt[1] - prev[1]) >= min_move_atr * a:
-            compressed.append(pt)
-    highs2 = [(t, p, i) for t, p, i, k in compressed if k == "H"]
-    lows2 = [(t, p, i) for t, p, i, k in compressed if k == "L"]
-    return highs2, lows2
 
 
 def trend_background(rows1h):
@@ -628,98 +603,13 @@ def breakout_acceptance(side, setup, price, a, event_rows=None):
             "stage": "ACCEPTANCE" if accepted else ("BREAK" if wick_break else "APPROACH")}
 
 
-def detect_reversal_setup(rows15, a, side):
-    """Generalized 15M reversal thesis: failed impulse -> first structure turn -> break.
-
-    This is deliberately structure-based rather than trend-based. A LONG reversal
-    needs a meaningful prior sell impulse, a reaction high, then a higher low that
-    holds above the extreme. SHORT is mirrored. The trigger is the reaction swing,
-    so the thesis becomes actionable only after price starts breaking the old move's
-    local structure instead of simply looking oversold/overbought.
-    """
-    if len(rows15) < 18 or not a or a <= 0:
-        return None
-    highs, lows = local_pivots(rows15, 1, 1)
-    n = len(rows15)
-    recent_cut = max(0, n - 20)
-
-    candidates = []
-    if side == "LONG":
-        for low1 in [x for x in lows if x[2] >= recent_cut]:
-            t1, p1, i1 = low1
-            prior_window = rows15[max(0, i1-10):i1]
-            if len(prior_window) < 4:
-                continue
-            prior_high_price = max(float(r["high"]) for r in prior_window)
-            if prior_high_price - float(p1) < REVERSAL_IMPULSE_MIN_ATR * a:
-                continue
-            reaction_highs = [h for h in highs if i1 < h[2] <= min(n-2, i1+7)]
-            if not reaction_highs:
-                continue
-            h1 = reaction_highs[0]
-            t_h, p_h, i_h = h1
-            bounce = float(p_h) - float(p1)
-            if bounce < 0.35 * a:
-                continue
-            higher_lows = [l for l in lows if i_h < l[2] <= min(n-2, i_h+7) and float(l[1]) > float(p1)]
-            if not higher_lows:
-                continue
-            l2 = higher_lows[0]
-            retrace = (float(p_h) - float(l2[1])) / bounce if bounce > 0 else 1.0
-            if retrace > REVERSAL_RETRACE_MAX:
-                continue
-            candidates.append({
-                "side": side, "kind": "REVERSAL", "label": "結構反轉",
-                "trigger": float(p_h), "trigger_time": int(t_h),
-                "defense": float(p1), "defense_time": int(t1),
-                "reversal_extreme": float(p1), "reversal_retest": float(l2[1]),
-                "setup_key": f"REV:L:{int(t_h)}:{int(l2[0])}",
-            })
-    else:
-        for high1 in [x for x in highs if x[2] >= recent_cut]:
-            t1, p1, i1 = high1
-            prior_window = rows15[max(0, i1-10):i1]
-            if len(prior_window) < 4:
-                continue
-            prior_low_price = min(float(r["low"]) for r in prior_window)
-            if float(p1) - prior_low_price < REVERSAL_IMPULSE_MIN_ATR * a:
-                continue
-            reaction_lows = [l for l in lows if i1 < l[2] <= min(n-2, i1+7)]
-            if not reaction_lows:
-                continue
-            l1 = reaction_lows[0]
-            t_l, p_l, i_l = l1
-            drop = float(p1) - float(p_l)
-            if drop < 0.35 * a:
-                continue
-            lower_highs = [h for h in highs if i_l < h[2] <= min(n-2, i_l+7) and float(h[1]) < float(p1)]
-            if not lower_highs:
-                continue
-            h2 = lower_highs[0]
-            retrace = (float(h2[1]) - float(p_l)) / drop if drop > 0 else 1.0
-            if retrace > REVERSAL_RETRACE_MAX:
-                continue
-            candidates.append({
-                "side": side, "kind": "REVERSAL", "label": "結構反轉",
-                "trigger": float(p_l), "trigger_time": int(t_l),
-                "defense": float(p1), "defense_time": int(t1),
-                "reversal_extreme": float(p1), "reversal_retest": float(h2[1]),
-                "setup_key": f"REV:S:{int(t_l)}:{int(h2[0])}",
-            })
-    return candidates[-1] if candidates else None
 
 def collect_setups(rows15, a, side, live_price):
-    """Return every live thesis family for one side.
-
-    All thesis families now reach the common decision engine before arbitration.
-    This prevents a merely well-timed pullback from hiding a stronger breakout or
-    reversal on the same side.
-    """
+    """Only the supported trend-following pullback and breakout families."""
     candidates = []
     detectors = (
         detect_pullback_setup(rows15, a, side),
         detect_breakout_setup(rows15, a, side, live_price),
-        detect_reversal_setup(rows15, a, side),
     )
     for setup in detectors:
         if not setup:
@@ -730,26 +620,6 @@ def collect_setups(rows15, a, side, live_price):
     return candidates
 
 
-def choose_setup(rows15, a, side, live_price):
-    """Compatibility helper. Main arbitration evaluates all setups, not just one."""
-    candidates = collect_setups(rows15, a, side, live_price)
-    if not candidates:
-        return None
-    actionable = [x for x in candidates if x["extension_atr"] >= -PREPARE_DISTANCE_ATR]
-    pool = actionable or candidates
-
-    def timing_band(x):
-        ext = float(x.get("extension_atr") or 0.0)
-        if -PREPARE_DISTANCE_ATR <= ext <= ENTRY_IDEAL_MAX_ATR:
-            return 3
-        if ext <= ENTRY_NORMAL_MAX_ATR:
-            return 2
-        if ext <= ENTRY_EXTENDED_MAX_ATR:
-            return 1
-        return 0
-
-    pool.sort(key=lambda x: (timing_band(x), int(x.get("trigger_time", 0)), -abs(float(x.get("extension_atr") or 0.0))), reverse=True)
-    return pool[0]
 
 def extension_quality(ext):
     if ext <= EXT_NORMAL_ATR:
@@ -761,56 +631,6 @@ def extension_quality(ext):
     return "過度延伸"
 
 
-def entry_timing_profile(side, setup, ext, freshness, context, geometry, trend, reg, vol, oi, cvd):
-    """Classify timing without turning it into a universal hard filter.
-
-    IDEAL means timing is close to the trigger; it does NOT mean the whole trade is
-    high quality. Reversal theses can earn an extended-entry override from their own
-    evidence instead of being forced to align with 1H.
-    """
-    ext = float(ext or 0.0)
-    fresh = (freshness or {}).get("state", "AGING")
-    geom = (geometry or {}).get("class", "MANAGE")
-    cls = (context or {}).get("class", "MIXED")
-    vr = float((vol or {}).get("ratio") or 0.0)
-    trend_state = (trend or {}).get("state", "NEUTRAL")
-    regime = (reg or {}).get("state", "RANGE")
-    flow, _ = flow_quality(side, oi, cvd)
-    aligned = ((side == "LONG" and trend_state == "BULL") or
-               (side == "SHORT" and trend_state == "BEAR"))
-    is_reversal = setup.get("kind") == "REVERSAL"
-
-    if fresh == "FRESH" and ext <= ENTRY_IDEAL_MAX_ATR:
-        level, label, priority = "IDEAL", "理想時機", 3
-        reason = "Trigger新鮮且貼近啟動價，屬於較早的可執行時機"
-    elif ext <= ENTRY_NORMAL_MAX_ATR and fresh in ("FRESH", "AGING"):
-        level, label, priority = "NORMAL", "正常時機", 2
-        reason = "仍在可接受進場區，尚未明顯延伸"
-    else:
-        level, label, priority = "EXTENDED", "延伸時機", 1
-        reason = "已離理想Trigger較遠，只有足夠強的市場證據才值得追隨"
-
-    trend_follow_power = (
-        aligned and regime == "TREND" and vr >= 1.30 and
-        fresh != "STALE" and geom != "POOR" and
-        (cls == "CONSISTENT" or (vr >= 1.80 and flow in ("支持", "偏支持")))
-    )
-    reversal_power = (
-        is_reversal and vr >= 1.30 and fresh == "FRESH" and geom != "POOR" and
-        cls == "CONSISTENT" and flow not in ("分歧", "可能偏回補/平倉推動")
-    )
-    strong = trend_follow_power or reversal_power
-    allow = level != "EXTENDED" or strong
-    if level == "EXTENDED" and reversal_power:
-        reason = "反轉結構已確認且量能/資金流共振，允許較晚的二次跟進"
-    elif level == "EXTENDED" and trend_follow_power:
-        reason = "延伸進場，但趨勢與量能/資金流仍足以支持追隨"
-    elif level == "EXTENDED" and not strong:
-        reason = "進場已延伸，且沒有足夠證據支持追價"
-
-    size_mult = 1.0 if level == "IDEAL" else (0.90 if level == "NORMAL" else 0.70)
-    return {"class": level, "label": label, "priority": priority, "reason": reason,
-            "allow": allow, "strong_override": bool(strong), "size_mult": size_mult}
 
 def duplicate_thesis_guard(state, ev, a):
     """Suppress repeated same-wave entries while allowing genuinely new structure.
@@ -1311,60 +1131,6 @@ def formal_context(side, setup, trend, reg, ema_pos, vol, oi, cvd, ext, space, f
     if not notes: notes.append("Setup有效，但主要背景未形成完整共振")
     return {"class": "MIXED", "label": "🟡 混合", "reason": "＋".join(notes[:4]), "flow": flow}
 
-def quality_calibration(context, freshness, geometry, reg, ema_pos, vol, plan, ext):
-    """Calibrate Formal quality from combinations, not a numeric score.
-
-    The goal is to stop several individually tolerable weaknesses from stacking into
-    a low-quality Formal. No single soft metric is promoted into a universal hard
-    filter. Fresh triggers can still rescue imperfect geometry, while stale/aged
-    triggers need cleaner location and risk.
-    """
-    cls = context.get("class")
-    fresh = freshness.get("state", "AGING")
-    geom = geometry.get("class", "MANAGE")
-    regime = reg.get("state", "RANGE")
-    ema_d = float(ema_pos.get("distance_atr") or 0.0)
-    vr = float(vol.get("ratio") or 0.0)
-    risk_atr = float(plan.get("risk_atr") or 99.0)
-    hold_atr = float(freshness.get("hold_atr") or 0.0)
-    hold_ratio = float(freshness.get("hold_ratio") or 0.0)
-
-    # A stale trigger is no longer an actionable entry. This is about timeliness,
-    # not direction; a new setup can still be detected immediately afterwards.
-    if fresh == "STALE":
-        return {"decision": "REJECT", "label": "過期",
-                "reason": "Trigger已偏舊或承接不足，等待新的發動結構"}
-
-    # Poor geometry can be tolerated only while the trigger is genuinely fresh.
-    # Once the trigger has aged, wide risk / stretched entry / nearby structure
-    # becomes a compounded weakness rather than a single soft warning.
-    if geom == "POOR" and fresh != "FRESH":
-        return {"decision": "REJECT", "label": "品質不足",
-                "reason": "Trigger非新鮮＋交易幾何偏差"}
-
-    # In a range, an aged mixed setup must still have clean geometry/location.
-    # This keeps examples like a tidy 1R scalp available, while filtering cases
-    # where aging, wide risk and stretched location all accumulate together.
-    if cls == "MIXED" and regime == "RANGE" and fresh == "AGING":
-        compounded = (ema_d > 1.0 or risk_atr > RISK_WARN_ATR or
-                      ext > EXT_NORMAL_ATR or hold_atr < -0.02 or hold_ratio < 0.5)
-        if geom != "BALANCED" and compounded:
-            return {"decision": "REJECT", "label": "品質不足",
-                    "reason": "震盪＋Trigger已老化＋位置/風險未保持乾淨"}
-
-    # Aged mixed setups are allowed, but marked cautious so exit stays conservative.
-    if cls == "MIXED" and fresh == "AGING":
-        return {"decision": "CAUTION", "label": "保守",
-                "reason": "情境混合且Trigger已進入老化區"}
-
-    # Fresh-but-imperfect geometry is still tradable; this preserves fast breakout
-    # and reversal opportunities that historically can work despite a wider stop.
-    if geom == "POOR" or cls == "MIXED":
-        return {"decision": "CAUTION", "label": "保守",
-                "reason": "可交易，但情境或交易幾何尚未完全共振"}
-
-    return {"decision": "ACCEPT", "label": "正常",
-            "reason": "Trigger、情境與交易幾何協調"}
 
 
 def _penetration_quality(side, setup, context, vol, oi, cvd, freshness, geometry, trend, plan, ext):
@@ -1713,6 +1479,11 @@ FORMAL_REJECTION_LABELS = {
     "QUALITY_CALIBRATION": "訊號品質不符合要求",
     "ENTRY_TIMING_WEAK": "進場時機不足",
     "FEASIBILITY_WEAK": "預期發展空間不足",
+    "STRONG_OBSTACLE_NEAR": "前方強支撐壓力距離不足",
+    "POOR_ENTRY_GEOMETRY": "進場、止損與前方空間搭配不佳",
+    "TREND_MISMATCH": "與一小時趨勢不符",
+    "PULLBACK_FAR_FROM_EMA": "回踩距離均線太遠",
+    "STALE_TRIGGER": "進場觸發已逾期",
 }
 
 
@@ -2112,12 +1883,11 @@ def entry_volume_floor(setup):
     return VOL_PULLBACK_MIN if setup.get("kind") == "PULLBACK" else VOL_BREAKOUT_MIN
 
 
-def original_plan_formal(side, setup, price, a, trend, ema_pos, vol, reg, oi, cvd,
+def structure_first_formal(side, setup, price, a, trend, ema_pos, vol, reg, oi, cvd,
                          ext, freshness, geometry, plan, space):
-    """4.0 formal rule set: 1H trend + 15M structure + location + risk.
+    """4.1 formal eligibility: trend, trigger, reasonable risk and clear forward path.
 
-    Context, flow, and sophistication scores are informative, not cumulative vetoes.
-    No trade is allowed purely because of low volume; price trigger is validated first.
+    OI/CVD and weaker context signals grade a trade but never override hard risk checks.
     """
     kind = setup.get("kind")
     trend_needed = "BULL" if side == "LONG" else "BEAR"
@@ -2137,6 +1907,15 @@ def original_plan_formal(side, setup, price, a, trend, ema_pos, vol, reg, oi, cv
     if float(plan.get("risk_atr") or 999) > MAX_STOP_ATR:
         return {"ready": False, "reason": "RISK_TOO_LARGE", "side": side, "setup": setup,
                 "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
+    # Preserve trade quality: do not buy/sell directly into a strong nearby obstacle.
+    # Weak/normal structure is informational, not an automatic veto.
+    strong_space_r = space.get("space_r")
+    if strong_space_r is not None and float(strong_space_r) < 0.80:
+        return {"ready": False, "reason": "STRONG_OBSTACLE_NEAR", "side": side, "setup": setup,
+                "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
+    if geometry.get("class") == "POOR":
+        return {"ready": False, "reason": "POOR_ENTRY_GEOMETRY", "side": side, "setup": setup,
+                "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
     if ext > EXT_WAIT_ATR:
         return {"ready": False, "reason": "OVEREXTENDED", "side": side, "setup": setup,
                 "plan": plan, "space": space, "ext": ext, "freshness": freshness, "geometry": geometry}
@@ -2152,10 +1931,10 @@ def original_plan_formal(side, setup, price, a, trend, ema_pos, vol, reg, oi, cv
                    "reason": "順勢主條件已滿足；輔助資訊提醒：" + context.get("reason", "")}
     calibration = {"decision": "CAUTION" if context["class"] == "MIXED" else "ACCEPT",
                    "label": "保守" if context["class"] == "MIXED" else "正常",
-                   "reason": "4.0 核心條件通過，其他資訊只作評分"}
+                   "reason": "4.1 結構與風險條件通過，資金流資訊僅作評分"}
     timing = {"allow": True, "class": "CORE", "label": "核心進場", "reason": "15M 結構觸發且未過度追價", "size_mult": 1.0}
     feasibility = {"decision": "CAUTION" if context["class"] == "MIXED" else "ACCEPT",
-                   "class": "CORE", "label": "核心結構", "reason": "前方結構保留為止盈管理參考",
+                   "class": "CORE", "label": "核心結構", "reason": "前方強結構已通過最低空間要求",
                    "penetration": None, "penetration_reason": None}
     if context["class"] == "MIXED":
         plan["position_size_factor"] = min(float(plan.get("position_size_factor") or 1.0), 0.85)
@@ -2170,7 +1949,7 @@ def original_plan_formal(side, setup, price, a, trend, ema_pos, vol, reg, oi, cv
 
 
 def evaluate_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd, event_rows=None):
-    """Single source of truth for Laser Signal 4.0 formal eligibility."""
+    """Single source of truth for Laser Signal 4.1 formal eligibility."""
     ext = (price - setup["trigger"])/a if side == "LONG" else (setup["trigger"] - price)/a
     wh, wl = window_high_low(event_rows or [], price)
     if setup.get("kind") == "BREAKOUT":
@@ -2202,7 +1981,7 @@ def evaluate_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol
     space = space_context(rows15, side, price, plan["risk"], setup["trigger_time"], a)
     geometry = trade_geometry(plan, space, ext)
 
-    return original_plan_formal(side, setup, price, a, trend, ema_pos, vol, reg, oi, cvd,
+    return structure_first_formal(side, setup, price, a, trend, ema_pos, vol, reg, oi, cvd,
                                 ext, freshness, geometry, plan, space)
 
 
@@ -2210,50 +1989,31 @@ def preview_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol,
     return evaluate_formal_candidate(side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd, event_rows)
 
 
-def _trend_alignment(side, trend_state):
-    if trend_state == "NEUTRAL":
-        return 0
-    if (side == "LONG" and trend_state == "BULL") or (side == "SHORT" and trend_state == "BEAR"):
-        return 1
-    return -1
 
 
 def choose_arbitration_winner(candidates, trend):
-    """Pick the strongest thesis after common quality/feasibility evaluation."""
+    """Choose an eligible setup by actual 4.1 fields; avoid legacy phantom weights."""
     ready = [c for c in candidates if c and c.get("ready")]
     if not ready:
         return None
-    if len(ready) == 1:
-        return ready[0]
-    cls_rank = {"CONSISTENT": 2, "MIXED": 1}
-    fresh_rank = {"FRESH": 2, "AGING": 1, "STALE": 0}
-    geom_rank = {"BALANCED": 2, "MANAGE": 1, "POOR": 0}
-    timing_rank = {"IDEAL": 3, "NORMAL": 2, "EXTENDED": 1}
-    feas_rank = {"OPEN": 5, "POWER_THROUGH": 4, "WORKABLE": 4, "TIGHT": 2, "BLOCKED": 0}
-    pen_rank = {"STRONG": 3, "ADEQUATE": 2, "WEAK": 1, None: 0}
-    trend_state = trend.get("state", "NEUTRAL")
+    rank = {"HIGH": 3, "STANDARD": 2, "CAUTION": 1}
+    fresh = {"FRESH": 2, "AGING": 1, "STALE": 0}
 
     def key(c):
-        feas = c.get("feasibility", {})
-        is_rev = c.get("setup", {}).get("kind") == "REVERSAL"
-        bg_tie = 0 if is_rev else _trend_alignment(c["side"], trend_state)
+        plan = c.get("plan") or {}
+        space = c.get("space") or {}
+        front = space.get("space_r")
         return (
-            feas_rank.get(feas.get("class"), 0),
-            pen_rank.get(feas.get("penetration"), 0),
-            cls_rank.get(c.get("context", {}).get("class"), 0),
-            fresh_rank.get(c.get("freshness", {}).get("state"), 0),
-            timing_rank.get(c.get("entry_timing", {}).get("class"), 0),
-            geom_rank.get(c.get("geometry", {}).get("class"), 0),
-            -abs(float(c.get("ext") or 0.0)),
-            -float(c.get("plan", {}).get("risk_atr") or 99.0),
-            bg_tie,
-            int(c.get("setup", {}).get("trigger_time", 0)),
+            rank.get(c.get("quality_state"), 0),
+            fresh.get((c.get("freshness") or {}).get("state"), 0),
+            1 if c.get("setup", {}).get("kind") == "PULLBACK" else 0,
+            min(float(front), 3.0) if front is not None else 3.0,
+            -abs(float(c.get("ext") or 0)),
+            -float(plan.get("risk_atr") or 99),
+            int(c.get("setup", {}).get("trigger_time") or 0),
         )
 
-    ordered = sorted(ready, key=key, reverse=True)
-    if len(ordered) >= 2 and key(ordered[0]) == key(ordered[1]):
-        return None
-    return ordered[0]
+    return max(ready, key=key)
 
 def active_valid_trade(state):
     """Only one live BTC thesis/position is allowed at a time."""
@@ -2304,6 +2064,8 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
             "RISK_TOO_LARGE": f"停損距離過大（{float((ev.get('plan') or {}).get('risk_atr') or 0):.2f} ATR）",
             "OVEREXTENDED": "價格過度延伸",
             "CHASE_WAIT": "偏追價，等待較好位置",
+            "STRONG_OBSTACLE_NEAR": "前方強支撐壓力距離不足",
+            "POOR_ENTRY_GEOMETRY": "進場、止損與前方空間搭配不佳",
             "CONTEXT_CONFLICT": f"情境衝突：{(ev.get('context') or {}).get('reason','整體條件不一致')}",
             "QUALITY_CALIBRATION": f"品質校準：{(ev.get('calibration') or {}).get('reason','多個普通弱點同時疊加')}",
             "ENTRY_TIMING_WEAK": f"進場時機：{(ev.get('entry_timing') or {}).get('reason','延伸進場缺乏足夠動能')}",
