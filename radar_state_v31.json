@@ -1,5 +1,5 @@
 {
-  "version": "LASER_SIGNAL_CORE_3_1_RISK_ENGINE",
+  "version": "LASER_SIGNAL_CORE_4_0_ORIGINAL_PLAN",
   "next_trade_id": 25,
   "trades": [],
   "history": [
@@ -5081,18 +5081,6 @@
   ],
   "oi_history": [
     {
-      "time": 1791872544,
-      "value": 29386.158800000085
-    },
-    {
-      "time": 1791874261,
-      "value": 29413.50340000008
-    },
-    {
-      "time": 1791875455,
-      "value": 29432.71340000008
-    },
-    {
       "time": 1791876773,
       "value": 29665.81390000008
     },
@@ -5591,6 +5579,10 @@
     {
       "time": 1792476514,
       "value": 30043.964900000108
+    },
+    {
+      "time": 1792480595,
+      "value": 30040.74610000011
     }
   ],
   "news": {
@@ -5662,7 +5654,7 @@
     ],
     "last_notify": 1792476515
   },
-  "last_event_scan": 1792476480,
+  "last_event_scan": 1792480560,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
