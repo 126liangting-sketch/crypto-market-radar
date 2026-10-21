@@ -4,6 +4,8 @@ import json
 import math
 import time
 import hashlib
+import re
+from email.utils import parsedate_to_datetime
 from datetime import datetime, timezone
 
 import requests
@@ -15,7 +17,7 @@ WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 MANUAL_RUN = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
 VERSION = "LASER_SIGNAL_4_1_STRUCTURE_FIRST"
-BUILD = "LASER_SIGNAL_4_1_STRUCTURE_FIRST_CLEAN"
+BUILD = "LASER_SIGNAL_4_1_INTEGRATED_REPAIR"
 STATE_FILE = "radar_state_v31.json"
 TRADES_JSON = "paper_trades_v31.json"
 TRADES_CSV = "paper_trades_v31.csv"
@@ -79,7 +81,9 @@ FEAS_TIGHT_R = 0.35
 FEAS_CRITICAL_R = 0.18
 OI_FLAT_PCT = 0.0010
 CVD_FLAT_REL = 0.05
-NEWS_NOTIFY_COOLDOWN = 3 * 3600
+NEWS_NOTIFY_COOLDOWN = 12 * 3600
+NEWS_MAX_AGE = 18 * 3600  # Only alert on recent published articles.
+NEWS_SIMILAR_COOLDOWN = 24 * 3600
 
 FEEDS = [
     "https://www.coindesk.com/arc/outboundfeeds/rss/",
@@ -1388,8 +1392,16 @@ def discord_card(msg):
                      red if is_sl else green)
 
     if "重大新聞" in title_line:
-        return embed("📰 BTC 重大新聞", f"**{value(['類型：'])}**\n{value(['中文：', '中文摘要：'])}\n\n僅作風險提醒，不改變多空訊號", amber,
-                     [{"name": "原文", "value": value(["原文："])[:1024], "inline": False}])
+        direction = value(["方向："], "方向不明")
+        impact = value(["影響："], "波動風險可能提高")
+        zh = value(["中文：", "中文摘要："])
+        source = value(["原文："])
+        tint = green if "偏多" in direction else red if "偏空" in direction else amber
+        return embed("📰 BTC 重要新聞 · " + direction,
+                     f"**{zh}**\n\n**可能影響：**{impact}\n\n僅供市場背景參考，不能單獨作為進場訊號。",
+                     tint,
+                     [{"name": "事件", "value": value(["類型："]), "inline": True},
+                      {"name": "原文", "value": source[:1024], "inline": False}])
 
     # Unknown future notifications still display, without dropping information.
     return embed("📡 BTC 雷射雷達", raw, blue)
@@ -1413,7 +1425,7 @@ def send_discord(msg):
             last = e
             if i < 2:
                 time.sleep(2**i)
-    raise last
+    print("DISCORD_DELIVERY_FAILED:", repr(last))
 
 
 def setup_signature(setup):
@@ -1792,57 +1804,111 @@ def translate_news_title_zh(title, category):
     return chinese_news_summary(title, category), True
 
 
+def news_direction(title, category):
+    """Conservative headline-only assessment: no guessing from generic mentions."""
+    t = re.sub(r"\s+", " ", title.lower()).strip()
+    # Negation / hypothetical / speculative headlines cannot be read as settled events.
+    if any(re.search(r"\b" + re.escape(w) + r"\b", t) for w in (
+        "may", "might", "could", "would", "if", "rumor", "rumour", "prediction",
+        "predicts", "potential", "debate", "asks", "expects", "forecast", "eyes")):
+        return None
+    triggers = (
+        (r"\b(?:spot bitcoin|bitcoin|btc) etf\b.*\b(?:inflows?|record inflows?)\b|\betf inflows?\b", "偏多", "ETF 資金流入，可能支持買盤", "ETF 流入"),
+        (r"\b(?:spot bitcoin|bitcoin|btc) etf\b.*\boutflows?\b|\betf outflows?\b", "偏空", "ETF 資金流出，可能增加賣壓", "ETF 流出"),
+        (r"\b(?:fed|federal reserve)\b.*\b(?:cuts?|cutting|lowered) (?:interest )?rates?\b|\brate cut (?:by|from|to)\b", "偏多", "降息通常改善風險偏好，但仍須觀察市場預期", "政策降息"),
+        (r"\b(?:fed|federal reserve)\b.*\b(?:hikes?|raised|raises) (?:interest )?rates?\b|\brate hike (?:by|from|to)\b", "偏空", "升息可能壓抑風險資產", "政策升息"),
+        (r"\b(?:exchange|bitcoin|btc|crypto|stablecoin|usdt|usdc)\b.*\b(?:hacked|hack|exploit|withdrawals suspended|withdrawal halt|depegged|depeg)\b", "偏空", "安全或流動性事件，短期風險可能升高", "市場安全風險"),
+        (r"\b(?:sec|regulator|court)\b.*\b(?:approves?|approved)\b.*\b(?:spot bitcoin etf|bitcoin etf)\b", "偏多", "比特幣 ETF 核准可能改善市場預期", "ETF 核准"),
+        (r"\b(?:sec|regulator|court)\b.*\b(?:rejects?|rejected|bans?|banned)\b.*\b(?:spot bitcoin etf|bitcoin etf)\b", "偏空", "ETF 遭拒或限制可能影響市場信心", "ETF 遭拒"),
+    )
+    hits = [(direction, impact, key) for pattern, direction, impact, key in triggers if re.search(pattern, t)]
+    if len({x[0] for x in hits}) != 1 or not hits:
+        return None
+    direction, impact, key = hits[0]
+    return direction, impact, key
+
+
 def _rss_entries(url):
-    r = requests.get(url, timeout=20, headers={"User-Agent": "Laser-Signal-3.1/1.0"})
+    r = requests.get(url, timeout=20, headers={"User-Agent": "Laser-Signal-4.1/1.0"})
     r.raise_for_status()
     root = ET.fromstring(r.content)
     out = []
-    for item in root.findall(".//item")[:15]:
+    for item in root.findall(".//item")[:25]:
         title = (item.findtext("title") or "").strip()
         link = (item.findtext("link") or "").strip()
-        out.append((title, link))
+        date = (item.findtext("pubDate") or "").strip()
+        out.append((title, link, date))
     if not out:
         ns = {"a": "http://www.w3.org/2005/Atom"}
-        for item in root.findall(".//a:entry", ns)[:15]:
+        for item in root.findall(".//a:entry", ns)[:25]:
             title = (item.findtext("a:title", default="", namespaces=ns) or "").strip()
             link_el = item.find("a:link", ns)
             link = (link_el.get("href") if link_el is not None else "") or ""
-            out.append((title, link.strip()))
+            date = (item.findtext("a:published", default="", namespaces=ns) or "").strip()
+            out.append((title, link.strip(), date))
     return out
 
 
 def check_news(state):
     news_state = state.setdefault("news", {"seen": [], "last_notify": 0})
-    seen = set(news_state.get("seen", []))
+    seen_list = list(news_state.get("seen", []))
+    seen = set(seen_list)
+    recent_topics = news_state.setdefault("recent_topics", {})
+    now = now_utc()
+    recent_topics = {k: int(v) for k, v in recent_topics.items()
+                     if isinstance(v, (int, float)) and now - int(v) < NEWS_SIMILAR_COOLDOWN}
+    news_state["recent_topics"] = recent_topics
     items = []
     for url in FEEDS:
         try:
-            for title, link in _rss_entries(url):
-                cat = major_news_class(" " + title + " ")
-                if not title or not cat:
+            for title, link, published in _rss_entries(url):
+                if not title:
                     continue
-                nid = hashlib.sha1((title+link).encode("utf-8", "ignore")).hexdigest()[:16]
+                nid = hashlib.sha1((title + link).encode("utf-8", "ignore")).hexdigest()[:16]
                 if nid in seen:
                     continue
-                items.append((nid, title, link, cat))
+                seen.add(nid)
+                seen_list.append(nid)
+                cat = major_news_class(" " + title + " ")
+                if not cat:
+                    continue
+                try:
+                    dt = parsedate_to_datetime(published) if published else None
+                    if dt is None or dt.tzinfo is None:
+                        continue  # No trustworthy publication timestamp; don't alert.
+                    age = now - int(dt.timestamp())
+                    if not 0 <= age <= NEWS_MAX_AGE:
+                        continue
+                except (TypeError, ValueError, OverflowError):
+                    continue
+                assessment = news_direction(title, cat)
+                if not assessment:
+                    continue  # Generic coverage or uncertain direction: silent.
+                direction, impact, topic = assessment
+                key = f"{topic}:{direction}"
+                if key in recent_topics:
+                    continue
+                items.append((nid, title, link, cat, direction, impact, key, int(dt.timestamp())))
         except Exception as e:
             print("News feed error:", e)
-    if items:
-        nid, title, link, cat = items[0]
-        seen.add(nid)
-        news_state["seen"] = list(seen)[-300:]
-        if now_utc() - int(news_state.get("last_notify", 0)) >= NEWS_NOTIFY_COOLDOWN:
-            news_state["last_notify"] = now_utc()
-            zh, used_fallback = translate_news_title_zh(title, cat)
-            zh_label = "中文摘要" if used_fallback else "中文"
-            send_discord(
-                f"📰 BTC 重大新聞提醒\n"
-                f"類型：🔴 {cat}\n"
-                f"原文：{title}\n"
-                f"{zh_label}：{zh}\n"
-                f"可能影響：短線波動可能放大\n"
-                f"備註：僅做風險提醒，不改變多空訊號"
-            )
+    news_state["seen"] = seen_list[-500:]
+    if not items:
+        return
+    if now - int(news_state.get("last_notify", 0)) < NEWS_NOTIFY_COOLDOWN:
+        return
+    # Send only the most recent materially directional event.
+    _, title, link, cat, direction, impact, topic_key, _ = max(items, key=lambda x: x[-1])
+    zh, fallback = translate_news_title_zh(title, cat)
+    message = (f"📰 BTC 重大新聞提醒\n"
+               f"類型：{cat}\n"
+               f"方向：{direction}（依新聞標題初步判讀）\n"
+               f"中文摘要：{zh}\n"
+               f"原文：{title}\n"
+               f"影響：{impact}\n"
+               f"備註：非交易訊號")
+    send_discord(message)
+    news_state["last_notify"] = now
+    recent_topics[topic_key] = now
 
 
 def maybe_prepare(state, side, setup, price, trend, ema_pos, vol, reg, oi, cvd):
@@ -2154,25 +2220,29 @@ def formal_check(state, side, setup, price, rows15, a, trend, ema_pos, vol, reg,
 
 
 def preview_prepare_candidate(side, setup, price, rows15, a, trend, ema_pos, vol, reg, oi, cvd):
+    """Prepare = approaching a valid trend-following structure, NOT a formal entry.
+
+    Keep expensive/strict formal quality requirements for formal orders only.
+    """
     dist = ((float(setup["trigger"]) - price) / a) if side == "LONG" else ((price - float(setup["trigger"])) / a)
+    result = {"ready": False, "side": side, "setup": setup, "dist": dist}
+    if trend.get("state") != ("BULL" if side == "LONG" else "BEAR"):
+        return {**result, "reason": "PREPARE_TREND_MISMATCH"}
     if not (0 <= dist <= PREPARE_DISTANCE_ATR):
-        return {"ready": False, "side": side, "setup": setup, "dist": dist}
-    # Keep weak candidates internally, but do not make them the Discord main thesis.
-    # A very-close structure can still prepare slightly below the normal volume floor.
-    if float(vol.get("ratio") or 0.0) < PREPARE_NOTIFY_VOL_MIN and dist > 0.08:
-        return {"ready": False, "side": side, "setup": setup, "dist": dist, "reason": "PREPARE_LOW_PARTICIPATION"}
+        return {**result, "reason": "PREPARE_DISTANCE"}
+    if float(vol.get("ratio") or 0) < PREPARE_NOTIFY_VOL_MIN and dist > 0.08:
+        return {**result, "reason": "PREPARE_LOW_PARTICIPATION"}
     plan = risk_plan(setup, side, price, a, ema_pos, reg)
     if not plan:
-        return {"ready": False, "side": side, "setup": setup, "dist": dist}
+        return {**result, "reason": "PREPARE_NO_RISK_PLAN"}
+    if float(plan.get("risk_atr") or 999) > MAX_STOP_ATR:
+        return {**result, "reason": "PREPARE_RISK_TOO_LARGE"}
     space = space_context(rows15, side, price, plan["risk"], setup["trigger_time"], a)
-    geometry = trade_geometry(plan, space, max(0.0, -dist))
-    pre_fresh = {"state": "FRESH", "label": "待觸發"}
-    context = formal_context(side, setup, trend, reg, ema_pos, vol, oi, cvd, max(0.0, -dist), space, pre_fresh, geometry)
-    if context["class"] == "CONFLICT":
-        return {"ready": False, "side": side, "setup": setup, "dist": dist, "context": context}
-    pre_feas = forward_feasibility(side, setup, space, context, vol, oi, cvd, pre_fresh, geometry, reg, trend, plan, max(0.0, -dist))
-    return {"ready": True, "side": side, "setup": setup, "dist": dist, "context": context,
-            "geometry": geometry, "feasibility": pre_feas}
+    # Use forward space for a *ranking hint*, not a formal veto at prepare stage.
+    return {**result, "ready": True, "space": space,
+            "context": {"class": "CONSISTENT", "reason": "順勢結構接近觸發"},
+            "geometry": {"class": "MANAGE"},
+            "feasibility": {"class": "WORKABLE", "penetration": None}}
 
 
 def choose_prepare_winner(candidates, trend, state):
@@ -2263,7 +2333,11 @@ def main():
 
     update_trades(state, live, events)
     update_prepare_validations(state, live, events)
-    check_news(state)
+    try:
+        check_news(state)
+    except Exception as e:
+        # A feed, translation, or Discord news outage must never stop trading detection.
+        print("NEWS_WARNING: news delivery skipped; signal evaluation continues:", repr(e))
 
     if MANUAL_RUN:
         manual_summary(state, live, trend, reg, oi, cvd)
@@ -2307,7 +2381,7 @@ def main():
                 )
         winner = None if active else choose_arbitration_winner(ready, trend)
         unresolved_tie = (not active and len(ready) >= 2 and winner is None)
-        prepare_winner = None if (active or winner or unresolved_tie) else choose_prepare_winner(prepare_previews.values(), trend, state)
+        prepare_winner = None if active else choose_prepare_winner(prepare_previews.values(), trend, state)
 
         if active:
             state["active_thesis"] = {
@@ -2325,6 +2399,8 @@ def main():
                 "context_class": prepare_winner.get("context", {}).get("class"), "updated_at": now_utc(), "updated_iso": iso(now_utc())
             }
 
+        before_formal_count = len(state.get("trades", [])) + len(state.get("history", []))
+        before_prepare_count = len(state.get("prepare_active", [])) + len(state.get("prepare_history", []))
         for side, setup in setup_items:
             skey = setup.get("setup_key")
             preview = previews.get(skey, {})
@@ -2375,6 +2451,26 @@ def main():
                 maybe_prepare(state, side, setup, live, trend, ema_pos, vol, reg, oi, cvd)
             else:
                 touch_setup_lifecycle(state, side, setup, live, "DETECTED", "非本輪主要 thesis，僅內部追蹤")
+
+        # A formally eligible candidate may be suppressed later (already-seen or
+        # duplicate protection). Do not lose an unrelated valid Prepare opportunity.
+        if (not active and prepare_winner is not None and
+                len(state.get("trades", [])) + len(state.get("history", [])) == before_formal_count and
+                len(state.get("prepare_active", [])) + len(state.get("prepare_history", [])) == before_prepare_count):
+            maybe_prepare(state, prepare_winner["side"], prepare_winner["setup"], live,
+                          trend, ema_pos, vol, reg, oi, cvd)
+
+        # One summary per scheduled run; makes the missing-signal cause inspectable.
+        from collections import Counter
+        formal_reasons = Counter(ev.get("reason", "READY") if not ev.get("ready") else "READY" for ev in previews.values())
+        prepare_reasons = Counter(ev.get("reason", "READY") if not ev.get("ready") else "READY" for ev in prepare_previews.values())
+        print("SIGNAL_AUDIT", json.dumps({
+            "setups": len(setup_items), "formal_ready": sum(bool(x.get("ready")) for x in previews.values()),
+            "prepare_ready": sum(bool(x.get("ready")) for x in prepare_previews.values()),
+            "formal_reasons": dict(formal_reasons), "prepare_reasons": dict(prepare_reasons),
+            "formal_new": len(state.get("trades", [])) + len(state.get("history", [])) - before_formal_count,
+            "prepare_new": len(state.get("prepare_active", [])) + len(state.get("prepare_history", [])) - before_prepare_count,
+        }, ensure_ascii=False, sort_keys=True))
 
     export_data(state)
     save_json(STATE_FILE, state)
