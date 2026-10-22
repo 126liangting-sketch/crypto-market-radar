@@ -11214,5 +11214,53 @@
     "status": "DETECTED",
     "last_note": "非本輪主要 thesis，僅內部追蹤",
     "block_count": 0
+  },
+  {
+    "setup_key": "BOZ:S:1792623600:1792623600:84238",
+    "side": "SHORT",
+    "type": "BREAKOUT",
+    "label": "結構突破",
+    "trigger": 84238.0,
+    "defense": 84803.9,
+    "first_seen": 1792629995,
+    "first_seen_iso": "2026-10-22T00:46:35+00:00",
+    "last_seen": 1792629995,
+    "last_seen_iso": "2026-10-22T00:46:35+00:00",
+    "last_price": 84281.2,
+    "status": "DETECTED",
+    "last_note": "本輪由更完整 thesis 主導，此候選僅內部追蹤",
+    "block_count": 1
+  },
+  {
+    "setup_key": "BOZ:L:1792627200:1792627200:84267",
+    "side": "LONG",
+    "type": "BREAKOUT",
+    "label": "結構突破",
+    "trigger": 84266.7,
+    "defense": 84010.2,
+    "first_seen": 1792629995,
+    "first_seen_iso": "2026-10-22T00:46:35+00:00",
+    "last_seen": 1792629995,
+    "last_seen_iso": "2026-10-22T00:46:35+00:00",
+    "last_price": 84281.2,
+    "status": "FORMAL",
+    "last_note": "建立模擬單 #25｜🟡 混合｜Trigger 仍有效｜幾何可管理",
+    "block_count": 0
+  },
+  {
+    "setup_key": "CONT:S:1792627200",
+    "side": "SHORT",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 84038.8,
+    "defense": 84266.7,
+    "first_seen": 1792629995,
+    "first_seen_iso": "2026-10-22T00:46:35+00:00",
+    "last_seen": 1792629995,
+    "last_seen_iso": "2026-10-22T00:46:35+00:00",
+    "last_price": 84281.2,
+    "status": "DETECTED",
+    "last_note": "本輪由更完整 thesis 主導，此候選僅內部追蹤",
+    "block_count": 0
   }
 ]
