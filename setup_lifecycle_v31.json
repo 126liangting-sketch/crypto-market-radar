@@ -11310,5 +11310,21 @@
     "status": "DETECTED",
     "last_note": "非本輪主要 thesis，僅內部追蹤",
     "block_count": 0
+  },
+  {
+    "setup_key": "CONT:S:1792660500",
+    "side": "SHORT",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 81672.3,
+    "defense": 81897.7,
+    "first_seen": 1792664422,
+    "first_seen_iso": "2026-10-22T10:20:22+00:00",
+    "last_seen": 1792664422,
+    "last_seen_iso": "2026-10-22T10:20:22+00:00",
+    "last_price": 82036.1,
+    "status": "DETECTED",
+    "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "block_count": 0
   }
 ]
