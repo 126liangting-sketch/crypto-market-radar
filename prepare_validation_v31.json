@@ -1,5 +1,38 @@
 {
-  "active": [],
+  "active": [
+    {
+      "id": 71,
+      "setup_key": "BOZ:S:1792730700:1792753200:81500",
+      "side": "SHORT",
+      "trigger_type": "結構突破",
+      "opened_at": 1792767822,
+      "opened_iso": "2026-10-23T15:03:42+00:00",
+      "prepare_price": 81565.4,
+      "trigger": 81500.5,
+      "atr_open": 295.807142857142,
+      "trend_1h": "BEAR",
+      "ema_position": "一般",
+      "ema_distance_atr": 0.3964014467868389,
+      "volume_ratio": 1.7149233234274748,
+      "regime": "RANGE",
+      "oi_dir": "DOWN",
+      "cvd_dir": "FLAT",
+      "formal_promoted": false,
+      "formal_trade_id": null,
+      "formal_at": null,
+      "formal_delay_min": null,
+      "status": "WATCHING",
+      "best_price": 81565.4,
+      "worst_price": 81565.4,
+      "mfe_atr": 0.0,
+      "mae_atr": 0.0,
+      "mfe_atr_30": null,
+      "mae_atr_30": null,
+      "mfe_atr_60": null,
+      "mae_atr_60": null,
+      "duration_min": 0
+    }
+  ],
   "history": [
     {
       "id": 1,
