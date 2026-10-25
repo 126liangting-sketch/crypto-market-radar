@@ -1,69 +1,7 @@
 {
   "version": "LASER_SIGNAL_4_1_STRUCTURE_FIRST",
   "next_trade_id": 27,
-  "trades": [
-    {
-      "id": 26,
-      "setup_key": "BOZ:S:1792834200:1792834200:80390",
-      "side": "SHORT",
-      "trigger_type": "結構突破",
-      "engine_version": "LASER_SIGNAL_4_1_STRUCTURE_FIRST",
-      "engine_build": "LASER_SIGNAL_4_1_INTEGRATED_REPAIR",
-      "opened_at": 1792876919,
-      "opened_iso": "2026-10-24T21:21:59+00:00",
-      "status": "OPEN",
-      "entry": 80376.9,
-      "sl": 80666.14071428572,
-      "tp1": 80087.65928571427,
-      "tp2": null,
-      "risk": 289.2407142857264,
-      "risk_atr": 2.1889669711877304,
-      "trigger": 80390.5,
-      "defense_source": "結構",
-      "defense_anchor": 80626.5,
-      "stop_buffer_atr": 0.3,
-      "position_size_factor": 0.6852547433304131,
-      "extension_atr": 0.10292448240449867,
-      "trend_1h": "BEAR",
-      "ema_position": "位置佳",
-      "ema_distance_atr": 0.0,
-      "volume_ratio": 0.8518630224631855,
-      "regime": "TREND",
-      "space_r": 2.1397402558915473,
-      "space_strength": "STRONG",
-      "oi_dir": "DOWN",
-      "cvd_dir": "FLAT",
-      "flow_quality": "普通",
-      "context_class": "MIXED",
-      "context_reason": "成交量偏弱＋Trigger仍有效＋幾何可管理",
-      "quality_state": "CAUTION",
-      "quality_decision": "CAUTION",
-      "quality_reason": "4.1 結構與風險條件通過，資金流資訊僅作評分",
-      "trigger_freshness": "AGING",
-      "trigger_age_min": 11.983333333333333,
-      "trigger_hold_atr": 0.10292448240449867,
-      "geometry_class": "MANAGE",
-      "geometry_reason": "停損較寬",
-      "exit_profile": "1R保守型",
-      "entry_timing": "CORE",
-      "entry_timing_label": "核心進場",
-      "entry_timing_reason": "15M 結構觸發且未過度追價",
-      "feasibility_class": "CORE",
-      "feasibility_label": "核心結構",
-      "feasibility_reason": "前方強結構已通過最低空間要求",
-      "penetration_quality": null,
-      "penetration_reason": null,
-      "tp1_r": 1.0,
-      "tp2_r": null,
-      "mfe_r": 0.0,
-      "mae_r": 0.6900826548327182,
-      "tp1_hit": false,
-      "tp2_hit": false,
-      "best_price": 80376.9,
-      "worst_price": 80576.5,
-      "duration_min": 121
-    }
-  ],
+  "trades": [],
   "history": [
     {
       "id": 1,
@@ -1572,6 +1510,69 @@
       "duration_min": 278,
       "closed_at": 1792645980,
       "closed_iso": "2026-10-22T05:13:00+00:00"
+    },
+    {
+      "id": 26,
+      "setup_key": "BOZ:S:1792834200:1792834200:80390",
+      "side": "SHORT",
+      "trigger_type": "結構突破",
+      "engine_version": "LASER_SIGNAL_4_1_STRUCTURE_FIRST",
+      "engine_build": "LASER_SIGNAL_4_1_INTEGRATED_REPAIR",
+      "opened_at": 1792876919,
+      "opened_iso": "2026-10-24T21:21:59+00:00",
+      "status": "SL",
+      "entry": 80376.9,
+      "sl": 80666.14071428572,
+      "tp1": 80087.65928571427,
+      "tp2": null,
+      "risk": 289.2407142857264,
+      "risk_atr": 2.1889669711877304,
+      "trigger": 80390.5,
+      "defense_source": "結構",
+      "defense_anchor": 80626.5,
+      "stop_buffer_atr": 0.3,
+      "position_size_factor": 0.6852547433304131,
+      "extension_atr": 0.10292448240449867,
+      "trend_1h": "BEAR",
+      "ema_position": "位置佳",
+      "ema_distance_atr": 0.0,
+      "volume_ratio": 0.8518630224631855,
+      "regime": "TREND",
+      "space_r": 2.1397402558915473,
+      "space_strength": "STRONG",
+      "oi_dir": "DOWN",
+      "cvd_dir": "FLAT",
+      "flow_quality": "普通",
+      "context_class": "MIXED",
+      "context_reason": "成交量偏弱＋Trigger仍有效＋幾何可管理",
+      "quality_state": "CAUTION",
+      "quality_decision": "CAUTION",
+      "quality_reason": "4.1 結構與風險條件通過，資金流資訊僅作評分",
+      "trigger_freshness": "AGING",
+      "trigger_age_min": 11.983333333333333,
+      "trigger_hold_atr": 0.10292448240449867,
+      "geometry_class": "MANAGE",
+      "geometry_reason": "停損較寬",
+      "exit_profile": "1R保守型",
+      "entry_timing": "CORE",
+      "entry_timing_label": "核心進場",
+      "entry_timing_reason": "15M 結構觸發且未過度追價",
+      "feasibility_class": "CORE",
+      "feasibility_label": "核心結構",
+      "feasibility_reason": "前方強結構已通過最低空間要求",
+      "penetration_quality": null,
+      "penetration_reason": null,
+      "tp1_r": 1.0,
+      "tp2_r": null,
+      "mfe_r": 0.0,
+      "mae_r": 1.3200078036829967,
+      "tp1_hit": false,
+      "tp2_hit": false,
+      "best_price": 80376.9,
+      "worst_price": 80758.7,
+      "duration_min": 236,
+      "closed_at": 1792890420,
+      "closed_iso": "2026-10-25T01:07:00+00:00"
     }
   ],
   "blocked": [
@@ -4077,7 +4078,8 @@
     "CONT:L:1792388700",
     "BOZ:S:1792725300:1792725300:81666",
     "BOZ:S:1792730700:1792753200:81500",
-    "BOZ:S:1792824300:1792824300:80722"
+    "BOZ:S:1792824300:1792824300:80722",
+    "BOZ:S:1792887300:1792887300:80733"
   ],
   "formal_seen": [
     "CONT:L:1791284400",
@@ -4107,8 +4109,41 @@
     "BOZ:L:1792627200:1792627200:84267",
     "BOZ:S:1792834200:1792834200:80390"
   ],
-  "next_prepare_id": 73,
-  "prepare_active": [],
+  "next_prepare_id": 74,
+  "prepare_active": [
+    {
+      "id": 73,
+      "setup_key": "BOZ:S:1792887300:1792887300:80733",
+      "side": "SHORT",
+      "trigger_type": "結構突破",
+      "opened_at": 1792891104,
+      "opened_iso": "2026-10-25T01:18:24+00:00",
+      "prepare_price": 80745.5,
+      "trigger": 80732.6,
+      "atr_open": 101.79285714285548,
+      "trend_1h": "BEAR",
+      "ema_position": "偏離",
+      "ema_distance_atr": 1.9578108492616804,
+      "volume_ratio": 0.9569493279378983,
+      "regime": "TREND",
+      "oi_dir": "DOWN",
+      "cvd_dir": "FLAT",
+      "formal_promoted": false,
+      "formal_trade_id": null,
+      "formal_at": null,
+      "formal_delay_min": null,
+      "status": "WATCHING",
+      "best_price": 80745.5,
+      "worst_price": 80745.5,
+      "mfe_atr": 0.0,
+      "mae_atr": 0.0,
+      "mfe_atr_30": null,
+      "mae_atr_30": null,
+      "mfe_atr_60": null,
+      "mae_atr_60": null,
+      "duration_min": 0
+    }
+  ],
   "prepare_history": [
     {
       "id": 1,
@@ -6561,10 +6596,6 @@
   ],
   "oi_history": [
     {
-      "time": 1792285734,
-      "value": 30671.001400000077
-    },
-    {
       "time": 1792302566,
       "value": 29931.479400000087
     },
@@ -6751,6 +6782,10 @@
     {
       "time": 1792884189,
       "value": 30332.834500000103
+    },
+    {
+      "time": 1792891103,
+      "value": 29991.7008000001
     }
   ],
   "news": {
@@ -6992,7 +7027,7 @@
     "last_notify": 1792750469,
     "recent_topics": {}
   },
-  "last_event_scan": 1792884180,
+  "last_event_scan": 1792891080,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -19153,14 +19188,46 @@
       "status": "DETECTED",
       "last_note": "已有正式單 #26 進行中，暫不新增外部訊號",
       "block_count": 0
+    },
+    {
+      "setup_key": "CONT:L:1792887300",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 80850.6,
+      "defense": 80732.6,
+      "first_seen": 1792891104,
+      "first_seen_iso": "2026-10-25T01:18:24+00:00",
+      "last_seen": 1792891104,
+      "last_seen_iso": "2026-10-25T01:18:24+00:00",
+      "last_price": 80745.5,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BOZ:S:1792887300:1792887300:80733",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "label": "結構突破",
+      "trigger": 80732.6,
+      "defense": 80897.6,
+      "first_seen": 1792891104,
+      "first_seen_iso": "2026-10-25T01:18:24+00:00",
+      "last_seen": 1792891104,
+      "last_seen_iso": "2026-10-25T01:18:24+00:00",
+      "last_price": 80745.5,
+      "status": "PREPARED",
+      "last_note": "進入準備距離",
+      "block_count": 0
     }
   ],
   "active_thesis": {
     "side": "SHORT",
-    "setup_key": "BOZ:S:1792834200:1792834200:80390",
-    "source": "FORMAL",
-    "context_class": "MIXED",
-    "updated_at": 1792884190,
-    "updated_iso": "2026-10-24T23:23:10+00:00"
+    "setup_key": "BOZ:S:1792887300:1792887300:80733",
+    "source": "PREPARE",
+    "context_class": "CONSISTENT",
+    "updated_at": 1792891104,
+    "updated_iso": "2026-10-25T01:18:24+00:00"
   }
 }

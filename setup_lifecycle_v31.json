@@ -12158,5 +12158,37 @@
     "status": "DETECTED",
     "last_note": "已有正式單 #26 進行中，暫不新增外部訊號",
     "block_count": 0
+  },
+  {
+    "setup_key": "CONT:L:1792887300",
+    "side": "LONG",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 80850.6,
+    "defense": 80732.6,
+    "first_seen": 1792891104,
+    "first_seen_iso": "2026-10-25T01:18:24+00:00",
+    "last_seen": 1792891104,
+    "last_seen_iso": "2026-10-25T01:18:24+00:00",
+    "last_price": 80745.5,
+    "status": "DETECTED",
+    "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "block_count": 0
+  },
+  {
+    "setup_key": "BOZ:S:1792887300:1792887300:80733",
+    "side": "SHORT",
+    "type": "BREAKOUT",
+    "label": "結構突破",
+    "trigger": 80732.6,
+    "defense": 80897.6,
+    "first_seen": 1792891104,
+    "first_seen_iso": "2026-10-25T01:18:24+00:00",
+    "last_seen": 1792891104,
+    "last_seen_iso": "2026-10-25T01:18:24+00:00",
+    "last_price": 80745.5,
+    "status": "PREPARED",
+    "last_note": "進入準備距離",
+    "block_count": 0
   }
 ]
