@@ -6756,6 +6756,38 @@
       "penetration_quality": null,
       "penetration_reason": null,
       "reason_code": "TREND_MISMATCH"
+    },
+    {
+      "key": "CONT:L:1793800800",
+      "setup_key": "CONT:L:1793800800",
+      "first_time": 1793806930,
+      "first_time_iso": "2026-11-04T15:42:10+00:00",
+      "time": 1793806930,
+      "time_iso": "2026-11-04T15:42:10+00:00",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "engine_version": "LASER_SIGNAL_4_1_STRUCTURE_FIRST",
+      "reason": "回踩距離均線太遠",
+      "trigger": 78370.0,
+      "price": 80582.8,
+      "block_count": 1,
+      "volume_ratio": 3.0318668712287122,
+      "space_r": null,
+      "extension_atr": 4.558043727746228,
+      "context_class": "UNASSESSED",
+      "context_reason": "PULLBACK_FAR_FROM_EMA",
+      "trigger_freshness": "AGING",
+      "trigger_age_min": 11.166666666666666,
+      "geometry_class": "POOR",
+      "quality_decision": null,
+      "quality_reason": null,
+      "entry_timing": null,
+      "entry_timing_reason": null,
+      "feasibility_class": null,
+      "feasibility_reason": null,
+      "penetration_quality": null,
+      "penetration_reason": null,
+      "reason_code": "PULLBACK_FAR_FROM_EMA"
     }
   ],
   "prepare_seen": [
@@ -9524,10 +9556,6 @@
   ],
   "oi_history": [
     {
-      "time": 1793181776,
-      "value": 31014.205900000103
-    },
-    {
       "time": 1793205199,
       "value": 31305.315000000108
     },
@@ -9650,33 +9678,14 @@
     {
       "time": 1793777520,
       "value": 34645.72200000022
+    },
+    {
+      "time": 1793806929,
+      "value": 34359.985000000146
     }
   ],
   "news": {
     "seen": [
-      "712873873c158bed",
-      "1f731137dd168710",
-      "8491d87291b70735",
-      "473e5e4a4e3f5490",
-      "6ff54ccbab1ae856",
-      "83059bd316d7e121",
-      "f4d411aac58459b9",
-      "752166fdf919d435",
-      "9a389de4810dd660",
-      "1ad2940a5062eebb",
-      "1e0652aef85d8762",
-      "ea17306dc9ab71f3",
-      "2fecb9de8cf83085",
-      "f87f4797e74865fa",
-      "be56bcbe8db23aa5",
-      "32bcdaab1bff5324",
-      "3d37b53e3bd62da9",
-      "52f2c760ab0b4404",
-      "8d139adabb288cf7",
-      "9c5ac41a956ba472",
-      "a8f66ea172b2a0cd",
-      "468350c535e9e677",
-      "327023ea4cf3ab02",
       "403b343b5d19856d",
       "e4fc20e0d4da846c",
       "c41254ce9a51dfbc",
@@ -10153,14 +10162,35 @@
       "2a8ebecab1b1f9a0",
       "0a515e910f61d578",
       "21be047c9f36f53d",
-      "ad607b183425525c"
+      "ad607b183425525c",
+      "103a9bf250165c61",
+      "fd5e5eda5d4dbf29",
+      "b149169a3df0adbd",
+      "6a8fa37a66a5d514",
+      "21100301327d0fd8",
+      "9ca3e4b58d1cfcf5",
+      "a6943087f797a416",
+      "b0335f3ccef49a8c",
+      "025a6d2662ccd461",
+      "0809eb46aa6f1366",
+      "fff514c0614cf7d0",
+      "d03c50f3898eaa01",
+      "bfb3e58be9ca1f67",
+      "bcfa467bba9070ac",
+      "4c9a3fb612787c63",
+      "0e14e2d09983b14e",
+      "fb824d9193f8d5df",
+      "539a8e2b7ae38566",
+      "1ed8e589063e3ade",
+      "7b4d6c2692cac516",
+      "c26b9688f82e9d7b",
+      "9ee96c94acce35a0",
+      "993eded0da580ce0"
     ],
     "last_notify": 1793719541,
-    "recent_topics": {
-      "市場安全風險:偏空": 1793719541
-    }
+    "recent_topics": {}
   },
-  "last_event_scan": 1793777460,
+  "last_event_scan": 1793806920,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -24830,6 +24860,38 @@
       "last_seen": 1793777520,
       "last_seen_iso": "2026-11-04T07:32:00+00:00",
       "last_price": 78182.9,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "CONT:L:1793800800",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 78370.0,
+      "defense": 78164.6,
+      "first_seen": 1793806930,
+      "first_seen_iso": "2026-11-04T15:42:10+00:00",
+      "last_seen": 1793806930,
+      "last_seen_iso": "2026-11-04T15:42:10+00:00",
+      "last_price": 80582.8,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 1
+    },
+    {
+      "setup_key": "CONT:S:1793797200",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 78258.2,
+      "defense": 78515.5,
+      "first_seen": 1793806930,
+      "first_seen_iso": "2026-11-04T15:42:10+00:00",
+      "last_seen": 1793806930,
+      "last_seen_iso": "2026-11-04T15:42:10+00:00",
+      "last_price": 80582.8,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
