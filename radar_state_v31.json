@@ -7108,6 +7108,38 @@
       "penetration_quality": null,
       "penetration_reason": null,
       "reason_code": "TRIGGER_RETEST_FAILED"
+    },
+    {
+      "key": "BOZ:L:1793914200:1793916900:76114",
+      "setup_key": "BOZ:L:1793914200:1793916900:76114",
+      "first_time": 1793932014,
+      "first_time_iso": "2026-11-06T02:26:54+00:00",
+      "time": 1793932014,
+      "time_iso": "2026-11-06T02:26:54+00:00",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "engine_version": "LASER_SIGNAL_4_1_STRUCTURE_FIRST",
+      "reason": "與一小時趨勢不符",
+      "trigger": 76114.5,
+      "price": 76125.5,
+      "block_count": 1,
+      "volume_ratio": 0.5260128698225573,
+      "space_r": 0.22779942812340298,
+      "extension_atr": 0.03465970471732076,
+      "context_class": "UNASSESSED",
+      "context_reason": "TREND_MISMATCH",
+      "trigger_freshness": "AGING",
+      "trigger_age_min": 11.9,
+      "geometry_class": "MANAGE",
+      "quality_decision": null,
+      "quality_reason": null,
+      "entry_timing": null,
+      "entry_timing_reason": null,
+      "feasibility_class": null,
+      "feasibility_reason": null,
+      "penetration_quality": null,
+      "penetration_reason": null,
+      "reason_code": "TREND_MISMATCH"
     }
   ],
   "prepare_seen": [
@@ -9911,10 +9943,6 @@
   ],
   "oi_history": [
     {
-      "time": 1793315807,
-      "value": 32711.379600000146
-    },
-    {
       "time": 1793327900,
       "value": 34959.282500000176
     },
@@ -10033,15 +10061,14 @@
     {
       "time": 1793916906,
       "value": 34723.91260000015
+    },
+    {
+      "time": 1793932013,
+      "value": 34832.969100000155
     }
   ],
   "news": {
     "seen": [
-      "326431396789d5f0",
-      "1c9fb79195bf2d2e",
-      "b51a2d268dc355fa",
-      "5fb7c80b2a530469",
-      "236bdee160d6c091",
       "e8b57c6c091d4924",
       "c300db37901b7b8c",
       "4d4573671fd4bf25",
@@ -10536,14 +10563,19 @@
       "df8406c5a67a9fa3",
       "841f4c3f37b94de3",
       "dda36ac1fc30eceb",
-      "b719f739ff29488c"
+      "b719f739ff29488c",
+      "96fbd08ca417064c",
+      "654426e37a57b5b2",
+      "5b89c784be3e6d62",
+      "4ab00f325c5480b7",
+      "87af806466996756"
     ],
     "last_notify": 1793896730,
     "recent_topics": {
       "市場安全風險:偏空": 1793896730
     }
   },
-  "last_event_scan": 1793916900,
+  "last_event_scan": 1793931960,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -25482,9 +25514,9 @@
       "defense": 76238.4,
       "first_seen": 1793916907,
       "first_seen_iso": "2026-11-05T22:15:07+00:00",
-      "last_seen": 1793916907,
-      "last_seen_iso": "2026-11-05T22:15:07+00:00",
-      "last_price": 76069.9,
+      "last_seen": 1793932014,
+      "last_seen_iso": "2026-11-06T02:26:54+00:00",
+      "last_price": 76125.5,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 1
@@ -25517,6 +25549,38 @@
       "last_seen": 1793916907,
       "last_seen_iso": "2026-11-05T22:15:07+00:00",
       "last_price": 76069.9,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BOZ:L:1793914200:1793916900:76114",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "label": "結構突破",
+      "trigger": 76114.5,
+      "defense": 75725.1,
+      "first_seen": 1793932014,
+      "first_seen_iso": "2026-11-06T02:26:54+00:00",
+      "last_seen": 1793932014,
+      "last_seen_iso": "2026-11-06T02:26:54+00:00",
+      "last_price": 76125.5,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 1
+    },
+    {
+      "setup_key": "CONT:L:1793927700",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 76289.8,
+      "defense": 75853.8,
+      "first_seen": 1793932014,
+      "first_seen_iso": "2026-11-06T02:26:54+00:00",
+      "last_seen": 1793932014,
+      "last_seen_iso": "2026-11-06T02:26:54+00:00",
+      "last_price": 76125.5,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
