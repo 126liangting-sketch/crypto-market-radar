@@ -10685,10 +10685,6 @@
   ],
   "oi_history": [
     {
-      "time": 1793571532,
-      "value": 33991.3591000002
-    },
-    {
       "time": 1793583225,
       "value": 33811.26190000019
     },
@@ -10799,12 +10795,14 @@
     {
       "time": 1794164133,
       "value": 34867.06560000016
+    },
+    {
+      "time": 1794177264,
+      "value": 33860.096200000145
     }
   ],
   "news": {
     "seen": [
-      "ae4fad511cac616b",
-      "f24961601cf95550",
       "edbd09f303dd5d1d",
       "8ca16e4c760bd159",
       "f5d24d3cd745bbf1",
@@ -11302,12 +11300,14 @@
       "00e164fd3029f7d7",
       "025954f55faccaa9",
       "64dc96dbd1db705b",
-      "cab567ebd6cde96a"
+      "cab567ebd6cde96a",
+      "45699640d8245642",
+      "2c9cfed7ed8328fa"
     ],
     "last_notify": 1793896730,
     "recent_topics": {}
   },
-  "last_event_scan": 1794164100,
+  "last_event_scan": 1794177240,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
