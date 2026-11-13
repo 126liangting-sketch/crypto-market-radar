@@ -8730,7 +8730,8 @@
     "BOZ:S:1794050100:1794050100:75893",
     "BOZ:S:1794321000:1794349800:73577",
     "BOZ:S:1794395700:1794395700:73900",
-    "CONT:S:1794524400"
+    "CONT:S:1794524400",
+    "BOZ:S:1794590100:1794590100:68504"
   ],
   "formal_seen": [
     "CONT:L:1791284400",
@@ -8760,8 +8761,41 @@
     "BOZ:L:1792627200:1792627200:84267",
     "BOZ:S:1792834200:1792834200:80390"
   ],
-  "next_prepare_id": 85,
-  "prepare_active": [],
+  "next_prepare_id": 86,
+  "prepare_active": [
+    {
+      "id": 85,
+      "setup_key": "BOZ:S:1794590100:1794590100:68504",
+      "side": "SHORT",
+      "trigger_type": "結構突破",
+      "opened_at": 1794603932,
+      "opened_iso": "2026-11-13T21:05:32+00:00",
+      "prepare_price": 68537.2,
+      "trigger": 68504.5,
+      "atr_open": 178.4142857142849,
+      "trend_1h": "BEAR",
+      "ema_position": "偏離",
+      "ema_distance_atr": 2.381912582106324,
+      "volume_ratio": 2.3152246986913125,
+      "regime": "TREND",
+      "oi_dir": "FLAT",
+      "cvd_dir": "DOWN",
+      "formal_promoted": false,
+      "formal_trade_id": null,
+      "formal_at": null,
+      "formal_delay_min": null,
+      "status": "WATCHING",
+      "best_price": 68537.2,
+      "worst_price": 68537.2,
+      "mfe_atr": 0.0,
+      "mae_atr": 0.0,
+      "mfe_atr_30": null,
+      "mae_atr_30": null,
+      "mfe_atr_60": null,
+      "mae_atr_60": null,
+      "duration_min": 0
+    }
+  ],
   "prepare_history": [
     {
       "id": 1,
@@ -11622,10 +11656,6 @@
   ],
   "oi_history": [
     {
-      "time": 1793984090,
-      "value": 35270.56570000017
-    },
-    {
       "time": 1794001689,
       "value": 34880.21850000017
     },
@@ -11736,17 +11766,14 @@
     {
       "time": 1794581783,
       "value": 33918.64230000013
+    },
+    {
+      "time": 1794603931,
+      "value": 33885.43430000015
     }
   ],
   "news": {
     "seen": [
-      "aa2b725d1b67f20c",
-      "5d0a7c2450f4432e",
-      "524ca36f2893908a",
-      "22a4c99ba7b55b7c",
-      "f7b2e007235ccf7e",
-      "5055e9efda47fcf6",
-      "fdaf5504486038ce",
       "a9032c050114a09e",
       "641b7de32178b202",
       "9f615cc1a4bf92a6",
@@ -12239,12 +12266,19 @@
       "339fc4a421ec5f88",
       "1016367e12e7110c",
       "6a39659d1e0ab420",
-      "6fef805ced38e76e"
+      "6fef805ced38e76e",
+      "e5a05e52a3e0f648",
+      "8f6bb855c3d6dc95",
+      "4ebf3250e41c0d3a",
+      "c2e9018d4cad1a57",
+      "713a269a6377b93f",
+      "758f42eaf21978e3",
+      "5835cfc28f4e4350"
     ],
     "last_notify": 1794484162,
     "recent_topics": {}
   },
-  "last_event_scan": 1794581760,
+  "last_event_scan": 1794603900,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -28773,14 +28807,46 @@
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 1
+    },
+    {
+      "setup_key": "CONT:L:1794599100",
+      "side": "LONG",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 69095.0,
+      "defense": 68889.1,
+      "first_seen": 1794603932,
+      "first_seen_iso": "2026-11-13T21:05:32+00:00",
+      "last_seen": 1794603932,
+      "last_seen_iso": "2026-11-13T21:05:32+00:00",
+      "last_price": 68537.2,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BOZ:S:1794590100:1794590100:68504",
+      "side": "SHORT",
+      "type": "BREAKOUT",
+      "label": "結構突破",
+      "trigger": 68504.5,
+      "defense": 68850.0,
+      "first_seen": 1794603932,
+      "first_seen_iso": "2026-11-13T21:05:32+00:00",
+      "last_seen": 1794603932,
+      "last_seen_iso": "2026-11-13T21:05:32+00:00",
+      "last_price": 68537.2,
+      "status": "PREPARED",
+      "last_note": "進入準備距離",
+      "block_count": 0
     }
   ],
   "active_thesis": {
     "side": "SHORT",
-    "setup_key": "CONT:S:1794524400",
+    "setup_key": "BOZ:S:1794590100:1794590100:68504",
     "source": "PREPARE",
     "context_class": "CONSISTENT",
-    "updated_at": 1794529027,
-    "updated_iso": "2026-11-13T00:17:07+00:00"
+    "updated_at": 1794603932,
+    "updated_iso": "2026-11-13T21:05:32+00:00"
   }
 }
