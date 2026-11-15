@@ -16782,5 +16782,21 @@
     "status": "DETECTED",
     "last_note": "非本輪主要 thesis，僅內部追蹤",
     "block_count": 0
+  },
+  {
+    "setup_key": "BOZ:L:1794691800:1794691800:64947",
+    "side": "LONG",
+    "type": "BREAKOUT",
+    "label": "結構突破",
+    "trigger": 64947.4,
+    "defense": 63856.5,
+    "first_seen": 1794710118,
+    "first_seen_iso": "2026-11-15T02:35:18+00:00",
+    "last_seen": 1794710118,
+    "last_seen_iso": "2026-11-15T02:35:18+00:00",
+    "last_price": 64843.5,
+    "status": "DETECTED",
+    "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "block_count": 0
   }
 ]
