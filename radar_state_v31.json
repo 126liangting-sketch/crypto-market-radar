@@ -12524,14 +12524,6 @@
   ],
   "oi_history": [
     {
-      "time": 1794438071,
-      "value": 35094.72390000016
-    },
-    {
-      "time": 1794454856,
-      "value": 35170.629800000155
-    },
-    {
       "time": 1794484162,
       "value": 35871.76490000017
     },
@@ -12630,15 +12622,14 @@
     {
       "time": 1795041760,
       "value": 33127.52470000013
+    },
+    {
+      "time": 1795060255,
+      "value": 33079.65270000013
     }
   ],
   "news": {
     "seen": [
-      "e74b6939709e3d15",
-      "c91cc983f88cdb68",
-      "981f5a02b85c56c2",
-      "66b9acabdb2a27ab",
-      "4cdcccb4bd5ab8ac",
       "14fd38293259d305",
       "f4c858e081176cac",
       "d116b37145f2b4c4",
@@ -13133,12 +13124,17 @@
       "9788d6b07441e1ab",
       "edc6eeeabb710c8e",
       "07171e3d5e717395",
-      "fe0fd509ff9d088c"
+      "fe0fd509ff9d088c",
+      "2870bb35b91a28de",
+      "da4818069e89a3f1",
+      "db68078c42a71055",
+      "e1668d11e84e4738",
+      "5c4a85086d85fafa"
     ],
     "last_notify": 1794937870,
     "recent_topics": {}
   },
-  "last_event_scan": 1795041720,
+  "last_event_scan": 1795060200,
   "setup_lifecycle": [
     {
       "setup_key": "CONT:L:1791270000",
@@ -30544,6 +30540,38 @@
       "last_seen": 1795041761,
       "last_seen_iso": "2026-11-18T22:42:41+00:00",
       "last_price": 62471.8,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "BOZ:L:1795026600:1795049100:63278",
+      "side": "LONG",
+      "type": "BREAKOUT",
+      "label": "結構突破",
+      "trigger": 63277.5,
+      "defense": 62612.1,
+      "first_seen": 1795060256,
+      "first_seen_iso": "2026-11-19T03:50:56+00:00",
+      "last_seen": 1795060256,
+      "last_seen_iso": "2026-11-19T03:50:56+00:00",
+      "last_price": 63088.7,
+      "status": "DETECTED",
+      "last_note": "非本輪主要 thesis，僅內部追蹤",
+      "block_count": 0
+    },
+    {
+      "setup_key": "CONT:S:1795053600",
+      "side": "SHORT",
+      "type": "PULLBACK",
+      "label": "回踩再啟動",
+      "trigger": 62669.5,
+      "defense": 62909.0,
+      "first_seen": 1795060256,
+      "first_seen_iso": "2026-11-19T03:50:56+00:00",
+      "last_seen": 1795060256,
+      "last_seen_iso": "2026-11-19T03:50:56+00:00",
+      "last_price": 63088.7,
       "status": "DETECTED",
       "last_note": "非本輪主要 thesis，僅內部追蹤",
       "block_count": 0
