@@ -18590,5 +18590,53 @@
     "status": "DETECTED",
     "last_note": "非本輪主要 thesis，僅內部追蹤",
     "block_count": 0
+  },
+  {
+    "setup_key": "BOZ:L:1795657500:1795657500:60960",
+    "side": "LONG",
+    "type": "BREAKOUT",
+    "label": "結構突破",
+    "trigger": 60959.6,
+    "defense": 60635.8,
+    "first_seen": 1795669783,
+    "first_seen_iso": "2026-11-26T05:09:43+00:00",
+    "last_seen": 1795669783,
+    "last_seen_iso": "2026-11-26T05:09:43+00:00",
+    "last_price": 60941.7,
+    "status": "DETECTED",
+    "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "block_count": 1
+  },
+  {
+    "setup_key": "CONT:L:1795661100",
+    "side": "LONG",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 61061.1,
+    "defense": 60584.2,
+    "first_seen": 1795669783,
+    "first_seen_iso": "2026-11-26T05:09:43+00:00",
+    "last_seen": 1795669783,
+    "last_seen_iso": "2026-11-26T05:09:43+00:00",
+    "last_price": 60941.7,
+    "status": "DETECTED",
+    "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "block_count": 0
+  },
+  {
+    "setup_key": "CONT:S:1795662900",
+    "side": "SHORT",
+    "type": "PULLBACK",
+    "label": "回踩再啟動",
+    "trigger": 60695.0,
+    "defense": 60840.0,
+    "first_seen": 1795669783,
+    "first_seen_iso": "2026-11-26T05:09:43+00:00",
+    "last_seen": 1795669783,
+    "last_seen_iso": "2026-11-26T05:09:43+00:00",
+    "last_price": 60941.7,
+    "status": "DETECTED",
+    "last_note": "非本輪主要 thesis，僅內部追蹤",
+    "block_count": 0
   }
 ]
